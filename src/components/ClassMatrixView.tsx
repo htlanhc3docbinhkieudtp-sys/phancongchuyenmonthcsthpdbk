@@ -35,6 +35,8 @@ interface ClassMatrixViewProps {
   assignments: Assignment[];
   workloads: WorkloadStats[];
   lockedCells: LockedCell[];
+  isAdmin?: boolean;
+  onPromptAdminLogin?: () => void;
   onAssignTeacher: (classId: string, subjectId: string, teacherId: string) => void;
   onRemoveAssignment: (classId: string, subjectId: string) => void;
   onToggleLockCell: (classId: string, subjectId: string, reason?: string) => void;
@@ -52,6 +54,8 @@ export const ClassMatrixView: React.FC<ClassMatrixViewProps> = ({
   assignments,
   workloads,
   lockedCells,
+  isAdmin = false,
+  onPromptAdminLogin,
   onAssignTeacher,
   onRemoveAssignment,
   onToggleLockCell,
@@ -161,6 +165,10 @@ export const ClassMatrixView: React.FC<ClassMatrixViewProps> = ({
 
   // Drag handlers
   const handleDragStart = (e: React.DragEvent, teacherId: string) => {
+    if (!isAdmin) {
+      e.preventDefault();
+      return;
+    }
     e.dataTransfer.setData('text/plain', teacherId);
     e.dataTransfer.effectAllowed = 'copyMove';
     setDraggedTeacherId(teacherId);
@@ -172,6 +180,7 @@ export const ClassMatrixView: React.FC<ClassMatrixViewProps> = ({
   };
 
   const handleDragOver = (e: React.DragEvent, classId: string, subjectId: string) => {
+    if (!isAdmin) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
     if (!hoveredCell || hoveredCell.classId !== classId || hoveredCell.subjectId !== subjectId) {
@@ -184,6 +193,7 @@ export const ClassMatrixView: React.FC<ClassMatrixViewProps> = ({
   };
 
   const handleDrop = (e: React.DragEvent, classId: string, subjectId: string) => {
+    if (!isAdmin) return;
     e.preventDefault();
     const teacherId = e.dataTransfer.getData('text/plain') || draggedTeacherId;
     if (teacherId) {
@@ -263,92 +273,92 @@ export const ClassMatrixView: React.FC<ClassMatrixViewProps> = ({
             </div>
 
             {/* Lock Management Dropdown Toggle */}
-            <div className="relative">
-              <button
-                onClick={() => setIsLockToolsOpen(!isLockToolsOpen)}
-                className="px-2.5 py-1 rounded text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
-              >
-                <Lock className="w-3.5 h-3.5 text-amber-700" />
-                <span>Quản Lý Khóa Ô ({lockedViewSlots})</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isLockToolsOpen ? 'rotate-180' : ''}`} />
-              </button>
+            {isAdmin && (
+              <div className="relative">
+                <button
+                  onClick={() => setIsLockToolsOpen(!isLockToolsOpen)}
+                  className="px-2.5 py-1 rounded text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                >
+                  <Lock className="w-3.5 h-3.5 text-amber-700" />
+                  <span>Quản Lý Khóa Ô ({lockedViewSlots})</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isLockToolsOpen ? 'rotate-180' : ''}`} />
+                </button>
 
-              {/* Popup menu for lock tools */}
-              {isLockToolsOpen && (
-                <div className="absolute right-0 mt-1 w-80 bg-white rounded-lg shadow-xl border border-slate-200 z-30 p-3 animate-in fade-in-50 zoom-in-95">
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 mb-2">
-                    <div className="flex items-center gap-1.5">
-                      <Lock className="w-4 h-4 text-amber-600" />
-                      <span className="font-bold text-xs text-slate-900">Tiện Ích Khóa Ô Môn Học</span>
-                    </div>
-                    <button
-                      onClick={() => setIsLockToolsOpen(false)}
-                      className="text-slate-400 hover:text-slate-600 p-0.5"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-
-                  <p className="text-[11px] text-slate-600 mb-2.5 leading-relaxed">
-                    Dành cho môn học sinh <b>không chọn</b> theo tổ hợp hoặc môn <b>chưa dạy kỳ này</b> (GDĐP, HĐTN-HN). Ô khóa sẽ không bị tính là lỗi chưa gán.
-                  </p>
-
-                  <div className="space-y-1.5">
-                    <div className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">
-                      Khóa nhanh theo môn (Cả khối):
-                    </div>
-                    <div className="grid grid-cols-2 gap-1.5">
+                {/* Popup menu for lock tools */}
+                {isLockToolsOpen && (
+                  <div className="absolute right-0 mt-1 w-80 bg-white rounded-lg shadow-xl border border-slate-200 z-30 p-3 animate-in fade-in-50 zoom-in-95">
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-100 mb-2">
+                      <div className="flex items-center gap-1.5">
+                        <Lock className="w-4 h-4 text-amber-600" />
+                        <span className="font-bold text-xs text-slate-900">Tiện Ích Khóa Ô Môn Học</span>
+                      </div>
                       <button
-                        onClick={() => {
-                          onBatchLockSubject('sub-gddp', selectedGrade, true, 'Chưa dạy kỳ này / Phân công sau');
-                          setIsLockToolsOpen(false);
-                        }}
-                        className="p-1.5 text-left rounded bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-300 text-xs font-semibold text-slate-800 transition-colors"
+                        onClick={() => setIsLockToolsOpen(false)}
+                        className="text-slate-400 hover:text-slate-600 p-0.5"
                       >
-                        🔒 Khóa GD Địa phương
-                      </button>
-                      <button
-                        onClick={() => {
-                          onBatchLockSubject('sub-hdtn', selectedGrade, true, 'Chưa dạy kỳ này / Phân công sau');
-                          setIsLockToolsOpen(false);
-                        }}
-                        className="p-1.5 text-left rounded bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-300 text-xs font-semibold text-slate-800 transition-colors"
-                      >
-                        🔒 Khóa HĐTN-HN
+                        <X className="w-3.5 h-3.5" />
                       </button>
                     </div>
 
-                    <div className="pt-2 border-t border-slate-100">
+                    <p className="text-[11px] text-slate-600 mb-2.5 leading-relaxed">
+                      Dành cho môn học sinh <b>không chọn</b> theo tổ hợp hoặc môn <b>chưa dạy kỳ này</b> (GDĐP, HĐTN-HN). Ô khóa sẽ không bị tính là lỗi chưa gán.
+                    </p>
+
+                    <div className="space-y-1.5">
+                      <div className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">
+                        Khóa nhanh theo môn (Cả khối):
+                      </div>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <button
+                          onClick={() => {
+                            onBatchLockSubject('sub-gddp', selectedGrade, true, 'Chưa dạy kỳ này / Phân công sau');
+                            setIsLockToolsOpen(false);
+                          }}
+                          className="p-1.5 text-left rounded bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-300 text-xs font-semibold text-slate-800 transition-colors"
+                        >
+                          🔒 Khóa GD Địa phương
+                        </button>
+                        <button
+                          onClick={() => {
+                            onBatchLockSubject('sub-hdtn', selectedGrade, true, 'Chưa dạy kỳ này / Phân công sau');
+                            setIsLockToolsOpen(false);
+                          }}
+                          className="p-1.5 text-left rounded bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-300 text-xs font-semibold text-slate-800 transition-colors"
+                        >
+                          🔒 Khóa HĐTN-HN
+                        </button>
+                      </div>
+
                       <button
                         onClick={() => {
                           onBatchLockEmptyElectives('THPT');
                           setIsLockToolsOpen(false);
                         }}
-                        className="w-full p-2 rounded bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-xs font-bold text-indigo-900 flex items-center justify-between transition-colors"
+                        className="w-full mt-1 p-1.5 text-left rounded bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-colors shadow-2xs flex items-center justify-between"
                       >
-                        <span>🔒 Khóa tất cả môn trống khối THPT</span>
-                        <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                        <span>⚡ Tự động khóa môn lựa chọn trống (THPT)</span>
+                        <Lock className="w-3.5 h-3.5 text-amber-200" />
                       </button>
-                    </div>
 
-                    <div className="pt-1">
-                      <button
-                        onClick={() => {
-                          if (window.confirm(`Mở khóa tất cả các ô trong khối ${selectedGrade}?`)) {
-                            onUnlockAll(selectedGrade);
-                            setIsLockToolsOpen(false);
-                          }
-                        }}
-                        className="w-full p-1.5 rounded bg-rose-50 hover:bg-rose-100 border border-rose-200 text-xs font-semibold text-rose-800 flex items-center justify-center gap-1 transition-colors"
-                      >
-                        <Unlock className="w-3.5 h-3.5 text-rose-600" />
-                        <span>Mở khóa toàn bộ khối hiện tại</span>
-                      </button>
+                      <div className="pt-2 border-t border-slate-100 mt-2">
+                        <button
+                          onClick={() => {
+                            if (window.confirm('Bạn có chắc muốn MỞ KHÓA TẤT CẢ các ô môn học?')) {
+                              onUnlockAll(selectedGrade);
+                              setIsLockToolsOpen(false);
+                            }
+                          }}
+                          className="w-full p-1.5 text-center rounded bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-700 text-xs font-semibold transition-colors flex items-center justify-center gap-1"
+                        >
+                          <Unlock className="w-3.5 h-3.5" />
+                          <span>Mở khóa toàn bộ ma trận</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -609,8 +619,16 @@ export const ClassMatrixView: React.FC<ClassMatrixViewProps> = ({
                             onDragOver={e => handleDragOver(e, cls.id, sub.id)}
                             onDragLeave={handleDragLeave}
                             onDrop={e => handleDrop(e, cls.id, sub.id)}
-                            onClick={() => setQuickAssignCell({ classId: cls.id, subjectId: sub.id })}
-                            className={`p-1.5 border-r border-slate-200 text-center transition-all cursor-pointer relative group ${
+                            onClick={() => {
+                              if (isAdmin) {
+                                setQuickAssignCell({ classId: cls.id, subjectId: sub.id });
+                              } else {
+                                onPromptAdminLogin?.();
+                              }
+                            }}
+                            className={`p-1.5 border-r border-slate-200 text-center transition-all ${
+                              isAdmin ? 'cursor-pointer' : 'cursor-default'
+                            } relative group ${
                               isHovered
                                 ? 'bg-indigo-50 ring-2 ring-indigo-400 ring-inset'
                                 : assignedTeacher
@@ -619,6 +637,7 @@ export const ClassMatrixView: React.FC<ClassMatrixViewProps> = ({
                                 ? 'bg-slate-100/80 hover:bg-slate-200/80'
                                 : 'bg-slate-50/40 hover:bg-indigo-50/50'
                             }`}
+                            title={!isAdmin ? "Chế độ xem - Bấm để đăng nhập Quản trị" : undefined}
                           >
                             {assignedTeacher ? (
                               /* 1. ASSIGNED CELL */
@@ -627,16 +646,18 @@ export const ClassMatrixView: React.FC<ClassMatrixViewProps> = ({
                                   <span className="font-bold text-indigo-950 truncate text-[10px]">
                                     {assignedTeacher.name}
                                   </span>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      onRemoveAssignment(cls.id, sub.id);
-                                    }}
-                                    className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-600 transition-opacity p-0.5 cursor-pointer"
-                                    title="Hủy phân công"
-                                  >
-                                    <X className="w-3 h-3" />
-                                  </button>
+                                  {isAdmin && (
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        onRemoveAssignment(cls.id, sub.id);
+                                      }}
+                                      className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-600 transition-opacity p-0.5 cursor-pointer"
+                                      title="Hủy phân công"
+                                    >
+                                      <X className="w-3 h-3" />
+                                    </button>
+                                  )}
                                 </div>
                                 <div className="flex items-center justify-between text-[9px] text-slate-500 mt-0.5">
                                   <span className="font-mono text-slate-600 font-medium">

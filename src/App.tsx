@@ -39,6 +39,7 @@ import { CurriculumView } from './components/CurriculumView';
 import { ExcelImportExportModal } from './components/ExcelImportExportModal';
 import { AutoAssignModal } from './components/AutoAssignModal';
 import { ConflictAuditDrawer } from './components/ConflictAuditDrawer';
+import { AdminLoginModal } from './components/AdminLoginModal';
 import {
   saveSchoolPlanToCloud,
   loadSchoolPlanFromCloud,
@@ -50,6 +51,13 @@ import {
 const STORAGE_KEY = 'docbinhkieu_phancong_data_v5';
 
 export default function App() {
+  // Admin role state (Public view-only by default, admin login with password)
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY}_is_admin`);
+    return saved === 'true';
+  });
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+
   // Load saved state or default
   const [config, setConfig] = useState<SchoolConfig>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_config`);
@@ -180,7 +188,12 @@ export default function App() {
     };
   }, []);
 
-  // Save to localStorage & Auto-sync to Firebase with debounce
+  // Save isAdmin state
+  useEffect(() => {
+    localStorage.setItem(`${STORAGE_KEY}_is_admin`, String(isAdmin));
+  }, [isAdmin]);
+
+  // Save to localStorage & Auto-sync to Firebase with debounce (Admin only)
   useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY}_config`, JSON.stringify(config));
     localStorage.setItem(`${STORAGE_KEY}_departments`, JSON.stringify(departments));
@@ -190,8 +203,8 @@ export default function App() {
     localStorage.setItem(`${STORAGE_KEY}_assignments`, JSON.stringify(assignments));
     localStorage.setItem(`${STORAGE_KEY}_locked_cells`, JSON.stringify(lockedCells));
 
-    // Debounced Firebase Auto-Save
-    if (!isInitialCloudLoadRef.current) {
+    // Debounced Firebase Auto-Save (Only admin changes push to Cloud to prevent view-only overwrites)
+    if (!isInitialCloudLoadRef.current && isAdmin) {
       setCloudSyncStatus('saving');
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
@@ -218,7 +231,7 @@ export default function App() {
         }
       }, 1000);
     }
-  }, [config, departments, subjects, classes, teachers, assignments, lockedCells]);
+  }, [config, departments, subjects, classes, teachers, assignments, lockedCells, isAdmin]);
 
   // Derived Calculations
   const workloads = useMemo(() => {
@@ -580,6 +593,14 @@ export default function App() {
         conflicts={conflicts}
         cloudSyncStatus={cloudSyncStatus}
         lastSyncedAt={lastSyncedAt}
+        isAdmin={isAdmin}
+        onToggleAdmin={() => {
+          if (isAdmin) {
+            setIsAdmin(false);
+          } else {
+            setIsAdminModalOpen(true);
+          }
+        }}
         onSaveToCloud={handleSaveToCloud}
         onExportJsonBackup={handleExportJsonBackup}
         onImportJsonBackup={handleImportJsonBackup}
@@ -607,6 +628,8 @@ export default function App() {
             teachers={teachers}
             assignments={assignments}
             workloads={workloads}
+            isAdmin={isAdmin}
+            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
             onAssignTeacher={handleAssignTeacher}
             onUpdateClassSpecialTopic={handleUpdateClassSpecialTopic}
             onExportExcel={handleExportExcel}
@@ -622,6 +645,8 @@ export default function App() {
             assignments={assignments}
             workloads={workloads}
             lockedCells={lockedCells}
+            isAdmin={isAdmin}
+            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
             onAssignTeacher={handleAssignTeacher}
             onRemoveAssignment={handleRemoveAssignment}
             onToggleLockCell={handleToggleLockCell}
@@ -639,6 +664,8 @@ export default function App() {
             classes={classes}
             assignments={assignments}
             workloads={workloads}
+            isAdmin={isAdmin}
+            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
             onAssignTeacher={handleAssignTeacher}
             onRemoveAssignment={handleRemoveAssignment}
           />
@@ -654,6 +681,8 @@ export default function App() {
             assignments={assignments}
             workloads={workloads}
             lockedCells={lockedCells}
+            isAdmin={isAdmin}
+            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
             onAssignTeacher={handleAssignTeacher}
             onExportExcel={handleExportExcel}
           />
@@ -665,6 +694,8 @@ export default function App() {
             teachers={teachers}
             departments={departments}
             workloads={workloads}
+            isAdmin={isAdmin}
+            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
             onAssignHomeroom={handleAssignHomeroom}
           />
         )}
@@ -675,6 +706,8 @@ export default function App() {
             departments={departments}
             subjects={subjects}
             workloads={workloads}
+            isAdmin={isAdmin}
+            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
             onAddTeacher={handleAddTeacher}
             onUpdateTeacher={handleUpdateTeacher}
             onDeleteTeacher={handleDeleteTeacher}
@@ -685,12 +718,20 @@ export default function App() {
           <CurriculumView
             subjects={subjects}
             departments={departments}
+            isAdmin={isAdmin}
+            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
             onUpdateSubjectPeriod={handleUpdateSubjectPeriod}
           />
         )}
       </main>
 
       {/* Modals & Slide-out Drawers */}
+      <AdminLoginModal
+        isOpen={isAdminModalOpen}
+        onClose={() => setIsAdminModalOpen(false)}
+        onLoginSuccess={() => setIsAdmin(true)}
+      />
+
       <ExcelImportExportModal
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}

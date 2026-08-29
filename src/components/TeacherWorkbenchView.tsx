@@ -22,6 +22,8 @@ interface TeacherWorkbenchViewProps {
   classes: ClassGroup[];
   assignments: Assignment[];
   workloads: WorkloadStats[];
+  isAdmin?: boolean;
+  onPromptAdminLogin?: () => void;
   onAssignTeacher: (classId: string, subjectId: string, teacherId: string) => void;
   onRemoveAssignment: (classId: string, subjectId: string) => void;
 }
@@ -33,6 +35,8 @@ export const TeacherWorkbenchView: React.FC<TeacherWorkbenchViewProps> = ({
   classes,
   assignments,
   workloads,
+  isAdmin = false,
+  onPromptAdminLogin,
   onAssignTeacher,
   onRemoveAssignment,
 }) => {
@@ -214,13 +218,15 @@ export const TeacherWorkbenchView: React.FC<TeacherWorkbenchViewProps> = ({
                         <div className="mt-2.5">
                           <div className="text-[11px] font-bold text-slate-700 mb-1.5 flex items-center justify-between">
                             <span>Lớp phụ trách ({workload.assignedClasses.length} lớp):</span>
-                            <button
-                              onClick={() => setAssigningTeacherId(teacher.id)}
-                              className="text-[10px] text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-0.5 cursor-pointer"
-                            >
-                              <Plus className="w-3 h-3" />
-                              <span>Thêm lớp</span>
-                            </button>
+                            {isAdmin && (
+                              <button
+                                onClick={() => setAssigningTeacherId(teacher.id)}
+                                className="text-[10px] text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-0.5 cursor-pointer"
+                              >
+                                <Plus className="w-3 h-3" />
+                                <span>Thêm lớp</span>
+                              </button>
+                            )}
                           </div>
 
                           <div className="flex flex-wrap gap-1 max-h-28 overflow-y-auto">
@@ -240,7 +246,7 @@ export const TeacherWorkbenchView: React.FC<TeacherWorkbenchViewProps> = ({
                                     <span className="text-[10px] text-slate-500">
                                       ({c.subjectName} {c.periods}t)
                                     </span>
-                                    {matchedAssignment && (
+                                    {matchedAssignment && isAdmin && (
                                       <button
                                         onClick={() => onRemoveAssignment(matchedAssignment.classId, matchedAssignment.subjectId)}
                                         className="text-slate-300 hover:text-rose-600 transition-colors p-0.5 cursor-pointer"

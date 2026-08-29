@@ -37,6 +37,8 @@ interface TeacherManagementViewProps {
   departments: Department[];
   subjects: Subject[];
   workloads: WorkloadStats[];
+  isAdmin?: boolean;
+  onPromptAdminLogin?: () => void;
   onAddTeacher: (teacher: Teacher) => void;
   onUpdateTeacher: (teacher: Teacher) => void;
   onDeleteTeacher: (teacherId: string) => void;
@@ -47,6 +49,8 @@ export const TeacherManagementView: React.FC<TeacherManagementViewProps> = ({
   departments,
   subjects,
   workloads,
+  isAdmin = false,
+  onPromptAdminLogin,
   onAddTeacher,
   onUpdateTeacher,
   onDeleteTeacher,
@@ -352,13 +356,19 @@ export const TeacherManagementView: React.FC<TeacherManagementViewProps> = ({
         </div>
 
         {/* Add Teacher Button */}
-        <button
-          onClick={handleOpenAdd}
-          className="flex items-center gap-1.5 px-3 py-1 rounded text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-2xs transition-all cursor-pointer"
-        >
-          <UserPlus className="w-3.5 h-3.5" />
-          <span>Thêm Nhân Sự / GV</span>
-        </button>
+        {isAdmin ? (
+          <button
+            onClick={handleOpenAdd}
+            className="flex items-center gap-1.5 px-3 py-1 rounded text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-2xs transition-all cursor-pointer"
+          >
+            <UserPlus className="w-3.5 h-3.5" />
+            <span>Thêm Nhân Sự / GV</span>
+          </button>
+        ) : (
+          <div className="text-[11px] font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded border border-slate-200">
+            Chế độ Chỉ Xem
+          </div>
+        )}
       </div>
 
       {/* Teachers Directory Table */}
@@ -482,13 +492,15 @@ export const TeacherManagementView: React.FC<TeacherManagementViewProps> = ({
                             </span>
                           ) : null}
 
-                          <button
-                            onClick={() => handleOpenQuickDuty(teacher)}
-                            className="p-0.5 text-slate-400 hover:text-indigo-600 rounded hover:bg-indigo-50 transition-colors cursor-pointer"
-                            title="Chỉnh sửa nhanh các kiêm nhiệm & giảm tiết"
-                          >
-                            <Sparkles className="w-3 h-3 text-indigo-500" />
-                          </button>
+                          {isAdmin && (
+                            <button
+                              onClick={() => handleOpenQuickDuty(teacher)}
+                              className="p-0.5 text-slate-400 hover:text-indigo-600 rounded hover:bg-indigo-50 transition-colors cursor-pointer"
+                              title="Chỉnh sửa nhanh các kiêm nhiệm & giảm tiết"
+                            >
+                              <Sparkles className="w-3 h-3 text-indigo-500" />
+                            </button>
+                          )}
                         </div>
                       </td>
                       <td className="p-2 text-center font-semibold text-slate-700">
@@ -519,34 +531,38 @@ export const TeacherManagementView: React.FC<TeacherManagementViewProps> = ({
                         )}
                       </td>
                       <td className="p-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          <button
-                            onClick={() => handleOpenQuickDuty(teacher)}
-                            className="px-1.5 py-0.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded text-[10px] font-semibold flex items-center gap-0.5 cursor-pointer transition-colors"
-                            title="Sửa kiêm nhiệm"
-                          >
-                            <Briefcase className="w-2.5 h-2.5" />
-                            <span>Kiêm nhiệm</span>
-                          </button>
-                          <button
-                            onClick={() => handleOpenEdit(teacher)}
-                            className="p-1 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors cursor-pointer"
-                            title="Sửa toàn bộ hồ sơ"
-                          >
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            onClick={() => {
-                              if (window.confirm(`Bạn có chắc muốn xóa nhân sự "${teacher.name}"?`)) {
-                                onDeleteTeacher(teacher.id);
-                              }
-                            }}
-                            className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
-                            title="Xóa"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
+                        {isAdmin ? (
+                          <div className="flex items-center justify-center gap-1">
+                            <button
+                              onClick={() => handleOpenQuickDuty(teacher)}
+                              className="px-1.5 py-0.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded text-[10px] font-semibold flex items-center gap-0.5 cursor-pointer transition-colors"
+                              title="Sửa kiêm nhiệm"
+                            >
+                              <Briefcase className="w-2.5 h-2.5" />
+                              <span>Kiêm nhiệm</span>
+                            </button>
+                            <button
+                              onClick={() => handleOpenEdit(teacher)}
+                              className="p-1 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors cursor-pointer"
+                              title="Sửa toàn bộ hồ sơ"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (window.confirm(`Bạn có chắc muốn xóa nhân sự "${teacher.name}"?`)) {
+                                  onDeleteTeacher(teacher.id);
+                                }
+                              }}
+                              className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
+                              title="Xóa"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-[10px] text-slate-400 italic">Chỉ xem</span>
+                        )}
                       </td>
                     </tr>
                   );

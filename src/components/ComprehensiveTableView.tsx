@@ -24,6 +24,8 @@ interface ComprehensiveTableViewProps {
   assignments: Assignment[];
   workloads: WorkloadStats[];
   lockedCells?: LockedCell[];
+  isAdmin?: boolean;
+  onPromptAdminLogin?: () => void;
   onAssignTeacher: (classId: string, subjectId: string, teacherId: string) => void;
   onExportExcel: () => void;
 }
@@ -37,6 +39,8 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
   assignments,
   workloads,
   lockedCells = [],
+  isAdmin = false,
+  onPromptAdminLogin,
   onAssignTeacher,
   onExportExcel,
 }) => {
@@ -247,10 +251,19 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
                       return (
                         <td
                           key={sub.id}
-                          onClick={() => setEditingCell({ classId: cls.id, subjectId: sub.id })}
-                          className="p-1 border border-slate-300 text-center cursor-pointer hover:bg-indigo-50/40 transition-colors"
+                          onClick={() => {
+                            if (isAdmin) {
+                              setEditingCell({ classId: cls.id, subjectId: sub.id });
+                            } else {
+                              onPromptAdminLogin?.();
+                            }
+                          }}
+                          className={`p-1 border border-slate-300 text-center transition-colors ${
+                            isAdmin ? 'cursor-pointer hover:bg-indigo-50/40' : 'cursor-default'
+                          }`}
+                          title={!isAdmin ? "Chế độ xem - Bấm để đăng nhập Quản trị" : "Bấm để gán giáo viên"}
                         >
-                          {isEditing ? (
+                          {isEditing && isAdmin ? (
                             <select
                               autoFocus
                               value={assignedTeacher?.id || ''}

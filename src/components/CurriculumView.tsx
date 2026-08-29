@@ -12,12 +12,16 @@ import {
 interface CurriculumViewProps {
   subjects: Subject[];
   departments: Department[];
+  isAdmin?: boolean;
+  onPromptAdminLogin?: () => void;
   onUpdateSubjectPeriod: (subjectId: string, grade: GradeLevel, periods: number) => void;
 }
 
 export const CurriculumView: React.FC<CurriculumViewProps> = ({
   subjects,
   departments,
+  isAdmin = false,
+  onPromptAdminLogin,
   onUpdateSubjectPeriod,
 }) => {
   const [activeGrade, setActiveGrade] = useState<GradeLevel>('10');
@@ -140,17 +144,23 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
                     </td>
                     <td className="p-2 text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <input
-                          type="number"
-                          step="0.5"
-                          min="0"
-                          max="10"
-                          value={currentPeriod}
-                          onChange={e =>
-                            onUpdateSubjectPeriod(sub.id, activeGrade, Number(e.target.value))
-                          }
-                          className="w-14 p-1 text-center font-bold text-slate-900 border border-slate-300 rounded focus:border-indigo-500 focus:outline-hidden"
-                        />
+                        {isAdmin ? (
+                          <input
+                            type="number"
+                            step="0.5"
+                            min="0"
+                            max="10"
+                            value={currentPeriod}
+                            onChange={e =>
+                              onUpdateSubjectPeriod(sub.id, activeGrade, Number(e.target.value))
+                            }
+                            className="w-14 p-1 text-center font-bold text-slate-900 border border-slate-300 rounded focus:border-indigo-500 focus:outline-hidden"
+                          />
+                        ) : (
+                          <span className="w-14 p-1 text-center font-bold text-slate-900 bg-slate-100 rounded inline-block">
+                            {currentPeriod}
+                          </span>
+                        )}
                         <span className="text-slate-500 font-medium text-[10px]">tiết</span>
                       </div>
                     </td>

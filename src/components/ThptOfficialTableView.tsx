@@ -24,6 +24,8 @@ interface ThptOfficialTableViewProps {
   teachers: Teacher[];
   assignments: Assignment[];
   workloads: WorkloadStats[];
+  isAdmin?: boolean;
+  onPromptAdminLogin?: () => void;
   onAssignTeacher: (classId: string, subjectId: string, teacherId: string) => void;
   onUpdateClassSpecialTopic: (classId: string, topicKey: 'cd1' | 'cd2' | 'cd3', title: string, teacherId: string) => void;
   onExportExcel: () => void;
@@ -36,6 +38,8 @@ export const ThptOfficialTableView: React.FC<ThptOfficialTableViewProps> = ({
   teachers,
   assignments,
   workloads,
+  isAdmin = false,
+  onPromptAdminLogin,
   onAssignTeacher,
   onUpdateClassSpecialTopic,
   onExportExcel
@@ -307,16 +311,25 @@ export const ThptOfficialTableView: React.FC<ThptOfficialTableViewProps> = ({
                             return (
                               <td
                                 key={col.id}
-                                onClick={() =>
-                                  setEditingCell({
-                                    classId: cls.id,
-                                    type: 'subject',
-                                    subjectId: col.id
-                                  })
-                                }
-                                className="p-1 border border-slate-300 cursor-pointer hover:bg-indigo-50/50 transition-colors relative"
+                                onClick={() => {
+                                  if (isAdmin) {
+                                    setEditingCell({
+                                      classId: cls.id,
+                                      type: 'subject',
+                                      subjectId: col.id
+                                    });
+                                  } else {
+                                    onPromptAdminLogin?.();
+                                  }
+                                }}
+                                className={`p-1 border border-slate-300 relative transition-colors ${
+                                  isAdmin
+                                    ? 'cursor-pointer hover:bg-indigo-50/50'
+                                    : 'cursor-default'
+                                }`}
+                                title={!isAdmin ? "Chế độ xem - Bấm để đăng nhập Quản trị" : "Bấm để chọn giáo viên"}
                               >
-                                {isEditing ? (
+                                {isEditing && isAdmin ? (
                                   <select
                                     autoFocus
                                     value={assignedTeacher?.id || ''}
@@ -371,14 +384,21 @@ export const ThptOfficialTableView: React.FC<ThptOfficialTableViewProps> = ({
 
                           {/* CĐ1 */}
                           <td
-                            onClick={() =>
-                              setEditingCell({
-                                classId: cls.id,
-                                type: 'specialTopic',
-                                topicKey: 'cd1'
-                              })
-                            }
-                            className="p-1 border border-slate-300 bg-sky-50/40 cursor-pointer hover:bg-sky-100/60"
+                            onClick={() => {
+                              if (isAdmin) {
+                                setEditingCell({
+                                  classId: cls.id,
+                                  type: 'specialTopic',
+                                  topicKey: 'cd1'
+                                });
+                              } else {
+                                onPromptAdminLogin?.();
+                              }
+                            }}
+                            className={`p-1 border border-slate-300 bg-sky-50/40 ${
+                              isAdmin ? 'cursor-pointer hover:bg-sky-100/60' : 'cursor-default'
+                            }`}
+                            title={!isAdmin ? "Chế độ xem - Bấm để đăng nhập Quản trị" : "Bấm để gán chuyên đề"}
                           >
                             {cls.specialTopics?.cd1 ? (
                               <div className="leading-tight">
@@ -398,14 +418,21 @@ export const ThptOfficialTableView: React.FC<ThptOfficialTableViewProps> = ({
 
                           {/* CĐ2 */}
                           <td
-                            onClick={() =>
-                              setEditingCell({
-                                classId: cls.id,
-                                type: 'specialTopic',
-                                topicKey: 'cd2'
-                              })
-                            }
-                            className="p-1 border border-slate-300 bg-sky-50/40 cursor-pointer hover:bg-sky-100/60"
+                            onClick={() => {
+                              if (isAdmin) {
+                                setEditingCell({
+                                  classId: cls.id,
+                                  type: 'specialTopic',
+                                  topicKey: 'cd2'
+                                });
+                              } else {
+                                onPromptAdminLogin?.();
+                              }
+                            }}
+                            className={`p-1 border border-slate-300 bg-sky-50/40 ${
+                              isAdmin ? 'cursor-pointer hover:bg-sky-100/60' : 'cursor-default'
+                            }`}
+                            title={!isAdmin ? "Chế độ xem - Bấm để đăng nhập Quản trị" : "Bấm để gán chuyên đề"}
                           >
                             {cls.specialTopics?.cd2 ? (
                               <div className="leading-tight">
@@ -425,14 +452,21 @@ export const ThptOfficialTableView: React.FC<ThptOfficialTableViewProps> = ({
 
                           {/* CĐ3 */}
                           <td
-                            onClick={() =>
-                              setEditingCell({
-                                classId: cls.id,
-                                type: 'specialTopic',
-                                topicKey: 'cd3'
-                              })
-                            }
-                            className="p-1 border border-slate-300 bg-sky-50/40 cursor-pointer hover:bg-sky-100/60"
+                            onClick={() => {
+                              if (isAdmin) {
+                                setEditingCell({
+                                  classId: cls.id,
+                                  type: 'specialTopic',
+                                  topicKey: 'cd3'
+                                });
+                              } else {
+                                onPromptAdminLogin?.();
+                              }
+                            }}
+                            className={`p-1 border border-slate-300 bg-sky-50/40 ${
+                              isAdmin ? 'cursor-pointer hover:bg-sky-100/60' : 'cursor-default'
+                            }`}
+                            title={!isAdmin ? "Chế độ xem - Bấm để đăng nhập Quản trị" : "Bấm để gán chuyên đề"}
                           >
                             {cls.specialTopics?.cd3 ? (
                               <div className="leading-tight">

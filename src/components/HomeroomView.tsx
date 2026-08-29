@@ -16,6 +16,8 @@ interface HomeroomViewProps {
   teachers: Teacher[];
   departments: Department[];
   workloads: WorkloadStats[];
+  isAdmin?: boolean;
+  onPromptAdminLogin?: () => void;
   onAssignHomeroom: (classId: string, teacherId: string | undefined) => void;
 }
 
@@ -23,6 +25,9 @@ export const HomeroomView: React.FC<HomeroomViewProps> = ({
   classes,
   teachers,
   departments,
+  workloads,
+  isAdmin = false,
+  onPromptAdminLogin,
   onAssignHomeroom,
 }) => {
   const [selectedGrade, setSelectedGrade] = useState<string>('ALL');
@@ -167,26 +172,34 @@ export const HomeroomView: React.FC<HomeroomViewProps> = ({
                           </div>
                         )}
                       </div>
-                      <button
-                        onClick={() => setEditingClassId(cls.id)}
-                        className="text-[11px] text-indigo-600 hover:text-indigo-800 font-bold p-1 hover:bg-indigo-50 rounded cursor-pointer"
-                        title="Đổi giáo viên chủ nhiệm"
-                      >
-                        Đổi
-                      </button>
+                      {isAdmin && (
+                        <button
+                          onClick={() => setEditingClassId(cls.id)}
+                          className="text-[11px] text-indigo-600 hover:text-indigo-800 font-bold p-1 hover:bg-indigo-50 rounded cursor-pointer"
+                          title="Đổi giáo viên chủ nhiệm"
+                        >
+                          Đổi
+                        </button>
+                      )}
                     </div>
                   ) : (
                     <div className="bg-amber-50 p-2.5 rounded border border-amber-200 text-center">
                       <div className="text-[11px] font-semibold text-amber-800 mb-1">
                         Chưa có GV Chủ Nhiệm
                       </div>
-                      <button
-                        onClick={() => setEditingClassId(cls.id)}
-                        className="text-[11px] font-bold text-white bg-amber-600 hover:bg-amber-700 px-2.5 py-0.5 rounded shadow-2xs cursor-pointer inline-flex items-center gap-1"
-                      >
-                        <Plus className="w-3 h-3" />
-                        <span>Chỉ định GVCN</span>
-                      </button>
+                      {isAdmin ? (
+                        <button
+                          onClick={() => setEditingClassId(cls.id)}
+                          className="text-[11px] font-bold text-white bg-amber-600 hover:bg-amber-700 px-2.5 py-0.5 rounded shadow-2xs cursor-pointer inline-flex items-center gap-1"
+                        >
+                          <Plus className="w-3 h-3" />
+                          <span>Chỉ định GVCN</span>
+                        </button>
+                      ) : (
+                        <span className="text-[10px] text-amber-700 italic">
+                          (Chưa phân công)
+                        </span>
+                      )}
                     </div>
                   )}
                 </div>
