@@ -1,0 +1,19 @@
+{
+  "entities": {
+    "AcademicPlan": {
+      "collection": "school_plans",
+      "fields": {
+        "id": { "type": "string", "description": "ID of the academic plan document" },
+        "name": { "type": "string", "description": "Name of the school plan" },
+        "config": { "type": "object", "description": "School configuration and reductions" },
+        "departments": { "type": "array", "description": "List of subject departments" },
+        "subjects": { "type": "array", "description": "List of school subjects" },
+        "classes": { "type": "array", "description": "List of class groups with homeroom" },
+        "teachers": { "type": "array", "description": "List of teachers with concurrent duties" },
+        "assignments": { "type": "array", "description": "List of teaching assignments" },
+        "lockedCells": { "type": "array", "description": "List of locked or excluded cells" },
+        "updatedAt": { "type": "number", "description": "Last modified timestamp" }
+      }
+    }
+  }
+}

@@ -1,0 +1,288 @@
+import React, { useRef } from 'react';
+import {
+  School,
+  FileSpreadsheet,
+  Upload,
+  Sparkles,
+  AlertTriangle,
+  CheckCircle2,
+  Calendar,
+  Layers,
+  Users,
+  GraduationCap,
+  RotateCcw,
+  Cloud,
+  CloudCheck,
+  RefreshCw,
+  Download,
+  Database
+} from 'lucide-react';
+import { SchoolConfig, ConflictIssue } from '../types';
+
+interface HeaderProps {
+  config: SchoolConfig;
+  onUpdateConfig: (newConfig: SchoolConfig) => void;
+  totalTeachers: number;
+  totalClasses: number;
+  assignedPercentage: number;
+  conflicts: ConflictIssue[];
+  cloudSyncStatus: 'synced' | 'saving' | 'error' | 'offline';
+  lastSyncedAt: number | null;
+  onSaveToCloud: () => void;
+  onExportJsonBackup: () => void;
+  onImportJsonBackup: (file: File) => void;
+  onOpenImportModal: () => void;
+  onExportExcel: () => void;
+  onOpenAutoAssign: () => void;
+  onOpenConflictDrawer: () => void;
+  onResetData: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({
+  config,
+  onUpdateConfig,
+  totalTeachers,
+  totalClasses,
+  assignedPercentage,
+  conflicts,
+  cloudSyncStatus,
+  lastSyncedAt,
+  onSaveToCloud,
+  onExportJsonBackup,
+  onImportJsonBackup,
+  onOpenImportModal,
+  onExportExcel,
+  onOpenAutoAssign,
+  onOpenConflictDrawer,
+  onResetData,
+}) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const errorCount = conflicts.filter(c => c.severity === 'error').length;
+  const warningCount = conflicts.filter(c => c.severity === 'warning').length;
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onImportJsonBackup(file);
+      e.target.value = '';
+    }
+  };
+
+  return (
+    <header className="bg-indigo-900 text-white sticky top-0 z-30 shadow-md shrink-0">
+      {/* Top Main Nav Bar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
+        {/* Brand & School info */}
+        <div className="flex items-center gap-3">
+          <div className="bg-white p-1 rounded-lg shrink-0 shadow-xs">
+            <div className="w-7 h-7 bg-indigo-600 rounded-sm flex items-center justify-center font-black text-xs text-white tracking-wider">
+              DBK
+            </div>
+          </div>
+          <div className="flex items-center">
+            <h1 className="text-base sm:text-lg font-bold tracking-tight uppercase text-white whitespace-nowrap">
+              THCS & THPT Đốc Binh Kiều
+            </h1>
+            <span className="hidden md:inline text-indigo-200 text-xs ml-3 pl-3 border-l border-indigo-700/80 font-medium">
+              Hệ thống Phân công Chuyên môn
+            </span>
+          </div>
+        </div>
+
+        {/* Academic Controls & Actions */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Year & Semester Selector Pill */}
+          <div className="flex items-center bg-indigo-800/90 rounded-lg p-1 border border-indigo-700/70 text-xs">
+            <div className="flex items-center gap-1 px-2 py-0.5 text-indigo-200">
+              <Calendar className="w-3 h-3 text-indigo-300" />
+              <select
+                value={config.academicYear}
+                onChange={e => onUpdateConfig({ ...config, academicYear: e.target.value })}
+                className="bg-transparent font-semibold text-white focus:outline-hidden cursor-pointer"
+              >
+                <option value="2024 - 2025" className="bg-slate-800 text-white">2024 - 2025</option>
+                <option value="2025 - 2026" className="bg-slate-800 text-white">2025 - 2026</option>
+              </select>
+            </div>
+            <div className="h-3.5 w-px bg-indigo-700 mx-0.5"></div>
+            <select
+              value={config.semester}
+              onChange={e => onUpdateConfig({ ...config, semester: e.target.value as any })}
+              className="bg-indigo-600 font-bold text-white px-2 py-0.5 rounded text-xs focus:outline-hidden cursor-pointer shadow-xs"
+            >
+              <option value="HK1" className="bg-slate-800 text-white">HK1</option>
+              <option value="HK2" className="bg-slate-800 text-white">HK2</option>
+            </select>
+          </div>
+
+          {/* Conflict indicator button */}
+          <button
+            onClick={onOpenConflictDrawer}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
+              errorCount > 0
+                ? 'bg-rose-500/20 border-rose-400/50 text-rose-200 hover:bg-rose-500/30'
+                : warningCount > 0
+                ? 'bg-amber-500/20 border-amber-400/50 text-amber-200 hover:bg-amber-500/30'
+                : 'bg-emerald-500/20 border-emerald-400/50 text-emerald-200 hover:bg-emerald-500/30'
+            }`}
+            title="Kiểm tra xung đột & định mức"
+          >
+            {errorCount > 0 ? (
+              <AlertTriangle className="w-3.5 h-3.5 text-rose-300 animate-pulse" />
+            ) : warningCount > 0 ? (
+              <AlertTriangle className="w-3.5 h-3.5 text-amber-300" />
+            ) : (
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
+            )}
+            <span className="hidden sm:inline">
+              {errorCount > 0 ? `${errorCount} lỗi` : warningCount > 0 ? `${warningCount} lưu ý` : 'Hợp lệ'}
+            </span>
+          </button>
+
+          {/* Cloud Auto-Sync Indicator & Manual Save */}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={onSaveToCloud}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                cloudSyncStatus === 'saving'
+                  ? 'bg-amber-500/20 border-amber-400/50 text-amber-200'
+                  : cloudSyncStatus === 'synced'
+                  ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-200 hover:bg-emerald-500/30'
+                  : 'bg-rose-500/20 border-rose-400/50 text-rose-200'
+              }`}
+              title={
+                cloudSyncStatus === 'saving'
+                  ? 'Đang tự động lưu lên đám mây Firebase...'
+                  : lastSyncedAt
+                  ? `Đã lưu đám mây lúc ${new Date(lastSyncedAt).toLocaleTimeString('vi-VN')}. Bấm để đồng bộ ngay`
+                  : 'Bấm để lưu lên Đám mây Firebase'
+              }
+            >
+              {cloudSyncStatus === 'saving' ? (
+                <RefreshCw className="w-3.5 h-3.5 text-amber-300 animate-spin" />
+              ) : cloudSyncStatus === 'synced' ? (
+                <CloudCheck className="w-3.5 h-3.5 text-emerald-300" />
+              ) : (
+                <Cloud className="w-3.5 h-3.5 text-rose-300" />
+              )}
+              <span className="hidden xl:inline text-[11px]">
+                {cloudSyncStatus === 'saving'
+                  ? 'Đang lưu Cloud...'
+                  : 'Đã lưu Cloud'}
+              </span>
+            </button>
+
+            {/* Hidden File Input for JSON restore */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileInputChange}
+              accept=".json"
+              className="hidden"
+            />
+
+            {/* Backup & Restore Dropdown / Buttons */}
+            <button
+              onClick={onExportJsonBackup}
+              className="hidden md:flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-indigo-200 hover:text-white bg-indigo-800/80 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
+              title="Tải file bản sao lưu toàn bộ dữ liệu (.json) về máy tính"
+            >
+              <Download className="w-3 h-3 text-indigo-300" />
+              <span className="text-[11px]">Sao lưu</span>
+            </button>
+          </div>
+
+          {/* AI Auto Assign button */}
+          <button
+            onClick={onOpenAutoAssign}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 border border-indigo-500 shadow-xs transition-all active:scale-95 cursor-pointer"
+            title="Tự động phân công thông minh"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span>Tự Động Gán</span>
+          </button>
+
+          {/* Excel Import button */}
+          <button
+            onClick={onOpenImportModal}
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-indigo-100 bg-indigo-800 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
+            title="Nhập dữ liệu từ file Excel của trường"
+          >
+            <Upload className="w-3.5 h-3.5 text-indigo-300" />
+            <span>Nhập Excel</span>
+          </button>
+
+          {/* Excel Export button */}
+          <button
+            onClick={onExportExcel}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-xs transition-all cursor-pointer"
+            title="Xuất bảng phân công ra file Excel"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-100" />
+            <span>Xuất Excel</span>
+          </button>
+
+          {/* Reset */}
+          <button
+            onClick={onResetData}
+            className="p-1 text-indigo-300 hover:text-white hover:bg-indigo-800 rounded-md transition-all cursor-pointer"
+            title="Khôi phục dữ liệu mẫu ban đầu"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+
+          {/* Admin Avatar Badge */}
+          <div
+            className="w-7 h-7 rounded-full bg-indigo-500 border border-indigo-400 flex items-center justify-center text-[11px] font-bold text-white shadow-2xs select-none"
+            title="Tài khoản Quản trị THCS & THPT Đốc Binh Kiều"
+          >
+            AD
+          </div>
+        </div>
+      </div>
+
+      {/* Sub Metrics Bar - High Density */}
+      <div className="bg-indigo-950/80 border-t border-indigo-800/80 px-4 sm:px-6 lg:px-8 py-1.5">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-indigo-200 text-[11px]">
+            <div className="flex items-center gap-1.5">
+              <Users className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Giáo viên:</span>
+              <strong className="text-white font-bold">{totalTeachers} GV</strong>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <GraduationCap className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Lớp học:</span>
+              <strong className="text-white font-bold">{totalClasses} Lớp</strong>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Tiến độ gán tiết:</span>
+              <strong className="text-emerald-300 font-bold">{assignedPercentage}%</strong>
+            </div>
+          </div>
+
+          {/* Compact progress bar */}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-indigo-300 font-bold uppercase tracking-wider hidden sm:inline">
+              Tổng định mức
+            </span>
+            <div className="w-36 sm:w-44 bg-indigo-900 h-1.5 rounded-full overflow-hidden shrink-0 border border-indigo-800">
+              <div
+                className={`h-full transition-all duration-500 rounded-full ${
+                  assignedPercentage === 100
+                    ? 'bg-emerald-400'
+                    : assignedPercentage > 75
+                    ? 'bg-emerald-400'
+                    : 'bg-amber-400'
+                }`}
+                style={{ width: `${assignedPercentage}%` }}
+              />
+            </div>
+            <span className="text-[11px] font-bold text-white">{assignedPercentage}%</span>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
