@@ -15,6 +15,7 @@ import {
 
 export type ActiveTabType =
   | 'official'
+  | 'timetable'
   | 'weekly_schedule'
   | 'weekly_log'
   | 'matrix'
@@ -45,6 +46,12 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
       label: 'Phân Công Chính Thức (3 Điểm Trường)',
       shortLabel: 'Phân Công Chính Thức',
       icon: FileCheck2,
+    },
+    {
+      id: 'timetable' as ActiveTabType,
+      label: 'Thời Khóa Biểu Toàn Trường',
+      shortLabel: 'Thời Khóa Biểu',
+      icon: CalendarRange,
     },
     {
       id: 'weekly_schedule' as ActiveTabType,

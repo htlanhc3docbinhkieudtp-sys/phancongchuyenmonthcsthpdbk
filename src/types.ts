@@ -204,3 +204,35 @@ export interface TeacherWeeklyWorkload {
     }[]
   >;
 }
+
+// === THỜI KHÓA BIỂU TOÀN TRƯỜNG (TIMETABLE) ===
+
+export type TimetableSession = 'SANG' | 'CHIEU';
+
+export interface TimetableSlot {
+  id: string; // `${classId}_${day}_${session}_${period}`
+  classId: string;
+  className?: string;
+  dayOfWeek: number; // 2 -> 7 (Thứ 2 đến Thứ 7)
+  session: TimetableSession; // SANG (Sáng: Tiết 1-5), CHIEU (Chiều: Tiết 1-5)
+  period: number; // 1 -> 5
+  subjectId?: string;
+  subjectName?: string;
+  teacherId?: string;
+  teacherName?: string;
+  teacherCode?: string;
+  room?: string;
+  note?: string;
+  isSpecialActivity?: boolean; // Chào cờ, SHCN, HĐTN...
+}
+
+export interface SchoolTimetable {
+  id: string;
+  academicYear: string;
+  semester: 'HK1' | 'HK2';
+  appliedDate?: string;
+  title?: string;
+  slots: TimetableSlot[];
+  updatedAt?: number;
+  notes?: string;
+}

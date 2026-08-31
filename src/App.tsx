@@ -8,7 +8,8 @@ import {
   Assignment,
   GradeLevel,
   LockedCell,
-  WeeklySchedule
+  WeeklySchedule,
+  SchoolTimetable
 } from './types';
 import {
   initialSchoolConfig,
@@ -30,10 +31,14 @@ import {
 import {
   generateBalancedWeeklySchedules
 } from './utils/weeklyScheduleHelper';
+import {
+  generateInitialTimetable
+} from './utils/timetableHelper';
 
 import { Header } from './components/Header';
 import { ViewTabs, ActiveTabType } from './components/ViewTabs';
 import { UnifiedOfficialTableView } from './components/UnifiedOfficialTableView';
+import { SchoolTimetableView } from './components/SchoolTimetableView';
 import { WeeklyScheduleManagerView } from './components/WeeklyScheduleManagerView';
 import { WeeklyTeachingLogView } from './components/WeeklyTeachingLogView';
 import { ClassMatrixView } from './components/ClassMatrixView';
@@ -136,6 +141,18 @@ export default function App() {
     return generateBalancedWeeklySchedules('HK1', initialAssignments, initialClasses, initialSubjects);
   });
 
+  const [timetable, setTimetable] = useState<SchoolTimetable>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY}_timetable`);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse timetable', e);
+      }
+    }
+    return generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
+  });
+
   const [activeTab, setActiveTab] = useState<ActiveTabType>('official');
 
   // Cloud Sync state
@@ -193,6 +210,9 @@ export default function App() {
           if (cloudData.weeklySchedules && cloudData.weeklySchedules.length > 0) {
             setWeeklySchedules(cloudData.weeklySchedules);
           }
+          if (cloudData.timetable && cloudData.timetable.slots && cloudData.timetable.slots.length > 0) {
+            setTimetable(cloudData.timetable);
+          }
           if (cloudData.updatedAt) setLastSyncedAt(cloudData.updatedAt);
           setCloudSyncStatus('synced');
         } else if (isMounted) {
@@ -206,6 +226,7 @@ export default function App() {
             assignments,
             lockedCells,
             weeklySchedules,
+            timetable,
             updatedAt: Date.now()
           };
           await saveSchoolPlanToCloud(initialPayload);
@@ -244,6 +265,7 @@ export default function App() {
     localStorage.setItem(`${STORAGE_KEY}_assignments`, JSON.stringify(assignments));
     localStorage.setItem(`${STORAGE_KEY}_locked_cells`, JSON.stringify(lockedCells));
     localStorage.setItem(`${STORAGE_KEY}_weekly_schedules`, JSON.stringify(weeklySchedules));
+    localStorage.setItem(`${STORAGE_KEY}_timetable`, JSON.stringify(timetable));
 
     // Debounced Firebase Auto-Save (Only admin changes push to Cloud to prevent view-only overwrites)
     if (!isInitialCloudLoadRef.current && isAdmin) {
@@ -262,6 +284,7 @@ export default function App() {
           assignments,
           lockedCells,
           weeklySchedules,
+          timetable,
           updatedAt: Date.now()
         };
         const success = await saveSchoolPlanToCloud(payload);
@@ -274,7 +297,7 @@ export default function App() {
         }
       }, 1000);
     }
-  }, [config, departments, subjects, classes, teachers, assignments, lockedCells, weeklySchedules, isAdmin]);
+  }, [config, departments, subjects, classes, teachers, assignments, lockedCells, weeklySchedules, timetable, isAdmin]);
 
   // Derived Calculations
   const workloads = useMemo(() => {
@@ -579,6 +602,8 @@ export default function App() {
       teachers,
       assignments,
       lockedCells,
+      weeklySchedules,
+      timetable,
       updatedAt: Date.now(),
     };
     exportDataAsJsonFile(payload, `PhanCong_DocBinhKieu_${config.academicYear.replace(/\s+/g, '')}_${config.semester}.json`);
@@ -598,6 +623,8 @@ export default function App() {
           if (parsed.teachers) setTeachers(parsed.teachers);
           if (parsed.assignments) setAssignments(parsed.assignments);
           if (parsed.lockedCells) setLockedCells(parsed.lockedCells);
+          if (parsed.weeklySchedules) setWeeklySchedules(parsed.weeklySchedules);
+          if (parsed.timetable) setTimetable(parsed.timetable);
           await saveSchoolPlanToCloud(parsed);
           setCloudSyncStatus('synced');
           setLastSyncedAt(Date.now());
@@ -608,6 +635,10 @@ export default function App() {
       }
     };
     reader.readAsText(file);
+  };
+
+  const handleUpdateTimetable = (updated: SchoolTimetable) => {
+    setTimetable(updated);
   };
 
   const handleUpdateWeeklySchedule = (updated: WeeklySchedule) => {
@@ -738,6 +769,20 @@ export default function App() {
             onAssignHomeroom={handleAssignHomeroom}
             onUpdateClassSpecialTopic={handleUpdateClassSpecialTopic}
             onExportExcel={handleExportExcel}
+          />
+        )}
+
+        {activeTab === 'timetable' && (
+          <SchoolTimetableView
+            config={config}
+            classes={classes}
+            subjects={subjects}
+            teachers={teachers}
+            assignments={assignments}
+            timetable={timetable}
+            isAdmin={isAdmin}
+            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
+            onUpdateTimetable={handleUpdateTimetable}
           />
         )}
 
