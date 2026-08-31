@@ -7,7 +7,8 @@ import {
   ClassGroup,
   Assignment,
   GradeLevel,
-  LockedCell
+  LockedCell,
+  WeeklySchedule
 } from './types';
 import {
   initialSchoolConfig,
@@ -26,11 +27,16 @@ import {
   exportComprehensiveExcel,
   ExcelImportResult
 } from './utils/excelHelper';
+import {
+  generateBalancedWeeklySchedules
+} from './utils/weeklyScheduleHelper';
 
 import { Header } from './components/Header';
 import { ViewTabs, ActiveTabType } from './components/ViewTabs';
 import { ThptOfficialTableView } from './components/ThptOfficialTableView';
 import { ThcsOfficialTableView } from './components/ThcsOfficialTableView';
+import { WeeklyScheduleManagerView } from './components/WeeklyScheduleManagerView';
+import { WeeklyTeachingLogView } from './components/WeeklyTeachingLogView';
 import { ClassMatrixView } from './components/ClassMatrixView';
 import { TeacherWorkbenchView } from './components/TeacherWorkbenchView';
 import { ComprehensiveTableView } from './components/ComprehensiveTableView';
@@ -119,6 +125,18 @@ export default function App() {
     return saved ? JSON.parse(saved) : initialLockedCells;
   });
 
+  const [weeklySchedules, setWeeklySchedules] = useState<WeeklySchedule[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY}_weekly_schedules`);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse weekly schedules', e);
+      }
+    }
+    return generateBalancedWeeklySchedules('HK1', initialAssignments, initialClasses, initialSubjects);
+  });
+
   const [activeTab, setActiveTab] = useState<ActiveTabType>('thpt_official');
 
   // Cloud Sync state
@@ -173,6 +191,9 @@ export default function App() {
           if (cloudData.teachers && cloudData.teachers.length > 0) setTeachers(cloudData.teachers);
           if (cloudData.assignments) setAssignments(cloudData.assignments);
           if (cloudData.lockedCells) setLockedCells(cloudData.lockedCells);
+          if (cloudData.weeklySchedules && cloudData.weeklySchedules.length > 0) {
+            setWeeklySchedules(cloudData.weeklySchedules);
+          }
           if (cloudData.updatedAt) setLastSyncedAt(cloudData.updatedAt);
           setCloudSyncStatus('synced');
         } else if (isMounted) {
@@ -185,6 +206,7 @@ export default function App() {
             teachers,
             assignments,
             lockedCells,
+            weeklySchedules,
             updatedAt: Date.now()
           };
           await saveSchoolPlanToCloud(initialPayload);
@@ -222,6 +244,7 @@ export default function App() {
     localStorage.setItem(`${STORAGE_KEY}_teachers`, JSON.stringify(teachers));
     localStorage.setItem(`${STORAGE_KEY}_assignments`, JSON.stringify(assignments));
     localStorage.setItem(`${STORAGE_KEY}_locked_cells`, JSON.stringify(lockedCells));
+    localStorage.setItem(`${STORAGE_KEY}_weekly_schedules`, JSON.stringify(weeklySchedules));
 
     // Debounced Firebase Auto-Save (Only admin changes push to Cloud to prevent view-only overwrites)
     if (!isInitialCloudLoadRef.current && isAdmin) {
@@ -239,6 +262,7 @@ export default function App() {
           teachers,
           assignments,
           lockedCells,
+          weeklySchedules,
           updatedAt: Date.now()
         };
         const success = await saveSchoolPlanToCloud(payload);
@@ -251,7 +275,7 @@ export default function App() {
         }
       }, 1000);
     }
-  }, [config, departments, subjects, classes, teachers, assignments, lockedCells, isAdmin]);
+  }, [config, departments, subjects, classes, teachers, assignments, lockedCells, weeklySchedules, isAdmin]);
 
   // Derived Calculations
   const workloads = useMemo(() => {
@@ -587,6 +611,65 @@ export default function App() {
     reader.readAsText(file);
   };
 
+  const handleUpdateWeeklySchedule = (updated: WeeklySchedule) => {
+    setWeeklySchedules(prev => {
+      const existingIdx = prev.findIndex(
+        w => w.weekNumber === updated.weekNumber && w.semester === updated.semester
+      );
+      if (existingIdx >= 0) {
+        const clone = [...prev];
+        clone[existingIdx] = updated;
+        return clone;
+      }
+      return [...prev, updated];
+    });
+  };
+
+  const handleAutoGenerateAllWeeks = () => {
+    const currentSemester = config.semester || 'HK1';
+    const generated = generateBalancedWeeklySchedules(
+      currentSemester,
+      assignments,
+      classes,
+      subjects
+    );
+    setWeeklySchedules(generated);
+  };
+
+  const handleCopyWeekSchedule = (fromWeek: number, toWeek: number) => {
+    const currentSemester = config.semester || 'HK1';
+    const source = weeklySchedules.find(
+      w => w.weekNumber === fromWeek && w.semester === currentSemester
+    );
+    if (!source) return;
+
+    const targetSchedule: WeeklySchedule = {
+      weekNumber: toWeek,
+      semester: currentSemester,
+      title: `Tuần ${toWeek}`,
+      assignments: source.assignments.map(a => ({ ...a })),
+      notes: source.notes,
+      updatedAt: Date.now()
+    };
+
+    handleUpdateWeeklySchedule(targetSchedule);
+  };
+
+  const handleResetWeekSchedule = (weekNumber: number) => {
+    const currentSemester = config.semester || 'HK1';
+    const baseSchedules = generateBalancedWeeklySchedules(
+      currentSemester,
+      assignments,
+      classes,
+      subjects
+    );
+    const baseForWeek = baseSchedules.find(w => w.weekNumber === weekNumber);
+
+    if (baseForWeek) {
+      handleUpdateWeeklySchedule(baseForWeek);
+    }
+  };
+
   const handleResetData = () => {
     if (window.confirm('Khôi phục toàn bộ dữ liệu mẫu ban đầu của THCS & THPT Đốc Binh Kiều?')) {
       setConfig(initialSchoolConfig);
@@ -596,6 +679,8 @@ export default function App() {
       setTeachers(initialTeachers);
       setAssignments(initialAssignments);
       setLockedCells(initialLockedCells);
+      const defaultWeekly = generateBalancedWeeklySchedules('HK1', initialAssignments, initialClasses, initialSubjects);
+      setWeeklySchedules(defaultWeekly);
       localStorage.clear();
       handleSaveToCloud();
     }
@@ -669,6 +754,36 @@ export default function App() {
             onAssignTeacher={handleAssignTeacher}
             onAssignHomeroom={handleAssignHomeroom}
             onExportExcel={handleExportExcel}
+          />
+        )}
+
+        {activeTab === 'weekly_schedule' && (
+          <WeeklyScheduleManagerView
+            config={config}
+            classes={classes}
+            subjects={subjects}
+            teachers={teachers}
+            baseAssignments={assignments}
+            weeklySchedules={weeklySchedules}
+            isAdmin={isAdmin}
+            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
+            onUpdateWeeklySchedule={handleUpdateWeeklySchedule}
+            onAutoGenerateAllWeeks={handleAutoGenerateAllWeeks}
+            onCopyWeekSchedule={handleCopyWeekSchedule}
+            onResetWeekSchedule={handleResetWeekSchedule}
+          />
+        )}
+
+        {activeTab === 'weekly_log' && (
+          <WeeklyTeachingLogView
+            config={config}
+            teachers={teachers}
+            departments={departments}
+            classes={classes}
+            subjects={subjects}
+            weeklySchedules={weeklySchedules}
+            baseWorkloads={workloads}
+            onOpenWeeklyScheduleManager={() => setActiveTab('weekly_schedule')}
           />
         )}
 

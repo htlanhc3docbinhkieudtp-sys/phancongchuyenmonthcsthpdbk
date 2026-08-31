@@ -7,12 +7,16 @@ import {
   Briefcase,
   BookOpenCheck,
   FileCheck2,
-  GraduationCap
+  GraduationCap,
+  CalendarRange,
+  TrendingUp
 } from 'lucide-react';
 
 export type ActiveTabType =
   | 'thpt_official'
   | 'thcs_official'
+  | 'weekly_schedule'
+  | 'weekly_log'
   | 'matrix'
   | 'workbench'
   | 'summary'
@@ -43,6 +47,18 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
       label: 'Phân Công THCS (Chính Thức)',
       shortLabel: 'Phân Công THCS',
       icon: GraduationCap,
+    },
+    {
+      id: 'weekly_schedule' as ActiveTabType,
+      label: 'Phân Công Hàng Tuần (TKB)',
+      shortLabel: 'Phân Công Tuần',
+      icon: CalendarRange,
+    },
+    {
+      id: 'weekly_log' as ActiveTabType,
+      label: 'Theo Dõi Tiết Thực Dạy',
+      shortLabel: 'Sổ Tiết Thực Dạy',
+      icon: TrendingUp,
     },
     {
       id: 'matrix' as ActiveTabType,

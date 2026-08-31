@@ -14,7 +14,8 @@ import {
   Subject,
   ClassGroup,
   Assignment,
-  LockedCell
+  LockedCell,
+  WeeklySchedule
 } from '../types';
 import firebaseConfigJson from '../../firebase-applet-config.json';
 
@@ -36,6 +37,7 @@ export interface SchoolPlanData {
   teachers: Teacher[];
   assignments: Assignment[];
   lockedCells: LockedCell[];
+  weeklySchedules?: WeeklySchedule[];
   updatedAt?: number;
   lastUpdatedBy?: string;
   version?: number;

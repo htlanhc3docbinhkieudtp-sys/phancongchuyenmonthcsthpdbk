@@ -154,3 +154,53 @@ export interface ConflictIssue {
   subjectId?: string;
   teacherId?: string;
 }
+
+// === PHÂN CÔNG GIẢNG DẠY & THEO DÕI SỐ TIẾT THỰC DẠY HÀNG TUẦN ===
+
+export interface WeeklyAssignmentItem {
+  classId: string;
+  subjectId: string;
+  teacherId: string;
+  periods: number; // Số tiết thực dạy trong tuần (số nguyên, ví dụ: 1, 2, 3...)
+  note?: string; // Ví dụ: "Dạy thay", "Bù tuần trước", "TKB Tuần 1"
+}
+
+export interface WeeklySchedule {
+  weekNumber: number; // 1 -> 18 (HK1) hoặc 19 -> 35 (HK2)
+  semester: 'HK1' | 'HK2';
+  title?: string; // Ví dụ: "Tuần 1 (05/09 - 10/09)"
+  startDate?: string;
+  endDate?: string;
+  assignments: WeeklyAssignmentItem[];
+  notes?: string;
+  updatedAt?: number;
+}
+
+export interface TeacherWeeklyWorkload {
+  teacherId: string;
+  teacherName: string;
+  teacherCode: string;
+  gender: 'Nam' | 'Nữ';
+  campus?: SchoolCampus;
+  departmentId: string;
+  departmentName: string;
+  role: TeacherRole;
+  reductionPeriods: number; // Số tiết giảm trừ tuần do kiêm nhiệm / nuôi con nhỏ
+  baseStandardPeriods: number; // 17 (THPT) hoặc 19 (THCS)
+  targetWeeklyPeriods: number; // Định mức chuẩn sau giảm trừ (base - reduction)
+  weeklyPeriods: Record<number, number>; // { 1: 18, 2: 17, 3: 19... }
+  totalActualPeriods: number; // Tổng số tiết thực dạy cả học kỳ
+  totalRequiredPeriods: number; // Tổng định mức chuẩn cả kỳ (targetWeeklyPeriods * số tuần)
+  semesterBalance: number; // Thừa (+) / Thiếu (-) số tiết cả kỳ
+  weeklyDetails: Record<
+    number,
+    {
+      classId: string;
+      className: string;
+      subjectId: string;
+      subjectName: string;
+      periods: number;
+      note?: string;
+    }[]
+  >;
+}
