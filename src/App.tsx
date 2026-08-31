@@ -33,8 +33,7 @@ import {
 
 import { Header } from './components/Header';
 import { ViewTabs, ActiveTabType } from './components/ViewTabs';
-import { ThptOfficialTableView } from './components/ThptOfficialTableView';
-import { ThcsOfficialTableView } from './components/ThcsOfficialTableView';
+import { UnifiedOfficialTableView } from './components/UnifiedOfficialTableView';
 import { WeeklyScheduleManagerView } from './components/WeeklyScheduleManagerView';
 import { WeeklyTeachingLogView } from './components/WeeklyTeachingLogView';
 import { ClassMatrixView } from './components/ClassMatrixView';
@@ -137,7 +136,7 @@ export default function App() {
     return generateBalancedWeeklySchedules('HK1', initialAssignments, initialClasses, initialSubjects);
   });
 
-  const [activeTab, setActiveTab] = useState<ActiveTabType>('thpt_official');
+  const [activeTab, setActiveTab] = useState<ActiveTabType>('official');
 
   // Cloud Sync state
   const [cloudSyncStatus, setCloudSyncStatus] = useState<'synced' | 'saving' | 'error' | 'offline'>('synced');
@@ -725,24 +724,8 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 pb-16">
-        {activeTab === 'thpt_official' && (
-          <ThptOfficialTableView
-            config={config}
-            classes={classes}
-            subjects={subjects}
-            teachers={teachers}
-            assignments={assignments}
-            workloads={workloads}
-            isAdmin={isAdmin}
-            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
-            onAssignTeacher={handleAssignTeacher}
-            onUpdateClassSpecialTopic={handleUpdateClassSpecialTopic}
-            onExportExcel={handleExportExcel}
-          />
-        )}
-
-        {activeTab === 'thcs_official' && (
-          <ThcsOfficialTableView
+        {activeTab === 'official' && (
+          <UnifiedOfficialTableView
             config={config}
             classes={classes}
             subjects={subjects}
@@ -753,6 +736,7 @@ export default function App() {
             onPromptAdminLogin={() => setIsAdminModalOpen(true)}
             onAssignTeacher={handleAssignTeacher}
             onAssignHomeroom={handleAssignHomeroom}
+            onUpdateClassSpecialTopic={handleUpdateClassSpecialTopic}
             onExportExcel={handleExportExcel}
           />
         )}
