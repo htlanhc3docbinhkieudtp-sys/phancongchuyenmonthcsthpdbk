@@ -95,9 +95,6 @@ export const Header: React.FC<HeaderProps> = ({
             <h1 className="text-base sm:text-lg font-bold tracking-tight uppercase text-white whitespace-nowrap">
               THCS & THPT Đốc Binh Kiều
             </h1>
-            <span className="hidden md:inline text-indigo-200 text-xs ml-3 pl-3 border-l border-indigo-700/80 font-medium">
-              Hệ thống Phân công Chuyên môn
-            </span>
           </div>
         </div>
 
