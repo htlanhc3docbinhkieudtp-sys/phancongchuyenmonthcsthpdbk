@@ -101,6 +101,14 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
     window.print();
   };
 
+  const displayAcademicYear = (!config.academicYear || config.academicYear.includes('2024'))
+    ? '2026 - 2027'
+    : config.academicYear;
+
+  const displayVicePrincipal = (config.vicePrincipalName && config.vicePrincipalName.includes('-'))
+    ? 'Nguyễn Minh Trí'
+    : (config.vicePrincipalName || 'Nguyễn Minh Trí');
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-4">
       {/* Header Toolbar */}
@@ -174,8 +182,8 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
           <h2 className="text-base sm:text-lg font-extrabold text-slate-900 uppercase tracking-tight">
             BẢNG TỔNG HỢP PHÂN CÔNG CHUYÊN MÔN GIẢNG DẠY
           </h2>
-          <p className="text-[11px] text-slate-600 font-medium mt-0.5">
-            {config.semester === 'HK1' ? 'HỌC KỲ I' : 'HỌC KỲ II'} - NĂM HỌC {config.academicYear}
+          <p className="text-[11px] text-slate-600 font-semibold mt-0.5">
+            {config.semester === 'HK1' ? 'HỌC KỲ I' : 'HỌC KỲ II'} - NĂM HỌC {displayAcademicYear} (Chương trình GDPT 2018)
           </p>
         </div>
 
@@ -312,11 +320,11 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
         <div className="mt-8 pt-4 border-t border-slate-200 grid grid-cols-2 text-center text-xs font-semibold text-slate-800">
           <div>
             <div className="uppercase font-bold text-slate-900 mb-12">NGƯỜI LẬP BẢNG</div>
-            <div className="font-bold text-slate-900">{config.vicePrincipalName}</div>
+            <div className="font-bold text-slate-900">{displayVicePrincipal}</div>
           </div>
           <div>
             <div className="italic text-slate-500 font-normal mb-1">
-              Tháp Mười, ngày ..... tháng ..... năm 2024
+              Đốc Binh Kiều, ngày ..... tháng ..... năm 2026
             </div>
             <div className="uppercase font-bold text-slate-900 mb-12">HIỆU TRƯỞNG</div>
             <div className="font-extrabold text-slate-900">{config.principalName}</div>

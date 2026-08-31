@@ -49,7 +49,7 @@ import {
   SchoolPlanData
 } from './services/firebase';
 
-const STORAGE_KEY = 'docbinhkieu_phancong_data_v7';
+const STORAGE_KEY = 'docbinhkieu_phancong_data_v9';
 
 export default function App() {
   // Admin role state (Public view-only by default, admin login with password)
@@ -62,7 +62,15 @@ export default function App() {
   // Load saved state or default
   const [config, setConfig] = useState<SchoolConfig>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_config`);
-    return saved ? JSON.parse(saved) : initialSchoolConfig;
+    if (saved) {
+      const parsed: SchoolConfig = JSON.parse(saved);
+      return {
+        ...parsed,
+        academicYear: (!parsed.academicYear || parsed.academicYear.includes('2024')) ? '2026 - 2027' : parsed.academicYear,
+        vicePrincipalName: (parsed.vicePrincipalName && parsed.vicePrincipalName.includes('-')) ? 'Nguyễn Minh Trí' : (parsed.vicePrincipalName || 'Nguyễn Minh Trí')
+      };
+    }
+    return initialSchoolConfig;
   });
 
   const [departments, setDepartments] = useState<Department[]>(() => {
@@ -135,7 +143,18 @@ export default function App() {
         setCloudSyncStatus('saving');
         const cloudData = await loadSchoolPlanFromCloud();
         if (cloudData && isMounted) {
-          if (cloudData.config) setConfig(cloudData.config);
+          if (cloudData.config) {
+            const sanitizedConfig: SchoolConfig = {
+              ...cloudData.config,
+              academicYear: (!cloudData.config.academicYear || cloudData.config.academicYear.includes('2024'))
+                ? '2026 - 2027'
+                : cloudData.config.academicYear,
+              vicePrincipalName: (cloudData.config.vicePrincipalName && cloudData.config.vicePrincipalName.includes('-'))
+                ? 'Nguyễn Minh Trí'
+                : (cloudData.config.vicePrincipalName || 'Nguyễn Minh Trí'),
+            };
+            setConfig(sanitizedConfig);
+          }
           if (cloudData.departments && cloudData.departments.length > 0) setDepartments(cloudData.departments);
           if (cloudData.subjects && cloudData.subjects.length > 0) {
             // Ensure GDDP has 3 periods/week as requested

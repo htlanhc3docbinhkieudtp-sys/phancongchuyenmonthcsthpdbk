@@ -89,6 +89,14 @@ export const ThptOfficialTableView: React.FC<ThptOfficialTableViewProps> = ({
     window.print();
   };
 
+  const displayAcademicYear = (!config.academicYear || config.academicYear.includes('2024'))
+    ? '2026 - 2027'
+    : config.academicYear;
+
+  const displayVicePrincipal = (config.vicePrincipalName && config.vicePrincipalName.includes('-'))
+    ? 'Nguyễn Minh Trí'
+    : (config.vicePrincipalName || 'Nguyễn Minh Trí');
+
   const getTeacherDisplayName = (t?: Teacher) => {
     if (!t) return '';
     // Format name cleanly like the image: "Duyên", "Hương", "Bền", "C.Toàn", "V.Toàn", "V.Anh", "Trí (PHT)"
@@ -216,8 +224,8 @@ export const ThptOfficialTableView: React.FC<ThptOfficialTableViewProps> = ({
           <h2 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight mt-2">
             PHÂN CÔNG CHUYÊN MÔN HỆ THPT
           </h2>
-          <p className="text-xs text-slate-600 font-medium mt-0.5">
-            Học kỳ I - Năm học {config.academicYear} (Chương trình GDPT 2018)
+          <p className="text-xs text-slate-600 font-semibold mt-0.5">
+            Học kỳ I - Năm học {displayAcademicYear} (Chương trình GDPT 2018)
           </p>
         </div>
 
@@ -502,7 +510,7 @@ export const ThptOfficialTableView: React.FC<ThptOfficialTableViewProps> = ({
           <ul className="list-disc list-inside text-slate-600 text-[11px] space-y-0.5 pl-2">
             <li>Mỗi lớp học khối THPT được phân bổ 3 chuyên đề học tập lựa chọn theo định hướng tổ hợp môn GDPT 2018.</li>
             <li>Các tiết chuyên đề được tính trực tiếp vào định mức giảng dạy chuẩn của giáo viên bộ môn tương ứng.</li>
-            <li>Ban Giám Hiệu kiêm nhiệm giảng dạy: Thầy Nguyễn Minh Trí (PHT) dạy Vật lý 10CB5 & CĐ2 Vật lý 10CB5 (2+1=3 tiết).</li>
+            <li>Các ô trống là các môn học sinh không chọn hoặc chưa thực hiện giảng dạy.</li>
           </ul>
         </div>
 
@@ -510,11 +518,11 @@ export const ThptOfficialTableView: React.FC<ThptOfficialTableViewProps> = ({
         <div className="mt-8 pt-4 border-t border-slate-200 grid grid-cols-2 text-center text-xs font-semibold text-slate-800">
           <div>
             <div className="uppercase font-bold text-slate-900 mb-12">NGƯỜI LẬP BẢNG</div>
-            <div className="font-bold text-slate-900">{config.vicePrincipalName}</div>
+            <div className="font-bold text-slate-900">{config.vicePrincipalName?.split('-')[0].trim() || 'Nguyễn Minh Trí'}</div>
           </div>
           <div>
             <div className="italic text-slate-500 font-normal mb-1">
-              Tháp Mười, ngày ..... tháng ..... năm 2026
+              Đốc Binh Kiều, ngày ..... tháng ..... năm 2026
             </div>
             <div className="uppercase font-bold text-slate-900 mb-12">HIỆU TRƯỞNG</div>
             <div className="font-extrabold text-slate-900">{config.principalName}</div>

@@ -15,7 +15,7 @@ export const initialSchoolConfig: SchoolConfig = {
   academicYear: '2026 - 2027',
   semester: 'HK1',
   principalName: 'Lê Thanh Cường',
-  vicePrincipalName: 'Nguyễn Minh Trí - Phan Thanh Thảo - Nguyễn Thanh Tòng',
+  vicePrincipalName: 'Nguyễn Minh Trí',
   standardThptPeriods: 17,
   standardThcsPeriods: 19,
   homeroomReduction: 3,

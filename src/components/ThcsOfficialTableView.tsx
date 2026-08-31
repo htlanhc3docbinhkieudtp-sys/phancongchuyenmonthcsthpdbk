@@ -162,6 +162,14 @@ export const ThcsOfficialTableView: React.FC<ThcsOfficialTableViewProps> = ({
     window.print();
   };
 
+  const displayAcademicYear = (!config.academicYear || config.academicYear.includes('2024'))
+    ? '2026 - 2027'
+    : config.academicYear;
+
+  const displayVicePrincipal = (config.vicePrincipalName && config.vicePrincipalName.includes('-'))
+    ? 'Nguyễn Minh Trí'
+    : (config.vicePrincipalName || 'Nguyễn Minh Trí');
+
   const getTeacherDisplayName = (t?: Teacher) => {
     if (!t) return '';
     if (t.code.includes('.')) {
@@ -185,7 +193,7 @@ export const ThcsOfficialTableView: React.FC<ThcsOfficialTableViewProps> = ({
                 Phân Công Chuyên Môn Hệ THCS (Chính Thức)
               </h1>
               <p className="text-[11px] text-slate-500 font-medium">
-                Năm học {config.academicYear || '2026 - 2027'} • Chương trình GDPT 2018
+                Năm học {displayAcademicYear} • Chương trình GDPT 2018
               </p>
             </div>
           </div>
@@ -353,7 +361,7 @@ export const ThcsOfficialTableView: React.FC<ThcsOfficialTableViewProps> = ({
                 {campusData.tableTitle}
               </h2>
               <p className="text-xs text-slate-600 font-semibold mt-0.5">
-                Học kỳ I - Năm học {config.academicYear || '2026 - 2027'} (Chương trình GDPT 2018)
+                Học kỳ I - Năm học {displayAcademicYear} (Chương trình GDPT 2018)
               </p>
             </div>
 
@@ -566,11 +574,11 @@ export const ThcsOfficialTableView: React.FC<ThcsOfficialTableViewProps> = ({
             <div className="grid grid-cols-2 pt-6 text-center text-xs print:pt-4">
               <div className="space-y-16">
                 <div className="font-bold text-slate-700 uppercase">NGƯỜI LẬP BẢNG</div>
-                <div className="font-bold text-slate-900">{config.vicePrincipalName.split('-')[0].trim()}</div>
+                <div className="font-bold text-slate-900">{displayVicePrincipal}</div>
               </div>
               <div className="space-y-16">
                 <div>
-                  <div className="italic text-slate-500 text-[11px]">Tháp Mười, ngày ... tháng ... năm 2026</div>
+                  <div className="italic text-slate-500 text-[11px]">Đốc Binh Kiều, ngày ..... tháng ..... năm 2026</div>
                   <div className="font-bold text-slate-700 uppercase mt-1">HIỆU TRƯỞNG</div>
                 </div>
                 <div className="font-bold text-slate-900">{config.principalName}</div>
