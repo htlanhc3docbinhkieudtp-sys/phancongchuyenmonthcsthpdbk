@@ -174,6 +174,11 @@ export const UnifiedOfficialTableView: React.FC<UnifiedOfficialTableViewProps> =
               onAssignTeacher={onAssignTeacher}
               onAssignHomeroom={onAssignHomeroom}
               onExportExcel={onExportExcel}
+              campusFilter="ALL"
+              onCampusFilterChange={(c) => {
+                if (c === 'DBK') setSelectedCampus('DBK');
+                else if (c === 'TK') setSelectedCampus('TK');
+              }}
             />
           </div>
         </div>
@@ -195,7 +200,7 @@ export const UnifiedOfficialTableView: React.FC<UnifiedOfficialTableViewProps> =
         />
       )}
 
-      {(selectedCampus === 'DBK' || selectedCampus === 'TK') && (
+      {selectedCampus === 'DBK' && (
         <ThcsOfficialTableView
           config={config}
           classes={classes}
@@ -208,6 +213,32 @@ export const UnifiedOfficialTableView: React.FC<UnifiedOfficialTableViewProps> =
           onAssignTeacher={onAssignTeacher}
           onAssignHomeroom={onAssignHomeroom}
           onExportExcel={onExportExcel}
+          campusFilter="DBK"
+          onCampusFilterChange={(c) => {
+            if (c === 'ALL') setSelectedCampus('ALL');
+            else if (c === 'TK') setSelectedCampus('TK');
+          }}
+        />
+      )}
+
+      {selectedCampus === 'TK' && (
+        <ThcsOfficialTableView
+          config={config}
+          classes={classes}
+          subjects={subjects}
+          teachers={teachers}
+          assignments={assignments}
+          workloads={workloads}
+          isAdmin={isAdmin}
+          onPromptAdminLogin={onPromptAdminLogin}
+          onAssignTeacher={onAssignTeacher}
+          onAssignHomeroom={onAssignHomeroom}
+          onExportExcel={onExportExcel}
+          campusFilter="TK"
+          onCampusFilterChange={(c) => {
+            if (c === 'ALL') setSelectedCampus('ALL');
+            else if (c === 'DBK') setSelectedCampus('DBK');
+          }}
         />
       )}
     </div>

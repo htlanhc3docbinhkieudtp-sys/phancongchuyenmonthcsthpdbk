@@ -28,6 +28,8 @@ interface ThcsOfficialTableViewProps {
   onAssignTeacher: (classId: string, subjectId: string, teacherId: string) => void;
   onAssignHomeroom?: (classId: string, teacherId: string | undefined) => void;
   onExportExcel: () => void;
+  campusFilter?: CampusFilter;
+  onCampusFilterChange?: (campus: CampusFilter) => void;
 }
 
 type CampusFilter = 'ALL' | 'DBK' | 'TK';
@@ -43,9 +45,27 @@ export const ThcsOfficialTableView: React.FC<ThcsOfficialTableViewProps> = ({
   onPromptAdminLogin,
   onAssignTeacher,
   onAssignHomeroom,
-  onExportExcel
+  onExportExcel,
+  campusFilter,
+  onCampusFilterChange
 }) => {
-  const [selectedCampus, setSelectedCampus] = useState<CampusFilter>('ALL');
+  const [internalCampus, setInternalCampus] = useState<CampusFilter>(campusFilter || 'ALL');
+
+  React.useEffect(() => {
+    if (campusFilter !== undefined) {
+      setInternalCampus(campusFilter);
+    }
+  }, [campusFilter]);
+
+  const selectedCampus = campusFilter !== undefined ? campusFilter : internalCampus;
+
+  const handleSelectCampus = (c: CampusFilter) => {
+    setInternalCampus(c);
+    if (onCampusFilterChange) {
+      onCampusFilterChange(c);
+    }
+  };
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGrade, setSelectedGrade] = useState<'ALL' | '6' | '7' | '8' | '9'>('ALL');
   const [editingCell, setEditingCell] = useState<{
@@ -203,7 +223,7 @@ export const ThcsOfficialTableView: React.FC<ThcsOfficialTableViewProps> = ({
           {/* Campus Switcher */}
           <div className="flex items-center bg-emerald-50/70 p-0.5 rounded-lg border border-emerald-200 text-xs">
             <button
-              onClick={() => setSelectedCampus('ALL')}
+              onClick={() => handleSelectCampus('ALL')}
               className={`px-2.5 py-1 rounded-md font-bold transition-all cursor-pointer ${
                 selectedCampus === 'ALL'
                   ? 'bg-emerald-700 text-white shadow-2xs'
@@ -213,7 +233,7 @@ export const ThcsOfficialTableView: React.FC<ThcsOfficialTableViewProps> = ({
               Cả 2 Điểm Trường ({thcsClasses.length} lớp)
             </button>
             <button
-              onClick={() => setSelectedCampus('DBK')}
+              onClick={() => handleSelectCampus('DBK')}
               className={`px-2.5 py-1 rounded-md font-bold transition-all cursor-pointer ${
                 selectedCampus === 'DBK'
                   ? 'bg-emerald-700 text-white shadow-2xs'
@@ -223,7 +243,7 @@ export const ThcsOfficialTableView: React.FC<ThcsOfficialTableViewProps> = ({
               Đốc Binh Kiều ({dbkClasses.length} lớp)
             </button>
             <button
-              onClick={() => setSelectedCampus('TK')}
+              onClick={() => handleSelectCampus('TK')}
               className={`px-2.5 py-1 rounded-md font-bold transition-all cursor-pointer ${
                 selectedCampus === 'TK'
                   ? 'bg-emerald-700 text-white shadow-2xs'
