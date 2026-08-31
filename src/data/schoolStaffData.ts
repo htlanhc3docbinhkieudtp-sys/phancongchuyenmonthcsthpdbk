@@ -3,7 +3,7 @@ import { Teacher, Department, SchoolConfig } from '../types';
 export const officialSchoolConfig: SchoolConfig = {
   schoolName: 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU',
   subTitle: 'SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP',
-  academicYear: '2024 - 2025',
+  academicYear: '2026 - 2027',
   semester: 'HK1',
   principalName: 'Lê Thanh Cường',
   vicePrincipalName: 'Nguyễn Minh Trí - Phan Thanh Thảo - Nguyễn Thanh Tòng',

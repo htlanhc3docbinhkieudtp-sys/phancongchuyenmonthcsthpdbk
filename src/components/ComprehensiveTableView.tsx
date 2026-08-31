@@ -125,15 +125,15 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
             className="text-xs bg-slate-50 border border-slate-200 rounded px-2.5 py-1 text-slate-700 focus:outline-hidden cursor-pointer"
           >
             <option value="ALL">Toàn trường ({classes.length} lớp: K6 - K12)</option>
-            <option value="THPT">Cấp THPT (Khối 10, 11, 12 - 14 lớp)</option>
-            <option value="12">Khối 12 THPT (5 lớp)</option>
-            <option value="11">Khối 11 THPT (4 lớp)</option>
-            <option value="10">Khối 10 THPT (5 lớp)</option>
-            <option value="THCS">Cấp THCS (Khối 6, 7, 8, 9 - 39 lớp)</option>
-            <option value="6">Khối 6 THCS (10 lớp: 6A1 - 6A10)</option>
-            <option value="7">Khối 7 THCS (9 lớp: 7A1 - 7A9)</option>
-            <option value="8">Khối 8 THCS (10 lớp: 8A1 - 8A10)</option>
-            <option value="9">Khối 9 THCS (10 lớp: 9A1 - 9A10)</option>
+            <option value="THPT">Cấp THPT (Khối 10, 11, 12 - {classes.filter(c => c.level === 'THPT').length} lớp)</option>
+            <option value="12">Khối 12 THPT ({classes.filter(c => c.grade === '12').length} lớp)</option>
+            <option value="11">Khối 11 THPT ({classes.filter(c => c.grade === '11').length} lớp)</option>
+            <option value="10">Khối 10 THPT ({classes.filter(c => c.grade === '10').length} lớp)</option>
+            <option value="THCS">Cấp THCS (Khối 6, 7, 8, 9 - {classes.filter(c => c.level === 'THCS').length} lớp)</option>
+            <option value="6">Khối 6 THCS ({classes.filter(c => c.grade === '6').length} lớp)</option>
+            <option value="7">Khối 7 THCS ({classes.filter(c => c.grade === '7').length} lớp)</option>
+            <option value="8">Khối 8 THCS ({classes.filter(c => c.grade === '8').length} lớp)</option>
+            <option value="9">Khối 9 THCS ({classes.filter(c => c.grade === '9').length} lớp)</option>
           </select>
         </div>
 

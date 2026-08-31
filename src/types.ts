@@ -31,6 +31,7 @@ export interface ClassGroup {
   name: string; // 10A1, 10A2, 11A1, 12A1...
   grade: GradeLevel;
   level: SchoolLevel;
+  campus?: 'THCSDBK' | 'THCSTK' | 'THPTDBK'; // Điểm trường Đốc Binh Kiều hoặc Tân Kiều
   track?: 'KHTN' | 'KHXH' | 'CoBan'; // Ban KHTN, KHXH hoặc Cơ bản
   studentCount?: number;
   homeroomTeacherId?: string; // Giáo viên chủ nhiệm

@@ -514,7 +514,7 @@ export const ThptOfficialTableView: React.FC<ThptOfficialTableViewProps> = ({
           </div>
           <div>
             <div className="italic text-slate-500 font-normal mb-1">
-              Tháp Mười, ngày ..... tháng ..... năm 2024
+              Tháp Mười, ngày ..... tháng ..... năm 2026
             </div>
             <div className="uppercase font-bold text-slate-900 mb-12">HIỆU TRƯỞNG</div>
             <div className="font-extrabold text-slate-900">{config.principalName}</div>

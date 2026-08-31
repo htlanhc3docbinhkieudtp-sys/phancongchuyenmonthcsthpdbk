@@ -6,11 +6,13 @@ import {
   UserCheck,
   Briefcase,
   BookOpenCheck,
-  FileCheck2
+  FileCheck2,
+  GraduationCap
 } from 'lucide-react';
 
 export type ActiveTabType =
   | 'thpt_official'
+  | 'thcs_official'
   | 'matrix'
   | 'workbench'
   | 'summary'
@@ -35,6 +37,12 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
       label: 'Phân Công THPT (Chính Thức)',
       shortLabel: 'Phân Công THPT',
       icon: FileCheck2,
+    },
+    {
+      id: 'thcs_official' as ActiveTabType,
+      label: 'Phân Công THCS (Chính Thức)',
+      shortLabel: 'Phân Công THCS',
+      icon: GraduationCap,
     },
     {
       id: 'matrix' as ActiveTabType,

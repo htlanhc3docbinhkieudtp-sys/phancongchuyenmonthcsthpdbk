@@ -114,8 +114,9 @@ export const Header: React.FC<HeaderProps> = ({
                 className="bg-transparent font-semibold text-white focus:outline-hidden cursor-pointer disabled:cursor-not-allowed"
                 title={!isAdmin ? "Đăng nhập Quản trị để thay đổi năm học" : ""}
               >
-                <option value="2024 - 2025" className="bg-slate-800 text-white">2024 - 2025</option>
+                <option value="2026 - 2027" className="bg-slate-800 text-white">2026 - 2027</option>
                 <option value="2025 - 2026" className="bg-slate-800 text-white">2025 - 2026</option>
+                <option value="2027 - 2028" className="bg-slate-800 text-white">2027 - 2028</option>
               </select>
             </div>
             <div className="h-3.5 w-px bg-indigo-700 mx-0.5"></div>

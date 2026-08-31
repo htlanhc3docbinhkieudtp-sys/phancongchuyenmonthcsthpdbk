@@ -30,6 +30,7 @@ import {
 import { Header } from './components/Header';
 import { ViewTabs, ActiveTabType } from './components/ViewTabs';
 import { ThptOfficialTableView } from './components/ThptOfficialTableView';
+import { ThcsOfficialTableView } from './components/ThcsOfficialTableView';
 import { ClassMatrixView } from './components/ClassMatrixView';
 import { TeacherWorkbenchView } from './components/TeacherWorkbenchView';
 import { ComprehensiveTableView } from './components/ComprehensiveTableView';
@@ -48,7 +49,7 @@ import {
   SchoolPlanData
 } from './services/firebase';
 
-const STORAGE_KEY = 'docbinhkieu_phancong_data_v5';
+const STORAGE_KEY = 'docbinhkieu_phancong_data_v7';
 
 export default function App() {
   // Admin role state (Public view-only by default, admin login with password)
@@ -632,6 +633,22 @@ export default function App() {
             onPromptAdminLogin={() => setIsAdminModalOpen(true)}
             onAssignTeacher={handleAssignTeacher}
             onUpdateClassSpecialTopic={handleUpdateClassSpecialTopic}
+            onExportExcel={handleExportExcel}
+          />
+        )}
+
+        {activeTab === 'thcs_official' && (
+          <ThcsOfficialTableView
+            config={config}
+            classes={classes}
+            subjects={subjects}
+            teachers={teachers}
+            assignments={assignments}
+            workloads={workloads}
+            isAdmin={isAdmin}
+            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
+            onAssignTeacher={handleAssignTeacher}
+            onAssignHomeroom={handleAssignHomeroom}
             onExportExcel={handleExportExcel}
           />
         )}
