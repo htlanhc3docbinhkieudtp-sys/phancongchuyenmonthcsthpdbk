@@ -199,15 +199,17 @@ export const Header: React.FC<HeaderProps> = ({
               />
             )}
 
-            {/* Backup Button (Available to all) */}
-            <button
-              onClick={onExportJsonBackup}
-              className="hidden md:flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-indigo-200 hover:text-white bg-indigo-800/80 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
-              title="Tải file bản sao lưu toàn bộ dữ liệu (.json) về máy tính"
-            >
-              <Download className="w-3 h-3 text-indigo-300" />
-              <span className="text-[11px]">Sao lưu</span>
-            </button>
+            {/* Backup Button (Admin only) */}
+            {isAdmin && (
+              <button
+                onClick={onExportJsonBackup}
+                className="hidden md:flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-indigo-200 hover:text-white bg-indigo-800/80 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
+                title="Tải file bản sao lưu toàn bộ dữ liệu (.json) về máy tính"
+              >
+                <Download className="w-3 h-3 text-indigo-300" />
+                <span className="text-[11px]">Sao lưu</span>
+              </button>
+            )}
           </div>
 
           {/* Admin vs Read-Only Controls */}
@@ -232,29 +234,27 @@ export const Header: React.FC<HeaderProps> = ({
                 <Upload className="w-3.5 h-3.5 text-indigo-300" />
                 <span>Nhập Excel</span>
               </button>
+
+              {/* Excel Export button (Admin only) */}
+              <button
+                onClick={onExportExcel}
+                className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-xs transition-all cursor-pointer"
+                title="Xuất bảng phân công ra file Excel"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-100" />
+                <span>Xuất Excel</span>
+              </button>
+
+              {/* Reset (Admin only) */}
+              <button
+                onClick={onResetData}
+                className="p-1 text-indigo-300 hover:text-white hover:bg-indigo-800 rounded-md transition-all cursor-pointer"
+                title="Khôi phục dữ liệu mẫu ban đầu"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
             </>
           ) : null}
-
-          {/* Excel Export button (available for everyone to view/print) */}
-          <button
-            onClick={onExportExcel}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-xs transition-all cursor-pointer"
-            title="Xuất bảng phân công ra file Excel"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-100" />
-            <span>Xuất Excel</span>
-          </button>
-
-          {/* Reset (Admin only) */}
-          {isAdmin && (
-            <button
-              onClick={onResetData}
-              className="p-1 text-indigo-300 hover:text-white hover:bg-indigo-800 rounded-md transition-all cursor-pointer"
-              title="Khôi phục dữ liệu mẫu ban đầu"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-            </button>
-          )}
 
           {/* Admin Login / Logout Badge & Button */}
           {isAdmin ? (

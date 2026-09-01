@@ -40,6 +40,7 @@ interface WeeklyTeachingLogViewProps {
   subjects: Subject[];
   weeklySchedules: WeeklySchedule[];
   baseWorkloads: WorkloadStats[];
+  isAdmin?: boolean;
   onOpenWeeklyScheduleManager?: () => void;
 }
 
@@ -54,6 +55,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   subjects,
   weeklySchedules,
   baseWorkloads,
+  isAdmin = false,
   onOpenWeeklyScheduleManager
 }) => {
   const currentSemester = config.semester || 'HK1';
@@ -164,7 +166,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-2 print:hidden">
-            {onOpenWeeklyScheduleManager && (
+            {isAdmin && onOpenWeeklyScheduleManager && (
               <button
                 onClick={onOpenWeeklyScheduleManager}
                 className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold border border-indigo-200 flex items-center gap-1.5 cursor-pointer transition-all"
@@ -174,13 +176,15 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
               </button>
             )}
 
-            <button
-              onClick={handleExportExcel}
-              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
-            >
-              <FileSpreadsheet className="w-3.5 h-3.5" />
-              Xuất Excel Sổ Theo Dõi
-            </button>
+            {isAdmin && (
+              <button
+                onClick={handleExportExcel}
+                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5" />
+                Xuất Excel Sổ Theo Dõi
+              </button>
+            )}
 
             <button
               onClick={handlePrint}

@@ -226,6 +226,26 @@ export interface TimetableSlot {
   isSpecialActivity?: boolean; // Chào cờ, SHCN, HĐTN...
 }
 
+export interface TeacherTimetableWish {
+  teacherId: string;
+  maxDaysPerWeek?: number; // Tối đa số buổi dạy / tuần (vd: 3 hoặc 4)
+  avoidMorningDays?: number[]; // Các thứ không xếp sáng (2-7)
+  avoidAfternoonDays?: number[]; // Các thứ không xếp chiều (2-7)
+  avoidPeriods?: { day: number; session: TimetableSession; period: number }[]; // Tiết tránh (vd Tiết 1 sáng T2...)
+  avoidSaturdayMorning?: boolean;
+  notes?: string;
+}
+
+export interface TimetableRuleConfig {
+  campusScope: 'ALL' | 'THPT' | 'DBK' | 'TK';
+  avoidPePeriod5Morning: boolean; // Tránh Thể dục tiết 5 sáng
+  avoidPePeriod1Afternoon: boolean; // Tránh Thể dục tiết 1 chiều
+  consecutivePeriodsSubjects: string[]; // Các môn ưu tiên xếp tiết đôi (Văn, Toán, Tin, QP, TD...)
+  avoidThptTeacherP1AfternoonForGrade67: boolean; // GV THPT dạy ĐBK/TK tránh tiết 1 chiều khối 6,7
+  preventCrossCampusSameSession: boolean; // Trong 1 buổi không dạy 2 điểm trường
+  teacherWishes: TeacherTimetableWish[];
+}
+
 export interface SchoolTimetable {
   id: string;
   academicYear: string;
@@ -235,4 +255,6 @@ export interface SchoolTimetable {
   slots: TimetableSlot[];
   updatedAt?: number;
   notes?: string;
+  ruleConfig?: TimetableRuleConfig;
 }
+

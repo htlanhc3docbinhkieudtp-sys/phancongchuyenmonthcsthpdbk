@@ -194,13 +194,15 @@ export const ThptOfficialTableView: React.FC<ThptOfficialTableViewProps> = ({
             <Printer className="w-3.5 h-3.5 text-slate-500" />
             <span>In Bảng Phân Công</span>
           </button>
-          <button
-            onClick={onExportExcel}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-2xs transition-all cursor-pointer"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5" />
-            <span>Xuất File Excel</span>
-          </button>
+          {isAdmin && (
+            <button
+              onClick={onExportExcel}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-2xs transition-all cursor-pointer"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <span>Xuất File Excel</span>
+            </button>
+          )}
         </div>
       </div>
 

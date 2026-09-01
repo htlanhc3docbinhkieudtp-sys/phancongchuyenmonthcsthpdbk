@@ -154,13 +154,15 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
             <Printer className="w-3.5 h-3.5 text-slate-500" />
             <span>In Báo Cáo</span>
           </button>
-          <button
-            onClick={onExportExcel}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-2xs transition-all cursor-pointer"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5" />
-            <span>Xuất Excel</span>
-          </button>
+          {isAdmin && (
+            <button
+              onClick={onExportExcel}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-2xs transition-all cursor-pointer"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <span>Xuất Excel</span>
+            </button>
+          )}
         </div>
       </div>
 

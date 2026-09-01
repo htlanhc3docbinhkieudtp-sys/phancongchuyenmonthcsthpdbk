@@ -444,10 +444,15 @@ export const ClassMatrixView: React.FC<ClassMatrixViewProps> = ({
               return (
                 <div
                   key={teacher.id}
-                  draggable
-                  onDragStart={e => handleDragStart(e, teacher.id)}
+                  draggable={isAdmin}
+                  onDragStart={e => {
+                    if (!isAdmin) return;
+                    handleDragStart(e, teacher.id);
+                  }}
                   onDragEnd={handleDragEnd}
-                  className={`p-2 rounded border text-left cursor-grab active:cursor-grabbing transition-all select-none group relative ${
+                  className={`p-2 rounded border text-left transition-all select-none group relative ${
+                    isAdmin ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'
+                  } ${
                     isDragging
                       ? 'opacity-40 border-dashed border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500'
                       : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-indigo-300 hover:shadow-2xs'
@@ -455,9 +460,11 @@ export const ClassMatrixView: React.FC<ClassMatrixViewProps> = ({
                 >
                   <div className="flex items-start justify-between gap-1">
                     <div className="flex items-center gap-1.5 min-w-0">
-                      <div className="cursor-grab text-slate-400 group-hover:text-indigo-600 shrink-0">
-                        <GripVertical className="w-3.5 h-3.5" />
-                      </div>
+                      {isAdmin && (
+                        <div className="cursor-grab text-slate-400 group-hover:text-indigo-600 shrink-0">
+                          <GripVertical className="w-3.5 h-3.5" />
+                        </div>
+                      )}
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-1">
                           <span className="font-bold text-xs text-slate-800 group-hover:text-indigo-900 truncate">
@@ -622,8 +629,6 @@ export const ClassMatrixView: React.FC<ClassMatrixViewProps> = ({
                             onClick={() => {
                               if (isAdmin) {
                                 setQuickAssignCell({ classId: cls.id, subjectId: sub.id });
-                              } else {
-                                onPromptAdminLogin?.();
                               }
                             }}
                             className={`p-1.5 border-r border-slate-200 text-center transition-all ${
@@ -637,7 +642,7 @@ export const ClassMatrixView: React.FC<ClassMatrixViewProps> = ({
                                 ? 'bg-slate-100/80 hover:bg-slate-200/80'
                                 : 'bg-slate-50/40 hover:bg-indigo-50/50'
                             }`}
-                            title={!isAdmin ? "Chế độ xem - Bấm để đăng nhập Quản trị" : undefined}
+                            title={!isAdmin ? "Chế độ Chỉ Xem" : undefined}
                           >
                             {assignedTeacher ? (
                               /* 1. ASSIGNED CELL */

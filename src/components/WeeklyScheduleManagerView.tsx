@@ -383,60 +383,50 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
 
           {/* Quick Action Toolbar */}
           <div className="flex flex-wrap items-center gap-2 print:hidden">
-            <button
-              onClick={() => {
-                if (!isAdmin) {
-                  onPromptAdminLogin?.();
-                  return;
-                }
-                if (window.confirm('Tự động tính toán & cân đối số tiết nguyên (1-2 tiết) cho KHTN Khối 8-9 và Lịch sử-Địa lí suốt 18 tuần để tổng kỳ khớp 100% tỷ lệ chuẩn?')) {
-                  onAutoGenerateAllWeeks();
-                }
-              }}
-              className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
-              title="Cân đối tự động số tiết lẻ cho toàn bộ các tuần"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              Tự Động Cân Đối 18 Tuần
-            </button>
+            {isAdmin && (
+              <>
+                <button
+                  onClick={() => {
+                    if (window.confirm('Tự động tính toán & cân đối số tiết nguyên (1-2 tiết) cho KHTN Khối 8-9 và Lịch sử-Địa lí suốt 18 tuần để tổng kỳ khớp 100% tỷ lệ chuẩn?')) {
+                      onAutoGenerateAllWeeks();
+                    }
+                  }}
+                  className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
+                  title="Cân đối tự động số tiết lẻ cho toàn bộ các tuần"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Tự Động Cân Đối 18 Tuần
+                </button>
 
-            <button
-              onClick={() => {
-                if (!isAdmin) {
-                  onPromptAdminLogin?.();
-                  return;
-                }
-                setCopyModalOpen(true);
-              }}
-              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold border border-slate-300 flex items-center gap-1.5 cursor-pointer transition-all"
-            >
-              <Copy className="w-3.5 h-3.5" />
-              Sao Chép Tuần
-            </button>
+                <button
+                  onClick={() => setCopyModalOpen(true)}
+                  className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold border border-slate-300 flex items-center gap-1.5 cursor-pointer transition-all"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  Sao Chép Tuần
+                </button>
 
-            <button
-              onClick={() => {
-                if (!isAdmin) {
-                  onPromptAdminLogin?.();
-                  return;
-                }
-                if (window.confirm(`Khôi phục phân công Tuần ${selectedWeek} về định mức chuẩn ban đầu của học kỳ?`)) {
-                  onResetWeekSchedule(selectedWeek);
-                }
-              }}
-              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold border border-slate-300 flex items-center gap-1.5 cursor-pointer transition-all"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              Đặt Lại Tuần Này
-            </button>
+                <button
+                  onClick={() => {
+                    if (window.confirm(`Khôi phục phân công Tuần ${selectedWeek} về định mức chuẩn ban đầu của học kỳ?`)) {
+                      onResetWeekSchedule(selectedWeek);
+                    }
+                  }}
+                  className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold border border-slate-300 flex items-center gap-1.5 cursor-pointer transition-all"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Đặt Lại Tuần Này
+                </button>
 
-            <button
-              onClick={handleExportWeekExcel}
-              className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold border border-emerald-300 flex items-center gap-1.5 cursor-pointer transition-all"
-            >
-              <FileSpreadsheet className="w-3.5 h-3.5" />
-              Xuất Excel
-            </button>
+                <button
+                  onClick={handleExportWeekExcel}
+                  className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold border border-emerald-300 flex items-center gap-1.5 cursor-pointer transition-all"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                  Xuất Excel
+                </button>
+              </>
+            )}
 
             <button
               onClick={handlePrint}
