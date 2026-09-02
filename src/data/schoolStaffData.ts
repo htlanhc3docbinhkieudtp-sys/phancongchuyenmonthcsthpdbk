@@ -427,6 +427,19 @@ export const officialStaffList: Teacher[] = [
     baseStandardPeriods: 19,
     notes: 'THCSTK - Ngữ văn (Khối 6-9)',
   },
+  {
+    id: 'tch-v-tk-vi',
+    name: 'Trần Thị Thúy Vi',
+    code: 'Vi.TTT',
+    gender: 'Nữ',
+    birthDate: '01/01/1988',
+    campus: 'THCSTK',
+    departmentId: 'dept-ngu-van',
+    primarySubjectId: 'sub-van',
+    role: 'GVBM',
+    baseStandardPeriods: 19,
+    notes: 'THCSTK - Ngữ văn (Khối 6-9)',
+  },
 
   // ==========================================
   // TỔ LỊCH SỬ - ĐỊA LÝ - GDCD - GDKT&PL

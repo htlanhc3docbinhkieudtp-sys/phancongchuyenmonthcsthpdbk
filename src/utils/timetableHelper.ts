@@ -10,6 +10,7 @@ import {
 } from '../types';
 import { buildTHPTWeek1Slots } from '../data/thptWeek1Timetable';
 import { buildTHCSDBKWeek1Slots } from '../data/thcsDBKWeek1Timetable';
+import { buildTHCSTKWeek1Slots } from '../data/thcsTKWeek1Timetable';
 
 export const DAYS_OF_WEEK = [
   { value: 2, label: 'Thứ Hai', shortLabel: 'Thứ 2' },
@@ -44,16 +45,25 @@ export function generateInitialTimetable(
   const thcsDBKWeek1Slots = buildTHCSDBKWeek1Slots();
   slots.push(...thcsDBKWeek1Slots);
 
+  // 3. Populate exact THCS Tân Kiều Week 1 slots (15 classes: 6A7-10, 7A7-9, 8A7-10, 9A7-10)
+  const thcsTKWeek1Slots = buildTHCSTKWeek1Slots();
+  slots.push(...thcsTKWeek1Slots);
+
   const officialClassIds = new Set([
-    // THPT
+    // THPT (14 lớp)
     'cls-10cb1', 'cls-10cb2', 'cls-10cb3', 'cls-10cb4', 'cls-10cb5',
     'cls-11cb1', 'cls-11cb2', 'cls-11cb3', 'cls-11cb4',
     'cls-12cb1', 'cls-12cb2', 'cls-12cb3', 'cls-12cb4', 'cls-12cb5',
-    // THCS DBK
+    // THCS DBK (24 lớp)
     'cls-6a1', 'cls-6a2', 'cls-6a3', 'cls-6a4', 'cls-6a5', 'cls-6a6',
     'cls-7a1', 'cls-7a2', 'cls-7a3', 'cls-7a4', 'cls-7a5', 'cls-7a6',
     'cls-8a1', 'cls-8a2', 'cls-8a3', 'cls-8a4', 'cls-8a5', 'cls-8a6',
-    'cls-9a1', 'cls-9a2', 'cls-9a3', 'cls-9a4', 'cls-9a5', 'cls-9a6'
+    'cls-9a1', 'cls-9a2', 'cls-9a3', 'cls-9a4', 'cls-9a5', 'cls-9a6',
+    // THCS TK (15 lớp)
+    'cls-6a7', 'cls-6a8', 'cls-6a9', 'cls-6a10',
+    'cls-7a7', 'cls-7a8', 'cls-7a9',
+    'cls-8a7', 'cls-8a8', 'cls-8a9', 'cls-8a10',
+    'cls-9a7', 'cls-9a8', 'cls-9a9', 'cls-9a10'
   ]);
 
   // Group assignments by class
@@ -72,7 +82,7 @@ export function generateInitialTimetable(
     }
   });
 
-  // Determine standard session for other classes (e.g. Tân Kiều campus)
+  // Determine standard session for any remaining classes not in the official list
   classes.filter(cls => !officialClassIds.has(cls.id)).forEach((cls) => {
     const isMorning = ['9', '8', '11', '12'].includes(cls.grade);
     const session = isMorning ? 'SANG' : 'CHIEU';
@@ -202,16 +212,17 @@ export function generateInitialTimetable(
     title: `Thời Khóa Biểu Tuần 1 - ${config.semester === 'HK2' ? 'Học kỳ II' : 'Học kỳ I'} Năm học ${config.academicYear || '2026 - 2027'}`,
     slots,
     updatedAt: Date.now(),
-    notes: 'TKB Tuần 1 chính thức theo ma trận TKB nhà trường (14 lớp THPT & 24 lớp THCS Đốc Binh Kiều)'
+    notes: 'TKB Tuần 1 chính thức toàn trường (14 lớp THPT, 24 lớp THCS Đốc Binh Kiều, 15 lớp THCS Tân Kiều)'
   };
 }
 
 /**
- * Ensure THPT & THCS DBK classes always contain the official timetable data from the uploaded matrices
+ * Ensure THPT, THCS DBK, and THCS TK classes always contain the official timetable data from the uploaded matrices
  */
 export function ensureTHPTOfficialSlots(existingSlots: TimetableSlot[]): TimetableSlot[] {
   const thptWeek1Slots = buildTHPTWeek1Slots();
   const thcsDBKWeek1Slots = buildTHCSDBKWeek1Slots();
+  const thcsTKWeek1Slots = buildTHCSTKWeek1Slots();
 
   const officialClassIds = new Set([
     // THPT (14 lớp)
@@ -222,11 +233,16 @@ export function ensureTHPTOfficialSlots(existingSlots: TimetableSlot[]): Timetab
     'cls-6a1', 'cls-6a2', 'cls-6a3', 'cls-6a4', 'cls-6a5', 'cls-6a6',
     'cls-7a1', 'cls-7a2', 'cls-7a3', 'cls-7a4', 'cls-7a5', 'cls-7a6',
     'cls-8a1', 'cls-8a2', 'cls-8a3', 'cls-8a4', 'cls-8a5', 'cls-8a6',
-    'cls-9a1', 'cls-9a2', 'cls-9a3', 'cls-9a4', 'cls-9a5', 'cls-9a6'
+    'cls-9a1', 'cls-9a2', 'cls-9a3', 'cls-9a4', 'cls-9a5', 'cls-9a6',
+    // THCS TK (15 lớp)
+    'cls-6a7', 'cls-6a8', 'cls-6a9', 'cls-6a10',
+    'cls-7a7', 'cls-7a8', 'cls-7a9',
+    'cls-8a7', 'cls-8a8', 'cls-8a9', 'cls-8a10',
+    'cls-9a7', 'cls-9a8', 'cls-9a9', 'cls-9a10'
   ]);
 
   const nonOfficialSlots = (existingSlots || []).filter(s => !officialClassIds.has(s.classId));
-  return [...thptWeek1Slots, ...thcsDBKWeek1Slots, ...nonOfficialSlots];
+  return [...thptWeek1Slots, ...thcsDBKWeek1Slots, ...thcsTKWeek1Slots, ...nonOfficialSlots];
 }
 
 /**
