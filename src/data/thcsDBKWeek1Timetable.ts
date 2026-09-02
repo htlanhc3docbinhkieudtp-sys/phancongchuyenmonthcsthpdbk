@@ -1,0 +1,1096 @@
+import { TimetableSlot } from '../types';
+
+interface RawSlot {
+  d: number; // day: 2 (Mon) to 7 (Sat)
+  p: number; // period: 1 to 5
+  sub: string; // subject display
+  tch: string; // teacher display
+  subId: string;
+  tchId: string;
+}
+
+// Map of Teacher ID & Full Name & Code based on the official School Staff list
+const TEACHER_MAP: Record<string, { id: string; name: string; code: string }> = {
+  // BGH & Chuyên môn
+  'Sơn': { id: 'tch-ls-2', name: 'Trịnh Văn Sơn', code: 'Sơn.TV' },
+  'Hòa': { id: 'tch-ls-6', name: 'Trần Phước Hòa', code: 'Hòa.TP' },
+  'Tuấn': { id: 'tch-ls-7', name: 'Ngô Anh Tuấn', code: 'Tuấn.NA' },
+  
+  // Tổ Toán
+  'Tới': { id: 'tch-t-1', name: 'Nguyễn Văn Tới', code: 'Tới.NV' },
+  'Lang': { id: 'tch-t-3', name: 'Nguyễn Thị Bích Lang', code: 'Lang.NTB' },
+  'Giang': { id: 'tch-t-4', name: 'Trần Văn Giang', code: 'Giang.TV' },
+  'CToàn': { id: 'tch-t-5', name: 'Lê Cao Toàn', code: 'Toàn.LC' },
+  'VToàn': { id: 'tch-t-6', name: 'Lê Văn Toàn', code: 'Toàn.LV' },
+  'Lê Bình': { id: 'tch-t-8', name: 'Lê Thị Bình', code: 'Bình.LT' },
+  'Thái Hùng': { id: 'tch-t-9', name: 'Nguyễn Thái Hùng', code: 'Hùng.NThái' },
+  'Ngoan': { id: 'tch-t-10', name: 'Nguyễn Văn Ngoan', code: 'Ngoan.NV' },
+  'Nguyễn': { id: 'tch-t-11', name: 'Nguyễn Quốc Nguyễn', code: 'Nguyễn.NQ' },
+  'Văn Tài': { id: 'tch-t-12', name: 'Nguyễn Văn Tài', code: 'Tài.NV' },
+  
+  // Tổ Ngữ văn
+  'Nghĩa': { id: 'tch-v-2', name: 'Trương Văn Nghĩa', code: 'Nghĩa.TV' },
+  'Lâm': { id: 'tch-v-8', name: 'Phạm Thanh Lâm', code: 'Lâm.PT' },
+  'Xoa': { id: 'tch-v-9', name: 'Nguyễn Thị Kim Xoa', code: 'Xoa.NTK' },
+  'Dương': { id: 'tch-v-10', name: 'Hứa Thùy Dương', code: 'Dương.HT' },
+  'An': { id: 'tch-v-11', name: 'Lê Thị Hoài An', code: 'An.LTH' },
+  
+  // Tổ KHXH (Sử, Địa, GDCD)
+  'Thúy': { id: 'tch-ls-1', name: 'Lê Hồng Thủy', code: 'Thủy.LH' },
+  'Lê The': { id: 'tch-ls-9', name: 'Lê Thị Kim The', code: 'The.LTK' },
+  'Tân': { id: 'tch-ls-10', name: 'Nguyễn Quốc Tấn', code: 'Tấn.NQ' },
+  'Đỉnh': { id: 'tch-ls-11', name: 'Nguyễn Thị Kim Đỉnh', code: 'Đỉnh.NTK' },
+  'Lý': { id: 'tch-ls-12', name: 'Nguyễn Thị Lý', code: 'Lý.NT' },
+  'Xe': { id: 'tch-ls-13', name: 'Nguyễn Thị Xe', code: 'Xe.NT' },
+  
+  // Tổ KHTN (Lý, Hóa, Sinh, Công nghệ)
+  'Thị Hiếu': { id: 'tch-khtn-4', name: 'Nguyễn Thị Hiếu', code: 'Hiếu.NT' },
+  'Thị Hậu': { id: 'tch-khtn-10', name: 'Trần Thị Hậu', code: 'Hậu.TTH' },
+  'Phương': { id: 'tch-khtn-11', name: 'Lê Thái Phương', code: 'Phương.LT' },
+  'H Toàn': { id: 'tch-khtn-12', name: 'Võ Hoàng Toàn', code: 'Toàn.VH' },
+  'Thắm': { id: 'tch-khtn-13', name: 'Nguyễn Thị Thắm', code: 'Thắm.NT' },
+  'Nhung': { id: 'tch-khtn-16', name: 'Nguyễn Thị Cẩm Nhung', code: 'Nhung.NTC' },
+  'Nguyễn Ngân': { id: 'tch-khtn-17', name: 'Nguyễn Kim Ngân', code: 'Ngân.NK' },
+  'Tài': { id: 'tch-khtn-18', name: 'Hồ Thị Ngọc Tài', code: 'Tài.HTN' },
+  'Hải': { id: 'tch-khtn-22', name: 'Trần Phi Hải', code: 'Hải.TP' },
+  'Cẩm': { id: 'tch-khtn-23', name: 'Trần Thị Cẩm', code: 'Cẩm.TT' },
+  'Lê Ngân': { id: 'tch-khtn-24', name: 'Lê Kim Ngân', code: 'Ngân.LK' },
+  
+  // Tổ Tiếng Anh - Tin
+  'Khanh': { id: 'tch-av-3', name: 'Nguyễn Thị Mai Khanh', code: 'Khanh.NTM' },
+  'Hậu': { id: 'tch-av-10', name: 'Trần Thanh Hậu', code: 'Hậu.TT' },
+  'Thảo': { id: 'tch-av-11', name: 'Hồ Mai Thảo', code: 'Thảo.HM' },
+  'Thùy Dương': { id: 'tch-av-12', name: 'Nguyễn Thị Thùy Dương', code: 'Dương.NTT' },
+  'Lộc': { id: 'tch-av-13', name: 'Mai Phước Lộc', code: 'Lộc.MP' },
+  'Phướng': { id: 'tch-av-14', name: 'Bùi Kim Phướng', code: 'Phướng.BK' },
+  
+  // Tổ GDTC - QPAN - Nghệ thuật
+  'Nguyện': { id: 'tch-td-1', name: 'Lê Văn Nguyện', code: 'Nguyện.LV' },
+  'Nguyên': { id: 'tch-td-1', name: 'Lê Văn Nguyện', code: 'Nguyện.LV' },
+  'Đạt': { id: 'tch-td-5', name: 'Lê Minh Đạt', code: 'Đạt.LM' },
+  'Ẩn': { id: 'tch-td-6', name: 'Lê Ngọc Ẩn', code: 'Ẩn.LN' },
+  'Dân': { id: 'tch-td-7', name: 'Huỳnh Thanh Dân', code: 'Dân.HT' },
+  'Thanh Hùng': { id: 'tch-td-8', name: 'Nguyễn Thanh Hùng', code: 'Hùng.NThanh' },
+  'Xanh': { id: 'tch-td-9', name: 'Lê Thị Tuyết Xanh', code: 'Xanh.LTT' },
+  'Quốc(TK)': { id: 'tch-td-10', name: 'Trần Thị Mỹ Quốc', code: 'Quốc.TTM' },
+  'Văn(TK)': { id: 'tch-td-12', name: 'Nguyễn Anh Văn', code: 'Văn.NA' }
+};
+
+// Helper to normalize teacher code / name
+function getTeacherInfo(rawTeacher: string): { id: string; name: string; code: string } {
+  const trimmed = rawTeacher.trim();
+  if (TEACHER_MAP[trimmed]) return TEACHER_MAP[trimmed];
+  return { id: '', name: trimmed, code: trimmed };
+}
+
+// Helper to normalize subject
+function getSubjectInfo(rawSubject: string): { id: string; name: string } {
+  const s = rawSubject.trim();
+  if (s.startsWith('Chào cờ')) return { id: 'sub-hdtn', name: 'Chào cờ' };
+  if (s === 'SHL' || s.startsWith('SHL-')) return { id: 'sub-shl', name: 'Sinh hoạt lớp' };
+  if (s.startsWith('HĐ TN-HN') || s.startsWith('HĐTN-HN')) return { id: 'sub-hdtn', name: 'HĐTN - HN' };
+  if (s.startsWith('HĐCN')) return { id: 'sub-hdtn', name: 'HĐ Chủ nhiệm' };
+  if (s === 'Toán') return { id: 'sub-toan', name: 'Toán học' };
+  if (s === 'Ngữ văn') return { id: 'sub-van', name: 'Ngữ văn' };
+  if (s === 'Ngoại ngữ') return { id: 'sub-anh', name: 'Tiếng Anh' };
+  if (s === 'KHTN') return { id: 'sub-khtn-cs', name: 'Khoa học tự nhiên' };
+  if (s === 'Vật lí' || s === 'Vật lý') return { id: 'sub-li', name: 'Vật lí' };
+  if (s === 'Hóa học') return { id: 'sub-hoa', name: 'Hóa học' };
+  if (s === 'Sinh học') return { id: 'sub-sinh', name: 'Sinh học' };
+  if (s === 'Lịch sử và Địa lý' || s === 'Lịch sử và Địa lí') return { id: 'sub-lsdl-cs', name: 'Lịch sử và Địa lí' };
+  if (s === 'Lịch Sử' || s === 'Lịch sử') return { id: 'sub-su', name: 'Lịch sử' };
+  if (s === 'Địa Lí' || s === 'Địa lí') return { id: 'sub-dia', name: 'Địa lí' };
+  if (s === 'GDCD') return { id: 'sub-gdcd', name: 'Giáo dục công dân' };
+  if (s === 'Tin học') return { id: 'sub-tin', name: 'Tin học' };
+  if (s === 'Công nghệ') return { id: 'sub-cn', name: 'Công nghệ' };
+  if (s === 'GDTC') return { id: 'sub-gdtc', name: 'Giáo dục thể chất' };
+  if (s === 'Âm nhạc') return { id: 'sub-am-nhac', name: 'Âm nhạc' };
+  if (s === 'Mỹ thuật') return { id: 'sub-my-thuat', name: 'Mỹ thuật' };
+  return { id: 'sub-khac', name: s };
+}
+
+// Build helper for a class schedule
+function buildClassSchedule(
+  classId: string,
+  className: string,
+  session: 'SANG' | 'CHIEU',
+  rawSchedule: { day: number; period: number; text: string }[]
+): TimetableSlot[] {
+  return rawSchedule.map(item => {
+    // text format: "Môn-TênGV" e.g., "KHTN-Tài" or "Chào cờ-Tài" or "SHL-Tài"
+    let subjectPart = item.text;
+    let teacherPart = '';
+
+    const dashIdx = item.text.indexOf('-');
+    if (dashIdx !== -1) {
+      subjectPart = item.text.substring(0, dashIdx).trim();
+      teacherPart = item.text.substring(dashIdx + 1).trim();
+    }
+
+    const subInfo = getSubjectInfo(subjectPart);
+    const tchInfo = getTeacherInfo(teacherPart);
+
+    const isSpecial = subjectPart.startsWith('Chào cờ') || subjectPart.startsWith('SHL') || subjectPart.startsWith('HĐCN') || subjectPart.startsWith('HĐ TN');
+
+    return {
+      id: `${classId}_w1_${item.day}_${session}_${item.period}`,
+      classId,
+      className,
+      dayOfWeek: item.day,
+      session,
+      period: item.period,
+      subjectId: subInfo.id,
+      subjectName: subInfo.name,
+      teacherId: tchInfo.id,
+      teacherName: tchInfo.name,
+      teacherCode: tchInfo.code,
+      room: className,
+      isSpecialActivity: isSpecial
+    };
+  });
+}
+
+// -------------------------------------------------------------
+// KHỐI 6 (6A1 -> 6A6) - Buổi Chiều
+// -------------------------------------------------------------
+export const rawKhôi6: Record<string, { day: number; period: number; text: string }[]> = {
+  '6A1': [
+    // T2
+    { day: 2, period: 1, text: 'KHTN-Tài' },
+    { day: 2, period: 2, text: 'KHTN-Tài' },
+    { day: 2, period: 3, text: 'Ngoại ngữ-Thảo' },
+    { day: 2, period: 4, text: 'Công nghệ-Lê Ngân' },
+    { day: 2, period: 5, text: 'Chào cờ-Tài' },
+    // T3
+    { day: 3, period: 1, text: 'Ngoại ngữ-Thảo' },
+    { day: 3, period: 2, text: 'Ngữ văn-Lâm' },
+    { day: 3, period: 3, text: 'Ngữ văn-Lâm' },
+    { day: 3, period: 4, text: 'Âm nhạc-Xanh' },
+    { day: 3, period: 5, text: 'Lịch sử và Địa lý-Tân' },
+    // T4
+    { day: 4, period: 1, text: 'HĐ TN-HN-Nhung' },
+    { day: 4, period: 2, text: 'GDTC-Thanh Hùng' },
+    { day: 4, period: 3, text: 'GDTC-Thanh Hùng' },
+    { day: 4, period: 4, text: 'Lịch sử và Địa lý-Tân' },
+    { day: 4, period: 5, text: 'Tin học-Phướng' },
+    // T5
+    { day: 5, period: 1, text: 'Toán-Lang' },
+    { day: 5, period: 2, text: 'Toán-Lang' },
+    { day: 5, period: 3, text: 'Ngữ văn-Lâm' },
+    { day: 5, period: 4, text: 'Ngữ văn-Lâm' },
+    // T6
+    { day: 6, period: 1, text: 'Ngoại ngữ-Thảo' },
+    { day: 6, period: 2, text: 'GDCD-Thúy' },
+    { day: 6, period: 3, text: 'Mỹ thuật-Đạt' },
+    { day: 6, period: 4, text: 'Toán-Lang' },
+    { day: 6, period: 5, text: 'Toán-Lang' },
+    // T7
+    { day: 7, period: 1, text: 'HĐCN-Tài' },
+    { day: 7, period: 2, text: 'Lịch sử và Địa lý-Tân' },
+    { day: 7, period: 3, text: 'KHTN-Tài' },
+    { day: 7, period: 4, text: 'KHTN-Tài' },
+    { day: 7, period: 5, text: 'SHL-Tài' }
+  ],
+  '6A2': [
+    // T2
+    { day: 2, period: 1, text: 'HĐCN-Thắm' },
+    { day: 2, period: 2, text: 'Ngoại ngữ-Hậu' },
+    { day: 2, period: 3, text: 'KHTN-Thắm' },
+    { day: 2, period: 4, text: 'KHTN-Thắm' },
+    { day: 2, period: 5, text: 'Chào cờ-Thắm' },
+    // T3
+    { day: 3, period: 1, text: 'Ngữ văn-Lâm' },
+    { day: 3, period: 2, text: 'GDTC-Thanh Hùng' },
+    { day: 3, period: 3, text: 'GDTC-Thanh Hùng' },
+    { day: 3, period: 4, text: 'Ngoại ngữ-Hậu' },
+    { day: 3, period: 5, text: 'Âm nhạc-Xanh' },
+    // T4
+    { day: 4, period: 1, text: 'Toán-Lê Bình' },
+    { day: 4, period: 2, text: 'Toán-Lê Bình' },
+    { day: 4, period: 3, text: 'Ngữ văn-Lâm' },
+    { day: 4, period: 4, text: 'Tin học-Phướng' },
+    { day: 4, period: 5, text: 'Lịch sử và Địa lý-Tân' },
+    // T5
+    { day: 5, period: 1, text: 'Ngữ văn-Lâm' },
+    { day: 5, period: 2, text: 'Ngữ văn-Lâm' },
+    { day: 5, period: 3, text: 'Công nghệ-Lê Ngân' },
+    { day: 5, period: 4, text: 'GDCD-Thúy' },
+    // T6
+    { day: 6, period: 1, text: 'Ngoại ngữ-Hậu' },
+    { day: 6, period: 2, text: 'Lịch sử và Địa lý-Tân' },
+    { day: 6, period: 3, text: 'Toán-Lê Bình' },
+    { day: 6, period: 4, text: 'Toán-Lê Bình' },
+    { day: 6, period: 5, text: 'Mỹ thuật-Đạt' },
+    // T7
+    { day: 7, period: 1, text: 'KHTN-Thắm' },
+    { day: 7, period: 2, text: 'KHTN-Thắm' },
+    { day: 7, period: 3, text: 'Lịch sử và Địa lý-Tân' },
+    { day: 7, period: 4, text: 'HĐ TN-HN-Thắm' },
+    { day: 7, period: 5, text: 'SHL-Thắm' }
+  ],
+  '6A3': [
+    // T2
+    { day: 2, period: 1, text: 'Ngoại ngữ-Thảo' },
+    { day: 2, period: 2, text: 'GDCD-Thúy' },
+    { day: 2, period: 3, text: 'Âm nhạc-Văn(TK)' },
+    { day: 2, period: 4, text: 'Tin học-Phướng' },
+    { day: 2, period: 5, text: 'Chào cờ-Phướng' },
+    // T3
+    { day: 3, period: 1, text: 'Mỹ thuật-Quốc(TK)' },
+    { day: 3, period: 2, text: 'Ngoại ngữ-Thảo' },
+    { day: 3, period: 3, text: 'KHTN-Nguyễn Ngân' },
+    { day: 3, period: 4, text: 'Toán-Thái Hùng' },
+    { day: 3, period: 5, text: 'Toán-Thái Hùng' },
+    // T4
+    { day: 4, period: 1, text: 'Toán-Thái Hùng' },
+    { day: 4, period: 2, text: 'Toán-Thái Hùng' },
+    { day: 4, period: 3, text: 'KHTN-Nguyễn Ngân' },
+    { day: 4, period: 4, text: 'Ngữ văn-Dương' },
+    { day: 4, period: 5, text: 'Ngữ văn-Dương' },
+    // T5
+    { day: 5, period: 1, text: 'Ngữ văn-Dương' },
+    { day: 5, period: 2, text: 'Ngữ văn-Dương' },
+    { day: 5, period: 3, text: 'Lịch sử và Địa lý-Tân' },
+    { day: 5, period: 4, text: 'Công nghệ-Lê Ngân' },
+    // T6
+    { day: 6, period: 1, text: 'HĐ TN-HN-Nhung' },
+    { day: 6, period: 2, text: 'Ngoại ngữ-Thảo' },
+    { day: 6, period: 3, text: 'Lịch sử và Địa lý-Tân' },
+    { day: 6, period: 4, text: 'GDTC-Thanh Hùng' },
+    { day: 6, period: 5, text: 'GDTC-Thanh Hùng' },
+    // T7
+    { day: 7, period: 1, text: 'Lịch sử và Địa lý-Tân' },
+    { day: 7, period: 2, text: 'KHTN-Nguyễn Ngân' },
+    { day: 7, period: 3, text: 'KHTN-Nguyễn Ngân' },
+    { day: 7, period: 4, text: 'HĐCN-Phướng' },
+    { day: 7, period: 5, text: 'SHL-Phướng' }
+  ],
+  '6A4': [
+    // T2
+    { day: 2, period: 1, text: 'Âm nhạc-Văn(TK)' },
+    { day: 2, period: 2, text: 'HĐ TN-HN-Thắm' },
+    { day: 2, period: 3, text: 'Tin học-Phướng' },
+    { day: 2, period: 4, text: 'HĐCN-Thanh Hùng' },
+    { day: 2, period: 5, text: 'Chào cờ-Thanh Hùng' },
+    // T3
+    { day: 3, period: 1, text: 'KHTN-Nguyễn Ngân' },
+    { day: 3, period: 2, text: 'KHTN-Nguyễn Ngân' },
+    { day: 3, period: 3, text: 'Lịch sử và Địa lý-Tân' },
+    { day: 3, period: 4, text: 'Mỹ thuật-Quốc(TK)' },
+    { day: 3, period: 5, text: 'Ngoại ngữ-Hậu' },
+    // T4
+    { day: 4, period: 1, text: 'KHTN-Nguyễn Ngân' },
+    { day: 4, period: 2, text: 'KHTN-Nguyễn Ngân' },
+    { day: 4, period: 3, text: 'Lịch sử và Địa lý-Tân' },
+    { day: 4, period: 4, text: 'Ngữ văn-Lâm' },
+    { day: 4, period: 5, text: 'Ngữ văn-Lâm' },
+    // T5
+    { day: 5, period: 1, text: 'Công nghệ-Lê Ngân' },
+    { day: 5, period: 2, text: 'GDCD-Thúy' },
+    { day: 5, period: 3, text: 'Toán-Lê Bình' },
+    { day: 5, period: 4, text: 'Toán-Lê Bình' },
+    // T6
+    { day: 6, period: 1, text: 'Lịch sử và Địa lý-Tân' },
+    { day: 6, period: 2, text: 'Toán-Lê Bình' },
+    { day: 6, period: 3, text: 'Ngoại ngữ-Hậu' },
+    { day: 6, period: 4, text: 'Ngữ văn-Lâm' },
+    { day: 6, period: 5, text: 'Ngữ văn-Lâm' },
+    // T7
+    { day: 7, period: 1, text: 'Toán-Lê Bình' },
+    { day: 7, period: 2, text: 'Ngoại ngữ-Hậu' },
+    { day: 7, period: 3, text: 'GDTC-Thanh Hùng' },
+    { day: 7, period: 4, text: 'GDTC-Thanh Hùng' },
+    { day: 7, period: 5, text: 'SHL-Thanh Hùng' }
+  ],
+  '6A5': [
+    // T2
+    { day: 2, period: 1, text: 'KHTN-Nguyễn Ngân' },
+    { day: 2, period: 2, text: 'KHTN-Nguyễn Ngân' },
+    { day: 2, period: 3, text: 'Toán-Lê Bình' },
+    { day: 2, period: 4, text: 'Âm nhạc-Văn(TK)' },
+    { day: 2, period: 5, text: 'Chào cờ-Lê Ngân' },
+    // T3
+    { day: 3, period: 1, text: 'HĐCN-Lê Ngân' },
+    { day: 3, period: 2, text: 'Mỹ thuật-Quốc(TK)' },
+    { day: 3, period: 3, text: 'Ngoại ngữ-Hậu' },
+    { day: 3, period: 4, text: 'Lịch Sử-Tân' },
+    { day: 3, period: 5, text: 'Ngữ văn-Dương' },
+    // T4
+    { day: 4, period: 1, text: 'GDCD-Thúy' },
+    { day: 4, period: 2, text: 'Ngữ văn-Dương' },
+    { day: 4, period: 3, text: 'Ngữ văn-Dương' },
+    { day: 4, period: 4, text: 'KHTN-Nguyễn Ngân' },
+    { day: 4, period: 5, text: 'KHTN-Nguyễn Ngân' },
+    // T5
+    { day: 5, period: 1, text: 'Toán-Lê Bình' },
+    { day: 5, period: 2, text: 'Toán-Lê Bình' },
+    { day: 5, period: 3, text: 'Tin học-Phướng' },
+    { day: 5, period: 4, text: 'Lịch Sử-Tân' },
+    // T6
+    { day: 6, period: 1, text: 'Ngữ văn-Dương' },
+    { day: 6, period: 2, text: 'GDTC-Thanh Hùng' },
+    { day: 6, period: 3, text: 'GDTC-Thanh Hùng' },
+    { day: 6, period: 4, text: 'Địa Lí-Hòa' },
+    { day: 6, period: 5, text: 'Ngoại ngữ-Hậu' },
+    // T7
+    { day: 7, period: 1, text: 'Công nghệ-Lê Ngân' },
+    { day: 7, period: 2, text: 'HĐ TN-HN-Lê Ngân' },
+    { day: 7, period: 3, text: 'Ngoại ngữ-Hậu' },
+    { day: 7, period: 4, text: 'Toán-Lê Bình' },
+    { day: 7, period: 5, text: 'SHL-Lê Ngân' }
+  ],
+  '6A6': [
+    // T2
+    { day: 2, period: 1, text: 'Ngoại ngữ-Hậu' },
+    { day: 2, period: 2, text: 'Âm nhạc-Văn(TK)' },
+    { day: 2, period: 3, text: 'KHTN-Tài' },
+    { day: 2, period: 4, text: 'KHTN-Tài' },
+    { day: 2, period: 5, text: 'Chào cờ-Lê Bình' },
+    // T3
+    { day: 3, period: 1, text: 'Lịch Sử-Tân' },
+    { day: 3, period: 2, text: 'Công nghệ-Lê Ngân' },
+    { day: 3, period: 3, text: 'Mỹ thuật-Quốc(TK)' },
+    { day: 3, period: 4, text: 'GDTC-Thanh Hùng' },
+    { day: 3, period: 5, text: 'GDTC-Thanh Hùng' },
+    // T4
+    { day: 4, period: 1, text: 'Ngữ văn-Dương' },
+    { day: 4, period: 2, text: 'GDCD-Thúy' },
+    { day: 4, period: 3, text: 'HĐCN-Lê Bình' },
+    { day: 4, period: 4, text: 'Toán-Lê Bình' },
+    { day: 4, period: 5, text: 'Toán-Lê Bình' },
+    // T5
+    { day: 5, period: 1, text: 'KHTN-Tài' },
+    { day: 5, period: 2, text: 'KHTN-Tài' },
+    { day: 5, period: 3, text: 'Ngữ văn-Dương' },
+    { day: 5, period: 4, text: 'Ngữ văn-Dương' },
+    // T6
+    { day: 6, period: 1, text: 'Toán-Lê Bình' },
+    { day: 6, period: 2, text: 'Ngoại ngữ-Hậu' },
+    { day: 6, period: 3, text: 'Ngữ văn-Dương' },
+    { day: 6, period: 4, text: 'Lịch Sử-Tân' },
+    { day: 6, period: 5, text: 'Địa Lí-Hòa' },
+    // T7
+    { day: 7, period: 1, text: 'Ngoại ngữ-Hậu' },
+    { day: 7, period: 2, text: 'Toán-Lê Bình' },
+    { day: 7, period: 3, text: 'Tin học-Phướng' },
+    { day: 7, period: 4, text: 'HĐ TN-HN-Lê Ngân' },
+    { day: 7, period: 5, text: 'SHL-Lê Bình' }
+  ]
+};
+
+// -------------------------------------------------------------
+// KHỐI 7 (7A1 -> 7A6) - Buổi Chiều
+// -------------------------------------------------------------
+export const rawKhôi7: Record<string, { day: number; period: number; text: string }[]> = {
+  '7A1': [
+    // T2
+    { day: 2, period: 1, text: 'GDCD-Thúy' },
+    { day: 2, period: 2, text: 'Ngoại ngữ-Khanh' },
+    { day: 2, period: 3, text: 'KHTN-Thị Hiếu' },
+    { day: 2, period: 4, text: 'Toán-Ngoan' },
+    { day: 2, period: 5, text: 'Chào cờ-Ngoan' },
+    // T3
+    { day: 3, period: 1, text: 'Ngoại ngữ-Khanh' },
+    { day: 3, period: 2, text: 'Âm nhạc-Xanh' },
+    { day: 3, period: 3, text: 'Công nghệ-Cẩm' },
+    { day: 3, period: 4, text: 'Ngữ văn-An' },
+    { day: 3, period: 5, text: 'Ngữ văn-An' },
+    // T4
+    { day: 4, period: 1, text: 'Toán-Ngoan' },
+    { day: 4, period: 2, text: 'Ngoại ngữ-Khanh' },
+    { day: 4, period: 3, text: 'HĐCN-Ngoan' },
+    { day: 4, period: 4, text: 'GDTC-Nguyên' },
+    { day: 4, period: 5, text: 'GDTC-Nguyên' },
+    // T5
+    { day: 5, period: 1, text: 'Tin học-Lộc' },
+    { day: 5, period: 2, text: 'KHTN-Thị Hiếu' },
+    { day: 5, period: 3, text: 'KHTN-Thị Hiếu' },
+    { day: 5, period: 4, text: 'HĐ TN-HN-Phướng' },
+    // T6
+    { day: 6, period: 1, text: 'KHTN-Thị Hiếu' },
+    { day: 6, period: 2, text: 'Lịch Sử-Lê The' },
+    { day: 6, period: 3, text: 'Địa Lí-Đỉnh' },
+    { day: 6, period: 4, text: 'Ngữ văn-An' },
+    { day: 6, period: 5, text: 'Ngữ văn-An' },
+    // T7
+    { day: 7, period: 1, text: 'Mỹ thuật-Đạt' },
+    { day: 7, period: 2, text: 'Lịch Sử-Lê The' },
+    { day: 7, period: 3, text: 'Toán-Ngoan' },
+    { day: 7, period: 4, text: 'Toán-Ngoan' },
+    { day: 7, period: 5, text: 'SHL-Ngoan' }
+  ],
+  '7A2': [
+    // T2
+    { day: 2, period: 1, text: 'HĐ TN-HN-Cẩm' },
+    { day: 2, period: 2, text: 'HĐCN-Lộc' },
+    { day: 2, period: 3, text: 'Tin học-Lộc' },
+    { day: 2, period: 4, text: 'KHTN-Thị Hiếu' },
+    { day: 2, period: 5, text: 'Chào cờ-Lộc' },
+    // T3
+    { day: 3, period: 1, text: 'Ngữ văn-Dương' },
+    { day: 3, period: 2, text: 'Toán-Tới' },
+    { day: 3, period: 3, text: 'Toán-Tới' },
+    { day: 3, period: 4, text: 'Lịch Sử-Lê The' },
+    { day: 3, period: 5, text: 'Ngoại ngữ-Thùy Dương' },
+    // T4
+    { day: 4, period: 1, text: 'KHTN-Thị Hiếu' },
+    { day: 4, period: 2, text: 'GDTC-Nguyên' },
+    { day: 4, period: 3, text: 'GDTC-Nguyên' },
+    { day: 4, period: 4, text: 'Mỹ thuật-Đạt' },
+    { day: 4, period: 5, text: 'Âm nhạc-Xanh' },
+    // T5
+    { day: 5, period: 1, text: 'GDCD-Thúy' },
+    { day: 5, period: 2, text: 'Lịch Sử-Lê The' },
+    { day: 5, period: 3, text: 'Toán-Tới' },
+    { day: 5, period: 4, text: 'Toán-Tới' },
+    // T6
+    { day: 6, period: 1, text: 'Địa Lí-Đỉnh' },
+    { day: 6, period: 2, text: 'Công nghệ-Cẩm' },
+    { day: 6, period: 3, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 6, period: 4, text: 'Ngữ văn-Dương' },
+    { day: 6, period: 5, text: 'Ngữ văn-Dương' },
+    // T7
+    { day: 7, period: 1, text: 'Ngữ văn-Dương' },
+    { day: 7, period: 2, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 7, period: 3, text: 'KHTN-Thị Hiếu' },
+    { day: 7, period: 4, text: 'KHTN-Thị Hiếu' },
+    { day: 7, period: 5, text: 'SHL-Lộc' }
+  ],
+  '7A3': [
+    // T2
+    { day: 2, period: 1, text: 'Toán-Nguyễn' },
+    { day: 2, period: 2, text: 'Toán-Nguyễn' },
+    { day: 2, period: 3, text: 'Ngoại ngữ-Khanh' },
+    { day: 2, period: 4, text: 'HĐCN-Nguyễn' },
+    { day: 2, period: 5, text: 'Chào cờ-Nguyễn' },
+    // T3
+    { day: 3, period: 1, text: 'Công nghệ-Cẩm' },
+    { day: 3, period: 2, text: 'Ngoại ngữ-Khanh' },
+    { day: 3, period: 3, text: 'Ngữ văn-Dương' },
+    { day: 3, period: 4, text: 'Ngữ văn-Dương' },
+    { day: 3, period: 5, text: 'Lịch Sử-Lê The' },
+    // T4
+    { day: 4, period: 1, text: 'Ngoại ngữ-Khanh' },
+    { day: 4, period: 2, text: 'HĐ TN-HN-Cẩm' },
+    { day: 4, period: 3, text: 'Mỹ thuật-Đạt' },
+    { day: 4, period: 4, text: 'KHTN-Nhung' },
+    { day: 4, period: 5, text: 'KHTN-Nhung' },
+    // T5
+    { day: 5, period: 1, text: 'Âm nhạc-Xanh' },
+    { day: 5, period: 2, text: 'Tin học-Lộc' },
+    { day: 5, period: 3, text: 'GDTC-Nguyên' },
+    { day: 5, period: 4, text: 'GDTC-Nguyên' },
+    // T6
+    { day: 6, period: 1, text: 'GDCD-Thúy' },
+    { day: 6, period: 2, text: 'Ngữ văn-Dương' },
+    { day: 6, period: 3, text: 'KHTN-Nhung' },
+    { day: 6, period: 4, text: 'KHTN-Nhung' },
+    { day: 6, period: 5, text: 'Địa Lí-Đỉnh' },
+    // T7
+    { day: 7, period: 1, text: 'Lịch Sử-Lê The' },
+    { day: 7, period: 2, text: 'Ngữ văn-Dương' },
+    { day: 7, period: 3, text: 'Toán-Nguyễn' },
+    { day: 7, period: 4, text: 'Toán-Nguyễn' },
+    { day: 7, period: 5, text: 'SHL-Nguyễn' }
+  ],
+  '7A4': [
+    // T2
+    { day: 2, period: 1, text: 'KHTN-Nhung' },
+    { day: 2, period: 2, text: 'KHTN-Nhung' },
+    { day: 2, period: 3, text: 'GDTC-Ẩn' },
+    { day: 2, period: 4, text: 'GDTC-Ẩn' },
+    { day: 2, period: 5, text: 'Chào cờ-Ẩn' },
+    // T3
+    { day: 3, period: 1, text: 'Ngữ văn-Xoa' },
+    { day: 3, period: 2, text: 'Ngữ văn-Xoa' },
+    { day: 3, period: 3, text: 'Lịch Sử-Lê The' },
+    { day: 3, period: 4, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 3, period: 5, text: 'HĐ TN-HN-Cẩm' },
+    // T4
+    { day: 4, period: 1, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 4, period: 2, text: 'KHTN-Nhung' },
+    { day: 4, period: 3, text: 'KHTN-Nhung' },
+    { day: 4, period: 4, text: 'Toán-VToàn' },
+    { day: 4, period: 5, text: 'Toán-VToàn' },
+    // T5
+    { day: 5, period: 1, text: 'Ngữ văn-Xoa' },
+    { day: 5, period: 2, text: 'Ngữ văn-Xoa' },
+    { day: 5, period: 3, text: 'Âm nhạc-Xanh' },
+    { day: 5, period: 4, text: 'Lịch Sử-Lê The' },
+    // T6
+    { day: 6, period: 1, text: 'Công nghệ-Cẩm' },
+    { day: 6, period: 2, text: 'Địa Lí-Đỉnh' },
+    { day: 6, period: 3, text: 'GDCD-Thúy' },
+    { day: 6, period: 4, text: 'Toán-VToàn' },
+    { day: 6, period: 5, text: 'Toán-VToàn' },
+    // T7
+    { day: 7, period: 1, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 7, period: 2, text: 'Mỹ thuật-Đạt' },
+    { day: 7, period: 3, text: 'HĐCN-Ẩn' },
+    { day: 7, period: 4, text: 'Tin học-Lộc' },
+    { day: 7, period: 5, text: 'SHL-Ẩn' }
+  ],
+  '7A5': [
+    // T2
+    { day: 2, period: 1, text: 'Tin học-Lộc' },
+    { day: 2, period: 2, text: 'HĐ TN-HN-Cẩm' },
+    { day: 2, period: 3, text: 'Mỹ thuật-Đạt' },
+    { day: 2, period: 4, text: 'Ngoại ngữ-Khanh' },
+    { day: 2, period: 5, text: 'Chào cờ-Thị Hiếu' },
+    // T3
+    { day: 3, period: 1, text: 'Lịch Sử-Lê The' },
+    { day: 3, period: 2, text: 'Công nghệ-Cẩm' },
+    { day: 3, period: 3, text: 'Ngoại ngữ-Khanh' },
+    { day: 3, period: 4, text: 'Toán-CToàn' },
+    { day: 3, period: 5, text: 'Toán-CToàn' },
+    // T4
+    { day: 4, period: 1, text: 'HĐCN-Phướng' },
+    { day: 4, period: 2, text: 'KHTN-Thị Hiếu' },
+    { day: 4, period: 3, text: 'Ngoại ngữ-Khanh' },
+    { day: 4, period: 4, text: 'Âm nhạc-Xanh' },
+    { day: 4, period: 5, text: 'Địa Lí-Tuấn' },
+    // T5
+    { day: 5, period: 1, text: 'KHTN-Thị Hiếu' },
+    { day: 5, period: 2, text: 'Toán-CToàn' },
+    { day: 5, period: 3, text: 'Toán-CToàn' },
+    { day: 5, period: 4, text: 'GDCD-Xe' },
+    // T6
+    { day: 6, period: 1, text: 'Lịch Sử-Lê The' },
+    { day: 6, period: 2, text: 'KHTN-Thị Hiếu' },
+    { day: 6, period: 3, text: 'KHTN-Thị Hiếu' },
+    { day: 6, period: 4, text: 'Ngữ văn-Xoa' },
+    { day: 6, period: 5, text: 'Ngữ văn-Xoa' },
+    // T7
+    { day: 7, period: 1, text: 'Ngữ văn-Xoa' },
+    { day: 7, period: 2, text: 'Ngữ văn-Xoa' },
+    { day: 7, period: 3, text: 'GDTC-Nguyên' },
+    { day: 7, period: 4, text: 'GDTC-Nguyên' },
+    { day: 7, period: 5, text: 'SHL-Thị Hiếu' }
+  ],
+  '7A6': [
+    // T2
+    { day: 2, period: 1, text: 'KHTN-H Toàn' },
+    { day: 2, period: 2, text: 'KHTN-H Toàn' },
+    { day: 2, period: 3, text: 'HĐCN-Cẩm' },
+    { day: 2, period: 4, text: 'Mỹ thuật-Đạt' },
+    { day: 2, period: 5, text: 'Chào cờ-Cẩm' },
+    // T3
+    { day: 3, period: 1, text: 'Âm nhạc-Xanh' },
+    { day: 3, period: 2, text: 'Lịch Sử-Lê The' },
+    { day: 3, period: 3, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 3, period: 4, text: 'Toán-Giang' },
+    { day: 3, period: 5, text: 'Toán-Giang' },
+    // T4
+    { day: 4, period: 1, text: 'Công nghệ-Cẩm' },
+    { day: 4, period: 2, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 4, period: 3, text: 'Địa Lí-Tuấn' },
+    { day: 4, period: 4, text: 'GDTC-Thanh Hùng' },
+    { day: 4, period: 5, text: 'GDTC-Thanh Hùng' },
+    // T5
+    { day: 5, period: 1, text: 'KHTN-H Toàn' },
+    { day: 5, period: 2, text: 'KHTN-H Toàn' },
+    { day: 5, period: 3, text: 'GDCD-Xe' },
+    { day: 5, period: 4, text: 'Tin học-Lộc' },
+    // T6
+    { day: 6, period: 1, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 6, period: 2, text: 'Ngữ văn-An' },
+    { day: 6, period: 3, text: 'Ngữ văn-An' },
+    { day: 6, period: 4, text: 'Toán-Giang' },
+    { day: 6, period: 5, text: 'Toán-Giang' },
+    // T7
+    { day: 7, period: 1, text: 'Ngữ văn-An' },
+    { day: 7, period: 2, text: 'Ngữ văn-An' },
+    { day: 7, period: 3, text: 'Lịch Sử-Lê The' },
+    { day: 7, period: 4, text: 'HĐ TN-HN-Cẩm' },
+    { day: 7, period: 5, text: 'SHL-Cẩm' }
+  ]
+};
+
+// -------------------------------------------------------------
+// KHỐI 8 (8A1 -> 8A6) - Buổi Sáng
+// -------------------------------------------------------------
+export const rawKhôi8: Record<string, { day: number; period: number; text: string }[]> = {
+  '8A1': [
+    // T2
+    { day: 2, period: 1, text: 'Chào cờ-Thái Hùng' },
+    { day: 2, period: 2, text: 'HĐ TN-HN-Thị Hậu' },
+    { day: 2, period: 3, text: 'Toán-Thái Hùng' },
+    { day: 2, period: 4, text: 'Toán-Thái Hùng' },
+    { day: 2, period: 5, text: 'HĐCN-Thái Hùng' },
+    // T3
+    { day: 3, period: 1, text: 'Công nghệ-Hải' },
+    { day: 3, period: 2, text: 'Ngoại ngữ-Hậu' },
+    { day: 3, period: 3, text: 'Toán-Thái Hùng' },
+    { day: 3, period: 4, text: 'Ngữ văn-An' },
+    { day: 3, period: 5, text: 'Ngữ văn-An' },
+    // T4
+    { day: 4, period: 1, text: 'Lịch Sử-Lê The' },
+    { day: 4, period: 2, text: 'Hóa học-Phương' },
+    { day: 4, period: 3, text: 'GDTC-Nguyên' },
+    { day: 4, period: 4, text: 'GDTC-Nguyên' },
+    { day: 4, period: 5, text: 'Địa Lí-Đỉnh' },
+    // T5
+    { day: 5, period: 1, text: 'Sinh học-H Toàn' },
+    { day: 5, period: 2, text: 'GDCD-Xe' },
+    { day: 5, period: 3, text: 'Âm nhạc-Xanh' },
+    { day: 5, period: 4, text: 'Lịch Sử-Lê The' },
+    // T6
+    { day: 6, period: 1, text: 'Vật lí-Thắm' },
+    { day: 6, period: 2, text: 'Ngoại ngữ-Hậu' },
+    { day: 6, period: 3, text: 'Mỹ thuật-Đạt' },
+    { day: 6, period: 4, text: 'Ngữ văn-An' },
+    { day: 6, period: 5, text: 'Ngữ văn-An' },
+    // T7
+    { day: 7, period: 1, text: 'Ngoại ngữ-Hậu' },
+    { day: 7, period: 2, text: 'Tin học-Phướng' },
+    { day: 7, period: 3, text: 'Vật lí-Thắm' },
+    { day: 7, period: 4, text: 'Toán-Thái Hùng' },
+    { day: 7, period: 5, text: 'SHL-Thái Hùng' }
+  ],
+  '8A2': [
+    // T2
+    { day: 2, period: 1, text: 'Chào cờ-Hải' },
+    { day: 2, period: 2, text: 'Công nghệ-Hải' },
+    { day: 2, period: 3, text: 'Ngữ văn-An' },
+    { day: 2, period: 4, text: 'Tin học-Phướng' },
+    { day: 2, period: 5, text: 'Mỹ thuật-Đạt' },
+    // T3
+    { day: 3, period: 1, text: 'Lịch Sử-Lê The' },
+    { day: 3, period: 2, text: 'Ngữ văn-An' },
+    { day: 3, period: 3, text: 'Ngữ văn-An' },
+    { day: 3, period: 4, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 3, period: 5, text: 'Toán-Thái Hùng' },
+    // T4
+    { day: 4, period: 1, text: 'Toán-Thái Hùng' },
+    { day: 4, period: 2, text: 'Toán-Thái Hùng' },
+    { day: 4, period: 3, text: 'Địa Lí-Đỉnh' },
+    { day: 4, period: 4, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 4, period: 5, text: 'Lịch Sử-Lê The' },
+    // T5
+    { day: 5, period: 1, text: 'GDTC-Nguyên' },
+    { day: 5, period: 2, text: 'GDTC-Nguyên' },
+    { day: 5, period: 3, text: 'Sinh học-Tài' },
+    { day: 5, period: 4, text: 'Âm nhạc-Xanh' },
+    // T6
+    { day: 6, period: 1, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 6, period: 2, text: 'Vật lí-Thắm' },
+    { day: 6, period: 3, text: 'Hóa học-Phương' },
+    { day: 6, period: 4, text: 'GDCD-Xe' },
+    { day: 6, period: 5, text: 'HĐCN-Hải' },
+    // T7
+    { day: 7, period: 1, text: 'Ngữ văn-An' },
+    { day: 7, period: 2, text: 'Vật lí-Thắm' },
+    { day: 7, period: 3, text: 'Toán-Thái Hùng' },
+    { day: 7, period: 4, text: 'HĐ TN-HN-Thị Hậu' },
+    { day: 7, period: 5, text: 'SHL-Hải' }
+  ],
+  '8A3': [
+    // T2
+    { day: 2, period: 1, text: 'Chào cờ-Xe' },
+    { day: 2, period: 2, text: 'Toán-Nguyễn' },
+    { day: 2, period: 3, text: 'Vật lí-Thắm' },
+    { day: 2, period: 4, text: 'Ngữ văn-An' },
+    { day: 2, period: 5, text: 'Ngữ văn-An' },
+    // T3
+    { day: 3, period: 1, text: 'Ngữ văn-An' },
+    { day: 3, period: 2, text: 'Âm nhạc-Xanh' },
+    { day: 3, period: 3, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 3, period: 4, text: 'Toán-Nguyễn' },
+    { day: 3, period: 5, text: 'Toán-Nguyễn' },
+    // T4
+    { day: 4, period: 1, text: 'GDTC-Dân' },
+    { day: 4, period: 2, text: 'GDTC-Dân' },
+    { day: 4, period: 3, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 4, period: 4, text: 'Mỹ thuật-Đạt' },
+    { day: 4, period: 5, text: 'HĐCN-Xe' },
+    // T5
+    { day: 5, period: 1, text: 'GDCD-Xe' },
+    { day: 5, period: 2, text: 'Lịch Sử-Lê The' },
+    { day: 5, period: 3, text: 'HĐ TN-HN-Thị Hậu' },
+    { day: 5, period: 4, text: 'Sinh học-Tài' },
+    // T6
+    { day: 6, period: 1, text: 'Lịch Sử-Lê The' },
+    { day: 6, period: 2, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 6, period: 3, text: 'Địa Lí-Đỉnh' },
+    { day: 6, period: 4, text: 'Hóa học-Tài' },
+    { day: 6, period: 5, text: 'Vật lí-Thắm' },
+    // T7
+    { day: 7, period: 1, text: 'Tin học-Phướng' },
+    { day: 7, period: 2, text: 'Toán-Nguyễn' },
+    { day: 7, period: 3, text: 'Ngữ văn-An' },
+    { day: 7, period: 4, text: 'Công nghệ-Hải' },
+    { day: 7, period: 5, text: 'SHL-Xe' }
+  ],
+  '8A4': [
+    // T2
+    { day: 2, period: 1, text: 'Chào cờ-Nguyễn Ngân' },
+    { day: 2, period: 2, text: 'Hóa học-Nguyễn Ngân' },
+    { day: 2, period: 3, text: 'HĐ TN-HN-Thị Hậu' },
+    { day: 2, period: 4, text: 'Vật lí-Thị Hậu' },
+    { day: 2, period: 5, text: 'Toán-Ngoan' },
+    // T3
+    { day: 3, period: 1, text: 'Ngoại ngữ-Hậu' },
+    { day: 3, period: 2, text: 'Công nghệ-Hải' },
+    { day: 3, period: 3, text: 'Ngữ văn-Xoa' },
+    { day: 3, period: 4, text: 'Địa Lí-Đỉnh' },
+    { day: 3, period: 5, text: 'Vật lí-Thị Hậu' },
+    // T4
+    { day: 4, period: 1, text: 'Toán-Ngoan' },
+    { day: 4, period: 2, text: 'Toán-Ngoan' },
+    { day: 4, period: 3, text: 'GDCD-Xe' },
+    { day: 4, period: 4, text: 'Lịch Sử-Tân' },
+    { day: 4, period: 5, text: 'Tin học-Phướng' },
+    // T5
+    { day: 5, period: 1, text: 'GDTC-Dân' },
+    { day: 5, period: 2, text: 'GDTC-Dân' },
+    { day: 5, period: 3, text: 'Lịch Sử-Tân' },
+    { day: 5, period: 4, text: 'Ngữ văn-Xoa' },
+    // T6
+    { day: 6, period: 1, text: 'Ngoại ngữ-Hậu' },
+    { day: 6, period: 2, text: 'Ngữ văn-Xoa' },
+    { day: 6, period: 3, text: 'Ngữ văn-Xoa' },
+    { day: 6, period: 4, text: 'Mỹ thuật-Đạt' },
+    { day: 6, period: 5, text: 'Sinh học-Tài' },
+    // T7
+    { day: 7, period: 1, text: 'Toán-Ngoan' },
+    { day: 7, period: 2, text: 'Ngoại ngữ-Hậu' },
+    { day: 7, period: 3, text: 'Âm nhạc-Xanh' },
+    { day: 7, period: 4, text: 'HĐCN-Nguyễn Ngân' },
+    { day: 7, period: 5, text: 'SHL-Nguyễn Ngân' }
+  ],
+  '8A5': [
+    // T2
+    { day: 2, period: 1, text: 'Chào cờ-H Toàn' },
+    { day: 2, period: 2, text: 'GDCD-Xe' },
+    { day: 2, period: 3, text: 'Toán-Ngoan' },
+    { day: 2, period: 4, text: 'Toán-Ngoan' },
+    { day: 2, period: 5, text: 'Tin học-Phướng' },
+    // T3
+    { day: 3, period: 1, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 3, period: 2, text: 'Ngữ văn-Xoa' },
+    { day: 3, period: 3, text: 'HĐ TN-HN-Thị Hậu' },
+    { day: 3, period: 4, text: 'Vật lí-Thị Hậu' },
+    { day: 3, period: 5, text: 'Công nghệ-Hải' },
+    // T4
+    { day: 4, period: 1, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 4, period: 2, text: 'Địa Lí-Đỉnh' },
+    { day: 4, period: 3, text: 'Âm nhạc-Xanh' },
+    { day: 4, period: 4, text: 'Vật lí-Thị Hậu' },
+    { day: 4, period: 5, text: 'Lịch Sử-Tân' },
+    // T5
+    { day: 5, period: 1, text: 'Ngữ văn-Xoa' },
+    { day: 5, period: 2, text: 'Ngữ văn-Xoa' },
+    { day: 5, period: 3, text: 'Sinh học-H Toàn' },
+    { day: 5, period: 4, text: 'Hóa học-H Toàn' },
+    // T6
+    { day: 6, period: 1, text: 'Ngữ văn-Xoa' },
+    { day: 6, period: 2, text: 'Lịch Sử-Tân' },
+    { day: 6, period: 3, text: 'GDTC-Dân' },
+    { day: 6, period: 4, text: 'GDTC-Dân' },
+    { day: 6, period: 5, text: 'Mỹ thuật-Đạt' },
+    // T7
+    { day: 7, period: 1, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 7, period: 2, text: 'Toán-Ngoan' },
+    { day: 7, period: 3, text: 'Toán-Ngoan' },
+    { day: 7, period: 4, text: 'HĐCN-H Toàn' },
+    { day: 7, period: 5, text: 'SHL-H Toàn' }
+  ],
+  '8A6': [
+    // T2
+    { day: 2, period: 1, text: 'Chào cờ-Dân' },
+    { day: 2, period: 2, text: 'HĐCN-Dân' },
+    { day: 2, period: 3, text: 'Toán-Nguyễn' },
+    { day: 2, period: 4, text: 'Sinh học-Nguyễn Ngân' },
+    { day: 2, period: 5, text: 'Vật lí-Thị Hậu' },
+    // T3
+    { day: 3, period: 1, text: 'Ngữ văn-Xoa' },
+    { day: 3, period: 2, text: 'Toán-Nguyễn' },
+    { day: 3, period: 3, text: 'Toán-Nguyễn' },
+    { day: 3, period: 4, text: 'Hóa học-H Toàn' },
+    { day: 3, period: 5, text: 'Ngoại ngữ-Thùy Dương' },
+    // T4
+    { day: 4, period: 1, text: 'GDCD-Xe' },
+    { day: 4, period: 2, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 4, period: 3, text: 'Tin học-Phướng' },
+    { day: 4, period: 4, text: 'Âm nhạc-Xanh' },
+    { day: 4, period: 5, text: 'Mỹ thuật-Đạt' },
+    // T5
+    { day: 5, period: 1, text: 'HĐ TN-HN-Thị Hậu' },
+    { day: 5, period: 2, text: 'Vật lí-Thị Hậu' },
+    { day: 5, period: 3, text: 'Ngữ văn-Xoa' },
+    { day: 5, period: 4, text: 'Lịch Sử-Tân' },
+    // T6
+    { day: 6, period: 1, text: 'Lịch Sử-Tân' },
+    { day: 6, period: 2, text: 'Địa Lí-Đỉnh' },
+    { day: 6, period: 3, text: 'Công nghệ-Hải' },
+    { day: 6, period: 4, text: 'Ngữ văn-Xoa' },
+    { day: 6, period: 5, text: 'Ngữ văn-Xoa' },
+    // T7
+    { day: 7, period: 1, text: 'Toán-Nguyễn' },
+    { day: 7, period: 2, text: 'Ngoại ngữ-Thùy Dương' },
+    { day: 7, period: 3, text: 'GDTC-Dân' },
+    { day: 7, period: 4, text: 'GDTC-Dân' },
+    { day: 7, period: 5, text: 'SHL-Dân' }
+  ]
+};
+
+// -------------------------------------------------------------
+// KHỐI 9 (9A1 -> 9A6) - Buổi Sáng
+// -------------------------------------------------------------
+export const rawKhôi9: Record<string, { day: number; period: number; text: string }[]> = {
+  '9A1': [
+    // T2
+    { day: 2, period: 1, text: 'Chào cờ-Nhung' },
+    { day: 2, period: 2, text: 'HĐCN-Nhung' },
+    { day: 2, period: 3, text: 'GDCD-Xe' },
+    { day: 2, period: 4, text: 'Ngoại ngữ-Khanh' },
+    { day: 2, period: 5, text: 'Hóa học-Phương' },
+    // T3
+    { day: 3, period: 1, text: 'Hóa học-Phương' },
+    { day: 3, period: 2, text: 'Toán-Văn Tài' },
+    { day: 3, period: 3, text: 'Toán-Văn Tài' },
+    { day: 3, period: 4, text: 'Ngoại ngữ-Khanh' },
+    { day: 3, period: 5, text: 'Địa Lí-Lý' },
+    // T4
+    { day: 4, period: 1, text: 'Mỹ thuật-Đạt' },
+    { day: 4, period: 2, text: 'HĐ TN-HN-Nhung' },
+    { day: 4, period: 3, text: 'Ngoại ngữ-Khanh' },
+    { day: 4, period: 4, text: 'Ngữ văn-Nghĩa' },
+    { day: 4, period: 5, text: 'Ngữ văn-Nghĩa' },
+    // T5
+    { day: 5, period: 1, text: 'Toán-Văn Tài' },
+    { day: 5, period: 2, text: 'Ngữ văn-Nghĩa' },
+    { day: 5, period: 3, text: 'Ngữ văn-Nghĩa' },
+    { day: 5, period: 4, text: 'Vật lí-Thị Hậu' },
+    // T6
+    { day: 6, period: 1, text: 'GDTC-Ẩn' },
+    { day: 6, period: 2, text: 'GDTC-Ẩn' },
+    { day: 6, period: 3, text: 'Công nghệ-Cẩm' },
+    { day: 6, period: 4, text: 'Lịch Sử-Sơn' },
+    { day: 6, period: 5, text: 'Lịch Sử-Sơn' },
+    // T7
+    { day: 7, period: 1, text: 'Âm nhạc-Xanh' },
+    { day: 7, period: 2, text: 'Tin học-Lộc' },
+    { day: 7, period: 3, text: 'Sinh học-Nhung' },
+    { day: 7, period: 4, text: 'Toán-Văn Tài' },
+    { day: 7, period: 5, text: 'SHL-Nhung' }
+  ],
+  '9A2': [
+    // T2
+    { day: 2, period: 1, text: 'Chào cờ-Thị Hậu' },
+    { day: 2, period: 2, text: 'Tin học-Lộc' },
+    { day: 2, period: 3, text: 'Toán-Văn Tài' },
+    { day: 2, period: 4, text: 'Lịch Sử-Sơn' },
+    { day: 2, period: 5, text: 'Lịch Sử-Sơn' },
+    // T3
+    { day: 3, period: 1, text: 'Vật lí-Thị Hậu' },
+    { day: 3, period: 2, text: 'HĐCN-Thị Hậu' },
+    { day: 3, period: 3, text: 'Ngoại ngữ-Thảo' },
+    { day: 3, period: 4, text: 'Toán-Văn Tài' },
+    { day: 3, period: 5, text: 'Toán-Văn Tài' },
+    // T4
+    { day: 4, period: 1, text: 'Sinh học-Nhung' },
+    { day: 4, period: 2, text: 'GDCD-Xe' },
+    { day: 4, period: 3, text: 'Mỹ thuật-Đạt' },
+    { day: 4, period: 4, text: 'Ngữ văn-Lâm' },
+    { day: 4, period: 5, text: 'Toán-Văn Tài' },
+    // T5
+    { day: 5, period: 1, text: 'Ngữ văn-Lâm' },
+    { day: 5, period: 2, text: 'Ngữ văn-Lâm' },
+    { day: 5, period: 3, text: 'GDTC-Ẩn' },
+    { day: 5, period: 4, text: 'GDTC-Ẩn' },
+    // T6
+    { day: 6, period: 1, text: 'Công nghệ-Cẩm' },
+    { day: 6, period: 2, text: 'Ngoại ngữ-Thảo' },
+    { day: 6, period: 3, text: 'Địa Lí-Lý' },
+    { day: 6, period: 4, text: 'Hóa học-Phương' },
+    { day: 6, period: 5, text: 'Ngữ văn-Lâm' },
+    // T7
+    { day: 7, period: 1, text: 'Ngoại ngữ-Thảo' },
+    { day: 7, period: 2, text: 'Âm nhạc-Xanh' },
+    { day: 7, period: 3, text: 'Hóa học-Phương' },
+    { day: 7, period: 4, text: 'HĐ TN-HN-Nhung' },
+    { day: 7, period: 5, text: 'SHL-Thị Hậu' }
+  ],
+  '9A3': [
+    // T2
+    { day: 2, period: 1, text: 'Chào cờ-Lang' },
+    { day: 2, period: 2, text: 'Hóa học-H Toàn' },
+    { day: 2, period: 3, text: 'Toán-Lang' },
+    { day: 2, period: 4, text: 'Vật lí-Thắm' },
+    { day: 2, period: 5, text: 'Ngoại ngữ-Khanh' },
+    // T3
+    { day: 3, period: 1, text: 'Ngoại ngữ-Khanh' },
+    { day: 3, period: 2, text: 'HĐ TN-HN-Phương' },
+    { day: 3, period: 3, text: 'HĐCN-Hải' },
+    { day: 3, period: 4, text: 'Ngữ văn-Nghĩa' },
+    { day: 3, period: 5, text: 'Ngữ văn-Nghĩa' },
+    // T4
+    { day: 4, period: 1, text: 'Sinh học-Thị Hiếu' },
+    { day: 4, period: 2, text: 'Ngoại ngữ-Khanh' },
+    { day: 4, period: 3, text: 'Ngữ văn-Nghĩa' },
+    { day: 4, period: 4, text: 'Lịch Sử-Lê The' },
+    { day: 4, period: 5, text: 'Âm nhạc-Xanh' },
+    // T5
+    { day: 5, period: 1, text: 'Toán-Lang' },
+    { day: 5, period: 2, text: 'Hóa học-H Toàn' },
+    { day: 5, period: 3, text: 'GDTC-Dân' },
+    { day: 5, period: 4, text: 'GDTC-Dân' },
+    // T6
+    { day: 6, period: 1, text: 'Ngữ văn-Nghĩa' },
+    { day: 6, period: 2, text: 'Công nghệ-Cẩm' },
+    { day: 6, period: 3, text: 'Toán-Lang' },
+    { day: 6, period: 4, text: 'Toán-Lang' },
+    { day: 6, period: 5, text: 'Địa Lí-Lý' },
+    // T7
+    { day: 7, period: 1, text: 'Lịch Sử-Lê The' },
+    { day: 7, period: 2, text: 'Mỹ thuật-Đạt' },
+    { day: 7, period: 3, text: 'GDCD-Xe' },
+    { day: 7, period: 4, text: 'Tin học-Lộc' },
+    { day: 7, period: 5, text: 'SHL-Lang' }
+  ],
+  '9A4': [
+    // T2
+    { day: 2, period: 1, text: 'Chào cờ-Văn Tài' },
+    { day: 2, period: 2, text: 'HĐCN-Văn Tài' },
+    { day: 2, period: 3, text: 'Ngoại ngữ-Khanh' },
+    { day: 2, period: 4, text: 'Sinh học-Thị Hiếu' },
+    { day: 2, period: 5, text: 'Toán-Văn Tài' },
+    // T3
+    { day: 3, period: 1, text: 'Công nghệ-Lê Ngân' },
+    { day: 3, period: 2, text: 'Lịch Sử-Lê The' },
+    { day: 3, period: 3, text: 'Ngoại ngữ-Khanh' },
+    { day: 3, period: 4, text: 'Địa Lí-Lý' },
+    { day: 3, period: 5, text: 'Hóa học-H Toàn' },
+    // T4
+    { day: 4, period: 1, text: 'Ngoại ngữ-Khanh' },
+    { day: 4, period: 2, text: 'Mỹ thuật-Đạt' },
+    { day: 4, period: 3, text: 'Toán-Văn Tài' },
+    { day: 4, period: 4, text: 'Toán-Văn Tài' },
+    { day: 4, period: 5, text: 'Ngữ văn-Lâm' },
+    // T5
+    { day: 5, period: 1, text: 'Âm nhạc-Xanh' },
+    { day: 5, period: 2, text: 'Toán-Văn Tài' },
+    { day: 5, period: 3, text: 'Ngữ văn-Lâm' },
+    { day: 5, period: 4, text: 'Ngữ văn-Lâm' },
+    // T6
+    { day: 6, period: 1, text: 'GDTC-Dân' },
+    { day: 6, period: 2, text: 'GDTC-Dân' },
+    { day: 6, period: 3, text: 'Vật lí-Thắm' },
+    { day: 6, period: 4, text: 'Ngữ văn-Lâm' },
+    { day: 6, period: 5, text: 'GDCD-Xe' },
+    // T7
+    { day: 7, period: 1, text: 'Tin học-Lộc' },
+    { day: 7, period: 2, text: 'Lịch Sử-Lê The' },
+    { day: 7, period: 3, text: 'Hóa học-H Toàn' },
+    { day: 7, period: 4, text: 'HĐ TN-HN-Phương' },
+    { day: 7, period: 5, text: 'SHL-Văn Tài' }
+  ],
+  '9A5': [
+    // T2
+    { day: 2, period: 1, text: 'Chào cờ-Thảo' },
+    { day: 2, period: 2, text: 'Hóa học-Phương' },
+    { day: 2, period: 3, text: 'HĐ TN-HN-Phương' },
+    { day: 2, period: 4, text: 'Toán-Lang' },
+    { day: 2, period: 5, text: 'Toán-Lang' },
+    // T3
+    { day: 3, period: 1, text: 'Ngữ văn-Nghĩa' },
+    { day: 3, period: 2, text: 'Ngữ văn-Nghĩa' },
+    { day: 3, period: 3, text: 'Công nghệ-Lê Ngân' },
+    { day: 3, period: 4, text: 'Ngoại ngữ-Thảo' },
+    { day: 3, period: 5, text: 'Hóa học-Phương' },
+    // T4
+    { day: 4, period: 1, text: 'Ngữ văn-Nghĩa' },
+    { day: 4, period: 2, text: 'Sinh học-Thị Hiếu' },
+    { day: 4, period: 3, text: 'GDTC-Dân' },
+    { day: 4, period: 4, text: 'GDTC-Dân' },
+    { day: 4, period: 5, text: 'Vật lí-Thị Hậu' },
+    // T5
+    { day: 5, period: 1, text: 'Ngữ văn-Nghĩa' },
+    { day: 5, period: 2, text: 'Âm nhạc-Xanh' },
+    { day: 5, period: 3, text: 'Lịch Sử-Lê The' },
+    { day: 5, period: 4, text: 'GDCD-Xe' },
+    // T6
+    { day: 6, period: 1, text: 'Địa Lí-Đỉnh' },
+    { day: 6, period: 2, text: 'Lịch Sử-Lê The' },
+    { day: 6, period: 3, text: 'Ngoại ngữ-Thảo' },
+    { day: 6, period: 4, text: 'HĐCN-Thảo' },
+    { day: 6, period: 5, text: 'Toán-Lang' },
+    // T7
+    { day: 7, period: 1, text: 'Mỹ thuật-Đạt' },
+    { day: 7, period: 2, text: 'Ngoại ngữ-Thảo' },
+    { day: 7, period: 3, text: 'Tin học-Lộc' },
+    { day: 7, period: 4, text: 'Toán-Lang' },
+    { day: 7, period: 5, text: 'SHL-Thảo' }
+  ],
+  '9A6': [
+    // T2
+    { day: 2, period: 1, text: 'Chào cờ-Phương' },
+    { day: 2, period: 2, text: 'Ngoại ngữ-Thảo' },
+    { day: 2, period: 3, text: 'Tin học-Lộc' },
+    { day: 2, period: 4, text: 'Mỹ thuật-Đạt' },
+    { day: 2, period: 5, text: 'Sinh học-Thị Hiếu' },
+    // T3
+    { day: 3, period: 1, text: 'Âm nhạc-Xanh' },
+    { day: 3, period: 2, text: 'Công nghệ-Lê Ngân' },
+    { day: 3, period: 3, text: 'HĐCN-Phương' },
+    { day: 3, period: 4, text: 'Hóa học-Phương' },
+    { day: 3, period: 5, text: 'Địa Lí-Đỉnh' },
+    // T4
+    { day: 4, period: 1, text: 'Hóa học-Phương' },
+    { day: 4, period: 2, text: 'Ngữ văn-Nghĩa' },
+    { day: 4, period: 3, text: 'Lịch Sử-Lê The' },
+    { day: 4, period: 4, text: 'Toán-Lang' },
+    { day: 4, period: 5, text: 'Toán-Lang' },
+    // T5
+    { day: 5, period: 1, text: 'Lịch Sử-Lê The' },
+    { day: 5, period: 2, text: 'Toán-Lang' },
+    { day: 5, period: 3, text: 'Toán-Lang' },
+    { day: 5, period: 4, text: 'Ngữ văn-Nghĩa' },
+    // T6
+    { day: 6, period: 1, text: 'Ngoại ngữ-Thảo' },
+    { day: 6, period: 2, text: 'Ngữ văn-Nghĩa' },
+    { day: 6, period: 3, text: 'Ngữ văn-Nghĩa' },
+    { day: 6, period: 4, text: 'Vật lí-Thắm' },
+    { day: 6, period: 5, text: 'HĐ TN-HN-Phương' },
+    // T7
+    { day: 7, period: 1, text: 'GDTC-Dân' },
+    { day: 7, period: 2, text: 'GDTC-Dân' },
+    { day: 7, period: 3, text: 'Ngoại ngữ-Thảo' },
+    { day: 7, period: 4, text: 'GDCD-Xe' },
+    { day: 7, period: 5, text: 'SHL-Phương' }
+  ]
+};
+
+/**
+ * Builds all official slots for THCS Đốc Binh Kiều (6A1-6A6, 7A1-7A6, 8A1-8A6, 9A1-9A6)
+ */
+export function buildTHCSDBKWeek1Slots(): TimetableSlot[] {
+  const slots: TimetableSlot[] = [];
+
+  // Khối 6 (Chiếu)
+  Object.entries(rawKhôi6).forEach(([name, schedule]) => {
+    const classId = `cls-${name.toLowerCase()}`;
+    slots.push(...buildClassSchedule(classId, name, 'CHIEU', schedule));
+  });
+
+  // Khối 7 (Chiếu)
+  Object.entries(rawKhôi7).forEach(([name, schedule]) => {
+    const classId = `cls-${name.toLowerCase()}`;
+    slots.push(...buildClassSchedule(classId, name, 'CHIEU', schedule));
+  });
+
+  // Khối 8 (Sáng)
+  Object.entries(rawKhôi8).forEach(([name, schedule]) => {
+    const classId = `cls-${name.toLowerCase()}`;
+    slots.push(...buildClassSchedule(classId, name, 'SANG', schedule));
+  });
+
+  // Khối 9 (Sáng)
+  Object.entries(rawKhôi9).forEach(([name, schedule]) => {
+    const classId = `cls-${name.toLowerCase()}`;
+    slots.push(...buildClassSchedule(classId, name, 'SANG', schedule));
+  });
+
+  return slots;
+}

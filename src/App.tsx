@@ -34,7 +34,8 @@ import {
 import {
   generateInitialTimetable,
   ensureTHPTOfficialSlots,
-  cloneTimetableForWeek
+  cloneTimetableForWeek,
+  createEmptyTimetableForWeek
 } from './utils/timetableHelper';
 
 import { Header } from './components/Header';
@@ -176,10 +177,11 @@ export default function App() {
     if (weeklyTimetables[currentWeek]) {
       return weeklyTimetables[currentWeek];
     }
-    if (weeklyTimetables[1]) {
-      return cloneTimetableForWeek(weeklyTimetables[1], currentWeek, config.academicYear);
+    if (currentWeek === 1) {
+      return generateInitialTimetable(classes, subjects, teachers, assignments, config);
     }
-    return generateInitialTimetable(classes, subjects, teachers, assignments, config);
+    // Weeks 2 to 35: Empty by default as requested by user
+    return createEmptyTimetableForWeek(currentWeek, config.academicYear);
   }, [weeklyTimetables, currentWeek, config.academicYear, classes, subjects, teachers, assignments, config]);
 
   const [activeTab, setActiveTab] = useState<ActiveTabType>('official');

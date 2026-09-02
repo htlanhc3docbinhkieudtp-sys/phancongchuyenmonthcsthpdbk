@@ -411,13 +411,19 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
 
               {/* Status Badge */}
               <div className="flex items-center gap-2 px-3 py-2 bg-slate-100/90 border border-slate-200 rounded-xl text-xs text-slate-800">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                  currentWeek === 1
+                    ? 'bg-emerald-500 animate-pulse'
+                    : (timetable.slots && timetable.slots.length > 0)
+                    ? 'bg-indigo-500'
+                    : 'bg-amber-400'
+                }`}></span>
                 <span className="font-bold">
                   {currentWeek === 1
-                    ? 'Tuần 1: TKB Chuẩn Chính Thức'
-                    : weeklyTimetables && weeklyTimetables[currentWeek]
-                    ? `Tuần ${currentWeek}: Đã có TKB riêng`
-                    : `Tuần ${currentWeek}: Đang áp dụng TKB Tuần 1`}
+                    ? 'Tuần 1: TKB Chuẩn Chính Thức (38 lớp: 14 THPT + 24 THCS ĐBK)'
+                    : weeklyTimetables && weeklyTimetables[currentWeek] && weeklyTimetables[currentWeek].slots && weeklyTimetables[currentWeek].slots.length > 0
+                    ? `Tuần ${currentWeek}: Đã có TKB (${weeklyTimetables[currentWeek].slots.length} tiết)`
+                    : `Tuần ${currentWeek}: Để trống (Chờ sao chép)`}
                 </span>
               </div>
             </div>
@@ -426,6 +432,23 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
             <div className="flex flex-wrap items-center gap-2">
               {isAdmin ? (
                 <>
+                  {currentWeek === 1 && (!weeklyTimetables[2] || !weeklyTimetables[2].slots || weeklyTimetables[2].slots.length === 0) && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (onCopyTimetableToWeek) {
+                          onCopyTimetableToWeek(1, [2], true);
+                          alert('Đã sao chép thành công Thời khóa biểu từ Tuần 1 sang Tuần 2!');
+                        }
+                      }}
+                      className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                      title="Sao chép toàn bộ TKB Tuần 1 sang Tuần 2"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Sao Chép Sang Tuần 2</span>
+                    </button>
+                  )}
+
                   <button
                     type="button"
                     onClick={() => setIsCopyModalOpen(true)}
@@ -440,12 +463,12 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                     <button
                       type="button"
                       onClick={() => {
-                        if (window.confirm('Khôi phục lại dữ liệu Thời khóa biểu Tuần 1 chuẩn chính thức (14 lớp THPT từ ma trận hình ảnh)?')) {
+                        if (window.confirm('Khôi phục lại dữ liệu Thời khóa biểu Tuần 1 chuẩn chính thức (14 lớp THPT + 24 lớp THCS Đốc Binh Kiều từ hình ảnh ma trận)?')) {
                           onRestoreWeek1Official();
                         }
                       }}
                       className="px-3 py-2 bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 border border-slate-200 hover:border-rose-200 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
-                      title="Nạp lại dữ liệu TKB Tuần 1 chuẩn chính thức của 14 lớp THPT"
+                      title="Nạp lại dữ liệu TKB Tuần 1 chuẩn chính thức của 14 lớp THPT & 24 lớp THCS Đốc Binh Kiều"
                     >
                       <RotateCcw className="w-3.5 h-3.5 text-rose-600" />
                       <span>Khôi Phục TKB Tuần 1 Chuẩn</span>
@@ -465,7 +488,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
             <span className="text-[11px] font-bold text-slate-400 shrink-0 mr-1">Chuyển nhanh:</span>
             {Array.from({ length: 18 }, (_, i) => i + 1).map(w => {
               const isSelected = currentWeek === w;
-              const hasCustom = weeklyTimetables && weeklyTimetables[w];
+              const hasCustom = (w === 1) || (weeklyTimetables && weeklyTimetables[w] && weeklyTimetables[w].slots && weeklyTimetables[w].slots.length > 0);
               return (
                 <button
                   key={w}
@@ -476,17 +499,18 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                       ? 'bg-indigo-600 text-white shadow-2xs font-extrabold ring-2 ring-indigo-300'
                       : hasCustom
                       ? 'bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-500'
                   }`}
+                  title={`Tuần ${w} ${hasCustom ? '(Đã có TKB)' : '(Để trống)'}`}
                 >
-                  T{w} {hasCustom && w !== 1 ? '•' : ''}
+                  T{w}{hasCustom && w !== 1 ? '•' : ''}
                 </button>
               );
             })}
             <span className="text-slate-300 mx-1">|</span>
             {Array.from({ length: 17 }, (_, i) => i + 19).map(w => {
               const isSelected = currentWeek === w;
-              const hasCustom = weeklyTimetables && weeklyTimetables[w];
+              const hasCustom = weeklyTimetables && weeklyTimetables[w] && weeklyTimetables[w].slots && weeklyTimetables[w].slots.length > 0;
               return (
                 <button
                   key={w}
@@ -497,10 +521,11 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                       ? 'bg-indigo-600 text-white shadow-2xs font-extrabold ring-2 ring-indigo-300'
                       : hasCustom
                       ? 'bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-500'
                   }`}
+                  title={`Tuần ${w} ${hasCustom ? '(Đã có TKB)' : '(Để trống)'}`}
                 >
-                  T{w}
+                  T{w}{hasCustom ? '•' : ''}
                 </button>
               );
             })}
@@ -766,6 +791,60 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
 
       {/* 3. Main Views */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        {/* Empty Week Information Banner (Tuần để trống theo yêu cầu) */}
+        {currentWeek > 1 && (!timetable.slots || timetable.slots.length === 0) && (
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 sm:p-5 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center shrink-0 shadow-2xs">
+                <Calendar className="w-5 h-5 text-amber-700" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h4 className="font-extrabold text-sm sm:text-base text-amber-950">
+                    Thời Khóa Biểu Tuần {currentWeek} đang để trống
+                  </h4>
+                  <span className="px-2 py-0.5 bg-amber-200/80 text-amber-900 text-[10px] font-black rounded-md">
+                    {getWeekDateRange(currentWeek).startDate} - {getWeekDateRange(currentWeek).endDate}
+                  </span>
+                </div>
+                <p className="text-xs text-amber-800/90 mt-1 leading-relaxed">
+                  Theo thiết lập của trường, thời khóa biểu từ Tuần 2 trở đi để trống để Quản trị viên chủ động theo dõi. 
+                  Khi hết Tuần 1 hoặc khi không cần thay đổi lịch học, Quản trị viên có thể bấm sao chép từ Tuần 1 sang.
+                </p>
+              </div>
+            </div>
+
+            {isAdmin ? (
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onCopyTimetableToWeek) {
+                      onCopyTimetableToWeek(1, [currentWeek], true);
+                      alert(`Đã sao chép thành công Thời khóa biểu từ Tuần 1 sang Tuần ${currentWeek}!`);
+                    }
+                  }}
+                  className="w-full sm:w-auto px-4 py-2.5 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Copy className="w-4 h-4" />
+                  <span>Sao chép TKB Tuần 1 sang Tuần {currentWeek}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsCopyModalOpen(true)}
+                  className="w-full sm:w-auto px-3.5 py-2.5 bg-white hover:bg-amber-100/50 text-amber-900 border border-amber-300 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>Tùy chọn khác...</span>
+                </button>
+              </div>
+            ) : (
+              <div className="text-xs text-amber-800 font-semibold italic bg-amber-100/60 px-3 py-2 rounded-xl border border-amber-200 shrink-0">
+                Chưa áp dụng TKB cho tuần này
+              </div>
+            )}
+          </div>
+        )}
+
         {/* VIEW 1: BY_CLASS (Thời Khóa Biểu Từng Lớp Học) */}
         {viewMode === 'BY_CLASS' && (
           <div className="space-y-6">
