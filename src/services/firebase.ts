@@ -40,6 +40,7 @@ export interface SchoolPlanData {
   lockedCells: LockedCell[];
   weeklySchedules?: WeeklySchedule[];
   timetable?: SchoolTimetable;
+  weeklyTimetables?: Record<number, SchoolTimetable>;
   updatedAt?: number;
   lastUpdatedBy?: string;
   version?: number;

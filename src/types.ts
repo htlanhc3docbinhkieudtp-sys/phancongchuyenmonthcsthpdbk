@@ -250,6 +250,7 @@ export interface SchoolTimetable {
   id: string;
   academicYear: string;
   semester: 'HK1' | 'HK2';
+  weekNumber?: number;
   appliedDate?: string;
   title?: string;
   slots: TimetableSlot[];

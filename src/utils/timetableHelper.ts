@@ -8,6 +8,7 @@ import {
   Assignment,
   SchoolConfig
 } from '../types';
+import { buildTHPTWeek1Slots } from '../data/thptWeek1Timetable';
 
 export const DAYS_OF_WEEK = [
   { value: 2, label: 'Thứ Hai', shortLabel: 'Thứ 2' },
@@ -34,6 +35,12 @@ export function generateInitialTimetable(
   const subjectMap = new Map(subjects.map(s => [s.id, s]));
   const slots: TimetableSlot[] = [];
 
+  // 1. First, populate exact THPT Week 1 slots from official images
+  const thptWeek1Slots = buildTHPTWeek1Slots();
+  const thptClassIds = new Set(['cls-10cb1', 'cls-10cb2', 'cls-10cb3', 'cls-10cb4', 'cls-10cb5', 'cls-11cb1', 'cls-11cb2', 'cls-11cb3', 'cls-11cb4', 'cls-12cb1', 'cls-12cb2', 'cls-12cb3', 'cls-12cb4', 'cls-12cb5']);
+  
+  slots.push(...thptWeek1Slots);
+
   // Group assignments by class
   const classAssignmentsMap = new Map<string, Assignment[]>();
   classes.forEach(c => classAssignmentsMap.set(c.id, []));
@@ -42,14 +49,19 @@ export function generateInitialTimetable(
     if (list) list.push(a);
   });
 
-  // Track teacher busy slots: Map<`day_session_period_teacherId`, boolean>
+  // Track teacher busy slots
   const teacherBusy = new Set<string>();
+  thptWeek1Slots.forEach(s => {
+    if (s.teacherId) {
+      teacherBusy.add(`${s.dayOfWeek}_${s.session}_${s.period}_${s.teacherId}`);
+    }
+  });
 
   // Determine standard session for each grade
-  // THPT (10, 11, 12) & 9: Buổi Sáng, Khối 6, 7, 8: Buổi Chiều hoặc Sáng tùy trường
-  classes.forEach((cls) => {
-    const isMorning = ['10', '11', '12', '9'].includes(cls.grade);
-    const session = isMorning ? 'SANG' : 'SANG'; // Mặc định sáng cho các lớp chính
+  // Only process THCS classes that are not in thptClassIds
+  classes.filter(cls => !thptClassIds.has(cls.id) && cls.level !== 'THPT').forEach((cls) => {
+    const isMorning = ['9', '8'].includes(cls.grade); // Khối 8, 9 học sáng, 6, 7 học chiều
+    const session = isMorning ? 'SANG' : 'CHIEU';
     const classAssignments = classAssignmentsMap.get(cls.id) || [];
 
     // Create a pool of subject periods to place
@@ -121,11 +133,9 @@ export function generateInitialTimetable(
           }
 
           if (chosenIndex === -1) {
-            // Teacher collision unavoidable, take next available
             chosenIndex = poolIndex;
           }
 
-          // Swap to poolIndex
           const item = periodPool[chosenIndex];
           if (chosenIndex !== poolIndex) {
             periodPool[chosenIndex] = periodPool[poolIndex];
@@ -156,7 +166,6 @@ export function generateInitialTimetable(
 
           poolIndex++;
         } else {
-          // Empty period
           slots.push({
             id: `${cls.id}_${day}_${session}_${period}`,
             classId: cls.id,
@@ -172,14 +181,87 @@ export function generateInitialTimetable(
   });
 
   return {
-    id: `tkb_${config.semester || 'HK1'}_${Date.now()}`,
+    id: `tkb_${config.semester || 'HK1'}_tuan1`,
     academicYear: config.academicYear || '2026 - 2027',
     semester: config.semester || 'HK1',
-    appliedDate: 'Thực hiện từ ngày 05/09/2026',
-    title: `Thời Khóa Biểu Toàn Trường - ${config.semester === 'HK2' ? 'Học kỳ II' : 'Học kỳ I'} Năm học ${config.academicYear || '2026 - 2027'}`,
+    appliedDate: 'Áp dụng Tuần 1 (từ ngày 07/09/2026)',
+    title: `Thời Khóa Biểu Tuần 1 - ${config.semester === 'HK2' ? 'Học kỳ II' : 'Học kỳ I'} Năm học ${config.academicYear || '2026 - 2027'}`,
     slots,
     updatedAt: Date.now(),
-    notes: 'TKB chính thức áp dụng cho cả 3 điểm trường (THPT, THCS Đốc Binh Kiều, THCS Tân Kiều)'
+    notes: 'TKB Tuần 1 chính thức theo dữ liệu xếp TKB nhà trường'
+  };
+}
+
+/**
+ * Ensure THPT classes (10CB1-5, 11CB1-4, 12CB1-5) always contain the official timetable data from the uploaded matrix
+ */
+export function ensureTHPTOfficialSlots(existingSlots: TimetableSlot[]): TimetableSlot[] {
+  const thptWeek1Slots = buildTHPTWeek1Slots();
+  const thptClassIds = new Set(['cls-10cb1', 'cls-10cb2', 'cls-10cb3', 'cls-10cb4', 'cls-10cb5', 'cls-11cb1', 'cls-11cb2', 'cls-11cb3', 'cls-11cb4', 'cls-12cb1', 'cls-12cb2', 'cls-12cb3', 'cls-12cb4', 'cls-12cb5']);
+
+  const nonThptSlots = (existingSlots || []).filter(s => !thptClassIds.has(s.classId));
+  return [...thptWeek1Slots, ...nonThptSlots];
+}
+
+/**
+ * Calculate dates for each week (HK1 starts 07/09/2026, HK2 starts 18/01/2027)
+ */
+export function getWeekDateRange(weekNumber: number): { startDate: string; endDate: string; label: string; fullTitle: string } {
+  let startBase: Date;
+  if (weekNumber >= 19) {
+    // HK2 start: 18/01/2027
+    startBase = new Date(2027, 0, 18);
+    const offsetDays = (weekNumber - 19) * 7;
+    startBase.setDate(startBase.getDate() + offsetDays);
+  } else {
+    // HK1 start: 07/09/2026
+    startBase = new Date(2026, 8, 7);
+    const offsetDays = (weekNumber - 1) * 7;
+    startBase.setDate(startBase.getDate() + offsetDays);
+  }
+
+  const endBase = new Date(startBase);
+  endBase.setDate(endBase.getDate() + 5); // Saturday
+
+  const fmt = (d: Date) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+  const startStr = fmt(startBase);
+  const endStr = fmt(endBase);
+
+  return {
+    startDate: startStr,
+    endDate: endStr,
+    label: `Tuần ${weekNumber} (${startStr.slice(0, 5)} - ${endStr.slice(0, 5)})`,
+    fullTitle: `Thời khóa biểu Tuần ${weekNumber} (Áp dụng từ ${startStr} đến ${endStr})`
+  };
+}
+
+/**
+ * Clone a timetable to another target week
+ */
+export function cloneTimetableForWeek(
+  sourceTimetable: SchoolTimetable,
+  targetWeek: number,
+  academicYear: string = '2026 - 2027'
+): SchoolTimetable {
+  const semester: 'HK1' | 'HK2' = targetWeek >= 19 ? 'HK2' : 'HK1';
+  const { startDate, endDate, fullTitle } = getWeekDateRange(targetWeek);
+
+  // Clone slots with new week tag in ID
+  const clonedSlots: TimetableSlot[] = (sourceTimetable.slots || []).map(s => ({
+    ...s,
+    id: `${s.classId}_w${targetWeek}_${s.dayOfWeek}_${s.session}_${s.period}`
+  }));
+
+  return {
+    id: `tkb_${semester}_tuan${targetWeek}`,
+    academicYear,
+    semester,
+    weekNumber: targetWeek,
+    appliedDate: `Áp dụng Tuần ${targetWeek} (từ ${startDate} đến ${endDate})`,
+    title: fullTitle,
+    slots: clonedSlots,
+    updatedAt: Date.now(),
+    notes: `Sao chép từ TKB Tuần ${sourceTimetable.weekNumber || 1} vào ngày ${new Date().toLocaleDateString('vi-VN')}`
   };
 }
 

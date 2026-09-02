@@ -12,7 +12,8 @@ import {
   DAYS_OF_WEEK,
   PERIODS,
   exportTimetableToExcel,
-  generateInitialTimetable
+  generateInitialTimetable,
+  getWeekDateRange
 } from '../utils/timetableHelper';
 import {
   Search,
@@ -36,11 +37,14 @@ import {
   Edit3,
   X,
   Layers,
-  ChevronDown
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Copy
 } from 'lucide-react';
 import { TimetableImportModal } from './TimetableImportModal';
 import { AutoScheduleModal } from './AutoScheduleModal';
-
+import { CopyTimetableModal } from './CopyTimetableModal';
 
 type CampusFilter = 'ALL' | 'THPT' | 'DBK' | 'TK';
 type ViewMode = 'BY_CLASS' | 'BY_TEACHER' | 'MASTER_GRID';
@@ -53,6 +57,11 @@ interface SchoolTimetableViewProps {
   teachers: Teacher[];
   assignments: Assignment[];
   timetable: SchoolTimetable;
+  currentWeek?: number;
+  weeklyTimetables?: Record<number, SchoolTimetable>;
+  onSelectWeek?: (week: number) => void;
+  onCopyTimetableToWeek?: (sourceWeek: number, targetWeeks: number[], overwrite: boolean) => void;
+  onRestoreWeek1Official?: () => void;
   isAdmin?: boolean;
   onPromptAdminLogin?: () => void;
   onUpdateTimetable: (updatedTimetable: SchoolTimetable) => void;
@@ -66,6 +75,11 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   teachers,
   assignments,
   timetable,
+  currentWeek = 1,
+  weeklyTimetables = {},
+  onSelectWeek,
+  onCopyTimetableToWeek,
+  onRestoreWeek1Official,
   isAdmin = false,
   onPromptAdminLogin,
   onUpdateTimetable,
@@ -79,6 +93,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isAutoScheduleModalOpen, setIsAutoScheduleModalOpen] = useState(false);
+  const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
 
 
   // Selected single class for focused view in BY_CLASS
@@ -202,6 +217,25 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
     };
   }, [timetable.slots, classes.length, teacherCollisions]);
 
+  // Helper to get full, clean teacher display name (never showing cryptic codes like Sơn.VV)
+  const getTeacherDisplayName = (slot?: TimetableSlot) => {
+    if (!slot) return '';
+    if (slot.teacherId) {
+      const found = teacherMap.get(slot.teacherId);
+      if (found) return found.name;
+    }
+    if (slot.teacherName && !slot.teacherName.includes('.')) {
+      return slot.teacherName;
+    }
+    const searchKey = slot.teacherCode || slot.teacherName || '';
+    if (searchKey) {
+      const cleanSearch = searchKey.split('.')[0].trim();
+      const foundByAlias = teachers.find(t => t.name.endsWith(cleanSearch) || t.name.includes(cleanSearch) || t.code.includes(cleanSearch));
+      if (foundByAlias) return foundByAlias.name;
+    }
+    return slot.teacherName || slot.teacherCode || '';
+  };
+
   // Handle saving an edited slot
   const handleSaveSlot = (updatedSlot: TimetableSlot) => {
     const existingIndex = timetable.slots.findIndex(
@@ -309,8 +343,170 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         </div>
       </div>
 
-      {/* 2. Auto Schedule Action Banner & Primary Filters */}
+      {/* 2. Week Selection Toolbar & Primary Controls */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 print:hidden space-y-3">
+        {/* WEEK SELECTION BAR */}
+        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs space-y-3">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            {/* Left: Week selector with dates */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <div className="flex items-center gap-1.5 bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 text-indigo-900">
+                <Calendar className="w-4 h-4 text-indigo-600" />
+                <span className="text-xs font-black uppercase tracking-wider">Chọn Tuần:</span>
+              </div>
+
+              {/* Prev button */}
+              <button
+                type="button"
+                onClick={() => onSelectWeek && onSelectWeek(Math.max(1, currentWeek - 1))}
+                disabled={currentWeek <= 1}
+                className="p-2 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none rounded-xl text-slate-700 transition-colors cursor-pointer border border-slate-200"
+                title="Tuần trước"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              {/* Week dropdown */}
+              <div className="relative min-w-[260px] sm:min-w-[300px]">
+                <select
+                  value={currentWeek}
+                  onChange={(e) => onSelectWeek && onSelectWeek(Number(e.target.value))}
+                  className="w-full h-10 pl-3.5 pr-8 bg-slate-50 hover:bg-white border border-slate-300 rounded-xl text-xs font-black text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden transition-all cursor-pointer shadow-2xs"
+                >
+                  <optgroup label="Học Kỳ I (Tuần 1 - 18)">
+                    {Array.from({ length: 18 }, (_, i) => i + 1).map((w) => {
+                      const info = getWeekDateRange(w);
+                      const hasCustom = weeklyTimetables && weeklyTimetables[w];
+                      return (
+                        <option key={w} value={w}>
+                          Tuần {w}: {info.startDate} - {info.endDate} {hasCustom ? '★' : ''} {w === 1 ? '• (TKB Gốc chuẩn)' : ''}
+                        </option>
+                      );
+                    })}
+                  </optgroup>
+                  <optgroup label="Học Kỳ II (Tuần 19 - 35)">
+                    {Array.from({ length: 17 }, (_, i) => i + 19).map((w) => {
+                      const info = getWeekDateRange(w);
+                      const hasCustom = weeklyTimetables && weeklyTimetables[w];
+                      return (
+                        <option key={w} value={w}>
+                          Tuần {w}: {info.startDate} - {info.endDate} {hasCustom ? '★' : ''}
+                        </option>
+                      );
+                    })}
+                  </optgroup>
+                </select>
+              </div>
+
+              {/* Next button */}
+              <button
+                type="button"
+                onClick={() => onSelectWeek && onSelectWeek(Math.min(35, currentWeek + 1))}
+                disabled={currentWeek >= 35}
+                className="p-2 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none rounded-xl text-slate-700 transition-colors cursor-pointer border border-slate-200"
+                title="Tuần sau"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+
+              {/* Status Badge */}
+              <div className="flex items-center gap-2 px-3 py-2 bg-slate-100/90 border border-slate-200 rounded-xl text-xs text-slate-800">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                <span className="font-bold">
+                  {currentWeek === 1
+                    ? 'Tuần 1: TKB Chuẩn Chính Thức'
+                    : weeklyTimetables && weeklyTimetables[currentWeek]
+                    ? `Tuần ${currentWeek}: Đã có TKB riêng`
+                    : `Tuần ${currentWeek}: Đang áp dụng TKB Tuần 1`}
+                </span>
+              </div>
+            </div>
+
+            {/* Right: Week Actions */}
+            <div className="flex flex-wrap items-center gap-2">
+              {isAdmin ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setIsCopyModalOpen(true)}
+                    className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                    title="Sao chép thời khóa biểu tuần này sang các tuần khác"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Sao Chép TKB Sang Tuần Khác...</span>
+                  </button>
+
+                  {onRestoreWeek1Official && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (window.confirm('Khôi phục lại dữ liệu Thời khóa biểu Tuần 1 chuẩn chính thức (14 lớp THPT từ ma trận hình ảnh)?')) {
+                          onRestoreWeek1Official();
+                        }
+                      }}
+                      className="px-3 py-2 bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 border border-slate-200 hover:border-rose-200 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
+                      title="Nạp lại dữ liệu TKB Tuần 1 chuẩn chính thức của 14 lớp THPT"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 text-rose-600" />
+                      <span>Khôi Phục TKB Tuần 1 Chuẩn</span>
+                    </button>
+                  )}
+                </>
+              ) : (
+                <div className="text-[11px] text-slate-500 font-medium italic">
+                  (Đăng nhập Quản trị để sao chép TKB giữa các tuần)
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Quick Week pills */}
+          <div className="flex items-center gap-1 overflow-x-auto pb-1 text-xs pt-2 border-t border-slate-100">
+            <span className="text-[11px] font-bold text-slate-400 shrink-0 mr-1">Chuyển nhanh:</span>
+            {Array.from({ length: 18 }, (_, i) => i + 1).map(w => {
+              const isSelected = currentWeek === w;
+              const hasCustom = weeklyTimetables && weeklyTimetables[w];
+              return (
+                <button
+                  key={w}
+                  type="button"
+                  onClick={() => onSelectWeek && onSelectWeek(w)}
+                  className={`px-2.5 py-1 rounded-lg font-bold text-xs shrink-0 transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-indigo-600 text-white shadow-2xs font-extrabold ring-2 ring-indigo-300'
+                      : hasCustom
+                      ? 'bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                  }`}
+                >
+                  T{w} {hasCustom && w !== 1 ? '•' : ''}
+                </button>
+              );
+            })}
+            <span className="text-slate-300 mx-1">|</span>
+            {Array.from({ length: 17 }, (_, i) => i + 19).map(w => {
+              const isSelected = currentWeek === w;
+              const hasCustom = weeklyTimetables && weeklyTimetables[w];
+              return (
+                <button
+                  key={w}
+                  type="button"
+                  onClick={() => onSelectWeek && onSelectWeek(w)}
+                  className={`px-2.5 py-1 rounded-lg font-bold text-xs shrink-0 transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-indigo-600 text-white shadow-2xs font-extrabold ring-2 ring-indigo-300'
+                      : hasCustom
+                      ? 'bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                  }`}
+                >
+                  T{w}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Highlighted Auto-Schedule Banner (Admin only) */}
         {isAdmin && (
           <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-2xl p-3.5 sm:p-4 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border border-amber-300/40">
@@ -692,9 +888,9 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                             <div className="font-extrabold text-slate-900 text-xs">
                                               {slot.subjectName}
                                             </div>
-                                            {(slot.teacherCode || slot.teacherName) && (
+                                            {getTeacherDisplayName(slot) && (
                                               <div className="text-[11px] font-semibold text-indigo-700">
-                                                {slot.teacherCode || slot.teacherName}
+                                                {getTeacherDisplayName(slot)}
                                               </div>
                                             )}
                                             {isCollision && (
@@ -766,9 +962,9 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                             <div className="font-extrabold text-slate-900 text-xs">
                                               {slot.subjectName}
                                             </div>
-                                            {(slot.teacherCode || slot.teacherName) && (
+                                            {getTeacherDisplayName(slot) && (
                                               <div className="text-[11px] font-semibold text-amber-800">
-                                                {slot.teacherCode || slot.teacherName}
+                                                {getTeacherDisplayName(slot)}
                                               </div>
                                             )}
                                           </div>
@@ -1066,9 +1262,9 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                       <div className="font-bold text-[11px] text-slate-900 truncate">
                                         {slot.subjectName}
                                       </div>
-                                      {slot.teacherCode && (
-                                        <div className="text-[10px] text-indigo-700 font-semibold truncate">
-                                          {slot.teacherCode}
+                                      {getTeacherDisplayName(slot) && (
+                                        <div className="text-[10px] text-indigo-700 font-semibold truncate" title={getTeacherDisplayName(slot)}>
+                                          {getTeacherDisplayName(slot)}
                                         </div>
                                       )}
                                     </div>
@@ -1246,6 +1442,19 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         currentTimetable={timetable}
         onApplyTimetable={(newTimetable) => {
           onUpdateTimetable(newTimetable);
+        }}
+      />
+
+      {/* 7. Copy Timetable Modal */}
+      <CopyTimetableModal
+        isOpen={isCopyModalOpen}
+        onClose={() => setIsCopyModalOpen(false)}
+        currentWeek={currentWeek}
+        availableWeeksWithData={Object.keys(weeklyTimetables).map(Number)}
+        onConfirmCopy={(sourceWeek, targetWeeks, overwrite) => {
+          if (onCopyTimetableToWeek) {
+            onCopyTimetableToWeek(sourceWeek, targetWeeks, overwrite);
+          }
         }}
       />
     </div>

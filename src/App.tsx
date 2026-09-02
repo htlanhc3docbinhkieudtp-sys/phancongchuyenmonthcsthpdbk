@@ -32,7 +32,9 @@ import {
   generateBalancedWeeklySchedules
 } from './utils/weeklyScheduleHelper';
 import {
-  generateInitialTimetable
+  generateInitialTimetable,
+  ensureTHPTOfficialSlots,
+  cloneTimetableForWeek
 } from './utils/timetableHelper';
 
 import { Header } from './components/Header';
@@ -141,17 +143,44 @@ export default function App() {
     return generateBalancedWeeklySchedules('HK1', initialAssignments, initialClasses, initialSubjects);
   });
 
-  const [timetable, setTimetable] = useState<SchoolTimetable>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_timetable`);
+  const [currentWeek, setCurrentWeek] = useState<number>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY}_current_week`);
+    return saved ? Number(saved) : 1;
+  });
+
+  const [weeklyTimetables, setWeeklyTimetables] = useState<Record<number, SchoolTimetable>>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY}_weekly_timetables`);
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') {
+          // Always ensure Week 1 has official THPT slots
+          if (parsed[1] && parsed[1].slots) {
+            parsed[1].slots = ensureTHPTOfficialSlots(parsed[1].slots);
+          } else {
+            parsed[1] = generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
+          }
+          return parsed;
+        }
       } catch (e) {
-        console.error('Failed to parse timetable', e);
+        console.error('Failed to parse weekly timetables', e);
       }
     }
-    return generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
+    const week1Tkb = generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
+    return {
+      1: week1Tkb
+    };
   });
+
+  const timetable = useMemo(() => {
+    if (weeklyTimetables[currentWeek]) {
+      return weeklyTimetables[currentWeek];
+    }
+    if (weeklyTimetables[1]) {
+      return cloneTimetableForWeek(weeklyTimetables[1], currentWeek, config.academicYear);
+    }
+    return generateInitialTimetable(classes, subjects, teachers, assignments, config);
+  }, [weeklyTimetables, currentWeek, config.academicYear, classes, subjects, teachers, assignments, config]);
 
   const [activeTab, setActiveTab] = useState<ActiveTabType>('official');
 
@@ -210,8 +239,22 @@ export default function App() {
           if (cloudData.weeklySchedules && cloudData.weeklySchedules.length > 0) {
             setWeeklySchedules(cloudData.weeklySchedules);
           }
-          if (cloudData.timetable && cloudData.timetable.slots && cloudData.timetable.slots.length > 0) {
-            setTimetable(cloudData.timetable);
+          if (cloudData.weeklyTimetables && Object.keys(cloudData.weeklyTimetables).length > 0) {
+            const merged = { ...cloudData.weeklyTimetables };
+            if (merged[1] && merged[1].slots) {
+              merged[1].slots = ensureTHPTOfficialSlots(merged[1].slots);
+            } else {
+              merged[1] = generateInitialTimetable(cloudData.classes || classes, cloudData.subjects || subjects, cloudData.teachers || teachers, cloudData.assignments || assignments, cloudData.config || config);
+            }
+            setWeeklyTimetables(merged);
+          } else if (cloudData.timetable && cloudData.timetable.slots && cloudData.timetable.slots.length > 0) {
+            const ensuredSlots = ensureTHPTOfficialSlots(cloudData.timetable.slots);
+            const tkb1: SchoolTimetable = {
+              ...cloudData.timetable,
+              weekNumber: 1,
+              slots: ensuredSlots
+            };
+            setWeeklyTimetables({ 1: tkb1 });
           }
           if (cloudData.updatedAt) setLastSyncedAt(cloudData.updatedAt);
           setCloudSyncStatus('synced');
@@ -227,6 +270,7 @@ export default function App() {
             lockedCells,
             weeklySchedules,
             timetable,
+            weeklyTimetables,
             updatedAt: Date.now()
           };
           await saveSchoolPlanToCloud(initialPayload);
@@ -265,6 +309,8 @@ export default function App() {
     localStorage.setItem(`${STORAGE_KEY}_assignments`, JSON.stringify(assignments));
     localStorage.setItem(`${STORAGE_KEY}_locked_cells`, JSON.stringify(lockedCells));
     localStorage.setItem(`${STORAGE_KEY}_weekly_schedules`, JSON.stringify(weeklySchedules));
+    localStorage.setItem(`${STORAGE_KEY}_current_week`, String(currentWeek));
+    localStorage.setItem(`${STORAGE_KEY}_weekly_timetables`, JSON.stringify(weeklyTimetables));
     localStorage.setItem(`${STORAGE_KEY}_timetable`, JSON.stringify(timetable));
 
     // Debounced Firebase Auto-Save (Only admin changes push to Cloud to prevent view-only overwrites)
@@ -285,6 +331,7 @@ export default function App() {
           lockedCells,
           weeklySchedules,
           timetable,
+          weeklyTimetables,
           updatedAt: Date.now()
         };
         const success = await saveSchoolPlanToCloud(payload);
@@ -297,7 +344,7 @@ export default function App() {
         }
       }, 1000);
     }
-  }, [config, departments, subjects, classes, teachers, assignments, lockedCells, weeklySchedules, timetable, isAdmin]);
+  }, [config, departments, subjects, classes, teachers, assignments, lockedCells, weeklySchedules, currentWeek, weeklyTimetables, timetable, isAdmin]);
 
   // Derived Calculations
   const workloads = useMemo(() => {
@@ -624,7 +671,11 @@ export default function App() {
           if (parsed.assignments) setAssignments(parsed.assignments);
           if (parsed.lockedCells) setLockedCells(parsed.lockedCells);
           if (parsed.weeklySchedules) setWeeklySchedules(parsed.weeklySchedules);
-          if (parsed.timetable) setTimetable(parsed.timetable);
+          if (parsed.weeklyTimetables && Object.keys(parsed.weeklyTimetables).length > 0) {
+            setWeeklyTimetables(parsed.weeklyTimetables);
+          } else if (parsed.timetable) {
+            setWeeklyTimetables({ 1: parsed.timetable });
+          }
           await saveSchoolPlanToCloud(parsed);
           setCloudSyncStatus('synced');
           setLastSyncedAt(Date.now());
@@ -638,7 +689,39 @@ export default function App() {
   };
 
   const handleUpdateTimetable = (updated: SchoolTimetable) => {
-    setTimetable(updated);
+    const weekNum = currentWeek || 1;
+    const updatedWithWeek: SchoolTimetable = {
+      ...updated,
+      weekNumber: weekNum,
+      updatedAt: Date.now()
+    };
+    setWeeklyTimetables(prev => ({
+      ...prev,
+      [weekNum]: updatedWithWeek
+    }));
+  };
+
+  const handleCopyTimetableToWeeks = (sourceWeek: number, targetWeeks: number[], overwrite: boolean) => {
+    const sourceTkb = weeklyTimetables[sourceWeek] || weeklyTimetables[1];
+    if (!sourceTkb) return;
+
+    setWeeklyTimetables(prev => {
+      const next = { ...prev };
+      targetWeeks.forEach(w => {
+        if (overwrite || !next[w]) {
+          next[w] = cloneTimetableForWeek(sourceTkb, w, config.academicYear);
+        }
+      });
+      return next;
+    });
+  };
+
+  const handleRestoreWeek1Official = () => {
+    const officialTkb = generateInitialTimetable(classes, subjects, teachers, assignments, config);
+    setWeeklyTimetables(prev => ({
+      ...prev,
+      1: officialTkb
+    }));
   };
 
   const handleUpdateWeeklySchedule = (updated: WeeklySchedule) => {
@@ -780,6 +863,11 @@ export default function App() {
             teachers={teachers}
             assignments={assignments}
             timetable={timetable}
+            currentWeek={currentWeek}
+            weeklyTimetables={weeklyTimetables}
+            onSelectWeek={setCurrentWeek}
+            onCopyTimetableToWeek={handleCopyTimetableToWeeks}
+            onRestoreWeek1Official={handleRestoreWeek1Official}
             isAdmin={isAdmin}
             onPromptAdminLogin={() => setIsAdminModalOpen(true)}
             onUpdateTimetable={handleUpdateTimetable}
