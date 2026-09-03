@@ -81,7 +81,7 @@ function parseSlotText(raw: string, className: string): {
     const teacherInfo = TEACHER_MAP[gvcnKey] || { id: '', name: 'GVCN', code: 'GVCN' };
     return {
       subjectId: 'sub-hdtn',
-      subjectName: 'Chào cờ / HĐTN',
+      subjectName: 'Chào cờ',
       teacherId: teacherInfo.id,
       teacherName: teacherInfo.name,
       teacherCode: teacherInfo.code,
@@ -169,12 +169,12 @@ function parseSlotText(raw: string, className: string): {
   } else if (upperSub === 'MT' || upperSub === 'MỸ THUẬT') {
     subjectId = 'sub-my-thuat';
     subjectName = 'Mỹ thuật';
-  } else if (upperSub.startsWith('HĐ QML') || upperSub === 'HD QML' || upperSub.startsWith('HĐTN')) {
+  } else if (upperSub.startsWith('HĐ QML') || upperSub === 'HD QML' || upperSub.startsWith('HĐCN') || upperSub.includes('QUY MÔ LỚP') || upperSub.includes('CHỦ NHIỆM')) {
     subjectId = 'sub-hdtn';
-    subjectName = 'HĐTN: Quy mô lớp';
-  } else if (upperSub.startsWith('HĐ CĐ') || upperSub === 'HD CD') {
+    subjectName = 'HĐTNHN (Sinh hoạt lớp)';
+  } else if (upperSub.startsWith('HĐ CĐ') || upperSub === 'HD CD' || upperSub.startsWith('HĐTN') || upperSub.startsWith('HDTN') || upperSub.includes('CHỦ ĐỀ') || upperSub.includes('CHUYÊN ĐỀ')) {
     subjectId = 'sub-hdtn';
-    subjectName = 'HĐTN: Hoạt động Chủ đề';
+    subjectName = 'HĐTNHN (Chuyên đề)';
   }
 
   return {

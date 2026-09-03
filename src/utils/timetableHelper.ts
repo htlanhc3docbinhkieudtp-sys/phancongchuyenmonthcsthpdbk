@@ -242,7 +242,74 @@ export function ensureTHPTOfficialSlots(existingSlots: TimetableSlot[]): Timetab
   ]);
 
   const nonOfficialSlots = (existingSlots || []).filter(s => !officialClassIds.has(s.classId));
-  return [...thptWeek1Slots, ...thcsDBKWeek1Slots, ...thcsTKWeek1Slots, ...nonOfficialSlots];
+  const combined = [...thptWeek1Slots, ...thcsDBKWeek1Slots, ...thcsTKWeek1Slots, ...nonOfficialSlots];
+  return normalizeTimetableSlots(combined);
+}
+
+/**
+ * Normalizes subject names for HĐTNHN in THCS classes (grades 6-9 in DBK and TK)
+ * - "Tiết hoạt động chủ nhiệm, hoạt động quy mô lớp" -> HĐTNHN (Sinh hoạt lớp)
+ * - "Tiết hoạt động trải nghiệm theo chủ đề, hoạt động TN" -> HĐTNHN (Chuyên đề)
+ * - For THPT (grades 10-12): keep original subject name intact
+ */
+export function getUnifiedSubjectName(slot: { classId?: string; className?: string; subjectName?: string }): string {
+  if (!slot?.subjectName) return '';
+  const sub = slot.subjectName.trim();
+  const cName = (slot.className || '').trim().toUpperCase();
+  const cId = (slot.classId || '').toLowerCase();
+
+  // Check if class is grade 6-9 (THCS DBK or TK: 6A1..6A10, 7A1..7A9, 8A1..8A10, 9A1..9A10)
+  // Grade 10-12 are THPT (10CB1..5, 11CB1..4, 12CB1..5)
+  const isTHCS = /^[6789]A\d+/i.test(cName) || cId.includes('-6') || cId.includes('-7') || cId.includes('-8') || cId.includes('-9');
+
+  if (isTHCS) {
+    // 1. Tiết hoạt động chủ nhiệm, hoạt động quy mô lớp sửa lại là HĐTNHN (Sinh hoạt lớp)
+    if (
+      sub === 'HĐCN' ||
+      sub.startsWith('HĐCN') ||
+      sub === 'HĐ Chủ nhiệm' ||
+      sub.startsWith('HĐ Chủ nhiệm') ||
+      sub === 'HĐ QML' ||
+      sub.startsWith('HĐ QML') ||
+      sub === 'HĐTN: Quy mô lớp' ||
+      sub.toLowerCase().includes('quy mô lớp') ||
+      sub.toLowerCase().includes('chủ nhiệm')
+    ) {
+      return 'HĐTNHN (Sinh hoạt lớp)';
+    }
+
+    // 2. Tiết hoạt động trải nghiệm theo chủ đề, hoạt động TN sửa lại thành HĐTNHN (Chuyên đề)
+    if (
+      sub === 'HĐ CĐ' ||
+      sub.startsWith('HĐ CĐ') ||
+      sub === 'HĐTN: Hoạt động Chủ đề' ||
+      sub === 'HĐTN - HN' ||
+      sub === 'HĐ TN-HN' ||
+      sub === 'HĐTN' ||
+      sub === 'HĐ TN' ||
+      sub.toLowerCase().includes('chuyên đề') ||
+      sub.toLowerCase().includes('chủ đề') ||
+      sub.toLowerCase().includes('trải nghiệm theo chủ đề')
+    ) {
+      return 'HĐTNHN (Chuyên đề)';
+    }
+  }
+
+  // Khối 10-12 THPT: giữ nguyên tên gọi của môn HĐTNHN
+  return sub;
+}
+
+export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[] {
+  return (slots || []).map(s => {
+    const unifiedName = getUnifiedSubjectName(s);
+    if (unifiedName && unifiedName !== s.subjectName) {
+      return {
+        ...s,
+        subjectName: unifiedName
+      };
+    }
+    return s;
+  });
 }
 
 /**
@@ -312,10 +379,10 @@ export function cloneTimetableForWeek(
   const { startDate, endDate, fullTitle } = getWeekDateRange(targetWeek);
 
   // Clone slots with new week tag in ID
-  const clonedSlots: TimetableSlot[] = (sourceTimetable.slots || []).map(s => ({
+  const clonedSlots: TimetableSlot[] = normalizeTimetableSlots((sourceTimetable.slots || []).map(s => ({
     ...s,
     id: `${s.classId}_w${targetWeek}_${s.dayOfWeek}_${s.session}_${s.period}`
-  }));
+  })));
 
   return {
     id: `tkb_${semester}_tuan${targetWeek}`,

@@ -35,7 +35,8 @@ import {
   generateInitialTimetable,
   ensureTHPTOfficialSlots,
   cloneTimetableForWeek,
-  createEmptyTimetableForWeek
+  createEmptyTimetableForWeek,
+  normalizeTimetableSlots
 } from './utils/timetableHelper';
 
 import { Header } from './components/Header';
@@ -75,16 +76,29 @@ export default function App() {
   // Load saved state or default
   const [config, setConfig] = useState<SchoolConfig>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_config`);
+    const savedLogo = localStorage.getItem(`${STORAGE_KEY}_school_logo`) || localStorage.getItem('phancong_dbk_v2_school_logo');
     if (saved) {
       const parsed: SchoolConfig = JSON.parse(saved);
       return {
         ...parsed,
         academicYear: (!parsed.academicYear || parsed.academicYear.includes('2024')) ? '2026 - 2027' : parsed.academicYear,
-        vicePrincipalName: (parsed.vicePrincipalName && parsed.vicePrincipalName.includes('-')) ? 'Nguyễn Minh Trí' : (parsed.vicePrincipalName || 'Nguyễn Minh Trí')
+        vicePrincipalName: (parsed.vicePrincipalName && parsed.vicePrincipalName.includes('-')) ? 'Nguyễn Minh Trí' : (parsed.vicePrincipalName || 'Nguyễn Minh Trí'),
+        logoUrl: parsed.logoUrl || savedLogo || '/logo.png'
       };
     }
-    return initialSchoolConfig;
+    return {
+      ...initialSchoolConfig,
+      logoUrl: savedLogo || '/logo.png'
+    };
   });
+
+  // Dynamically synchronize browser tab favicon with school logo
+  useEffect(() => {
+    const favicon = document.getElementById('app-favicon') as HTMLLinkElement | null;
+    if (favicon && config.logoUrl) {
+      favicon.href = config.logoUrl;
+    }
+  }, [config.logoUrl]);
 
   const [departments, setDepartments] = useState<Department[]>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_departments`);
@@ -155,12 +169,18 @@ export default function App() {
       try {
         const parsed = JSON.parse(saved);
         if (parsed && typeof parsed === 'object') {
-          // Always ensure Week 1 has official THPT slots
+          // Always ensure Week 1 has official THPT & THCS slots
           if (parsed[1] && parsed[1].slots) {
             parsed[1].slots = ensureTHPTOfficialSlots(parsed[1].slots);
           } else {
             parsed[1] = generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
           }
+          // Normalize subject names for all loaded weeks
+          Object.keys(parsed).forEach(wk => {
+            if (parsed[wk]?.slots) {
+              parsed[wk].slots = normalizeTimetableSlots(parsed[wk].slots);
+            }
+          });
           return parsed;
         }
       } catch (e) {
@@ -209,6 +229,7 @@ export default function App() {
         const cloudData = await loadSchoolPlanFromCloud();
         if (cloudData && isMounted) {
           if (cloudData.config) {
+            const savedLogo = localStorage.getItem(`${STORAGE_KEY}_school_logo`) || localStorage.getItem('phancong_dbk_v2_school_logo');
             const sanitizedConfig: SchoolConfig = {
               ...cloudData.config,
               academicYear: (!cloudData.config.academicYear || cloudData.config.academicYear.includes('2024'))
@@ -217,6 +238,7 @@ export default function App() {
               vicePrincipalName: (cloudData.config.vicePrincipalName && cloudData.config.vicePrincipalName.includes('-'))
                 ? 'Nguyễn Minh Trí'
                 : (cloudData.config.vicePrincipalName || 'Nguyễn Minh Trí'),
+              logoUrl: cloudData.config.logoUrl || savedLogo || '/logo.png'
             };
             setConfig(sanitizedConfig);
           }
@@ -248,13 +270,18 @@ export default function App() {
             } else {
               merged[1] = generateInitialTimetable(cloudData.classes || classes, cloudData.subjects || subjects, cloudData.teachers || teachers, cloudData.assignments || assignments, cloudData.config || config);
             }
+            Object.keys(merged).forEach(wk => {
+              if (merged[wk]?.slots) {
+                merged[wk].slots = normalizeTimetableSlots(merged[wk].slots);
+              }
+            });
             setWeeklyTimetables(merged);
           } else if (cloudData.timetable && cloudData.timetable.slots && cloudData.timetable.slots.length > 0) {
             const ensuredSlots = ensureTHPTOfficialSlots(cloudData.timetable.slots);
             const tkb1: SchoolTimetable = {
               ...cloudData.timetable,
               weekNumber: 1,
-              slots: ensuredSlots
+              slots: normalizeTimetableSlots(ensuredSlots)
             };
             setWeeklyTimetables({ 1: tkb1 });
           }

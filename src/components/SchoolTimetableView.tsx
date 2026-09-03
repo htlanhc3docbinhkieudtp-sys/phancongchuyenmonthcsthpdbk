@@ -13,7 +13,8 @@ import {
   PERIODS,
   exportTimetableToExcel,
   generateInitialTimetable,
-  getWeekDateRange
+  getWeekDateRange,
+  getUnifiedSubjectName
 } from '../utils/timetableHelper';
 import {
   Search,
@@ -164,7 +165,10 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
           // Check if any slot has this subject or teacher
           const hasMatchingSlot = timetable.slots.some(
             s => s.classId === cls.id && (
-              (s.subjectName && s.subjectName.toLowerCase().includes(term)) ||
+              (s.subjectName && (
+                s.subjectName.toLowerCase().includes(term) ||
+                getUnifiedSubjectName(s).toLowerCase().includes(term)
+              )) ||
               (s.teacherName && s.teacherName.toLowerCase().includes(term)) ||
               (s.teacherCode && s.teacherCode.toLowerCase().includes(term))
             )
@@ -217,6 +221,12 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
     };
   }, [timetable.slots, classes.length, teacherCollisions]);
 
+  // Helper to get unified subject display name
+  const getSubjectDisplayName = (slot?: TimetableSlot | { classId?: string; className?: string; subjectName?: string }) => {
+    if (!slot?.subjectName) return '';
+    return getUnifiedSubjectName(slot);
+  };
+
   // Helper to get full, clean teacher display name (never showing cryptic codes like Sơn.VV)
   const getTeacherDisplayName = (slot?: TimetableSlot) => {
     if (!slot) return '';
@@ -238,18 +248,24 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
 
   // Handle saving an edited slot
   const handleSaveSlot = (updatedSlot: TimetableSlot) => {
+    const unifiedName = getUnifiedSubjectName(updatedSlot);
+    const normalizedSlot: TimetableSlot = {
+      ...updatedSlot,
+      subjectName: unifiedName || updatedSlot.subjectName
+    };
+
     const existingIndex = timetable.slots.findIndex(
-      s => s.classId === updatedSlot.classId &&
-           s.dayOfWeek === updatedSlot.dayOfWeek &&
-           s.session === updatedSlot.session &&
-           s.period === updatedSlot.period
+      s => s.classId === normalizedSlot.classId &&
+           s.dayOfWeek === normalizedSlot.dayOfWeek &&
+           s.session === normalizedSlot.session &&
+           s.period === normalizedSlot.period
     );
 
     let newSlots = [...timetable.slots];
     if (existingIndex >= 0) {
-      newSlots[existingIndex] = updatedSlot;
+      newSlots[existingIndex] = normalizedSlot;
     } else {
-      newSlots.push(updatedSlot);
+      newSlots.push(normalizedSlot);
     }
 
     onUpdateTimetable({
@@ -965,7 +981,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                         {slot?.subjectName ? (
                                           <div className="space-y-0.5">
                                             <div className="font-extrabold text-slate-900 text-xs">
-                                              {slot.subjectName}
+                                              {getSubjectDisplayName(slot)}
                                             </div>
                                             {getTeacherDisplayName(slot) && (
                                               <div className="text-[11px] font-semibold text-indigo-700">
@@ -1039,7 +1055,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                         {slot?.subjectName ? (
                                           <div className="space-y-0.5">
                                             <div className="font-extrabold text-slate-900 text-xs">
-                                              {slot.subjectName}
+                                              {getSubjectDisplayName(slot)}
                                             </div>
                                             {getTeacherDisplayName(slot) && (
                                               <div className="text-[11px] font-semibold text-amber-800">
@@ -1174,7 +1190,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                                     {targetCls?.name || s.className}
                                                   </span>
                                                   <span className="text-[11px] text-slate-600 font-semibold">
-                                                    ({s.subjectName})
+                                                    ({getSubjectDisplayName(s)})
                                                   </span>
                                                 </div>
                                               );
@@ -1237,7 +1253,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                                     {targetCls?.name || s.className}
                                                   </span>
                                                   <span className="text-[11px] text-slate-600 font-semibold">
-                                                    ({s.subjectName})
+                                                    ({getSubjectDisplayName(s)})
                                                   </span>
                                                 </div>
                                               );
@@ -1338,8 +1354,8 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                 >
                                   {slot?.subjectName ? (
                                     <div className="leading-tight">
-                                      <div className="font-bold text-[11px] text-slate-900 truncate">
-                                        {slot.subjectName}
+                                      <div className="font-bold text-[11px] text-slate-900 truncate" title={getSubjectDisplayName(slot)}>
+                                        {getSubjectDisplayName(slot)}
                                       </div>
                                       {getTeacherDisplayName(slot) && (
                                         <div className="text-[10px] text-indigo-700 font-semibold truncate" title={getTeacherDisplayName(slot)}>
@@ -1395,19 +1411,42 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                   Môn học
                 </label>
                 <select
-                  value={editingSlot.subjectId || ''}
+                  value={
+                    editingSlot.subjectName === 'HĐTNHN (Sinh hoạt lớp)'
+                      ? 'sub-hdtn-shl'
+                      : editingSlot.subjectName === 'HĐTNHN (Chuyên đề)'
+                      ? 'sub-hdtn-cd'
+                      : editingSlot.subjectId || ''
+                  }
                   onChange={(e) => {
-                    const sub = subjectMap.get(e.target.value);
-                    setEditingSlot({
-                      ...editingSlot,
-                      subjectId: e.target.value,
-                      subjectName: sub?.name || ''
-                    });
+                    const val = e.target.value;
+                    if (val === 'sub-hdtn-shl') {
+                      setEditingSlot({
+                        ...editingSlot,
+                        subjectId: 'sub-hdtn',
+                        subjectName: 'HĐTNHN (Sinh hoạt lớp)'
+                      });
+                    } else if (val === 'sub-hdtn-cd') {
+                      setEditingSlot({
+                        ...editingSlot,
+                        subjectId: 'sub-hdtn',
+                        subjectName: 'HĐTNHN (Chuyên đề)'
+                      });
+                    } else {
+                      const sub = subjectMap.get(val);
+                      setEditingSlot({
+                        ...editingSlot,
+                        subjectId: val,
+                        subjectName: sub?.name || ''
+                      });
+                    }
                   }}
                   className="w-full h-9 px-3 text-xs font-semibold bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
                 >
                   <option value="">-- Để trống (Không có tiết) --</option>
                   <option value="sub-hdtn">Chào cờ / Hoạt động trải nghiệm</option>
+                  <option value="sub-hdtn-shl">HĐTNHN (Sinh hoạt lớp)</option>
+                  <option value="sub-hdtn-cd">HĐTNHN (Chuyên đề)</option>
                   <option value="sub-shl">Sinh hoạt lớp</option>
                   {subjects.map(s => (
                     <option key={s.id} value={s.id}>

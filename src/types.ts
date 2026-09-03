@@ -125,6 +125,7 @@ export interface SchoolConfig {
   standardThptPeriods: number; // 17
   standardThcsPeriods: number; // 19
   homeroomReduction: number; // 3
+  logoUrl?: string; // Data URL or path to official school logo
 }
 
 export interface WorkloadStats {

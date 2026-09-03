@@ -88,8 +88,12 @@ function getSubjectInfo(rawSubject: string): { id: string; name: string } {
   const s = rawSubject.trim();
   if (s.startsWith('Chào cờ')) return { id: 'sub-hdtn', name: 'Chào cờ' };
   if (s === 'SHL' || s.startsWith('SHL-')) return { id: 'sub-shl', name: 'Sinh hoạt lớp' };
-  if (s.startsWith('HĐ TN-HN') || s.startsWith('HĐTN-HN')) return { id: 'sub-hdtn', name: 'HĐTN - HN' };
-  if (s.startsWith('HĐCN')) return { id: 'sub-hdtn', name: 'HĐ Chủ nhiệm' };
+  if (s.startsWith('HĐ TN-HN') || s.startsWith('HĐTN-HN') || s.startsWith('HĐ TN') || s.startsWith('HĐTN') || s.includes('Chuyên đề') || s.includes('theo chủ đề')) {
+    return { id: 'sub-hdtn', name: 'HĐTNHN (Chuyên đề)' };
+  }
+  if (s.startsWith('HĐCN') || s.startsWith('HĐ Chủ nhiệm') || s.includes('QML') || s.includes('quy mô lớp') || s.includes('chủ nhiệm')) {
+    return { id: 'sub-hdtn', name: 'HĐTNHN (Sinh hoạt lớp)' };
+  }
   if (s === 'Toán') return { id: 'sub-toan', name: 'Toán học' };
   if (s === 'Ngữ văn') return { id: 'sub-van', name: 'Ngữ văn' };
   if (s === 'Ngoại ngữ') return { id: 'sub-anh', name: 'Tiếng Anh' };

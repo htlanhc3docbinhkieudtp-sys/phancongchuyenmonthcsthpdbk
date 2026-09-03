@@ -69,6 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
   onResetData,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const logoFileInputRef = useRef<HTMLInputElement>(null);
   const errorCount = conflicts.filter(c => c.severity === 'error').length;
   const warningCount = conflicts.filter(c => c.severity === 'warning').length;
 
@@ -80,21 +81,70 @@ export const Header: React.FC<HeaderProps> = ({
     }
   };
 
+  const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      if (dataUrl) {
+        onUpdateConfig({
+          ...config,
+          logoUrl: dataUrl
+        });
+        try {
+          localStorage.setItem('docbinhkieu_phancong_data_v9_school_logo', dataUrl);
+          const favicon = document.getElementById('app-favicon') as HTMLLinkElement | null;
+          if (favicon) {
+            favicon.href = dataUrl;
+          }
+        } catch (err) {
+          console.error('Error saving logo:', err);
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
   return (
     <header className="bg-indigo-900 text-white sticky top-0 z-30 shadow-md shrink-0">
       {/* Top Main Nav Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
         {/* Brand & School info */}
         <div className="flex items-center gap-3">
-          <div className="bg-white p-1 rounded-lg shrink-0 shadow-xs">
-            <div className="w-7 h-7 bg-indigo-600 rounded-sm flex items-center justify-center font-black text-xs text-white tracking-wider">
-              DBK
-            </div>
+          <div className="relative group shrink-0" title="Nhấp để tải lên/đổi tệp Logo trường (giữ nguyên tệp PNG gốc)">
+            <img
+              src={config.logoUrl || '/logo.png'}
+              alt="Logo Trường THCS & THPT Đốc Binh Kiều"
+              className="w-10 h-10 object-contain rounded-full bg-white shadow-sm p-0.5 border-2 border-white/40 cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => logoFileInputRef.current?.click()}
+            />
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={() => logoFileInputRef.current?.click()}
+                className="absolute -bottom-1 -right-1 bg-amber-500 hover:bg-amber-400 text-slate-900 p-0.5 rounded-full shadow-xs border border-white cursor-pointer"
+                title="Thay ảnh logo gốc trường (chọn logo doc binh kieu.png)"
+              >
+                <Upload className="w-2.5 h-2.5" />
+              </button>
+            )}
+            <input
+              ref={logoFileInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              className="hidden"
+              onChange={handleLogoFileChange}
+            />
           </div>
-          <div className="flex items-center">
-            <h1 className="text-base sm:text-lg font-bold tracking-tight uppercase text-white whitespace-nowrap">
+          <div className="flex flex-col">
+            <h1 className="text-sm sm:text-base font-extrabold tracking-tight uppercase text-white whitespace-nowrap leading-tight">
               THCS & THPT Đốc Binh Kiều
             </h1>
+            <span className="text-[10px] text-indigo-200 font-medium hidden sm:inline">
+              Sở Giáo dục và Đào tạo Đồng Tháp
+            </span>
           </div>
         </div>
 

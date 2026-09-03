@@ -19,6 +19,7 @@ export const initialSchoolConfig: SchoolConfig = {
   standardThptPeriods: 17,
   standardThcsPeriods: 19,
   homeroomReduction: 3,
+  logoUrl: '/logo.png',
 };
 
 export const initialDepartments: Department[] = [
