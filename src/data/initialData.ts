@@ -8,6 +8,7 @@ import {
   LockedCell
 } from '../types';
 import { officialStaffList } from './schoolStaffData';
+import { supplementaryAssignments } from './supplementaryAssignments';
 
 export const initialSchoolConfig: SchoolConfig = {
   schoolName: 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU',
@@ -1020,6 +1021,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-9-6-am', classId: 'cls-9a6', subjectId: 'sub-am-nhac', teacherId: 'tch-td-9', periodsPerWeek: 1 }, // Xanh
   { id: 'as-9-6-cn', classId: 'cls-9a6', subjectId: 'sub-cn', teacherId: 'tch-khtn-24', periodsPerWeek: 1.5 }, // Ngân
   { id: 'as-9-6-mt', classId: 'cls-9a6', subjectId: 'sub-my-thuat', teacherId: 'tch-td-5', periodsPerWeek: 1 }, // Đạt
+  // Bổ sung các lớp Tân Kiều và các môn còn trống từ Thời khóa biểu Tuần 1
+  ...supplementaryAssignments
 ];
 
 export const initialLockedCells: LockedCell[] = (() => {

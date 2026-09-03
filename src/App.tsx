@@ -138,7 +138,25 @@ export default function App() {
 
   const [assignments, setAssignments] = useState<Assignment[]>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_assignments`);
-    return saved ? JSON.parse(saved) : initialAssignments;
+    if (saved) {
+      try {
+        const parsed: Assignment[] = JSON.parse(saved);
+        if (parsed && parsed.length < initialAssignments.length) {
+          const map = new Map(parsed.map(a => [`${a.classId}_${a.subjectId}`, a]));
+          initialAssignments.forEach(ia => {
+            const k = `${ia.classId}_${ia.subjectId}`;
+            if (!map.has(k)) {
+              map.set(k, ia);
+            }
+          });
+          return Array.from(map.values());
+        }
+        return parsed;
+      } catch (e) {
+        console.error('Failed to parse assignments', e);
+      }
+    }
+    return initialAssignments;
   });
 
   const [lockedCells, setLockedCells] = useState<LockedCell[]>(() => {
@@ -150,7 +168,12 @@ export default function App() {
     const saved = localStorage.getItem(`${STORAGE_KEY}_weekly_schedules`);
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed: WeeklySchedule[] = JSON.parse(saved);
+        const w1 = parsed.find(ws => ws.weekNumber === 1);
+        if (!w1 || w1.assignments.length < 600) {
+          return generateBalancedWeeklySchedules('HK1', initialAssignments, initialClasses, initialSubjects);
+        }
+        return parsed;
       } catch (e) {
         console.error('Failed to parse weekly schedules', e);
       }
@@ -906,12 +929,14 @@ export default function App() {
             teachers={teachers}
             baseAssignments={assignments}
             weeklySchedules={weeklySchedules}
+            timetableSlots={weeklyTimetables[1]?.slots || timetable.slots}
             isAdmin={isAdmin}
             onPromptAdminLogin={() => setIsAdminModalOpen(true)}
             onUpdateWeeklySchedule={handleUpdateWeeklySchedule}
             onAutoGenerateAllWeeks={handleAutoGenerateAllWeeks}
             onCopyWeekSchedule={handleCopyWeekSchedule}
             onResetWeekSchedule={handleResetWeekSchedule}
+            onUpdateBaseAssignments={(newAss) => setAssignments(newAss)}
           />
         )}
 

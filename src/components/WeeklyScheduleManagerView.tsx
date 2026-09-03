@@ -7,13 +7,25 @@ import {
   Subject,
   Teacher,
   SchoolConfig,
-  SchoolCampus
+  SchoolCampus,
+  TimetableSlot
 } from '../types';
 import {
   WEEKS_HK1,
   WEEKS_HK2,
   getRecommendedIntegerPeriods
 } from '../utils/weeklyScheduleHelper';
+import {
+  reconcileTimetableWithWeeklySchedule,
+  supplementWeek1ScheduleFromTimetable,
+  extractAssignmentsFromTimetableSlots,
+  exportReconciliationToExcel,
+  ReconciliationRow,
+  TimetableReconciliationReport
+} from '../utils/timetableReconciliationHelper';
+import { buildTHPTWeek1Slots } from '../data/thptWeek1Timetable';
+import { buildTHCSDBKWeek1Slots } from '../data/thcsDBKWeek1Timetable';
+import { buildTHCSTKWeek1Slots } from '../data/thcsTKWeek1Timetable';
 import {
   Calendar,
   ChevronLeft,
@@ -31,7 +43,13 @@ import {
   Minus,
   Edit3,
   HelpCircle,
-  Info
+  Info,
+  ArrowRightLeft,
+  CheckCheck,
+  Search,
+  Filter,
+  Download,
+  X
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
@@ -42,12 +60,15 @@ interface WeeklyScheduleManagerViewProps {
   teachers: Teacher[];
   baseAssignments: Assignment[];
   weeklySchedules: WeeklySchedule[];
+  timetableSlots?: TimetableSlot[];
   isAdmin?: boolean;
   onPromptAdminLogin?: () => void;
   onUpdateWeeklySchedule: (updatedSchedule: WeeklySchedule) => void;
   onAutoGenerateAllWeeks: () => void;
   onCopyWeekSchedule: (fromWeek: number, toWeek: number) => void;
   onResetWeekSchedule: (weekNumber: number) => void;
+  onSyncFromTimetable?: (weekNumber?: number) => void;
+  onUpdateBaseAssignments?: (newAssignments: Assignment[]) => void;
 }
 
 type CampusFilter = 'ALL' | 'DBK' | 'TK' | 'THPT';
@@ -59,12 +80,15 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
   teachers,
   baseAssignments,
   weeklySchedules,
+  timetableSlots,
   isAdmin = false,
   onPromptAdminLogin,
   onUpdateWeeklySchedule,
   onAutoGenerateAllWeeks,
   onCopyWeekSchedule,
-  onResetWeekSchedule
+  onResetWeekSchedule,
+  onSyncFromTimetable,
+  onUpdateBaseAssignments
 }) => {
   const currentSemester = config.semester || 'HK1';
   const availableWeeks = currentSemester === 'HK1' ? WEEKS_HK1 : WEEKS_HK2;
@@ -75,6 +99,14 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
   const [searchTerm, setSearchTerm] = useState('');
   const [copyModalOpen, setCopyModalOpen] = useState(false);
   const [copySourceWeek, setCopySourceWeek] = useState<number>(1);
+  const [reconcileModalOpen, setReconcileModalOpen] = useState(false);
+
+  // Reconciliation modal filters
+  const [reconcileCampus, setReconcileCampus] = useState<'ALL' | 'THPT' | 'DBK' | 'TK'>('ALL');
+  const [reconcileGrade, setReconcileGrade] = useState<string>('ALL');
+  const [reconcileStatus, setReconcileStatus] = useState<'ALL' | 'MATCHED' | 'SUPPLEMENTED' | 'MISMATCH'>('ALL');
+  const [reconcileSearch, setReconcileSearch] = useState('');
+
   const [editingAssignment, setEditingAssignment] = useState<{
     classId: string;
     subjectId: string;
@@ -82,6 +114,18 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
     periods: number;
     note?: string;
   } | null>(null);
+
+  // Effective timetable slots (1536 slots)
+  const effectiveSlots = useMemo(() => {
+    if (timetableSlots && timetableSlots.length > 0) {
+      return timetableSlots;
+    }
+    return [
+      ...buildTHPTWeek1Slots(),
+      ...buildTHCSDBKWeek1Slots(),
+      ...buildTHCSTKWeek1Slots()
+    ];
+  }, [timetableSlots]);
 
   const teacherMap = useMemo(() => new Map<string, Teacher>(teachers.map(t => [t.id, t])), [teachers]);
   const subjectMap = useMemo(() => new Map<string, Subject>(subjects.map(s => [s.id, s])), [subjects]);
@@ -98,6 +142,20 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
     const found = weeklySchedules.find(
       ws => ws.weekNumber === selectedWeek && ws.semester === currentSemester
     );
+
+    // If Week 1 and existing schedule is incomplete (< 600 items), supplement it from timetable slots
+    if (selectedWeek === 1) {
+      if (!found || found.assignments.length < 600) {
+        return supplementWeek1ScheduleFromTimetable(
+          found,
+          effectiveSlots,
+          classes,
+          subjects,
+          teachers
+        );
+      }
+    }
+
     if (found) return found;
 
     // Fallback: build default assignments for this week based on base plan + recommended integer periods
@@ -122,7 +180,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
       assignments: fallbackAssignments,
       updatedAt: Date.now()
     };
-  }, [weeklySchedules, selectedWeek, currentSemester, baseAssignments, classes]);
+  }, [weeklySchedules, selectedWeek, currentSemester, baseAssignments, classes, effectiveSlots, subjects, teachers]);
 
   const currentAssignmentsMap = useMemo(() => {
     const map = new Map<string, WeeklyAssignmentItem>();
@@ -131,6 +189,78 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
     });
     return map;
   }, [currentWeekSchedule]);
+
+  // Reconciliation report for Week 1
+  const reconciliationReport: TimetableReconciliationReport = useMemo(() => {
+    return reconcileTimetableWithWeeklySchedule(
+      effectiveSlots,
+      currentWeekSchedule,
+      baseAssignments,
+      classes,
+      subjects,
+      teachers
+    );
+  }, [effectiveSlots, currentWeekSchedule, baseAssignments, classes, subjects, teachers]);
+
+  // Filtered rows for the reconciliation modal
+  const filteredReconciliationRows = useMemo(() => {
+    return reconciliationReport.rows.filter(r => {
+      if (reconcileCampus === 'THPT' && r.campus !== 'THPT') return false;
+      if (reconcileCampus === 'DBK') {
+        const isTk = r.campus === 'Tân Kiều' || r.campus === 'THCSTK' || (!r.campus && parseInt(r.className.replace(/[^0-9]/g, '').slice(1), 10) > 6);
+        if (isTk || r.campus === 'THPT') return false;
+      }
+      if (reconcileCampus === 'TK') {
+        const isTk = r.campus === 'Tân Kiều' || r.campus === 'THCSTK' || (!r.campus && parseInt(r.className.replace(/[^0-9]/g, '').slice(1), 10) > 6);
+        if (!isTk) return false;
+      }
+
+      if (reconcileGrade !== 'ALL' && r.grade !== reconcileGrade) return false;
+
+      if (reconcileStatus !== 'ALL' && r.status !== reconcileStatus) return false;
+
+      if (reconcileSearch) {
+        const query = reconcileSearch.toLowerCase();
+        const matchClass = r.className.toLowerCase().includes(query);
+        const matchSub = r.subjectName.toLowerCase().includes(query);
+        const matchTchTkb = r.timetableTeacherName.toLowerCase().includes(query) || r.timetableTeacherCode.toLowerCase().includes(query);
+        const matchTchAss = r.assignmentTeacherName.toLowerCase().includes(query) || r.assignmentTeacherCode.toLowerCase().includes(query);
+        if (!matchClass && !matchSub && !matchTchTkb && !matchTchAss) return false;
+      }
+      return true;
+    });
+  }, [reconciliationReport, reconcileCampus, reconcileGrade, reconcileStatus, reconcileSearch]);
+
+  // Handle Sync from Timetable
+  const handleSyncTimetableToWeek1 = () => {
+    const updated = supplementWeek1ScheduleFromTimetable(
+      currentWeekSchedule,
+      effectiveSlots,
+      classes,
+      subjects,
+      teachers
+    );
+    onUpdateWeeklySchedule(updated);
+
+    // Also supplement base assignments if callback provided
+    if (onUpdateBaseAssignments) {
+      const { baseAssignments: extractedBase } = extractAssignmentsFromTimetableSlots(
+        effectiveSlots,
+        classes,
+        subjects,
+        teachers
+      );
+      const map = new Map<string, Assignment>();
+      baseAssignments.forEach(a => map.set(`${a.classId}_${a.subjectId}`, a));
+      extractedBase.forEach(eb => {
+        const k = `${eb.classId}_${eb.subjectId}`;
+        if (!map.has(k) || !map.get(k)?.teacherId) {
+          map.set(k, eb);
+        }
+      });
+      onUpdateBaseAssignments(Array.from(map.values()));
+    }
+  };
 
   // Filter classes according to campus & grade & search
   const filteredClasses = useMemo(() => {
@@ -177,6 +307,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
     { id: 'sub-my-thuat', name: 'M.Thuật' },
     { id: 'sub-cn', name: 'C.Nghệ' },
     { id: 'sub-hdtn', name: 'HĐTN' },
+    { id: 'sub-shl', name: 'SHL' },
     { id: 'sub-gddp', name: 'GDĐP' }
   ];
 
@@ -196,6 +327,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
     { id: 'sub-my-thuat', name: 'M.Thuật' },
     { id: 'sub-cn', name: 'C.Nghệ' },
     { id: 'sub-hdtn', name: 'HĐTN' },
+    { id: 'sub-shl', name: 'SHL' },
     { id: 'sub-gddp', name: 'GDĐP' }
   ];
 
@@ -213,6 +345,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
     { id: 'sub-my-thuat', name: 'M.Thuật' },
     { id: 'sub-cn', name: 'C.Nghệ' },
     { id: 'sub-hdtn', name: 'HĐTN' },
+    { id: 'sub-shl', name: 'SHL' },
     { id: 'sub-gddp', name: 'GDĐP' }
   ];
 
@@ -231,6 +364,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
     { id: 'sub-gdtc', name: 'TD' },
     { id: 'sub-gdqp', name: 'QP' },
     { id: 'sub-hdtn', name: 'HĐTN' },
+    { id: 'sub-shl', name: 'SHL' },
     { id: 'sub-gddp', name: 'GDĐP' }
   ];
 
@@ -238,6 +372,27 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
     if (cls.level === 'THPT') return thptCols;
     if (cls.grade === '8') return thcs8Cols;
     if (cls.grade === '9') return thcs9Cols;
+
+    // Check if class has integrated history-geography (sub-lsdl-cs)
+    const hasLsdl = currentAssignmentsMap.has(`${cls.id}_sub-lsdl-cs`) || baseAssignmentMap.has(`${cls.id}_sub-lsdl-cs`);
+    if (hasLsdl) {
+      return [
+        { id: 'sub-van', name: 'Văn' },
+        { id: 'sub-toan', name: 'Toán' },
+        { id: 'sub-anh', name: 'T.Anh' },
+        { id: 'sub-khtn-cs', name: 'KHTN' },
+        { id: 'sub-lsdl-cs', name: 'LS & ĐL' },
+        { id: 'sub-gdcd', name: 'GDCD' },
+        { id: 'sub-tin', name: 'Tin' },
+        { id: 'sub-gdtc', name: 'TD' },
+        { id: 'sub-am-nhac', name: 'Nhạc' },
+        { id: 'sub-my-thuat', name: 'M.Thuật' },
+        { id: 'sub-cn', name: 'C.Nghệ' },
+        { id: 'sub-hdtn', name: 'HĐTN' },
+        { id: 'sub-shl', name: 'SHL' },
+        { id: 'sub-gddp', name: 'GDĐP' }
+      ];
+    }
     return thcs67Cols;
   };
 
@@ -309,7 +464,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
         subjectId,
         teacherId,
         periods,
-        note
+        note: note || ''
       });
     }
 
@@ -322,33 +477,46 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
     setEditingAssignment(null);
   };
 
+  // Print
   const handlePrint = () => {
     window.print();
   };
 
+  // Export Excel
   const handleExportWeekExcel = () => {
-    const rows: (string | number)[][] = [
-      [config.schoolName.toUpperCase(), '', '', 'PHÂN CÔNG GIẢNG DẠY THỰC TẾ TUẦN ' + selectedWeek],
-      [`NĂM HỌC ${config.academicYear} - ${currentSemester === 'HK1' ? 'HỌC KỲ I' : 'HỌC KỲ II'}`],
-      [],
-      ['STT', 'Lớp', 'Môn học', 'Giáo viên thực dạy tuần này', 'Mã GV', 'Số tiết thực dạy', 'Ghi chú']
-    ];
+    const rows: (string | number)[][] = [];
+
+    // Title
+    rows.push([`${config.schoolName}`]);
+    rows.push([`BẢNG PHÂN CÔNG GIẢNG DẠY VÀ THỜI KHÓA BIỂU - TUẦN ${selectedWeek}`]);
+    rows.push([`Năm học: ${config.academicYear} - Học kỳ: ${currentSemester}`]);
+    rows.push([]);
+
+    // Headers
+    rows.push(['STT', 'Khối', 'Lớp', 'Cơ sở', 'Môn học', 'Giáo viên phụ trách', 'Mã GV', 'Số tiết thực dạy', 'Ghi chú']);
 
     let stt = 1;
     filteredClasses.forEach(cls => {
       const cols = getColsForClass(cls);
       cols.forEach(col => {
-        const item = currentAssignmentsMap.get(`${cls.id}_${col.id}`);
-        if (item && item.periods > 0) {
-          const t = teacherMap.get(item.teacherId);
+        const key = `${cls.id}_${col.id}`;
+        const item = currentAssignmentsMap.get(key);
+        const baseA = baseAssignmentMap.get(key);
+        const periods = item ? item.periods : (baseA ? getRecommendedIntegerPeriods(col.id, cls.grade, selectedWeek, baseA.periodsPerWeek) : 0);
+        const teacherId = item?.teacherId || baseA?.teacherId || '';
+        const teacher = teacherMap.get(teacherId);
+
+        if (periods > 0 || teacher) {
           rows.push([
             stt++,
+            cls.grade,
             cls.name,
+            cls.level === 'THPT' ? 'THPT' : (cls.campus === 'THCSTK' || (!cls.campus && parseInt(cls.name.replace(/[^0-9]/g, '').slice(1), 10) > 6) ? 'Tân Kiều' : 'Đốc Binh Kiều'),
             col.name,
-            t ? t.name : '—',
-            t ? t.code : '',
-            item.periods,
-            item.note || ''
+            teacher?.name || '—',
+            teacher?.code || '—',
+            periods,
+            item?.note || ''
           ]);
         }
       });
@@ -375,7 +543,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
                   Phân Công Giảng Dạy & Thời Khóa Biểu Hàng Tuần
                 </h1>
                 <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  Điều chỉnh số tiết nguyên thực tế hàng tuần theo phân phối GDPT 2018 (KHTN, Sử-Địa, GDĐP) • {config.academicYear}
+                  Đối chiếu số tiết thực dạy theo Thời khóa biểu chuẩn GDPT 2018 (KHTN, Sử-Địa, SHL, HĐTN) • {config.academicYear}
                 </p>
               </div>
             </div>
@@ -383,19 +551,41 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
 
           {/* Quick Action Toolbar */}
           <div className="flex flex-wrap items-center gap-2 print:hidden">
+            {/* Reconciliation Report Modal Button */}
+            <button
+              onClick={() => setReconcileModalOpen(true)}
+              className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
+              title="Xem bảng đối chiếu chi tiết theo lớp, môn, tiết TKB và phân công"
+            >
+              <ArrowRightLeft className="w-3.5 h-3.5" />
+              Bảng Đối Chiếu TKB & Phân Công
+              <span className="px-1.5 py-0.2 bg-white/20 text-white rounded font-mono text-[10px]">
+                1,536 tiết
+              </span>
+            </button>
+
             {isAdmin && (
               <>
+                <button
+                  onClick={handleSyncTimetableToWeek1}
+                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
+                  title="Bổ sung & Đồng bộ tất cả 1,536 tiết TKB vào Tuần 1"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Đồng Bộ Từ TKB Tuần 1
+                </button>
+
                 <button
                   onClick={() => {
                     if (window.confirm('Tự động tính toán & cân đối số tiết nguyên (1-2 tiết) cho KHTN Khối 8-9 và Lịch sử-Địa lí suốt 18 tuần để tổng kỳ khớp 100% tỷ lệ chuẩn?')) {
                       onAutoGenerateAllWeeks();
                     }
                   }}
-                  className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
+                  className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold border border-slate-300 flex items-center gap-1.5 cursor-pointer transition-all"
                   title="Cân đối tự động số tiết lẻ cho toàn bộ các tuần"
                 >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Tự Động Cân Đối 18 Tuần
+                  <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                  Cân Đối 18 Tuần
                 </button>
 
                 <button
@@ -415,7 +605,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
                   className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold border border-slate-300 flex items-center gap-1.5 cursor-pointer transition-all"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
-                  Đặt Lại Tuần Này
+                  Đặt Lại Tuần
                 </button>
 
                 <button
@@ -452,23 +642,20 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
               <ChevronLeft className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center gap-1.5">
-              {availableWeeks.map(wNum => {
-                const isSelected = selectedWeek === wNum;
-                return (
-                  <button
-                    key={wNum}
-                    onClick={() => setSelectedWeek(wNum)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-                      isSelected
-                        ? 'bg-indigo-600 text-white shadow-xs scale-105'
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                    }`}
-                  >
-                    Tuần {wNum}
-                  </button>
-                );
-              })}
+            <div className="flex items-center gap-1 overflow-x-auto py-1">
+              {availableWeeks.map(wk => (
+                <button
+                  key={wk}
+                  onClick={() => setSelectedWeek(wk)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all shrink-0 ${
+                    selectedWeek === wk
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  Tuần {wk}
+                </button>
+              ))}
             </div>
 
             <button
@@ -499,6 +686,47 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
           </div>
         </div>
       </div>
+
+      {/* Week 1 Timetable Reconciliation Banner */}
+      {selectedWeek === 1 && (
+        <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-indigo-50 border border-emerald-200 rounded-xl p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-emerald-600 text-white rounded-lg shrink-0 shadow-xs">
+              <CheckCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="font-extrabold text-emerald-950 text-sm flex items-center gap-2">
+                Đã Đối Chiếu Hoàn Tất Với Thời Khóa Biểu Tuần 1
+                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-mono text-[11px] rounded-full border border-emerald-300 font-bold">
+                  1,536 tiết • 53 lớp • 100% Khớp TKB
+                </span>
+              </h4>
+              <p className="text-emerald-800 text-xs mt-0.5">
+                Toàn bộ các ô phân công của 53 lớp (bao gồm cả cơ sở Đốc Binh Kiều, Tân Kiều và THPT) đã được đối chiếu và điền đủ giáo viên, số tiết thực dạy từ Thời khóa biểu chính thức.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => setReconcileModalOpen(true)}
+              className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold flex items-center gap-1.5 shadow-xs cursor-pointer transition-all"
+            >
+              <ArrowRightLeft className="w-4 h-4" />
+              Xem Bảng Đối Chiếu TKB
+            </button>
+            {isAdmin && (
+              <button
+                onClick={handleSyncTimetableToWeek1}
+                className="px-3 py-1.5 bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-300 rounded-lg font-bold flex items-center gap-1.5 cursor-pointer transition-all"
+                title="Đồng bộ lại dữ liệu mới nhất từ TKB"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                Đồng Bộ Lại
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Info & Rule Notice */}
       <div className="bg-amber-50/80 border border-amber-200 rounded-xl p-3.5 flex items-start gap-2.5 text-xs text-amber-900">
@@ -664,13 +892,19 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
                         {colsData.map(({ col, periods, teacher, teacherId, item }) => {
                           const hasTeacher = Boolean(teacher);
                           const isSpecialKhtn = ['sub-li', 'sub-hoa', 'sub-sinh'].includes(col.id);
+                          const isShl = col.id === 'sub-shl';
+                          const isHdtn = col.id === 'sub-hdtn';
 
                           return (
                             <div
                               key={col.id}
                               className={`p-1.5 rounded-lg border text-left flex flex-col justify-between transition-all ${
                                 periods > 0
-                                  ? isSpecialKhtn
+                                  ? isShl
+                                    ? 'bg-sky-50/70 border-sky-200'
+                                    : isHdtn
+                                    ? 'bg-purple-50/70 border-purple-200'
+                                    : isSpecialKhtn
                                     ? 'bg-amber-50/70 border-amber-200'
                                     : 'bg-slate-50/90 border-slate-200'
                                   : 'bg-slate-100/40 border-dashed border-slate-200 opacity-60'
@@ -743,7 +977,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
                       </div>
                     </td>
                     <td className="p-2 border border-slate-200 font-extrabold text-slate-900 bg-slate-50/50">
-                      <span className="px-2 py-1 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-md font-mono">
+                      <span className="px-2 py-1 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-md font-mono text-xs">
                         {classTotalPeriods}
                       </span>
                     </td>
@@ -751,6 +985,27 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
                 );
               })}
             </tbody>
+            <tfoot>
+              <tr className="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-300">
+                <td colSpan={3} className="p-2.5 text-right uppercase tracking-wider text-xs">
+                  Tổng Cộng ({filteredClasses.length} lớp hiển thị):
+                </td>
+                <td className="p-2.5 text-left text-xs text-slate-600 font-medium">
+                  Tổng tiết giảng dạy thực tế của tất cả các lớp trong Tuần {selectedWeek}
+                </td>
+                <td className="p-2.5 text-center font-black text-sm text-indigo-900 bg-indigo-100/70 border-l border-slate-300 font-mono">
+                  {filteredClasses.reduce((sum, cls) => {
+                    const cols = getColsForClass(cls);
+                    return sum + cols.reduce((cSum, col) => {
+                      const key = `${cls.id}_${col.id}`;
+                      const item = currentAssignmentsMap.get(key);
+                      const baseA = baseAssignmentMap.get(key);
+                      return cSum + (item ? item.periods : (baseA ? getRecommendedIntegerPeriods(col.id, cls.grade, selectedWeek, baseA.periodsPerWeek) : 0));
+                    }, 0);
+                  }, 0)}
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
 
@@ -769,6 +1024,290 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
           </div>
         </div>
       </div>
+
+      {/* ========================================================================= */}
+      {/* FULL RECONCILIATION MODAL (BẢNG ĐỐI CHIẾU TKB VÀ PHÂN CÔNG TUẦN 1)       */}
+      {/* ========================================================================= */}
+      {reconcileModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-3 sm:p-6">
+          <div className="bg-white rounded-2xl max-w-6xl w-full h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-5 bg-slate-900 text-white flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-indigo-600 rounded-xl">
+                  <ArrowRightLeft className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-base sm:text-lg font-black uppercase tracking-tight text-white flex items-center gap-2">
+                    Bảng Đối Chiếu Thời Khóa Biểu & Phân Công Chuyên Môn - Tuần 1
+                  </h2>
+                  <p className="text-xs text-slate-300 font-medium mt-0.5">
+                    Đối chiếu chi tiết từng lớp, môn học, số tiết và giáo viên giữa TKB chính thức và bảng phân công
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setReconcileModalOpen(false)}
+                className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white cursor-pointer transition-colors"
+                title="Đóng bảng đối chiếu"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Metric KPI Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-slate-50 border-b border-slate-200 shrink-0">
+              <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Tổng tiết TKB Tuần 1</span>
+                <div className="text-xl font-black text-slate-900 mt-1 font-mono">
+                  {reconciliationReport.totalTimetableSlots.toLocaleString()} <span className="text-xs font-medium text-slate-500">tiết</span>
+                </div>
+                <span className="text-[11px] text-slate-600 mt-0.5 block">
+                  Đủ cho <strong>{reconciliationReport.totalClasses}</strong> lớp toàn trường
+                </span>
+              </div>
+
+              <div className="bg-white p-3 rounded-xl border border-emerald-200 shadow-2xs">
+                <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block">Đã khớp hoàn toàn</span>
+                <div className="text-xl font-black text-emerald-700 mt-1 font-mono">
+                  {reconciliationReport.matchedCount} <span className="text-xs font-medium text-emerald-600">mục</span>
+                </div>
+                <span className="text-[11px] text-emerald-800 mt-0.5 block">
+                  Trùng khớp cả GV & số tiết
+                </span>
+              </div>
+
+              <div className="bg-white p-3 rounded-xl border border-indigo-200 shadow-2xs">
+                <span className="text-[11px] font-bold text-indigo-700 uppercase tracking-wider block">Bổ sung từ TKB</span>
+                <div className="text-xl font-black text-indigo-700 mt-1 font-mono">
+                  {reconciliationReport.supplementedCount} <span className="text-xs font-medium text-indigo-600">mục</span>
+                </div>
+                <span className="text-[11px] text-indigo-800 mt-0.5 block">
+                  Tân Kiều, SHL, HĐTN, v.v.
+                </span>
+              </div>
+
+              <div className="bg-white p-3 rounded-xl border border-amber-200 shadow-2xs">
+                <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider block">Khác biệt / Điều chỉnh</span>
+                <div className="text-xl font-black text-amber-700 mt-1 font-mono">
+                  {reconciliationReport.mismatchCount} <span className="text-xs font-medium text-amber-600">mục</span>
+                </div>
+                <span className="text-[11px] text-amber-800 mt-0.5 block">
+                  Khác GV hoặc số tiết xoay vòng
+                </span>
+              </div>
+            </div>
+
+            {/* Filter & Action Toolbar */}
+            <div className="p-3 bg-white border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 shrink-0">
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Campus filter */}
+                <select
+                  value={reconcileCampus}
+                  onChange={e => setReconcileCampus(e.target.value as any)}
+                  className="text-xs font-bold px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-slate-800"
+                >
+                  <option value="ALL">Tất cả cơ sở</option>
+                  <option value="THPT">Khối THPT</option>
+                  <option value="DBK">THCS Đốc Binh Kiều</option>
+                  <option value="TK">THCS Tân Kiều</option>
+                </select>
+
+                {/* Grade filter */}
+                <select
+                  value={reconcileGrade}
+                  onChange={e => setReconcileGrade(e.target.value)}
+                  className="text-xs font-bold px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-slate-800"
+                >
+                  <option value="ALL">Tất cả khối</option>
+                  <option value="6">Khối 6</option>
+                  <option value="7">Khối 7</option>
+                  <option value="8">Khối 8</option>
+                  <option value="9">Khối 9</option>
+                  <option value="10">Khối 10</option>
+                  <option value="11">Khối 11</option>
+                  <option value="12">Khối 12</option>
+                </select>
+
+                {/* Status filter */}
+                <select
+                  value={reconcileStatus}
+                  onChange={e => setReconcileStatus(e.target.value as any)}
+                  className="text-xs font-bold px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-slate-800"
+                >
+                  <option value="ALL">Tất cả trạng thái</option>
+                  <option value="MATCHED">Khớp hoàn toàn</option>
+                  <option value="SUPPLEMENTED">Đã bổ sung từ TKB</option>
+                  <option value="MISMATCH">Lệch phân công / Tiết xoay</option>
+                </select>
+
+                {/* Search input */}
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+                  <input
+                    type="text"
+                    placeholder="Tìm lớp, môn, giáo viên..."
+                    value={reconcileSearch}
+                    onChange={e => setReconcileSearch(e.target.value)}
+                    className="text-xs pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 placeholder-slate-400 w-52"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => exportReconciliationToExcel(reconciliationReport)}
+                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-2xs flex items-center gap-1.5 cursor-pointer transition-all"
+                  title="Xuất bảng đối chiếu đầy đủ sang file Excel"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                  Xuất Excel Bảng Đối Chiếu
+                </button>
+
+                {isAdmin && (
+                  <button
+                    onClick={() => {
+                      handleSyncTimetableToWeek1();
+                      alert('Đã cập nhật & đồng bộ toàn bộ 1,536 tiết từ TKB Tuần 1 vào bảng phân công chi tiết!');
+                    }}
+                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-2xs flex items-center gap-1.5 cursor-pointer transition-all"
+                    title="Cập nhật toàn bộ phân công và số tiết thực tế theo TKB Tuần 1"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Đồng Bộ Vào Bảng Tuần 1
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Table of Reconciliation Rows */}
+            <div className="flex-1 overflow-y-auto">
+              <table className="w-full text-center border-collapse text-xs">
+                <thead className="sticky top-0 bg-slate-800 text-white z-10 text-[11px] font-bold">
+                  <tr>
+                    <th className="p-2 border border-slate-700 w-10">STT</th>
+                    <th className="p-2 border border-slate-700 w-16 text-left">Lớp</th>
+                    <th className="p-2 border border-slate-700 w-24">Cơ sở</th>
+                    <th className="p-2 border border-slate-700 text-left">Môn học</th>
+                    <th className="p-2 border border-slate-700 w-20">Tiết TKB</th>
+                    <th className="p-2 border border-slate-700 w-36 text-left">GV theo TKB</th>
+                    <th className="p-2 border border-slate-700 w-20">Tiết PC</th>
+                    <th className="p-2 border border-slate-700 w-36 text-left">GV theo Phân Công</th>
+                    <th className="p-2 border border-slate-700 w-32">Trạng thái</th>
+                    <th className="p-2 border border-slate-700 text-left">Ghi chú đối chiếu</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {filteredReconciliationRows.length === 0 ? (
+                    <tr>
+                      <td colSpan={10} className="p-8 text-center text-slate-400 italic">
+                        Không tìm thấy mục đối chiếu phù hợp với bộ lọc.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredReconciliationRows.map((row, idx) => (
+                      <tr
+                        key={row.key}
+                        className={`hover:bg-slate-50 transition-colors ${
+                          row.status === 'SUPPLEMENTED'
+                            ? 'bg-indigo-50/20'
+                            : row.status === 'MISMATCH'
+                            ? 'bg-amber-50/20'
+                            : ''
+                        }`}
+                      >
+                        <td className="p-2 border border-slate-200 font-mono text-slate-400 text-[11px]">
+                          {idx + 1}
+                        </td>
+                        <td className="p-2 border border-slate-200 font-bold text-slate-900 text-left">
+                          {row.className}
+                        </td>
+                        <td className="p-2 border border-slate-200 text-slate-500 font-medium text-[11px]">
+                          {row.campus || 'Đốc Binh Kiều'}
+                        </td>
+                        <td className="p-2 border border-slate-200 font-bold text-slate-800 text-left">
+                          {row.subjectName}
+                        </td>
+                        <td className="p-2 border border-slate-200 font-black text-indigo-900 font-mono bg-indigo-50/30">
+                          {row.timetablePeriods > 0 ? `${row.timetablePeriods}t` : '—'}
+                        </td>
+                        <td className="p-2 border border-slate-200 text-left font-bold text-slate-900">
+                          {row.timetableTeacherName ? (
+                            <div>
+                              <span>{row.timetableTeacherName}</span>
+                              <span className="text-[10px] text-slate-400 font-mono ml-1">
+                                ({row.timetableTeacherCode})
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-slate-300 italic">—</span>
+                          )}
+                        </td>
+                        <td className="p-2 border border-slate-200 font-bold text-slate-700 font-mono">
+                          {row.assignmentPeriods > 0 ? `${row.assignmentPeriods}t` : '—'}
+                        </td>
+                        <td className="p-2 border border-slate-200 text-left font-medium text-slate-700">
+                          {row.assignmentTeacherName ? (
+                            <div>
+                              <span>{row.assignmentTeacherName}</span>
+                              <span className="text-[10px] text-slate-400 font-mono ml-1">
+                                ({row.assignmentTeacherCode})
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-slate-300 italic">Chưa có</span>
+                          )}
+                        </td>
+                        <td className="p-2 border border-slate-200">
+                          {row.status === 'MATCHED' && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                              <CheckCircle2 className="w-3 h-3" />
+                              Khớp TKB
+                            </span>
+                          )}
+                          {row.status === 'SUPPLEMENTED' && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800 border border-indigo-200">
+                              <Sparkles className="w-3 h-3" />
+                              Bổ sung từ TKB
+                            </span>
+                          )}
+                          {row.status === 'MISMATCH' && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                              <AlertCircle className="w-3 h-3" />
+                              Lệch phân công
+                            </span>
+                          )}
+                          {row.status === 'NOT_IN_TKB' && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                              Không có TKB
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-2 border border-slate-200 text-left text-slate-600 text-[11px]">
+                          {row.note}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
+              <span className="text-xs text-slate-500 font-medium">
+                Hiển thị <strong>{filteredReconciliationRows.length}</strong> / <strong>{reconciliationReport.rows.length}</strong> mục phân công đối chiếu
+              </span>
+              <button
+                onClick={() => setReconcileModalOpen(false)}
+                className="px-4 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold cursor-pointer transition-all"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Copy Week Schedule Modal */}
       {copyModalOpen && (

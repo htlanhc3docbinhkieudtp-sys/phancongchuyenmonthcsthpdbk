@@ -80,6 +80,8 @@ const TEACHER_MAP: Record<string, { id: string; name: string; code: string }> = 
 function getTeacherInfo(rawTeacher: string): { id: string; name: string; code: string } {
   const trimmed = rawTeacher.trim();
   if (TEACHER_MAP[trimmed]) return TEACHER_MAP[trimmed];
+  const stripped = trimmed.replace(/^HN-/, '').trim();
+  if (TEACHER_MAP[stripped]) return TEACHER_MAP[stripped];
   return { id: '', name: trimmed, code: trimmed };
 }
 
