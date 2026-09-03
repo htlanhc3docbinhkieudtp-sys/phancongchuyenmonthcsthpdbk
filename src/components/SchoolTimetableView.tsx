@@ -41,7 +41,8 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Copy
+  Copy,
+  Lock
 } from 'lucide-react';
 import { TimetableImportModal } from './TimetableImportModal';
 import { AutoScheduleModal } from './AutoScheduleModal';
@@ -492,9 +493,15 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                   )}
                 </>
               ) : (
-                <div className="text-[11px] text-slate-500 font-medium italic">
-                  (Đăng nhập Quản trị để sao chép TKB giữa các tuần)
-                </div>
+                <button
+                  type="button"
+                  onClick={() => onPromptAdminLogin && onPromptAdminLogin()}
+                  className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-95"
+                  title="Nhập mật khẩu để sao chép TKB và chỉnh sửa tiết học"
+                >
+                  <Lock className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Đăng nhập Quản trị</span>
+                </button>
               )}
             </div>
           </div>

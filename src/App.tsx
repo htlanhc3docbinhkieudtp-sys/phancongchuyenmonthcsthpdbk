@@ -841,13 +841,8 @@ export default function App() {
         cloudSyncStatus={cloudSyncStatus}
         lastSyncedAt={lastSyncedAt}
         isAdmin={isAdmin}
-        onToggleAdmin={() => {
-          if (isAdmin) {
-            setIsAdmin(false);
-          } else {
-            setIsAdminModalOpen(true);
-          }
-        }}
+        onOpenAdminLogin={() => setIsAdminModalOpen(true)}
+        onLogoutAdmin={() => setIsAdmin(false)}
         onSaveToCloud={handleSaveToCloud}
         onExportJsonBackup={handleExportJsonBackup}
         onImportJsonBackup={handleImportJsonBackup}
