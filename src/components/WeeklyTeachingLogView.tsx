@@ -84,6 +84,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   const summaryStats = useMemo(() => {
     let totalActualAll = 0;
     let totalRequiredAll = 0;
+    let totalCurrentRequiredAll = 0;
     let surplusCount = 0;
     let exactCount = 0;
     let deficitCount = 0;
@@ -91,21 +92,27 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     allWeeklyWorkloads.forEach(w => {
       totalActualAll += w.totalActualPeriods;
       totalRequiredAll += w.totalRequiredPeriods;
+      totalCurrentRequiredAll += w.currentRequiredPeriods;
 
-      if (w.semesterBalance > 0) surplusCount++;
-      else if (w.semesterBalance === 0) exactCount++;
+      if (w.currentBalance > 0) surplusCount++;
+      else if (w.currentBalance === 0) exactCount++;
       else deficitCount++;
     });
+
+    const activeWeeks = allWeeklyWorkloads[0]?.activeWeeksCount || 0;
 
     return {
       totalActualAll,
       totalRequiredAll,
+      totalCurrentRequiredAll,
+      totalCurrentBalance: totalActualAll - totalCurrentRequiredAll,
       surplusCount,
       exactCount,
       deficitCount,
-      avgPeriodsPerWeek: (totalActualAll / Math.max(1, allWeeklyWorkloads.length * weeks.length)).toFixed(1)
+      activeWeeks,
+      avgPeriodsPerWeek: (totalActualAll / Math.max(1, allWeeklyWorkloads.length * Math.max(1, activeWeeks))).toFixed(1)
     };
-  }, [allWeeklyWorkloads, weeks]);
+  }, [allWeeklyWorkloads]);
 
   // Filter workloads
   const filteredWorkloads = useMemo(() => {
@@ -126,10 +133,10 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
       if (selectedCampus === 'DBK' && w.campus !== 'THCSDBK') return false;
       if (selectedCampus === 'TK' && w.campus !== 'THCSTK') return false;
 
-      // Status
-      if (statusFilter === 'SURPLUS' && w.semesterBalance <= 0) return false;
-      if (statusFilter === 'EXACT' && w.semesterBalance !== 0) return false;
-      if (statusFilter === 'DEFICIT' && w.semesterBalance >= 0) return false;
+      // Status (based on cumulative balance of active weeks)
+      if (statusFilter === 'SURPLUS' && w.currentBalance <= 0) return false;
+      if (statusFilter === 'EXACT' && w.currentBalance !== 0) return false;
+      if (statusFilter === 'DEFICIT' && w.currentBalance >= 0) return false;
 
       return true;
     });
@@ -158,7 +165,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                   Sổ Theo Dõi Số Tiết Thực Dạy Hàng Tuần Của Từng Giáo Viên
                 </h1>
                 <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  Tổng hợp đối chiếu số tiết thực tế qua {weeks.length} tuần • {currentSemester === 'HK1' ? 'Học kỳ I' : 'Học kỳ II'} Năm học {config.academicYear}
+                  Bám sát thời khóa biểu & phân công giảng dạy thực tế • Đã ghi nhận {summaryStats.activeWeeks} / {weeks.length} tuần • {currentSemester === 'HK1' ? 'Học kỳ I' : 'Học kỳ II'} Năm học {config.academicYear}
                 </p>
               </div>
             </div>
@@ -172,7 +179,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                 className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold border border-indigo-200 flex items-center gap-1.5 cursor-pointer transition-all"
               >
                 <Layers className="w-3.5 h-3.5" />
-                Điều Chỉnh Lịch Tuần
+                Phân Công Tuần (TKB)
               </button>
             )}
 
@@ -199,17 +206,17 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
         {/* Metric Summary Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-slate-200 print:hidden">
           <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
-            <span className="text-[11px] font-bold text-slate-500 block">Tổng tiết thực dạy toàn trường</span>
+            <span className="text-[11px] font-bold text-slate-500 block">Tổng thực dạy ({summaryStats.activeWeeks}/{weeks.length} tuần)</span>
             <div className="flex items-baseline gap-2 mt-1">
               <span className="text-xl font-black text-slate-900 font-mono">
                 {summaryStats.totalActualAll}
               </span>
-              <span className="text-xs text-slate-500">/ {summaryStats.totalRequiredAll} tiết</span>
+              <span className="text-xs text-slate-500">/ {summaryStats.totalCurrentRequiredAll} tiết</span>
             </div>
           </div>
 
           <div className="bg-emerald-50/60 p-3 rounded-xl border border-emerald-100">
-            <span className="text-[11px] font-bold text-emerald-800 block">GV Đủ / Thừa định mức</span>
+            <span className="text-[11px] font-bold text-emerald-800 block">GV Đủ / Thừa định mức lũy kế</span>
             <div className="flex items-baseline gap-1.5 mt-1">
               <span className="text-xl font-black text-emerald-700 font-mono">
                 {summaryStats.surplusCount + summaryStats.exactCount}
@@ -219,7 +226,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
           </div>
 
           <div className="bg-rose-50/60 p-3 rounded-xl border border-rose-100">
-            <span className="text-[11px] font-bold text-rose-800 block">GV Chưa đủ định mức</span>
+            <span className="text-[11px] font-bold text-rose-800 block">GV Chưa đủ định mức lũy kế</span>
             <div className="flex items-baseline gap-1 mt-1">
               <span className="text-xl font-black text-rose-700 font-mono">
                 {summaryStats.deficitCount}
@@ -237,6 +244,19 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
               <span className="text-xs text-indigo-600">tiết / tuần</span>
             </div>
           </div>
+        </div>
+
+        {/* Operational Notice */}
+        <div className="mt-3 p-2.5 bg-blue-50/60 border border-blue-200/60 rounded-lg text-xs text-blue-800 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="font-bold">Quy tắc tính toán:</span>
+            <span>
+              Số tiết được lấy trực tiếp từ <strong>Phân công Tuần & Thời khóa biểu</strong> (KHTN, Sử-Địa, HĐTNHN THPT 2 tiết, HĐTNHN THCS Chuyên đề & SHL 1 tiết/môn). Các tuần chưa diễn ra (<strong>—</strong>) không điền sẵn dữ liệu.
+            </span>
+          </div>
+          <span className="px-2 py-0.5 bg-blue-100 text-blue-900 rounded font-bold shrink-0 text-[11px]">
+            Đã có dữ liệu: {summaryStats.activeWeeks} tuần
+          </span>
         </div>
       </div>
 
@@ -344,14 +364,17 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                   </th>
                 ))}
 
-                <th className="p-2 border border-slate-700 w-20 bg-emerald-950/80 font-extrabold">
+                <th className="p-2 border border-slate-700 w-20 bg-emerald-950/80 font-extrabold" title="Tổng số tiết thực dạy các tuần đã diễn ra">
                   Tổng Thực
                 </th>
-                <th className="p-2 border border-slate-700 w-18 bg-slate-900 font-bold">
-                  ĐM Kỳ
+                <th className="p-2 border border-slate-700 w-18 bg-slate-900 font-bold" title="Định mức lũy kế theo các tuần đã lập phân công">
+                  ĐM Lũy Kế
                 </th>
-                <th className="p-2 border border-slate-700 w-20 bg-slate-950 font-black">
+                <th className="p-2 border border-slate-700 w-20 bg-slate-950 font-black" title="Chênh lệch thực dạy so với định mức lũy kế">
                   +/- Lũy Kế
+                </th>
+                <th className="p-2 border border-slate-700 w-18 bg-slate-800 text-slate-400 font-medium" title="Định mức chuẩn toàn học kỳ">
+                  ĐM Cả Kỳ
                 </th>
                 <th className="p-2 border border-slate-700 w-14 print:hidden">Chi tiết</th>
               </tr>
@@ -359,14 +382,14 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
             <tbody className="divide-y divide-slate-200">
               {filteredWorkloads.length === 0 ? (
                 <tr>
-                  <td colSpan={10 + weeks.length} className="p-8 text-center text-slate-400">
+                  <td colSpan={11 + weeks.length} className="p-8 text-center text-slate-400">
                     Không tìm thấy giáo viên phù hợp với bộ lọc hiện tại.
                   </td>
                 </tr>
               ) : (
                 filteredWorkloads.map((w, idx) => {
-                  const isSurplus = w.semesterBalance > 0;
-                  const isDeficit = w.semesterBalance < 0;
+                  const isSurplus = w.currentBalance > 0;
+                  const isDeficit = w.currentBalance < 0;
 
                   return (
                     <tr
@@ -419,7 +442,19 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
                       {/* Week 1..18 Actual Periods */}
                       {weeks.map(wNum => {
-                        const p = w.weeklyPeriods[wNum] || 0;
+                        const p = w.weeklyPeriods[wNum];
+                        if (p === undefined) {
+                          return (
+                            <td
+                              key={wNum}
+                              className="p-1 border border-slate-200 font-mono text-[11px] text-slate-300 bg-slate-50/20"
+                              title={`Tuần ${wNum}: Chưa lập phân công (Chờ phân công TKB)`}
+                            >
+                              —
+                            </td>
+                          );
+                        }
+
                         const isDifferentFromTarget = p !== w.targetWeeklyPeriods;
 
                         return (
@@ -428,7 +463,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                             onClick={() => setSelectedTeacherForDetail(w)}
                             className={`p-1 border border-slate-200 font-mono text-[11px] font-bold cursor-pointer hover:bg-indigo-100 transition-colors ${
                               p === 0
-                                ? 'text-slate-300'
+                                ? 'text-slate-400 bg-slate-50/50'
                                 : isDifferentFromTarget
                                 ? p > w.targetWeeklyPeriods
                                   ? 'text-emerald-700 bg-emerald-50/60'
@@ -437,7 +472,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                             }`}
                             title={`Tuần ${wNum}: ${p} tiết thực dạy - Bấm để xem chi tiết các lớp`}
                           >
-                            {p > 0 ? p : '—'}
+                            {p}
                           </td>
                         );
                       })}
@@ -447,12 +482,12 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                         {w.totalActualPeriods}
                       </td>
 
-                      {/* Total Required */}
-                      <td className="p-2 border border-slate-200 text-slate-600 font-mono text-[11px]">
-                        {w.totalRequiredPeriods}
+                      {/* Cumulative Required */}
+                      <td className="p-2 border border-slate-200 text-slate-700 font-mono font-bold text-[11px]">
+                        {w.currentRequiredPeriods}
                       </td>
 
-                      {/* Balance */}
+                      {/* Cumulative Balance (+/-) */}
                       <td className="p-2 border border-slate-200 font-black font-mono">
                         <span
                           className={`px-1.5 py-0.5 rounded text-[11px] inline-block ${
@@ -463,8 +498,13 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                               : 'bg-slate-100 text-slate-700'
                           }`}
                         >
-                          {isSurplus ? `+${w.semesterBalance}` : w.semesterBalance}
+                          {isSurplus ? `+${w.currentBalance}` : w.currentBalance}
                         </span>
+                      </td>
+
+                      {/* Full Semester Target */}
+                      <td className="p-2 border border-slate-200 text-slate-400 font-mono text-[10px]">
+                        {w.totalRequiredPeriods}
                       </td>
 
                       {/* Detail Button */}
@@ -512,7 +552,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                   {selectedTeacherForDetail.teacherName} ({selectedTeacherForDetail.teacherCode})
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Tổ: {selectedTeacherForDetail.departmentName} • Định mức tuần: <strong>{selectedTeacherForDetail.targetWeeklyPeriods}t</strong> • Tổng thực dạy: <strong>{selectedTeacherForDetail.totalActualPeriods}t</strong> ({selectedTeacherForDetail.semesterBalance >= 0 ? `+${selectedTeacherForDetail.semesterBalance}` : selectedTeacherForDetail.semesterBalance}t)
+                  Tổ: {selectedTeacherForDetail.departmentName} • Định mức tuần: <strong>{selectedTeacherForDetail.targetWeeklyPeriods}t</strong> • Thực dạy: <strong>{selectedTeacherForDetail.totalActualPeriods}t</strong> / Lũy kế <strong>{selectedTeacherForDetail.currentRequiredPeriods}t</strong> ({selectedTeacherForDetail.currentBalance >= 0 ? `+${selectedTeacherForDetail.currentBalance}` : selectedTeacherForDetail.currentBalance}t)
                 </p>
               </div>
               <button
@@ -528,44 +568,57 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {weeks.map(wNum => {
                   const details = selectedTeacherForDetail.weeklyDetails[wNum] || [];
-                  const weekSum = selectedTeacherForDetail.weeklyPeriods[wNum] || 0;
-                  const isDiff = weekSum !== selectedTeacherForDetail.targetWeeklyPeriods;
+                  const weekSum = selectedTeacherForDetail.weeklyPeriods[wNum];
+                  const isScheduled = weekSum !== undefined;
+                  const isDiff = isScheduled && weekSum !== selectedTeacherForDetail.targetWeeklyPeriods;
 
                   return (
                     <div
                       key={wNum}
-                      className="p-2.5 rounded-lg border border-slate-200 bg-slate-50/70 text-xs space-y-1.5"
+                      className={`p-2.5 rounded-lg border text-xs space-y-1.5 ${
+                        isScheduled ? 'border-slate-200 bg-slate-50/70' : 'border-dashed border-slate-200 bg-slate-50/30'
+                      }`}
                     >
                       <div className="flex items-center justify-between font-bold">
                         <span className="text-slate-800">Tuần {wNum}</span>
-                        <span
-                          className={`px-1.5 py-0.2 rounded font-mono font-extrabold ${
-                            weekSum === 0
-                              ? 'bg-slate-200 text-slate-500'
-                              : isDiff
-                              ? weekSum > selectedTeacherForDetail.targetWeeklyPeriods
-                                ? 'bg-emerald-100 text-emerald-800'
-                                : 'bg-amber-100 text-amber-800'
-                              : 'bg-indigo-100 text-indigo-800'
-                          }`}
-                        >
-                          {weekSum} tiết
-                        </span>
+                        {!isScheduled ? (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-400 font-normal">
+                            Chưa lập phân công
+                          </span>
+                        ) : (
+                          <span
+                            className={`px-1.5 py-0.2 rounded font-mono font-extrabold ${
+                              weekSum === 0
+                                ? 'bg-slate-200 text-slate-500'
+                                : isDiff
+                                ? weekSum > selectedTeacherForDetail.targetWeeklyPeriods
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : 'bg-amber-100 text-amber-800'
+                                : 'bg-indigo-100 text-indigo-800'
+                            }`}
+                          >
+                            {weekSum} tiết
+                          </span>
+                        )}
                       </div>
 
-                      {details.length > 0 ? (
-                        <div className="space-y-1 pt-1 border-t border-slate-200/60">
-                          {details.map((d, i) => (
-                            <div key={i} className="flex items-center justify-between text-[11px] text-slate-600">
-                              <span>
-                                {d.className} - <strong className="text-slate-800">{d.subjectName}</strong>
-                              </span>
-                              <span className="font-mono font-bold text-slate-900">{d.periods}t</span>
-                            </div>
-                          ))}
-                        </div>
+                      {isScheduled ? (
+                        details.length > 0 ? (
+                          <div className="space-y-1 pt-1 border-t border-slate-200/60">
+                            {details.map((d, i) => (
+                              <div key={i} className="flex items-center justify-between text-[11px] text-slate-600">
+                                <span>
+                                  {d.className} - <strong className="text-slate-800">{d.subjectName}</strong>
+                                </span>
+                                <span className="font-mono font-bold text-slate-900">{d.periods}t</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-[11px] text-slate-400 italic">Không có tiết dạy</div>
+                        )
                       ) : (
-                        <div className="text-[11px] text-slate-400 italic">Không có tiết dạy</div>
+                        <div className="text-[11px] text-slate-400 italic">Chờ thời khóa biểu & phân công tuần</div>
                       )}
                     </div>
                   );

@@ -189,10 +189,13 @@ export interface TeacherWeeklyWorkload {
   reductionPeriods: number; // Số tiết giảm trừ tuần do kiêm nhiệm / nuôi con nhỏ
   baseStandardPeriods: number; // 17 (THPT) hoặc 19 (THCS)
   targetWeeklyPeriods: number; // Định mức chuẩn sau giảm trừ (base - reduction)
-  weeklyPeriods: Record<number, number>; // { 1: 18, 2: 17, 3: 19... }
-  totalActualPeriods: number; // Tổng số tiết thực dạy cả học kỳ
+  weeklyPeriods: Record<number, number | undefined>; // { 1: 18, 2: 17... undefined nếu chưa lập }
+  totalActualPeriods: number; // Tổng số tiết thực dạy của các tuần đã lập
   totalRequiredPeriods: number; // Tổng định mức chuẩn cả kỳ (targetWeeklyPeriods * số tuần)
   semesterBalance: number; // Thừa (+) / Thiếu (-) số tiết cả kỳ
+  activeWeeksCount?: number; // Số tuần thực tế đã có phân công
+  currentRequiredPeriods?: number; // Định mức lũy kế các tuần đã dạy
+  currentBalance?: number; // Thừa (+) / Thiếu (-) lũy kế đến hiện tại
   weeklyDetails: Record<
     number,
     {

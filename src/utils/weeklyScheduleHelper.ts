@@ -160,7 +160,13 @@ export function calculateTeacherWeeklyWorkloads(
     const standard = teacher.baseStandardPeriods || (teacher.campus?.includes('THPT') ? 17 : 19);
     const targetWeekly = Math.max(0, standard - reduction);
 
-    const weeklyPeriods: Record<number, number> = {};
+    // Active weeks: only weeks that have an explicit schedule in weeklySchedules
+    const activeWeeks = weeks.filter(wNum =>
+      weeklySchedules.some(ws => ws.weekNumber === wNum && ws.semester === semester)
+    );
+    const activeWeeksCount = activeWeeks.length;
+
+    const weeklyPeriods: Record<number, number | undefined> = {};
     const weeklyDetails: Record<
       number,
       {
@@ -177,17 +183,18 @@ export function calculateTeacherWeeklyWorkloads(
 
     weeks.forEach(wNum => {
       const scheduleForWeek = weeklySchedules.find(ws => ws.weekNumber === wNum && ws.semester === semester);
-      let weekSum = 0;
-      const details: {
-        classId: string;
-        className: string;
-        subjectId: string;
-        subjectName: string;
-        periods: number;
-        note?: string;
-      }[] = [];
 
       if (scheduleForWeek) {
+        let weekSum = 0;
+        const details: {
+          classId: string;
+          className: string;
+          subjectId: string;
+          subjectName: string;
+          periods: number;
+          note?: string;
+        }[] = [];
+
         scheduleForWeek.assignments
           .filter(a => a.teacherId === teacher.id)
           .forEach(a => {
@@ -204,25 +211,19 @@ export function calculateTeacherWeeklyWorkloads(
               note: a.note
             });
           });
-      } else if (baseW) {
-        // Fallback to base plan if this week is not explicitly generated
-        baseW.assignedClasses.forEach(ac => {
-          weekSum += Math.round(ac.periods);
-          details.push({
-            classId: ac.assignmentId,
-            className: ac.className,
-            subjectId: '',
-            subjectName: ac.subjectName,
-            periods: Math.round(ac.periods)
-          });
-        });
-      }
 
-      weeklyPeriods[wNum] = weekSum;
-      weeklyDetails[wNum] = details;
-      totalActual += weekSum;
+        weeklyPeriods[wNum] = weekSum;
+        weeklyDetails[wNum] = details;
+        totalActual += weekSum;
+      } else {
+        // Tuần chưa lập phân công: KHÔNG ghi sẵn số tiết!
+        weeklyPeriods[wNum] = undefined;
+        weeklyDetails[wNum] = [];
+      }
     });
 
+    const currentRequired = targetWeekly * activeWeeksCount;
+    const currentBalance = totalActual - currentRequired;
     const totalRequired = targetWeekly * numWeeks;
     const semesterBalance = totalActual - totalRequired;
 
@@ -242,6 +243,9 @@ export function calculateTeacherWeeklyWorkloads(
       totalActualPeriods: totalActual,
       totalRequiredPeriods: totalRequired,
       semesterBalance,
+      activeWeeksCount,
+      currentRequiredPeriods: currentRequired,
+      currentBalance,
       weeklyDetails
     };
   });
@@ -275,7 +279,7 @@ export function exportWeeklyWorkloadExcel(
       'Định mức thực hiện/tuần',
       ...weeks.map(w => `Tuần ${w}`),
       'Tổng thực dạy',
-      'Định mức cả kỳ',
+      'Định mức lũy kế',
       'Chênh lệch (+/-)'
     ]
   ];
@@ -289,10 +293,13 @@ export function exportWeeklyWorkloadExcel(
       w.baseStandardPeriods,
       w.reductionPeriods,
       w.targetWeeklyPeriods,
-      ...weeks.map(wn => w.weeklyPeriods[wn] || 0),
+      ...weeks.map(wn => {
+        const val = w.weeklyPeriods[wn];
+        return val !== undefined ? val : '-';
+      }),
       w.totalActualPeriods,
-      w.totalRequiredPeriods,
-      w.semesterBalance > 0 ? `+${w.semesterBalance}` : w.semesterBalance
+      w.currentRequiredPeriods ?? w.totalRequiredPeriods,
+      (w.currentBalance ?? w.semesterBalance) > 0 ? `+${w.currentBalance ?? w.semesterBalance}` : (w.currentBalance ?? w.semesterBalance)
     ];
     rows.push(row);
   });

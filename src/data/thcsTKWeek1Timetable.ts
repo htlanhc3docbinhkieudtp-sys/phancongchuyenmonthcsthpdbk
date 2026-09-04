@@ -169,12 +169,15 @@ function parseSlotText(raw: string, className: string): {
   } else if (upperSub === 'MT' || upperSub === 'MỸ THUẬT') {
     subjectId = 'sub-my-thuat';
     subjectName = 'Mỹ thuật';
-  } else if (upperSub.startsWith('HĐ QML') || upperSub === 'HD QML' || upperSub.startsWith('HĐCN') || upperSub.includes('QUY MÔ LỚP') || upperSub.includes('CHỦ NHIỆM')) {
-    subjectId = 'sub-hdtn';
+  } else if (upperSub.startsWith('HĐ QML') || upperSub === 'HD QML' || upperSub.startsWith('HĐCN') || upperSub.includes('QUY MÔ LỚP') || upperSub.includes('CHỦ NHIỆM') || upperSub.startsWith('SHL')) {
+    subjectId = 'sub-hdtn-shl';
     subjectName = 'HĐTNHN (Sinh hoạt lớp)';
   } else if (upperSub.startsWith('HĐ CĐ') || upperSub === 'HD CD' || upperSub.startsWith('HĐTN') || upperSub.startsWith('HDTN') || upperSub.includes('CHỦ ĐỀ') || upperSub.includes('CHUYÊN ĐỀ')) {
-    subjectId = 'sub-hdtn';
+    subjectId = 'sub-hdtn-cd';
     subjectName = 'HĐTNHN (Chuyên đề)';
+  } else if (upperSub === 'CHÀO CỜ' || upperSub.startsWith('CHÀO CỜ')) {
+    subjectId = 'sub-chao-co';
+    subjectName = 'Chào cờ';
   }
 
   return {

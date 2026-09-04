@@ -302,10 +302,24 @@ export function getUnifiedSubjectName(slot: { classId?: string; className?: stri
 export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[] {
   return (slots || []).map(s => {
     const unifiedName = getUnifiedSubjectName(s);
-    if (unifiedName && unifiedName !== s.subjectName) {
+    let subjectName = unifiedName || s.subjectName;
+    let subjectId = s.subjectId;
+
+    if (subjectName === 'HĐTNHN (Chuyên đề)') {
+      subjectId = 'sub-hdtn-cd';
+    } else if (subjectName === 'HĐTNHN (Sinh hoạt lớp)') {
+      subjectId = 'sub-hdtn-shl';
+    } else if (subjectName === 'Chào cờ') {
+      subjectId = 'sub-chao-co';
+    } else if (subjectName === 'HĐTN - HN' || subjectName === 'HĐTN-HN' || subjectName === 'HĐTN, HN' || subjectName === 'HĐ Trải nghiệm, Hướng nghiệp (THPT)' || subjectName === 'HĐ Trải nghiệm, Hướng nghiệp') {
+      subjectId = 'sub-hdtn';
+    }
+
+    if (subjectName !== s.subjectName || subjectId !== s.subjectId) {
       return {
         ...s,
-        subjectName: unifiedName
+        subjectName,
+        subjectId
       };
     }
     return s;

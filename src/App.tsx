@@ -541,7 +541,7 @@ export default function App() {
           if (p > 0 && !assignedSet.has(key)) {
             if (!newLocks.some(lc => lc.classId === cls.id && lc.subjectId === sub.id)) {
               let reason = 'Môn không chọn';
-              if (sub.id === 'sub-gddp' || sub.id === 'sub-hdtn') {
+              if (sub.id === 'sub-gddp' || sub.id === 'sub-hdtn' || sub.id === 'sub-hdtn-cd' || sub.id === 'sub-hdtn-shl') {
                 reason = 'Chưa dạy kỳ này / Phân công sau';
               }
               newLocks.push({
@@ -680,6 +680,9 @@ export default function App() {
       teachers,
       assignments,
       lockedCells,
+      weeklySchedules,
+      timetable,
+      weeklyTimetables,
       updatedAt: Date.now()
     };
     const success = await saveSchoolPlanToCloud(payload);
@@ -703,6 +706,7 @@ export default function App() {
       lockedCells,
       weeklySchedules,
       timetable,
+      weeklyTimetables,
       updatedAt: Date.now(),
     };
     exportDataAsJsonFile(payload, `PhanCong_DocBinhKieu_${config.academicYear.replace(/\s+/g, '')}_${config.semester}.json`);

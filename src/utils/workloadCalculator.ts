@@ -350,7 +350,7 @@ export function auditAssignmentConflicts(
     if (teacher && sub) {
       const allowedSubs = [teacher.primarySubjectId, ...(teacher.secondarySubjectIds || [])];
       // Special allowance: HĐTN-HN can be taught by homeroom teachers or multiple subjects
-      if (!allowedSubs.includes(sub.id) && sub.id !== 'sub-hdtn' && sub.id !== 'sub-gddp') {
+      if (!allowedSubs.includes(sub.id) && sub.id !== 'sub-hdtn' && sub.id !== 'sub-hdtn-cd' && sub.id !== 'sub-hdtn-shl' && sub.id !== 'sub-gddp') {
         issues.push({
           id: `mismatch-${as.id}`,
           type: 'WRONG_SUBJECT',

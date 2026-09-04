@@ -53,7 +53,7 @@ export const THPT_TEACHER_LOOKUP: Record<string, { id: string; name: string; cod
 
 // Subject code lookup dictionary
 export const THPT_SUBJECT_LOOKUP: Record<string, { id: string; fullName: string }> = {
-  'Chào cờ': { id: 'sub-hdtn', fullName: 'Chào cờ' },
+  'Chào cờ': { id: 'sub-chao-co', fullName: 'Chào cờ' },
   'SHL': { id: 'sub-shl', fullName: 'Sinh hoạt lớp' },
   'Toán': { id: 'sub-toan', fullName: 'Toán học' },
   'Ngữ văn': { id: 'sub-van', fullName: 'Ngữ văn' },

@@ -1,10 +1,10 @@
 {
   "entities": {
-    "AcademicPlan": {
-      "collection": "school_plans",
-      "fields": {
-        "id": { "type": "string", "description": "ID of the academic plan document" },
-        "name": { "type": "string", "description": "Name of the school plan" },
+    "SchoolPlan": {
+      "title": "School Plan",
+      "description": "School academic plan including teaching assignments, configuration, classes, teachers and subject departments",
+      "type": "object",
+      "properties": {
         "config": { "type": "object", "description": "School configuration and reductions" },
         "departments": { "type": "array", "description": "List of subject departments" },
         "subjects": { "type": "array", "description": "List of school subjects" },
@@ -12,8 +12,45 @@
         "teachers": { "type": "array", "description": "List of teachers with concurrent duties" },
         "assignments": { "type": "array", "description": "List of teaching assignments" },
         "lockedCells": { "type": "array", "description": "List of locked or excluded cells" },
+        "updatedAt": { "type": "number", "description": "Last modified timestamp" },
+        "lastUpdatedBy": { "type": "string", "description": "User identifier who saved the plan" },
+        "hasSubcollections": { "type": "boolean", "description": "Flag indicating weekly schedules and timetables are partitioned into subcollections" }
+      }
+    },
+    "WeeklyScheduleDoc": {
+      "title": "Weekly Schedule",
+      "description": "Weekly teaching schedule assignments partition",
+      "type": "object",
+      "properties": {
+        "weekNumber": { "type": "number", "description": "Week number (1-36)" },
+        "semester": { "type": "string", "description": "Academic semester (HK1 or HK2)" },
+        "assignments": { "type": "array", "description": "List of weekly assignments for classes and subjects" },
         "updatedAt": { "type": "number", "description": "Last modified timestamp" }
       }
+    },
+    "WeeklyTimetableDoc": {
+      "title": "Weekly Timetable",
+      "description": "Weekly school timetable slot matrix partition",
+      "type": "object",
+      "properties": {
+        "weekNumber": { "type": "number", "description": "Week number (1-36)" },
+        "timetable": { "type": "object", "description": "Timetable object containing slot details" },
+        "updatedAt": { "type": "number", "description": "Last modified timestamp" }
+      }
+    }
+  },
+  "firestore": {
+    "/school_plans/{planId}": {
+      "schema": "SchoolPlan",
+      "description": "Active school academic plans"
+    },
+    "/school_plans/{planId}/weekly_schedules/{weekId}": {
+      "schema": "WeeklyScheduleDoc",
+      "description": "Weekly schedule assignments partitioned to ensure under 1MB Firestore limit"
+    },
+    "/school_plans/{planId}/weekly_timetables/{weekId}": {
+      "schema": "WeeklyTimetableDoc",
+      "description": "Weekly timetable slots partitioned to ensure under 1MB Firestore limit"
     }
   }
 }

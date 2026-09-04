@@ -3,6 +3,7 @@ import { Assignment } from "../types";
 /**
  * Phân công bổ sung đối chiếu từ Thời khóa biểu Tuần 1
  * Điền đầy đủ cho tất cả các ô trống của 53 lớp (đặc biệt cơ sở Tân Kiều và HĐTN, SHL, Tin học, Công nghệ...)
+ * HĐTNHN THPT: 2 tiết/tuần. HĐTNHN THCS: Chuyên đề 1 tiết/tuần, Sinh hoạt lớp 1 tiết/tuần.
  */
 export const supplementaryAssignments: Assignment[] = [
   {
@@ -10,40 +11,40 @@ export const supplementaryAssignments: Assignment[] = [
     "classId": "cls-10cb1",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-khtn-5",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-10cb2-sub-hdtn",
     "classId": "cls-10cb2",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-khtn-9",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-10cb3-sub-hdtn",
     "classId": "cls-10cb3",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-khtn-9",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-10cb4-sub-hdtn",
     "classId": "cls-10cb4",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-khtn-9",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-10cb5-sub-hdtn",
     "classId": "cls-10cb5",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-khtn-9",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-10cb1-sub-shl",
@@ -90,32 +91,32 @@ export const supplementaryAssignments: Assignment[] = [
     "classId": "cls-11cb1",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-khtn-8",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-11cb2-sub-hdtn",
     "classId": "cls-11cb2",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-khtn-8",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-11cb3-sub-hdtn",
     "classId": "cls-11cb3",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-khtn-8",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-11cb4-sub-hdtn",
     "classId": "cls-11cb4",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-khtn-8",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-11cb1-sub-shl",
@@ -154,40 +155,40 @@ export const supplementaryAssignments: Assignment[] = [
     "classId": "cls-12cb1",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-khtn-7",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-12cb2-sub-hdtn",
     "classId": "cls-12cb2",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-v-6",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-12cb3-sub-hdtn",
     "classId": "cls-12cb3",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-ls-5",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-12cb4-sub-hdtn",
     "classId": "cls-12cb4",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-ls-4",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-12cb5-sub-hdtn",
     "classId": "cls-12cb5",
     "subjectId": "sub-hdtn",
     "teacherId": "tch-bgh-2",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 2,
+    "note": "HĐTNHN (THPT) - 2 tiết/tuần theo TKB"
   },
   {
     "id": "as-tkb-cls-12cb1-sub-shl",
@@ -230,12 +231,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-6a1-sub-hdtn",
+    "id": "as-tkb-cls-6a1-sub-hdtn-cd",
     "classId": "cls-6a1",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-khtn-18",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-16",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-6a1-sub-lsdl-cs",
@@ -246,20 +247,20 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-6a1-sub-shl",
+    "id": "as-tkb-cls-6a1-sub-hdtn-shl",
     "classId": "cls-6a1",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-khtn-18",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-6a2-sub-hdtn",
+    "id": "as-tkb-cls-6a2-sub-hdtn-cd",
     "classId": "cls-6a2",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-13",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-6a2-sub-lsdl-cs",
@@ -270,20 +271,20 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-6a2-sub-shl",
+    "id": "as-tkb-cls-6a2-sub-hdtn-shl",
     "classId": "cls-6a2",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-khtn-13",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-6a3-sub-hdtn",
+    "id": "as-tkb-cls-6a3-sub-hdtn-cd",
     "classId": "cls-6a3",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-av-14",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-16",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-6a3-sub-lsdl-cs",
@@ -294,20 +295,20 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-6a3-sub-shl",
+    "id": "as-tkb-cls-6a3-sub-hdtn-shl",
     "classId": "cls-6a3",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-av-14",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-6a4-sub-hdtn",
+    "id": "as-tkb-cls-6a4-sub-hdtn-cd",
     "classId": "cls-6a4",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-td-8",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-13",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-6a4-sub-lsdl-cs",
@@ -318,44 +319,44 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-6a4-sub-shl",
+    "id": "as-tkb-cls-6a4-sub-hdtn-shl",
     "classId": "cls-6a4",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-td-8",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-6a5-sub-hdtn",
+    "id": "as-tkb-cls-6a5-sub-hdtn-cd",
     "classId": "cls-6a5",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-khtn-24",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-6a5-sub-shl",
-    "classId": "cls-6a5",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-24",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-6a6-sub-hdtn",
-    "classId": "cls-6a6",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-t-8",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "id": "as-tkb-cls-6a5-sub-hdtn-shl",
+    "classId": "cls-6a5",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-24",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-6a6-sub-shl",
+    "id": "as-tkb-cls-6a6-sub-hdtn-cd",
     "classId": "cls-6a6",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-24",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-6a6-sub-hdtn-shl",
+    "classId": "cls-6a6",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-t-8",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-7a1-sub-khtn-cs",
@@ -366,28 +367,28 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-7a1-sub-hdtn",
+    "id": "as-tkb-cls-7a1-sub-hdtn-cd",
     "classId": "cls-7a1",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-t-10",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-av-14",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-7a1-sub-shl",
+    "id": "as-tkb-cls-7a1-sub-hdtn-shl",
     "classId": "cls-7a1",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-t-10",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-7a2-sub-hdtn",
+    "id": "as-tkb-cls-7a2-sub-hdtn-cd",
     "classId": "cls-7a2",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-av-13",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-23",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-7a2-sub-khtn-cs",
@@ -398,52 +399,52 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-7a2-sub-shl",
+    "id": "as-tkb-cls-7a2-sub-hdtn-shl",
     "classId": "cls-7a2",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-av-13",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-7a3-sub-hdtn",
+    "id": "as-tkb-cls-7a3-sub-hdtn-cd",
     "classId": "cls-7a3",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-t-11",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-7a3-sub-shl",
-    "classId": "cls-7a3",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-t-11",
-    "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-7a4-sub-hdtn",
-    "classId": "cls-7a4",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-td-6",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-7a4-sub-shl",
-    "classId": "cls-7a4",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-td-6",
-    "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-7a5-sub-hdtn",
-    "classId": "cls-7a5",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-23",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-7a3-sub-hdtn-shl",
+    "classId": "cls-7a3",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-t-11",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-7a4-sub-hdtn-cd",
+    "classId": "cls-7a4",
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-23",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-7a4-sub-hdtn-shl",
+    "classId": "cls-7a4",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-td-6",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-7a5-sub-hdtn-cd",
+    "classId": "cls-7a5",
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-23",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-7a5-sub-khtn-cs",
@@ -454,36 +455,36 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-7a5-sub-shl",
+    "id": "as-tkb-cls-7a5-sub-hdtn-shl",
     "classId": "cls-7a5",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-khtn-4",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-av-14",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-7a6-sub-hdtn",
+    "id": "as-tkb-cls-7a6-sub-hdtn-cd",
     "classId": "cls-7a6",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-khtn-23",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-7a6-sub-shl",
-    "classId": "cls-7a6",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-23",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-8a1-sub-hdtn",
+    "id": "as-tkb-cls-7a6-sub-hdtn-shl",
+    "classId": "cls-7a6",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-23",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-8a1-sub-hdtn-cd",
     "classId": "cls-8a1",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-t-9",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-10",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-8a1-sub-sinh",
@@ -494,20 +495,20 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-8a1-sub-shl",
+    "id": "as-tkb-cls-8a1-sub-hdtn-shl",
     "classId": "cls-8a1",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-t-9",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-8a2-sub-hdtn",
+    "id": "as-tkb-cls-8a2-sub-hdtn-cd",
     "classId": "cls-8a2",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-khtn-22",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-10",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-8a2-sub-sinh",
@@ -518,172 +519,172 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-8a2-sub-shl",
+    "id": "as-tkb-cls-8a2-sub-hdtn-shl",
     "classId": "cls-8a2",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-khtn-22",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-8a3-sub-hdtn",
+    "id": "as-tkb-cls-8a3-sub-hdtn-cd",
     "classId": "cls-8a3",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-ls-13",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-8a3-sub-shl",
-    "classId": "cls-8a3",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-ls-13",
-    "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-8a4-sub-hdtn",
-    "classId": "cls-8a4",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-khtn-17",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-8a4-sub-shl",
-    "classId": "cls-8a4",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-khtn-17",
-    "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-8a5-sub-hdtn",
-    "classId": "cls-8a5",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-khtn-12",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-8a5-sub-shl",
-    "classId": "cls-8a5",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-khtn-12",
-    "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-8a6-sub-hdtn",
-    "classId": "cls-8a6",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-td-7",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-8a6-sub-shl",
-    "classId": "cls-8a6",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-td-7",
-    "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-9a1-sub-hdtn",
-    "classId": "cls-9a1",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-khtn-16",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-9a1-sub-shl",
-    "classId": "cls-9a1",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-khtn-16",
-    "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-9a2-sub-hdtn",
-    "classId": "cls-9a2",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-khtn-10",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-9a2-sub-shl",
-    "classId": "cls-9a2",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-10",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-9a3-sub-hdtn",
+    "id": "as-tkb-cls-8a3-sub-hdtn-shl",
+    "classId": "cls-8a3",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-ls-13",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-8a4-sub-hdtn-cd",
+    "classId": "cls-8a4",
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-10",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-8a4-sub-hdtn-shl",
+    "classId": "cls-8a4",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-17",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-8a5-sub-hdtn-cd",
+    "classId": "cls-8a5",
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-10",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-8a5-sub-hdtn-shl",
+    "classId": "cls-8a5",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-12",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-8a6-sub-hdtn-cd",
+    "classId": "cls-8a6",
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-10",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-8a6-sub-hdtn-shl",
+    "classId": "cls-8a6",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-td-7",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-9a1-sub-hdtn-cd",
+    "classId": "cls-9a1",
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-16",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-9a1-sub-hdtn-shl",
+    "classId": "cls-9a1",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-16",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-9a2-sub-hdtn-cd",
+    "classId": "cls-9a2",
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-16",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-9a2-sub-hdtn-shl",
+    "classId": "cls-9a2",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-10",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-9a3-sub-hdtn-cd",
     "classId": "cls-9a3",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-t-3",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-11",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-9a3-sub-shl",
+    "id": "as-tkb-cls-9a3-sub-hdtn-shl",
     "classId": "cls-9a3",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-t-3",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-22",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-9a4-sub-hdtn",
+    "id": "as-tkb-cls-9a4-sub-hdtn-cd",
     "classId": "cls-9a4",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-t-12",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-9a4-sub-shl",
-    "classId": "cls-9a4",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-t-12",
-    "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-9a5-sub-hdtn",
-    "classId": "cls-9a5",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-av-11",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-9a5-sub-shl",
-    "classId": "cls-9a5",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-av-11",
-    "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-9a6-sub-hdtn",
-    "classId": "cls-9a6",
-    "subjectId": "sub-hdtn",
-    "teacherId": "tch-khtn-11",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
-  },
-  {
-    "id": "as-tkb-cls-9a6-sub-shl",
-    "classId": "cls-9a6",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-11",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-9a4-sub-hdtn-shl",
+    "classId": "cls-9a4",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-t-12",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-9a5-sub-hdtn-cd",
+    "classId": "cls-9a5",
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-11",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-9a5-sub-hdtn-shl",
+    "classId": "cls-9a5",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-av-11",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-9a6-sub-hdtn-cd",
+    "classId": "cls-9a6",
+    "subjectId": "sub-hdtn-cd",
+    "teacherId": "tch-khtn-11",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
+  },
+  {
+    "id": "as-tkb-cls-9a6-sub-hdtn-shl",
+    "classId": "cls-9a6",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-11",
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-6a7-sub-toan",
@@ -694,12 +695,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-6a7-sub-hdtn",
+    "id": "as-tkb-cls-6a7-sub-hdtn-cd",
     "classId": "cls-6a7",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-25",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-6a7-sub-van",
@@ -790,12 +791,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-6a7-sub-shl",
+    "id": "as-tkb-cls-6a7-sub-hdtn-shl",
     "classId": "cls-6a7",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-ls-15",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-25",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-6a8-sub-su",
@@ -814,12 +815,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-6a8-sub-hdtn",
+    "id": "as-tkb-cls-6a8-sub-hdtn-cd",
     "classId": "cls-6a8",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-25",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-6a8-sub-anh",
@@ -902,12 +903,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-6a8-sub-shl",
+    "id": "as-tkb-cls-6a8-sub-hdtn-shl",
     "classId": "cls-6a8",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-td-3",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-25",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-6a9-sub-toan",
@@ -926,12 +927,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-6a9-sub-hdtn",
+    "id": "as-tkb-cls-6a9-sub-hdtn-cd",
     "classId": "cls-6a9",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-25",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-6a9-sub-anh",
@@ -1014,12 +1015,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-6a9-sub-shl",
+    "id": "as-tkb-cls-6a9-sub-hdtn-shl",
     "classId": "cls-6a9",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-khtn-25",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-6a10-sub-anh",
@@ -1046,12 +1047,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-6a10-sub-hdtn",
+    "id": "as-tkb-cls-6a10-sub-hdtn-cd",
     "classId": "cls-6a10",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-21",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-6a10-sub-toan",
@@ -1126,12 +1127,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-6a10-sub-shl",
+    "id": "as-tkb-cls-6a10-sub-hdtn-shl",
     "classId": "cls-6a10",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-khtn-21",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-7a7-sub-toan",
@@ -1150,12 +1151,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-7a7-sub-hdtn",
+    "id": "as-tkb-cls-7a7-sub-hdtn-cd",
     "classId": "cls-7a7",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-19",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-7a7-sub-khtn-cs",
@@ -1230,12 +1231,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-7a7-sub-shl",
+    "id": "as-tkb-cls-7a7-sub-hdtn-shl",
     "classId": "cls-7a7",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-khtn-19",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-7a8-sub-van",
@@ -1246,12 +1247,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-7a8-sub-hdtn",
+    "id": "as-tkb-cls-7a8-sub-hdtn-cd",
     "classId": "cls-7a8",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-26",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-7a8-sub-gdtc",
@@ -1334,12 +1335,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-7a8-sub-shl",
+    "id": "as-tkb-cls-7a8-sub-hdtn-shl",
     "classId": "cls-7a8",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-ls-3",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-26",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-7a9-sub-lsdl-cs",
@@ -1358,12 +1359,12 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-7a9-sub-hdtn",
+    "id": "as-tkb-cls-7a9-sub-hdtn-cd",
     "classId": "cls-7a9",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-26",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-7a9-sub-khtn-cs",
@@ -1438,20 +1439,20 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-7a9-sub-shl",
+    "id": "as-tkb-cls-7a9-sub-hdtn-shl",
     "classId": "cls-7a9",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-td-11",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-26",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-8a7-sub-hdtn",
+    "id": "as-tkb-cls-8a7-sub-hdtn-cd",
     "classId": "cls-8a7",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-2",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-8a7-sub-toan",
@@ -1558,20 +1559,20 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-8a7-sub-shl",
+    "id": "as-tkb-cls-8a7-sub-hdtn-shl",
     "classId": "cls-8a7",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-khtn-2",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-8a8-sub-hdtn",
+    "id": "as-tkb-cls-8a8-sub-hdtn-cd",
     "classId": "cls-8a8",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-2",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-8a8-sub-hoa",
@@ -1678,20 +1679,20 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-8a8-sub-shl",
+    "id": "as-tkb-cls-8a8-sub-hdtn-shl",
     "classId": "cls-8a8",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-khtn-14",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-2",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-8a9-sub-hdtn",
+    "id": "as-tkb-cls-8a9-sub-hdtn-cd",
     "classId": "cls-8a9",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-26",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-8a9-sub-toan",
@@ -1798,20 +1799,20 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-8a9-sub-shl",
+    "id": "as-tkb-cls-8a9-sub-hdtn-shl",
     "classId": "cls-8a9",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-av-16",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-26",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-8a10-sub-hdtn",
+    "id": "as-tkb-cls-8a10-sub-hdtn-cd",
     "classId": "cls-8a10",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-26",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-8a10-sub-hoa",
@@ -1918,20 +1919,20 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-8a10-sub-shl",
+    "id": "as-tkb-cls-8a10-sub-hdtn-shl",
     "classId": "cls-8a10",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-t-15",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-26",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-9a7-sub-hdtn",
+    "id": "as-tkb-cls-9a7-sub-hdtn-cd",
     "classId": "cls-9a7",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-bgh-4",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-9a7-sub-tin",
@@ -2046,20 +2047,20 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-9a7-sub-shl",
+    "id": "as-tkb-cls-9a7-sub-hdtn-shl",
     "classId": "cls-9a7",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-t-2",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-bgh-4",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-9a8-sub-hdtn",
+    "id": "as-tkb-cls-9a8-sub-hdtn-cd",
     "classId": "cls-9a8",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-20",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-9a8-sub-toan",
@@ -2174,20 +2175,20 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-9a8-sub-shl",
+    "id": "as-tkb-cls-9a8-sub-hdtn-shl",
     "classId": "cls-9a8",
-    "subjectId": "sub-shl",
+    "subjectId": "sub-hdtn-shl",
     "teacherId": "tch-khtn-20",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-9a9-sub-hdtn",
+    "id": "as-tkb-cls-9a9-sub-hdtn-cd",
     "classId": "cls-9a9",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-26",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-9a9-sub-van",
@@ -2302,20 +2303,20 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-9a9-sub-shl",
+    "id": "as-tkb-cls-9a9-sub-hdtn-shl",
     "classId": "cls-9a9",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-ls-16",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-26",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   },
   {
-    "id": "as-tkb-cls-9a10-sub-hdtn",
+    "id": "as-tkb-cls-9a10-sub-hdtn-cd",
     "classId": "cls-9a10",
-    "subjectId": "sub-hdtn",
+    "subjectId": "sub-hdtn-cd",
     "teacherId": "tch-khtn-26",
-    "periodsPerWeek": 3,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1,
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
   },
   {
     "id": "as-tkb-cls-9a10-sub-anh",
@@ -2430,11 +2431,11 @@ export const supplementaryAssignments: Assignment[] = [
     "note": "Bổ sung từ TKB Tuần 1"
   },
   {
-    "id": "as-tkb-cls-9a10-sub-shl",
+    "id": "as-tkb-cls-9a10-sub-hdtn-shl",
     "classId": "cls-9a10",
-    "subjectId": "sub-shl",
-    "teacherId": "tch-t-13",
+    "subjectId": "sub-hdtn-shl",
+    "teacherId": "tch-khtn-26",
     "periodsPerWeek": 1,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
   }
 ];

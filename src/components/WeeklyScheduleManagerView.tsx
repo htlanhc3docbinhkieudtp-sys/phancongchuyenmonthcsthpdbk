@@ -306,8 +306,8 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
     { id: 'sub-am-nhac', name: 'Nhạc' },
     { id: 'sub-my-thuat', name: 'M.Thuật' },
     { id: 'sub-cn', name: 'C.Nghệ' },
-    { id: 'sub-hdtn', name: 'HĐTN' },
-    { id: 'sub-shl', name: 'SHL' },
+    { id: 'sub-hdtn-cd', name: 'HĐTNHN (CĐ)' },
+    { id: 'sub-hdtn-shl', name: 'HĐTNHN (SHL)' },
     { id: 'sub-gddp', name: 'GDĐP' }
   ];
 
@@ -326,8 +326,8 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
     { id: 'sub-am-nhac', name: 'Nhạc' },
     { id: 'sub-my-thuat', name: 'M.Thuật' },
     { id: 'sub-cn', name: 'C.Nghệ' },
-    { id: 'sub-hdtn', name: 'HĐTN' },
-    { id: 'sub-shl', name: 'SHL' },
+    { id: 'sub-hdtn-cd', name: 'HĐTNHN (CĐ)' },
+    { id: 'sub-hdtn-shl', name: 'HĐTNHN (SHL)' },
     { id: 'sub-gddp', name: 'GDĐP' }
   ];
 
@@ -344,8 +344,8 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
     { id: 'sub-am-nhac', name: 'Nhạc' },
     { id: 'sub-my-thuat', name: 'M.Thuật' },
     { id: 'sub-cn', name: 'C.Nghệ' },
-    { id: 'sub-hdtn', name: 'HĐTN' },
-    { id: 'sub-shl', name: 'SHL' },
+    { id: 'sub-hdtn-cd', name: 'HĐTNHN (CĐ)' },
+    { id: 'sub-hdtn-shl', name: 'HĐTNHN (SHL)' },
     { id: 'sub-gddp', name: 'GDĐP' }
   ];
 

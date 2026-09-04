@@ -57,8 +57,8 @@ export function extractAssignmentsFromTimetableSlots(
   const classMap = new Map(classes.map(c => [c.id, c]));
   const subjectMap = new Map(subjects.map(s => [s.id, s]));
 
-  // Valid teaching slots
-  const validSlots = slots.filter(s => s.classId && s.subjectId && s.teacherId);
+  // Valid teaching slots (excluding school assembly / chào cờ)
+  const validSlots = slots.filter(s => s.classId && s.subjectId && s.teacherId && s.subjectId !== 'sub-chao-co');
 
   // Group by (classId, subjectId)
   const groupMap = new Map<
@@ -98,11 +98,20 @@ export function extractAssignmentsFromTimetableSlots(
     const teacherId = topTeacher ? topTeacher[0] : '';
     const teacher = teacherMap.get(teacherId);
 
+    // Enforce operational period calculation rules:
+    // HĐTNHN THPT = 2 periods/week; HĐTNHN THCS (Chuyên đề & SHL) = 1 period/week each
+    let periods = item.periods;
+    if (item.subjectId === 'sub-hdtn-cd' || item.subjectId === 'sub-hdtn-shl') {
+      periods = 1;
+    } else if (item.subjectId === 'sub-hdtn') {
+      periods = 2;
+    }
+
     weeklyAssignments.push({
       classId: item.classId,
       subjectId: item.subjectId,
       teacherId: teacherId,
-      periods: item.periods,
+      periods,
       note: teacher ? `${teacher.code} (TKB Tuần 1)` : ''
     });
 
@@ -111,7 +120,7 @@ export function extractAssignmentsFromTimetableSlots(
       classId: item.classId,
       subjectId: item.subjectId,
       teacherId: teacherId,
-      periodsPerWeek: item.periods,
+      periodsPerWeek: periods,
       note: 'Bổ sung từ TKB Tuần 1'
     });
     idx++;
@@ -139,8 +148,8 @@ export function reconcileTimetableWithWeeklySchedule(
   const classMap = new Map(classes.map(c => [c.id, c]));
   const subjectMap = new Map(subjects.map(s => [s.id, s]));
 
-  // 1. Group timetable slots by classId_subjectId
-  const validSlots = slots.filter(s => s.classId && s.subjectId && s.teacherId);
+  // 1. Group timetable slots by classId_subjectId (excluding school assembly)
+  const validSlots = slots.filter(s => s.classId && s.subjectId && s.teacherId && s.subjectId !== 'sub-chao-co');
   const tkbMap = new Map<
     string,
     {
@@ -210,7 +219,14 @@ export function reconcileTimetableWithWeeklySchedule(
     const currTeacher = teacherMap.get(currTeacherId);
     const currPeriods = curr ? curr.periods : (base?.periodsPerWeek || 0);
 
-    const tkbPeriods = tkb ? tkb.periods : 0;
+    let tkbPeriods = tkb ? tkb.periods : 0;
+    if (tkb) {
+      if (subjectId === 'sub-hdtn-cd' || subjectId === 'sub-hdtn-shl') {
+        tkbPeriods = 1;
+      } else if (subjectId === 'sub-hdtn') {
+        tkbPeriods = 2;
+      }
+    }
 
     let status: ReconciliationRow['status'] = 'MATCHED';
     let note = '';

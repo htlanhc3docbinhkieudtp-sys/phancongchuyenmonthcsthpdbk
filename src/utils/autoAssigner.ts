@@ -74,7 +74,7 @@ export function autoDistributeAssignments(
       // Find candidates who can teach this subject
       const candidates = teachers.filter(t => {
         const canTeach = t.primarySubjectId === sub.id || (t.secondarySubjectIds && t.secondarySubjectIds.includes(sub.id));
-        if (!canTeach && sub.id === 'sub-hdtn') return true; // HĐTN anyone can teach
+        if (!canTeach && (sub.id === 'sub-hdtn' || sub.id === 'sub-hdtn-cd' || sub.id === 'sub-hdtn-shl')) return true; // HĐTN anyone can teach
         return canTeach;
       });
 
