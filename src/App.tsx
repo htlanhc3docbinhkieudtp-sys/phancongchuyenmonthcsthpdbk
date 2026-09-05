@@ -9,7 +9,8 @@ import {
   GradeLevel,
   LockedCell,
   WeeklySchedule,
-  SchoolTimetable
+  SchoolTimetable,
+  TimetableSlot
 } from './types';
 import {
   initialSchoolConfig,
@@ -38,6 +39,7 @@ import {
   createEmptyTimetableForWeek,
   normalizeTimetableSlots
 } from './utils/timetableHelper';
+import { extractAssignmentsFromTimetableSlots } from './utils/timetableReconciliationHelper';
 
 import { Header } from './components/Header';
 import { ViewTabs, ActiveTabType } from './components/ViewTabs';
@@ -192,9 +194,9 @@ export default function App() {
       try {
         const parsed = JSON.parse(saved);
         if (parsed && typeof parsed === 'object') {
-          // Always ensure Week 1 has official THPT & THCS slots
-          if (parsed[1] && parsed[1].slots) {
-            parsed[1].slots = ensureTHPTOfficialSlots(parsed[1].slots);
+          // Check Week 1 slots
+          if (parsed[1] && parsed[1].slots && parsed[1].slots.length > 0) {
+            parsed[1].slots = normalizeTimetableSlots(parsed[1].slots);
           } else {
             parsed[1] = generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
           }
@@ -288,8 +290,8 @@ export default function App() {
           }
           if (cloudData.weeklyTimetables && Object.keys(cloudData.weeklyTimetables).length > 0) {
             const merged = { ...cloudData.weeklyTimetables };
-            if (merged[1] && merged[1].slots) {
-              merged[1].slots = ensureTHPTOfficialSlots(merged[1].slots);
+            if (merged[1] && merged[1].slots && merged[1].slots.length > 0) {
+              merged[1].slots = normalizeTimetableSlots(merged[1].slots);
             } else {
               merged[1] = generateInitialTimetable(cloudData.classes || classes, cloudData.subjects || subjects, cloudData.teachers || teachers, cloudData.assignments || assignments, cloudData.config || config);
             }
@@ -300,11 +302,10 @@ export default function App() {
             });
             setWeeklyTimetables(merged);
           } else if (cloudData.timetable && cloudData.timetable.slots && cloudData.timetable.slots.length > 0) {
-            const ensuredSlots = ensureTHPTOfficialSlots(cloudData.timetable.slots);
             const tkb1: SchoolTimetable = {
               ...cloudData.timetable,
               weekNumber: 1,
-              slots: normalizeTimetableSlots(ensuredSlots)
+              slots: normalizeTimetableSlots(cloudData.timetable.slots)
             };
             setWeeklyTimetables({ 1: tkb1 });
           }
@@ -780,6 +781,84 @@ export default function App() {
     }));
   };
 
+  const handleImportTimetableBatch = (
+    importedSlots: TimetableSlot[],
+    targetWeek: number,
+    applyToSubsequentWeeks: boolean,
+    syncWeeklySchedule: boolean
+  ) => {
+    const currentSemester = config.semester || 'HK1';
+    const maxWeek = currentSemester === 'HK1' ? 18 : 35;
+    const targetWeeks: number[] = [targetWeek];
+    if (applyToSubsequentWeeks) {
+      for (let w = targetWeek + 1; w <= maxWeek; w++) {
+        targetWeeks.push(w);
+      }
+    }
+
+    // 1. Update weeklyTimetables for all target weeks
+    setWeeklyTimetables(prev => {
+      const next = { ...prev };
+      targetWeeks.forEach(w => {
+        next[w] = {
+          id: `tkb-week-${w}`,
+          academicYear: config.academicYear,
+          semester: currentSemester,
+          weekNumber: w,
+          slots: normalizeTimetableSlots(importedSlots.map(s => ({ ...s }))),
+          updatedAt: Date.now()
+        };
+      });
+      return next;
+    });
+
+    // 2. If syncWeeklySchedule is true, update weeklySchedules for target weeks
+    if (syncWeeklySchedule) {
+      const { weeklyAssignments, baseAssignments: extractedBase } = extractAssignmentsFromTimetableSlots(
+        importedSlots,
+        classes,
+        subjects,
+        teachers
+      );
+
+      // Update weekly schedules for each target week
+      setWeeklySchedules(prev => {
+        const next = [...prev];
+        targetWeeks.forEach(w => {
+          const idx = next.findIndex(ws => ws.weekNumber === w && ws.semester === currentSemester);
+          const updatedWeekSchedule: WeeklySchedule = {
+            weekNumber: w,
+            semester: currentSemester,
+            title: `Tuần ${w}`,
+            assignments: weeklyAssignments.map(a => ({ ...a })),
+            updatedAt: Date.now()
+          };
+          if (idx >= 0) {
+            next[idx] = updatedWeekSchedule;
+          } else {
+            next.push(updatedWeekSchedule);
+          }
+        });
+        return next;
+      });
+
+      // Also update base assignments if Week 1 is included
+      if (targetWeeks.includes(1)) {
+        setAssignments(prev => {
+          const map = new Map<string, Assignment>();
+          prev.forEach(a => map.set(`${a.classId}_${a.subjectId}`, a));
+          extractedBase.forEach(eb => {
+            map.set(`${eb.classId}_${eb.subjectId}`, eb);
+          });
+          return Array.from(map.values());
+        });
+      }
+    }
+
+    // Switch to target week
+    setCurrentWeek(targetWeek);
+  };
+
   const handleUpdateWeeklySchedule = (updated: WeeklySchedule) => {
     setWeeklySchedules(prev => {
       const existingIdx = prev.findIndex(
@@ -922,6 +1001,7 @@ export default function App() {
             isAdmin={isAdmin}
             onPromptAdminLogin={() => setIsAdminModalOpen(true)}
             onUpdateTimetable={handleUpdateTimetable}
+            onImportTimetableBatch={handleImportTimetableBatch}
           />
         )}
 

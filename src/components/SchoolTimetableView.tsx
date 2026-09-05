@@ -67,6 +67,12 @@ interface SchoolTimetableViewProps {
   isAdmin?: boolean;
   onPromptAdminLogin?: () => void;
   onUpdateTimetable: (updatedTimetable: SchoolTimetable) => void;
+  onImportTimetableBatch?: (
+    importedSlots: TimetableSlot[],
+    targetWeek: number,
+    applyToSubsequentWeeks: boolean,
+    syncWeeklySchedule: boolean
+  ) => void;
   onResetTimetable?: () => void;
 }
 
@@ -85,6 +91,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   isAdmin = false,
   onPromptAdminLogin,
   onUpdateTimetable,
+  onImportTimetableBatch,
   onResetTimetable
 }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('BY_CLASS');
@@ -277,12 +284,22 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
     setEditingSlot(null);
   };
 
-  const handleImportSuccess = (importedSlots: TimetableSlot[]) => {
-    onUpdateTimetable({
-      ...timetable,
-      slots: importedSlots,
-      updatedAt: Date.now()
-    });
+  const handleImportSuccess = (
+    importedSlots: TimetableSlot[],
+    targetWeek: number,
+    applyToSubsequentWeeks: boolean,
+    syncWeeklySchedule: boolean
+  ) => {
+    if (onImportTimetableBatch) {
+      onImportTimetableBatch(importedSlots, targetWeek, applyToSubsequentWeeks, syncWeeklySchedule);
+    } else {
+      onUpdateTimetable({
+        ...timetable,
+        weekNumber: targetWeek,
+        slots: importedSlots,
+        updatedAt: Date.now()
+      });
+    }
   };
 
   const handleAutoGenerate = () => {
@@ -333,10 +350,11 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
 
                 <button
                   onClick={() => setIsImportModalOpen(true)}
-                  className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-2 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-700 hover:to-indigo-700 text-white text-xs font-black rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer ring-2 ring-emerald-400/40"
+                  title="Nhập và cập nhật thời khóa biểu trực tiếp từ phần mềm VietSchool (Excel/CSV)"
                 >
-                  <Upload className="w-3.5 h-3.5" />
-                  <span>Nhập / Import TKB</span>
+                  <FileSpreadsheet className="w-4 h-4 text-emerald-100" />
+                  <span>Nhập TKB VietSchool</span>
                 </button>
 
                 <button
@@ -465,6 +483,16 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                       <span>Sao Chép Sang Tuần 2</span>
                     </button>
                   )}
+
+                  <button
+                    type="button"
+                    onClick={() => setIsImportModalOpen(true)}
+                    className="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                    title={`Nhập TKB VietSchool trực tiếp cho Tuần ${currentWeek}`}
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Đẩy TKB VietSchool vào Tuần {currentWeek}</span>
+                  </button>
 
                   <button
                     type="button"
@@ -1552,6 +1580,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         subjects={subjects}
         teachers={teachers}
         config={config}
+        currentWeek={currentWeek}
         onImportSuccess={handleImportSuccess}
       />
 
