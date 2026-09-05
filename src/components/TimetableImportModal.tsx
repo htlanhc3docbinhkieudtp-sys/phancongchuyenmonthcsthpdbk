@@ -83,6 +83,43 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
   const handleFile = (file: File) => {
     setIsLoading(true);
     setFileName(file.name);
+    const isTextFile = /\.(csv|tsv|txt)$/i.test(file.name);
+
+    if (isTextFile) {
+      const textReader = new FileReader();
+      textReader.onload = (e) => {
+        try {
+          const text = e.target?.result as string;
+          if (text) {
+            const res = parseVietSchoolTimetable(text, classes, subjects, teachers);
+            setParseResults(res);
+          }
+        } catch (err: any) {
+          setParseResults({
+            slots: [],
+            recognizedClasses: [],
+            unrecognizedClasses: [],
+            recognizedTeachers: [],
+            unrecognizedTeachers: [],
+            campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
+            errors: [`Lỗi phân tích tệp CSV: ${err?.message || 'Không thể đọc tệp'}`],
+            warnings: [],
+            sheetNames: [],
+            detectedFormat: 'Không xác định',
+            successCount: 0
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      textReader.onerror = () => {
+        setIsLoading(false);
+        alert('Không thể đọc tệp văn bản/CSV đã chọn.');
+      };
+      textReader.readAsText(file, 'utf-8');
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
@@ -99,7 +136,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
           recognizedTeachers: [],
           unrecognizedTeachers: [],
           campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
-          errors: [`Lỗi phân tích tệp: ${err?.message || 'Không thể đọc tệp Excel'}`],
+          errors: [`Lỗi phân tích tệp Excel: ${err?.message || 'Không thể đọc tệp Excel'}`],
           warnings: [],
           sheetNames: [],
           detectedFormat: 'Không xác định',
@@ -261,7 +298,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
             }`}
           >
             <Upload className="w-4 h-4 text-emerald-600" />
-            <span>Tải Tệp VietSchool (.xlsx, .xls)</span>
+            <span>Tải Tệp VietSchool (.xlsx, .xls, .csv)</span>
           </button>
           <button
             onClick={() => { setActiveMode('paste'); }}
@@ -296,7 +333,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept=".xlsx, .xls, .csv"
+                  accept=".xlsx, .xls, .csv, .tsv, .txt"
                   className="hidden"
                   onChange={(e) => {
                     if (e.target.files && e.target.files[0]) {
