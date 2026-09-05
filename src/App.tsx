@@ -67,6 +67,29 @@ import {
 
 const STORAGE_KEY = 'docbinhkieu_phancong_data_v9';
 
+function safeLocalStorageSet(key: string, value: string): boolean {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch (err) {
+    console.warn(`[Storage] Warning: Failed to save "${key}" to localStorage:`, err);
+    try {
+      const keysToClear: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('docbinhkieu') && !k.includes('_v9')) {
+          keysToClear.push(k);
+        }
+      }
+      keysToClear.forEach(k => localStorage.removeItem(k));
+      localStorage.setItem(key, value);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+}
+
 export default function App() {
   // Admin role state (Public view-only by default, admin login with password)
   const [isAdmin, setIsAdmin] = useState<boolean>(() => {
@@ -354,17 +377,34 @@ export default function App() {
 
   // Save to localStorage & Auto-sync to Firebase with debounce (Admin only)
   useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY}_config`, JSON.stringify(config));
-    localStorage.setItem(`${STORAGE_KEY}_departments`, JSON.stringify(departments));
-    localStorage.setItem(`${STORAGE_KEY}_subjects`, JSON.stringify(subjects));
-    localStorage.setItem(`${STORAGE_KEY}_classes`, JSON.stringify(classes));
-    localStorage.setItem(`${STORAGE_KEY}_teachers`, JSON.stringify(teachers));
-    localStorage.setItem(`${STORAGE_KEY}_assignments`, JSON.stringify(assignments));
-    localStorage.setItem(`${STORAGE_KEY}_locked_cells`, JSON.stringify(lockedCells));
-    localStorage.setItem(`${STORAGE_KEY}_weekly_schedules`, JSON.stringify(weeklySchedules));
-    localStorage.setItem(`${STORAGE_KEY}_current_week`, String(currentWeek));
-    localStorage.setItem(`${STORAGE_KEY}_weekly_timetables`, JSON.stringify(weeklyTimetables));
-    localStorage.setItem(`${STORAGE_KEY}_timetable`, JSON.stringify(timetable));
+    safeLocalStorageSet(`${STORAGE_KEY}_config`, JSON.stringify(config));
+    safeLocalStorageSet(`${STORAGE_KEY}_departments`, JSON.stringify(departments));
+    safeLocalStorageSet(`${STORAGE_KEY}_subjects`, JSON.stringify(subjects));
+    safeLocalStorageSet(`${STORAGE_KEY}_classes`, JSON.stringify(classes));
+    safeLocalStorageSet(`${STORAGE_KEY}_teachers`, JSON.stringify(teachers));
+    safeLocalStorageSet(`${STORAGE_KEY}_assignments`, JSON.stringify(assignments));
+    safeLocalStorageSet(`${STORAGE_KEY}_locked_cells`, JSON.stringify(lockedCells));
+    safeLocalStorageSet(`${STORAGE_KEY}_weekly_schedules`, JSON.stringify(weeklySchedules));
+    safeLocalStorageSet(`${STORAGE_KEY}_current_week`, String(currentWeek));
+
+    // Smart pruning for weeklyTimetables in localStorage:
+    // Week 1 is the master timetable. Weeks 2..18 that have identical slots do not need
+    // redundant duplication in localStorage, staying safely within the 5MB browser limit.
+    const prunedWeeklyTimetables: Record<number, SchoolTimetable> = {
+      1: weeklyTimetables[1] || timetable
+    };
+    const masterSlotCount = prunedWeeklyTimetables[1]?.slots?.length || 0;
+    Object.keys(weeklyTimetables).forEach(wStr => {
+      const w = Number(wStr);
+      if (w !== 1 && weeklyTimetables[w]) {
+        if (w === currentWeek || (weeklyTimetables[w].slots && weeklyTimetables[w].slots.length !== masterSlotCount)) {
+          prunedWeeklyTimetables[w] = weeklyTimetables[w];
+        }
+      }
+    });
+
+    safeLocalStorageSet(`${STORAGE_KEY}_weekly_timetables`, JSON.stringify(prunedWeeklyTimetables));
+    safeLocalStorageSet(`${STORAGE_KEY}_timetable`, JSON.stringify(timetable));
 
     // Debounced Firebase Auto-Save (Only admin changes push to Cloud to prevent view-only overwrites)
     if (!isInitialCloudLoadRef.current && isAdmin) {
@@ -391,7 +431,7 @@ export default function App() {
         if (success) {
           setCloudSyncStatus('synced');
           setLastSyncedAt(Date.now());
-          localStorage.setItem(`${STORAGE_KEY}_last_cloud_sync`, String(Date.now()));
+          safeLocalStorageSet(`${STORAGE_KEY}_last_cloud_sync`, String(Date.now()));
         } else {
           setCloudSyncStatus('error');
         }
@@ -787,76 +827,83 @@ export default function App() {
     applyToSubsequentWeeks: boolean,
     syncWeeklySchedule: boolean
   ) => {
-    const currentSemester = config.semester || 'HK1';
-    const maxWeek = currentSemester === 'HK1' ? 18 : 35;
-    const targetWeeks: number[] = [targetWeek];
-    if (applyToSubsequentWeeks) {
-      for (let w = targetWeek + 1; w <= maxWeek; w++) {
-        targetWeeks.push(w);
+    try {
+      const currentSemester = config.semester || 'HK1';
+      const maxWeek = currentSemester === 'HK1' ? 18 : 35;
+      const targetWeeks: number[] = [targetWeek];
+      if (applyToSubsequentWeeks) {
+        for (let w = targetWeek + 1; w <= maxWeek; w++) {
+          targetWeeks.push(w);
+        }
       }
-    }
 
-    // 1. Update weeklyTimetables for all target weeks
-    setWeeklyTimetables(prev => {
-      const next = { ...prev };
-      targetWeeks.forEach(w => {
-        next[w] = {
-          id: `tkb-week-${w}`,
-          academicYear: config.academicYear,
-          semester: currentSemester,
-          weekNumber: w,
-          slots: normalizeTimetableSlots(importedSlots.map(s => ({ ...s }))),
-          updatedAt: Date.now()
-        };
-      });
-      return next;
-    });
+      // 1. Normalize slots ONCE for maximum performance
+      const normalizedSlots = normalizeTimetableSlots(importedSlots);
 
-    // 2. If syncWeeklySchedule is true, update weeklySchedules for target weeks
-    if (syncWeeklySchedule) {
-      const { weeklyAssignments, baseAssignments: extractedBase } = extractAssignmentsFromTimetableSlots(
-        importedSlots,
-        classes,
-        subjects,
-        teachers
-      );
-
-      // Update weekly schedules for each target week
-      setWeeklySchedules(prev => {
-        const next = [...prev];
+      // 2. Update weeklyTimetables for all target weeks
+      setWeeklyTimetables(prev => {
+        const next = { ...prev };
         targetWeeks.forEach(w => {
-          const idx = next.findIndex(ws => ws.weekNumber === w && ws.semester === currentSemester);
-          const updatedWeekSchedule: WeeklySchedule = {
-            weekNumber: w,
+          next[w] = {
+            id: `tkb-week-${w}`,
+            academicYear: config.academicYear,
             semester: currentSemester,
-            title: `Tuần ${w}`,
-            assignments: weeklyAssignments.map(a => ({ ...a })),
+            weekNumber: w,
+            slots: normalizedSlots,
             updatedAt: Date.now()
           };
-          if (idx >= 0) {
-            next[idx] = updatedWeekSchedule;
-          } else {
-            next.push(updatedWeekSchedule);
-          }
         });
         return next;
       });
 
-      // Also update base assignments if Week 1 is included
-      if (targetWeeks.includes(1)) {
-        setAssignments(prev => {
-          const map = new Map<string, Assignment>();
-          prev.forEach(a => map.set(`${a.classId}_${a.subjectId}`, a));
-          extractedBase.forEach(eb => {
-            map.set(`${eb.classId}_${eb.subjectId}`, eb);
-          });
-          return Array.from(map.values());
-        });
-      }
-    }
+      // 3. If syncWeeklySchedule is true, update weeklySchedules for target weeks
+      if (syncWeeklySchedule) {
+        const { weeklyAssignments, baseAssignments: extractedBase } = extractAssignmentsFromTimetableSlots(
+          normalizedSlots,
+          classes,
+          subjects,
+          teachers
+        );
 
-    // Switch to target week
-    setCurrentWeek(targetWeek);
+        // Update weekly schedules for each target week
+        setWeeklySchedules(prev => {
+          const next = [...prev];
+          targetWeeks.forEach(w => {
+            const idx = next.findIndex(ws => ws.weekNumber === w && ws.semester === currentSemester);
+            const updatedWeekSchedule: WeeklySchedule = {
+              weekNumber: w,
+              semester: currentSemester,
+              title: `Tuần ${w}`,
+              assignments: weeklyAssignments.map(a => ({ ...a })),
+              updatedAt: Date.now()
+            };
+            if (idx >= 0) {
+              next[idx] = updatedWeekSchedule;
+            } else {
+              next.push(updatedWeekSchedule);
+            }
+          });
+          return next;
+        });
+
+        // Also update base assignments if Week 1 is included
+        if (targetWeeks.includes(1)) {
+          setAssignments(prev => {
+            const map = new Map<string, Assignment>();
+            prev.forEach(a => map.set(`${a.classId}_${a.subjectId}`, a));
+            extractedBase.forEach(eb => {
+              map.set(`${eb.classId}_${eb.subjectId}`, eb);
+            });
+            return Array.from(map.values());
+          });
+        }
+      }
+
+      // Switch to target week
+      setCurrentWeek(targetWeek);
+    } catch (err) {
+      console.error('[Import] Error applying timetable batch:', err);
+    }
   };
 
   const handleUpdateWeeklySchedule = (updated: WeeklySchedule) => {

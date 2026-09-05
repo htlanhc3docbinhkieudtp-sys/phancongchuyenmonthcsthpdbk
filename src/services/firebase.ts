@@ -167,16 +167,22 @@ export async function saveSchoolPlanToCloud(data: SchoolPlanData): Promise<boole
       }
     }
 
-    // Save weekly timetables in subcollection weekly_timetables (each week is ~400KB)
+    // Save weekly timetables in subcollection weekly_timetables
+    // Master timetable is Week 1. We always save Week 1 and any customized weeks.
     if (data.weeklyTimetables && typeof data.weeklyTimetables === 'object') {
+      const week1SlotsCount = data.weeklyTimetables[1]?.slots?.length || 0;
       for (const [wKey, tt] of Object.entries(data.weeklyTimetables)) {
         if (tt) {
-          const ttRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${wKey}`);
-          batch.set(ttRef, sanitizeForFirestore({
-            weekNumber: Number(wKey),
-            timetable: tt,
-            updatedAt: Date.now()
-          }));
+          const wkNum = Number(wKey);
+          // Always save Week 1, or active week, or weeks with customized slots
+          if (wkNum === 1 || wkNum === (data.config as any)?.activeWeek || (tt.slots && tt.slots.length !== week1SlotsCount)) {
+            const ttRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${wKey}`);
+            batch.set(ttRef, sanitizeForFirestore({
+              weekNumber: wkNum,
+              timetable: tt,
+              updatedAt: Date.now()
+            }));
+          }
         }
       }
     } else if (data.timetable) {

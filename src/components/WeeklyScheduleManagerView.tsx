@@ -106,6 +106,14 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
   const [reconcileGrade, setReconcileGrade] = useState<string>('ALL');
   const [reconcileStatus, setReconcileStatus] = useState<'ALL' | 'MATCHED' | 'SUPPLEMENTED' | 'MISMATCH'>('ALL');
   const [reconcileSearch, setReconcileSearch] = useState('');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(prev => (prev === msg ? null : prev));
+    }, 3500);
+  };
 
   const [editingAssignment, setEditingAssignment] = useState<{
     classId: string;
@@ -260,6 +268,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
       });
       onUpdateBaseAssignments(Array.from(map.values()));
     }
+    showToast(`Đã đồng bộ thành công ${effectiveSlots.length} tiết từ Thời khóa biểu vào bảng phân công chi tiết Tuần 1!`);
   };
 
   // Filter classes according to campus & grade & search
@@ -1168,7 +1177,6 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
                   <button
                     onClick={() => {
                       handleSyncTimetableToWeek1();
-                      alert('Đã cập nhật & đồng bộ toàn bộ 1,536 tiết từ TKB Tuần 1 vào bảng phân công chi tiết!');
                     }}
                     className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-2xs flex items-center gap-1.5 cursor-pointer transition-all"
                     title="Cập nhật toàn bộ phân công và số tiết thực tế theo TKB Tuần 1"
@@ -1438,6 +1446,14 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Floating Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-md bg-emerald-900 text-white px-5 py-3.5 rounded-xl shadow-2xl border border-emerald-500/40 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 duration-200">
+          <Sparkles className="w-5 h-5 text-emerald-300 shrink-0" />
+          <span className="text-xs sm:text-sm font-medium leading-snug">{toastMessage}</span>
         </div>
       )}
     </div>

@@ -62,6 +62,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
   const [pasteText, setPasteText] = useState('');
   const [fileName, setFileName] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isApplying, setIsApplying] = useState(false);
 
   // Target week configuration
   const [targetWeek, setTargetWeek] = useState<number>(currentWeek || 1);
@@ -114,7 +115,19 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
       };
       textReader.onerror = () => {
         setIsLoading(false);
-        alert('Không thể đọc tệp văn bản/CSV đã chọn.');
+        setParseResults({
+          slots: [],
+          recognizedClasses: [],
+          unrecognizedClasses: [],
+          recognizedTeachers: [],
+          unrecognizedTeachers: [],
+          campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
+          errors: ['Không thể đọc tệp văn bản/CSV đã chọn. Vui lòng kiểm tra lại quyền truy cập file.'],
+          warnings: [],
+          sheetNames: [],
+          detectedFormat: 'Không xác định',
+          successCount: 0
+        });
       };
       textReader.readAsText(file, 'utf-8');
       return;
@@ -148,7 +161,19 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
     };
     reader.onerror = () => {
       setIsLoading(false);
-      alert('Không thể đọc tệp đã chọn.');
+      setParseResults({
+        slots: [],
+        recognizedClasses: [],
+        unrecognizedClasses: [],
+        recognizedTeachers: [],
+        unrecognizedTeachers: [],
+        campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
+        errors: ['Không thể đọc tệp Excel đã chọn. Vui lòng kiểm tra lại quyền truy cập file.'],
+        warnings: [],
+        sheetNames: [],
+        detectedFormat: 'Không xác định',
+        successCount: 0
+      });
     };
     reader.readAsArrayBuffer(file);
   };
@@ -204,13 +229,22 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
 
   const handleApply = () => {
     if (parseResults && parseResults.slots.length > 0) {
-      onImportSuccess(
-        parseResults.slots,
-        targetWeek,
-        applyToSubsequentWeeks,
-        syncWeeklySchedule
-      );
-      onClose();
+      setIsApplying(true);
+      // Allow React to paint the loading state first
+      setTimeout(() => {
+        try {
+          onImportSuccess(
+            parseResults.slots,
+            targetWeek,
+            applyToSubsequentWeeks,
+            syncWeeklySchedule
+          );
+          onClose();
+        } catch (err) {
+          console.error('[Import] Error applying slots:', err);
+          setIsApplying(false);
+        }
+      }, 60);
     }
   };
 
@@ -614,14 +648,23 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
             <button
               type="button"
               onClick={handleApply}
-              disabled={!parseResults || parseResults.successCount === 0}
+              disabled={!parseResults || parseResults.successCount === 0 || isApplying}
               className="px-5 py-2.5 text-xs font-black text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-700 hover:to-indigo-700 active:scale-95 disabled:opacity-40 disabled:pointer-events-none rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
             >
-              <CheckCircle2 className="w-4 h-4" />
-              <span>
-                Áp Dụng {parseResults?.successCount || 0} Tiết Vào Tuần {targetWeek}
-                {applyToSubsequentWeeks ? ` (và các tuần tiếp theo)` : ''}
-              </span>
+              {isApplying ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Đang áp dụng vào hệ thống...</span>
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>
+                    Áp Dụng {parseResults?.successCount || 0} Tiết Vào Tuần {targetWeek}
+                    {applyToSubsequentWeeks ? ` (và các tuần tiếp theo)` : ''}
+                  </span>
+                </>
+              )}
             </button>
           </div>
         </div>

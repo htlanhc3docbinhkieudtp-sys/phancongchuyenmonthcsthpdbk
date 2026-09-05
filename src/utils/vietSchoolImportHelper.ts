@@ -174,11 +174,21 @@ export function matchClass(rawClassName: string, classes: ClassGroup[]): ClassGr
   );
   if (direct) return direct;
 
-  // 2. VietSchool THPT mapping: 10A1 -> 10CB1, 10C1 -> 10CB1, 10-1 -> 10CB1
-  const thptMatch = upper.match(/^(10|11|12)(?:CB|A|C|T|V|\/|-)?(\d+)$/);
+  // 2. VietSchool THPT mapping: 10A1 -> 10CB1, 10C1 -> 10CB1, 10-1 -> 10CB1, 101 -> 10CB1
+  const thptMatch = upper.match(/^(10|11|12)(?:CB|A|B|C|T|V|\/|-)?(\d+)$/);
   if (thptMatch) {
     const grade = thptMatch[1];
     const num = thptMatch[2];
+    const targetName = `${grade}CB${num}`;
+    const found = classes.find(c => c.name.toUpperCase() === targetName);
+    if (found) return found;
+  }
+
+  // 2b. VietSchool 3-digit shorthand (e.g. 101 -> 10CB1, 112 -> 11CB2, 125 -> 12CB5)
+  const threeDigitMatch = upper.match(/^(10|11|12)([1-5])$/);
+  if (threeDigitMatch) {
+    const grade = threeDigitMatch[1];
+    const num = threeDigitMatch[2];
     const targetName = `${grade}CB${num}`;
     const found = classes.find(c => c.name.toUpperCase() === targetName);
     if (found) return found;
@@ -390,6 +400,22 @@ export function matchSubject(
   }
   if (upper === 'NGHỆ THUẬT') {
     return { id: 'sub-nghe-thuat', name: 'Nghệ thuật' };
+  }
+
+  if (upper === 'GDĐP' || upper === 'GD DP' || upper === 'GD ĐỊA PHƯƠNG' || upper === 'GIÁO DỤC ĐỊA PHƯƠNG' || upper === 'ĐỊA PHƯƠNG' || upper.includes('ĐỊA PHƯƠNG')) {
+    return { id: 'sub-gddp', name: 'GD Địa phương' };
+  }
+  if (upper.startsWith('CĐ ') || upper.startsWith('CD ') || upper.startsWith('CHUYÊN ĐỀ ')) {
+    const subPart = upper.replace(/^(?:CĐ|CD|CHUYÊN ĐỀ)\s+/i, '').trim();
+    if (subPart.includes('TOÁN')) return { id: 'sub-toan', name: 'Toán học' };
+    if (subPart.includes('VĂN')) return { id: 'sub-van', name: 'Ngữ văn' };
+    if (subPart.includes('ANH')) return { id: 'sub-anh', name: 'Tiếng Anh' };
+    if (subPart.includes('LÍ') || subPart.includes('LÝ')) return { id: 'sub-li', name: 'Vật lí' };
+    if (subPart.includes('HÓA') || subPart.includes('HOÁ')) return { id: 'sub-hoa', name: 'Hóa học' };
+    if (subPart.includes('SINH')) return { id: 'sub-sinh', name: 'Sinh học' };
+    if (subPart.includes('SỬ')) return { id: 'sub-su', name: 'Lịch sử' };
+    if (subPart.includes('ĐỊA')) return { id: 'sub-dia', name: 'Địa lí' };
+    if (subPart.includes('TIN')) return { id: 'sub-tin', name: 'Tin học' };
   }
 
   // Direct subject match from app subjects
@@ -688,6 +714,15 @@ export function parseVietSchoolTimetable(
 
         // Determine default session for this block
         let blockDefaultSession: 'SANG' | 'CHIEU' = 'SANG';
+
+        // Check sheetName for session indicator (e.g. "Khối 10 - Chiều", "TKB Chiều", "Sheet_Chieu")
+        const lowerSheetName = sheetName.toLowerCase();
+        if (lowerSheetName.includes('chiều') || lowerSheetName.includes('chieu') || lowerSheetName.endsWith('_c') || lowerSheetName.includes(' pm')) {
+          blockDefaultSession = 'CHIEU';
+        } else if (lowerSheetName.includes('sáng') || lowerSheetName.includes('sang') || lowerSheetName.endsWith('_s') || lowerSheetName.includes(' am')) {
+          blockDefaultSession = 'SANG';
+        }
+
         for (let lookback = Math.max(0, r - 6); lookback < r; lookback++) {
           const prevRowText = (rawRows[lookback] || []).join(' ').toLowerCase();
           if (prevRowText.includes('chiều') || prevRowText.includes('chieu')) {
@@ -709,6 +744,7 @@ export function parseVietSchoolTimetable(
         let currentDay = 2; // Default Monday (Thứ 2)
         let currentSession: 'SANG' | 'CHIEU' = blockDefaultSession;
         let currentPeriod = 1;
+        let lastSeenPeriod = -1;
 
         let dataRowIdx = r + 1;
         while (dataRowIdx < rawRows.length) {
@@ -730,8 +766,22 @@ export function parseVietSchoolTimetable(
             break;
           }
 
-          // Check if metadata row: "Năm học", "Học kỳ", "Trường", "Áp dụng", "Thời khóa biểu"
           const entireRowText = dRow.join(' ').toLowerCase();
+
+          // Check for section divider rows like "BUỔI CHIỀU" or "BUỔI SÁNG"
+          if (entireRowText.includes('buổi chiều') || entireRowText.includes('buoi chieu') || (entireRowText.includes('chiều') && !entireRowText.includes('tiết') && !entireRowText.includes('thứ'))) {
+            currentSession = 'CHIEU';
+            lastSeenPeriod = -1;
+            dataRowIdx++;
+            continue;
+          } else if (entireRowText.includes('buổi sáng') || entireRowText.includes('buoi sang') || (entireRowText.includes('sáng') && !entireRowText.includes('tiết') && !entireRowText.includes('thứ'))) {
+            currentSession = 'SANG';
+            lastSeenPeriod = -1;
+            dataRowIdx++;
+            continue;
+          }
+
+          // Check if metadata row: "Năm học", "Học kỳ", "Trường", "Áp dụng", "Thời khóa biểu"
           if (entireRowText.includes('năm học') || entireRowText.includes('nam hoc') ||
               entireRowText.includes('học kỳ') || entireRowText.includes('hoc ky') ||
               entireRowText.includes('thời khóa biểu') || entireRowText.includes('thoi khoa bieu') ||
@@ -745,59 +795,109 @@ export function parseVietSchoolTimetable(
           const colDayVal = colDayIdx >= 0 ? String(dRow[colDayIdx] || '').trim() : '';
           const cleanDayVal = colDayVal.toLowerCase().replace(/\s+/g, ' ').trim();
           let matchedDay = -1;
-          if (/^(?:thứ|thu|t)?\s*2$|^thứ\s*hai$/i.test(cleanDayVal)) matchedDay = 2;
-          else if (/^(?:thứ|thu|t)?\s*3$|^thứ\s*ba$/i.test(cleanDayVal)) matchedDay = 3;
-          else if (/^(?:thứ|thu|t)?\s*4$|^thứ\s*(?:tư|tu)$/i.test(cleanDayVal)) matchedDay = 4;
-          else if (/^(?:thứ|thu|t)?\s*5$|^thứ\s*(?:năm|nam)$/i.test(cleanDayVal)) matchedDay = 5;
-          else if (/^(?:thứ|thu|t)?\s*6$|^thứ\s*(?:sáu|sau)$/i.test(cleanDayVal)) matchedDay = 6;
-          else if (/^(?:thứ|thu|t)?\s*7$|^thứ\s*(?:bảy|bay)$/i.test(cleanDayVal)) matchedDay = 7;
+          if (/^(?:thứ|thu|t)?\s*2$|^thứ\s*hai$/i.test(cleanDayVal) || cleanDayVal.includes('thứ 2') || cleanDayVal.includes('thứ hai') || cleanDayVal === '2') matchedDay = 2;
+          else if (/^(?:thứ|thu|t)?\s*3$|^thứ\s*ba$/i.test(cleanDayVal) || cleanDayVal.includes('thứ 3') || cleanDayVal.includes('thứ ba') || cleanDayVal === '3') matchedDay = 3;
+          else if (/^(?:thứ|thu|t)?\s*4$|^thứ\s*(?:tư|tu)$/i.test(cleanDayVal) || cleanDayVal.includes('thứ 4') || cleanDayVal.includes('thứ tư') || cleanDayVal === '4') matchedDay = 4;
+          else if (/^(?:thứ|thu|t)?\s*5$|^thứ\s*(?:năm|nam)$/i.test(cleanDayVal) || cleanDayVal.includes('thứ 5') || cleanDayVal.includes('thứ năm') || cleanDayVal === '5') matchedDay = 5;
+          else if (/^(?:thứ|thu|t)?\s*6$|^thứ\s*(?:sáu|sau)$/i.test(cleanDayVal) || cleanDayVal.includes('thứ 6') || cleanDayVal.includes('thứ sáu') || cleanDayVal === '6') matchedDay = 6;
+          else if (/^(?:thứ|thu|t)?\s*7$|^thứ\s*(?:bảy|bay)$/i.test(cleanDayVal) || cleanDayVal.includes('thứ 7') || cleanDayVal.includes('thứ bảy') || cleanDayVal === '7') matchedDay = 7;
           else if (/^[2-7]$/.test(cleanDayVal)) matchedDay = parseInt(cleanDayVal, 10);
 
-          if (matchedDay !== -1) {
+          if (matchedDay !== -1 && matchedDay !== currentDay) {
             currentDay = matchedDay;
+            // Day changed: reset session to the block's base session
+            currentSession = blockDefaultSession;
+            lastSeenPeriod = -1;
           }
 
-          // 2. Detect Session (Sáng / Chiều / S / C)
+          // Check if Day cell itself contains session indicator: e.g. "Thứ 2 (Chiều)", "2 - C"
+          if (cleanDayVal.includes('chiều') || cleanDayVal.includes('chieu') || cleanDayVal.includes('(c)') || cleanDayVal.endsWith('-c')) {
+            currentSession = 'CHIEU';
+          } else if (cleanDayVal.includes('sáng') || cleanDayVal.includes('sang') || cleanDayVal.includes('(s)') || cleanDayVal.endsWith('-s')) {
+            currentSession = 'SANG';
+          }
+
+          // 2. Detect Session from session column (Sáng / Chiều / S / C)
           if (colSessionIdx >= 0) {
             const colSessVal = String(dRow[colSessionIdx] || '').trim().toUpperCase();
-            if (colSessVal === 'C' || colSessVal.startsWith('CHIỀU') || colSessVal.startsWith('CHIEU')) {
+            if (colSessVal === 'C' || colSessVal.startsWith('CHIỀU') || colSessVal.startsWith('CHIEU') || colSessVal.includes('CHIỀU')) {
               currentSession = 'CHIEU';
-            } else if (colSessVal === 'S' || colSessVal.startsWith('SÁNG') || colSessVal.startsWith('SANG')) {
+            } else if (colSessVal === 'S' || colSessVal.startsWith('SÁNG') || colSessVal.startsWith('SANG') || colSessVal.includes('SÁNG')) {
               currentSession = 'SANG';
             }
           }
 
-          // 3. Detect Period (Tiết 1 -> 5)
-          let detectedPeriod = -1;
+          // 3. Detect Period (Tiết 1 -> 10, including S1..S5, C1..C5, 1C..5C)
+          let rawPeriod = -1;
+          let periodExplicitSession: 'SANG' | 'CHIEU' | null = null;
+
           if (colPeriodIdx >= 0) {
             const pVal = String(dRow[colPeriodIdx] || '').trim();
-            const pMatch = pVal.match(/^(?:Tiết|Tiet|T)?\s*([1-5])$/i);
+            const pMatch = pVal.match(/^(?:Tiết|Tiet|T)?\s*([0-9]|10)$/i);
             if (pMatch) {
-              detectedPeriod = parseInt(pMatch[1], 10);
+              rawPeriod = parseInt(pMatch[1], 10);
+            } else {
+              // Format C1..C5 or S1..S5
+              const csMatch = pVal.match(/^([SC])\s*([1-5])$/i);
+              if (csMatch) {
+                periodExplicitSession = csMatch[1].toUpperCase() === 'C' ? 'CHIEU' : 'SANG';
+                rawPeriod = parseInt(csMatch[2], 10);
+              } else {
+                const scMatch = pVal.match(/^([1-5])\s*([SC])$/i);
+                if (scMatch) {
+                  periodExplicitSession = scMatch[2].toUpperCase() === 'C' ? 'CHIEU' : 'SANG';
+                  rawPeriod = parseInt(scMatch[1], 10);
+                }
+              }
             }
           }
 
-          // Fallback: check first 3 columns for period digit 1..5
-          if (detectedPeriod === -1) {
+          // Fallback: check first columns before first class for period digit 1..10
+          if (rawPeriod === -1) {
             for (let c = 0; c < Math.min(firstClassCol, dRow.length); c++) {
               const val = String(dRow[c] || '').trim();
-              if (/^[1-5]$/.test(val)) {
-                detectedPeriod = parseInt(val, 10);
+              if (/^(?:10|[1-9])$/.test(val)) {
+                rawPeriod = parseInt(val, 10);
+                break;
+              }
+              const cs = val.match(/^([SC])\s*([1-5])$/i);
+              if (cs) {
+                periodExplicitSession = cs[1].toUpperCase() === 'C' ? 'CHIEU' : 'SANG';
+                rawPeriod = parseInt(cs[2], 10);
                 break;
               }
             }
           }
 
-          if (detectedPeriod !== -1) {
-            currentPeriod = detectedPeriod;
-          } else {
+          if (rawPeriod === -1 || rawPeriod < 1 || rawPeriod > 10) {
             // Not a valid period row, skip
             dataRowIdx++;
             continue;
           }
 
-          const effectivePeriod = currentPeriod;
-          const session = currentSession;
+          // Determine session and effective period
+          let effectivePeriod = rawPeriod;
+          let session = currentSession;
+
+          if (periodExplicitSession) {
+            session = periodExplicitSession;
+            currentSession = session;
+          } else if (rawPeriod > 5) {
+            // Periods 6..10 are unambiguously afternoon!
+            session = 'CHIEU';
+            effectivePeriod = rawPeriod - 5;
+            currentSession = 'CHIEU';
+          } else {
+            // Period is 1..5. Check if period sequence reset within the same day
+            // E.g. Previous period was 3, 4, 5 and current period is 1 or 2 while still on the same day:
+            if (lastSeenPeriod >= 3 && rawPeriod <= 2 && currentSession === 'SANG') {
+              session = 'CHIEU';
+              currentSession = 'CHIEU';
+            }
+          }
+
+          lastSeenPeriod = rawPeriod;
+          currentPeriod = effectivePeriod;
 
           // Read cells for each class in this row
           colClassMap.forEach((targetClass, colIdx) => {
