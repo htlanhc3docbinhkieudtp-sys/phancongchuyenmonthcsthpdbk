@@ -26,6 +26,7 @@ import {
 import { buildTHPTWeek1Slots } from '../data/thptWeek1Timetable';
 import { buildTHCSDBKWeek1Slots } from '../data/thcsDBKWeek1Timetable';
 import { buildTHCSTKWeek1Slots } from '../data/thcsTKWeek1Timetable';
+import { normalizeTimetableSlots } from '../utils/timetableHelper';
 import {
   Calendar,
   ChevronLeft,
@@ -126,13 +127,13 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
   // Effective timetable slots (1536 slots)
   const effectiveSlots = useMemo(() => {
     if (timetableSlots && timetableSlots.length > 0) {
-      return timetableSlots;
+      return normalizeTimetableSlots(timetableSlots);
     }
-    return [
+    return normalizeTimetableSlots([
       ...buildTHPTWeek1Slots(),
       ...buildTHCSDBKWeek1Slots(),
       ...buildTHCSTKWeek1Slots()
-    ];
+    ]);
   }, [timetableSlots]);
 
   const teacherMap = useMemo(() => new Map<string, Teacher>(teachers.map(t => [t.id, t])), [teachers]);

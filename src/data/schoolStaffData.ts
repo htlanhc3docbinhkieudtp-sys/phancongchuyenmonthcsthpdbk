@@ -1225,8 +1225,8 @@ export const officialStaffList: Teacher[] = [
   },
   {
     id: 'tch-td-2',
-    name: 'Nguyễn Kim Rang',
-    code: 'Rang.NK',
+    name: 'Nguyễn Kim Rạng',
+    code: 'Rạng.NK',
     gender: 'Nữ',
     birthDate: '3/26/1986',
     campus: 'THPTDBK',

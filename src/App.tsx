@@ -150,15 +150,19 @@ export default function App() {
 
   const [teachers, setTeachers] = useState<Teacher[]>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_teachers`);
-    if (saved) {
-      const parsed: Teacher[] = JSON.parse(saved);
-      return parsed.filter(t => 
+    const rawList: Teacher[] = saved ? JSON.parse(saved) : initialTeachers;
+    return rawList
+      .filter(t => 
         t.departmentId !== 'dept-van-phong' && 
         !t.id.startsWith('tch-vp') &&
         t.primarySubjectId !== 'sub-nv'
-      );
-    }
-    return initialTeachers;
+      )
+      .map(t => {
+        if (t.id === 'tch-td-2' || t.name === 'Nguyễn Kim Rang' || t.name === 'Đặng Văn Rạng') {
+          return { ...t, name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' };
+        }
+        return t;
+      });
   });
 
   const [assignments, setAssignments] = useState<Assignment[]>(() => {
@@ -358,7 +362,12 @@ export default function App() {
         if (isMounted) setCloudSyncStatus('synced');
       } finally {
         if (isMounted) {
-          isInitialCloudLoadRef.current = false;
+          // Delay enabling auto-save so state updates from cloud load settle first
+          setTimeout(() => {
+            if (isMounted) {
+              isInitialCloudLoadRef.current = false;
+            }
+          }, 2000);
         }
       }
     };
@@ -375,6 +384,11 @@ export default function App() {
     localStorage.setItem(`${STORAGE_KEY}_is_admin`, String(isAdmin));
   }, [isAdmin]);
 
+  // Save currentWeek to localStorage independently (does NOT trigger cloud auto-save)
+  useEffect(() => {
+    safeLocalStorageSet(`${STORAGE_KEY}_current_week`, String(currentWeek));
+  }, [currentWeek]);
+
   // Save to localStorage & Auto-sync to Firebase with debounce (Admin only)
   useEffect(() => {
     safeLocalStorageSet(`${STORAGE_KEY}_config`, JSON.stringify(config));
@@ -385,7 +399,6 @@ export default function App() {
     safeLocalStorageSet(`${STORAGE_KEY}_assignments`, JSON.stringify(assignments));
     safeLocalStorageSet(`${STORAGE_KEY}_locked_cells`, JSON.stringify(lockedCells));
     safeLocalStorageSet(`${STORAGE_KEY}_weekly_schedules`, JSON.stringify(weeklySchedules));
-    safeLocalStorageSet(`${STORAGE_KEY}_current_week`, String(currentWeek));
 
     // Smart pruning for weeklyTimetables in localStorage:
     // Week 1 is the master timetable. Weeks 2..18 that have identical slots do not need
@@ -408,12 +421,12 @@ export default function App() {
 
     // Debounced Firebase Auto-Save (Only admin changes push to Cloud to prevent view-only overwrites)
     if (!isInitialCloudLoadRef.current && isAdmin) {
-      setCloudSyncStatus('saving');
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
       }
 
       saveTimeoutRef.current = setTimeout(async () => {
+        setCloudSyncStatus('saving');
         const payload: SchoolPlanData = {
           config,
           departments,
@@ -435,9 +448,9 @@ export default function App() {
         } else {
           setCloudSyncStatus('error');
         }
-      }, 1000);
+      }, 2500);
     }
-  }, [config, departments, subjects, classes, teachers, assignments, lockedCells, weeklySchedules, currentWeek, weeklyTimetables, timetable, isAdmin]);
+  }, [config, departments, subjects, classes, teachers, assignments, lockedCells, weeklySchedules, weeklyTimetables, timetable, isAdmin]);
 
   // Derived Calculations
   const workloads = useMemo(() => {

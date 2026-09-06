@@ -315,14 +315,61 @@ export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[]
       subjectId = 'sub-hdtn';
     }
 
-    if (subjectName !== s.subjectName || subjectId !== s.subjectId) {
-      return {
-        ...s,
-        subjectName,
-        subjectId
-      };
+    // Teacher name correction: Nguyễn Kim Rạng
+    let teacherId = s.teacherId;
+    let teacherName = s.teacherName;
+    let teacherCode = s.teacherCode;
+    const tNameLower = (teacherName || '').toLowerCase();
+    if (
+      teacherId === 'tch-td-2' ||
+      tNameLower === 'nguyễn kim rang' ||
+      tNameLower === 'nguyen kim rang' ||
+      tNameLower === 'đặng văn rạng' ||
+      tNameLower === 'dang van rang' ||
+      tNameLower === 'rang' ||
+      (teacherCode && teacherCode.toLowerCase() === 'rang.nk')
+    ) {
+      teacherId = 'tch-td-2';
+      teacherName = 'Nguyễn Kim Rạng';
+      teacherCode = 'Rạng.NK';
     }
-    return s;
+
+    // Enforce school shift rules:
+    // Khối 10, 11, 12 (THPT): 100% Buổi Sáng (Morning only, never Afternoon)
+    // Khối 8, 9 (THCS): Buổi Sáng
+    // Khối 6, 7 (THCS): Buổi Chiều
+    let session = s.session;
+    let period = s.period;
+    const cName = (s.className || '').toUpperCase();
+    const cId = (s.classId || '').toLowerCase();
+
+    const isTHPT = /^(?:10|11|12)CB/i.test(cName) || cId.includes('-10') || cId.includes('-11') || cId.includes('-12');
+    const isGrade89 = /^[89]A/i.test(cName) || cId.includes('-8') || cId.includes('-9');
+    const isGrade67 = /^[67]A/i.test(cName) || cId.includes('-6') || cId.includes('-7');
+
+    if (isTHPT || isGrade89) {
+      session = 'SANG';
+      if (period > 5) period = period - 5;
+    } else if (isGrade67) {
+      session = 'CHIEU';
+      if (period > 5) period = period - 5;
+    } else if (period > 5) {
+      period = period - 5;
+    }
+
+    const newId = `${s.classId}_${s.dayOfWeek}_${session}_${period}`;
+
+    return {
+      ...s,
+      id: newId,
+      session,
+      period,
+      subjectName,
+      subjectId,
+      teacherId,
+      teacherName,
+      teacherCode
+    };
   });
 }
 

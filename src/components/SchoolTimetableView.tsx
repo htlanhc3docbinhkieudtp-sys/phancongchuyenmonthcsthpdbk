@@ -14,7 +14,8 @@ import {
   exportTimetableToExcel,
   generateInitialTimetable,
   getWeekDateRange,
-  getUnifiedSubjectName
+  getUnifiedSubjectName,
+  normalizeTimetableSlots
 } from '../utils/timetableHelper';
 import {
   Search,
@@ -116,19 +117,24 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   const subjectMap = useMemo(() => new Map<string, Subject>(subjects.map(s => [s.id, s])), [subjects]);
   const classMap = useMemo(() => new Map<string, ClassGroup>(classes.map(c => [c.id, c])), [classes]);
 
+  // Normalized slots for accurate session rendering and name consistency
+  const activeSlots = useMemo(() => {
+    return normalizeTimetableSlots(timetable.slots || []);
+  }, [timetable.slots]);
+
   // Slot lookup: Map<`${classId}_${day}_${session}_${period}`, TimetableSlot>
   const slotMap = useMemo(() => {
     const map = new Map<string, TimetableSlot>();
-    timetable.slots.forEach(s => {
+    activeSlots.forEach(s => {
       map.set(`${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`, s);
     });
     return map;
-  }, [timetable.slots]);
+  }, [activeSlots]);
 
   // Teacher Slot lookup: Map<`${teacherId}_${day}_${session}_${period}`, TimetableSlot[]>
   const teacherSlotsMap = useMemo(() => {
     const map = new Map<string, TimetableSlot[]>();
-    timetable.slots.forEach(s => {
+    activeSlots.forEach(s => {
       if (s.teacherId) {
         const key = `${s.teacherId}_${s.dayOfWeek}_${s.session}_${s.period}`;
         const list = map.get(key) || [];
@@ -137,7 +143,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
       }
     });
     return map;
-  }, [timetable.slots]);
+  }, [activeSlots]);
 
   // Detect collisions (where a teacher is assigned to 2+ classes in the same slot)
   const teacherCollisions = useMemo(() => {
@@ -171,7 +177,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         const matchesHomeroom = cls.homeroomTeacherId && (teacherMap.get(cls.homeroomTeacherId)?.name.toLowerCase().includes(term));
         if (!matchesClass && !matchesHomeroom) {
           // Check if any slot has this subject or teacher
-          const hasMatchingSlot = timetable.slots.some(
+          const hasMatchingSlot = activeSlots.some(
             s => s.classId === cls.id && (
               (s.subjectName && (
                 s.subjectName.toLowerCase().includes(term) ||
@@ -187,7 +193,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
 
       return true;
     });
-  }, [classes, selectedCampus, selectedGrade, selectedClassId, searchTerm, teacherMap, timetable.slots]);
+  }, [classes, selectedCampus, selectedGrade, selectedClassId, searchTerm, teacherMap, activeSlots]);
 
   // Filtered teachers for BY_TEACHER view
   const filteredTeachers = useMemo(() => {

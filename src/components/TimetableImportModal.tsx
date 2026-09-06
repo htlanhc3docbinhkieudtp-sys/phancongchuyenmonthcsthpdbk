@@ -84,7 +84,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
   const handleFile = (file: File) => {
     setIsLoading(true);
     setFileName(file.name);
-    const isTextFile = /\.(csv|tsv|txt)$/i.test(file.name);
+    const isTextFile = /\.(csv|tsv|txt|md)$/i.test(file.name);
 
     if (isTextFile) {
       const textReader = new FileReader();
@@ -367,7 +367,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept=".xlsx, .xls, .csv, .tsv, .txt"
+                  accept=".xlsx, .xls, .csv, .tsv, .txt, .md"
                   className="hidden"
                   onChange={(e) => {
                     if (e.target.files && e.target.files[0]) {
@@ -388,11 +388,11 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                   {fileName ? (
                     <span className="text-emerald-700">Đã chọn: {fileName} (Nhấp để chọn lại)</span>
                   ) : (
-                    'Kéo thả file Excel xuất từ VietSchool vào đây hoặc nhấp để chọn tệp'
+                    'Kéo thả file Excel (.xlsx) hoặc Markdown (.md) vào đây'
                   )}
                 </h4>
                 <p className="text-xs text-slate-500 max-w-md mx-auto">
-                  Hệ thống tự động đọc bảng ma trận TKB, phân tách Môn học - Giáo viên, nhận diện tất cả các lớp của THPT, THCS Đốc Binh Kiều và Tân Kiều.
+                  Hỗ trợ cả 2 định dạng: <strong>Phân công Thời khóa biểu theo Giáo viên</strong> (Markdown/Excel) và <strong>Ma trận Thời khóa biểu theo Lớp</strong> (VietSchool). Tự động nhận diện các điểm trường THPT & THCS Đốc Binh Kiều.
                 </p>
               </div>
 
@@ -419,13 +419,13 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
                   <Info className="w-4 h-4 text-indigo-600" />
-                  <span>Sao chép các dòng/cột từ VietSchool hoặc Excel rồi dán (Ctrl+V) vào khung dưới đây:</span>
+                  <span>Dán nội dung bảng Thời khóa biểu theo Giáo viên (Markdown/Excel) hoặc Ma trận theo Lớp:</span>
                 </label>
               </div>
               <textarea
                 value={pasteText}
                 onChange={(e) => setPasteText(e.target.value)}
-                placeholder="Thứ	Tiết	10CB1	10CB2	11CB1...&#10;Thứ 2	1	Chào cờ-Tùng	Chào cờ-Kiều	Chào cờ-Huỳnh...&#10;Thứ 2	2	Toán-Hương	Ngữ văn-Nhịnh	Tiếng Anh-Ny..."
+                placeholder="Dán thời khóa biểu theo Giáo viên (Markdown / Excel):&#10;| Giáo Viên | Buổi | Tiết | Thứ 2 | Thứ 3 | Thứ 4 | Thứ 5 | Thứ 6 | Thứ 7 |&#10;| Lê Cao Toàn | C | 4 | | 7A5-Toán | | | 7A5-Toán | |&#10;&#10;Hoặc dán ma trận theo Lớp:&#10;Thứ	Tiết	10CB1	10CB2	11CB1...&#10;Thứ 2	1	Chào cờ-Tùng	Chào cờ-Kiều..."
                 rows={7}
                 className="w-full text-xs font-mono p-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-hidden"
               />

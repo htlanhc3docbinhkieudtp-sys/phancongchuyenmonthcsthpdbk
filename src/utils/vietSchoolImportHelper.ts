@@ -91,7 +91,13 @@ const THCS_DBK_TEACHER_LOOKUP: Record<string, { id: string; name: string; code: 
   'Lưu': { id: 'tch-td-7', name: 'Lê Thanh Lưu', code: 'Lưu.LT' },
   'Xanh': { id: 'tch-td-9', name: 'Lê Thị Tuyết Xanh', code: 'Xanh.LTT' },
   'Quốc(TK)': { id: 'tch-td-10', name: 'Trần Thị Mỹ Quốc', code: 'Quốc.TTM' },
-  'Văn(TK)': { id: 'tch-td-12', name: 'Nguyễn Anh Văn', code: 'Văn.NA' }
+  'Văn(TK)': { id: 'tch-td-12', name: 'Nguyễn Anh Văn', code: 'Văn.NA' },
+  'Rạng': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' },
+  'Rang': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' },
+  'Nguyễn Kim Rạng': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' },
+  'Nguyễn Kim Rang': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' },
+  'Rạng.NK': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' },
+  'Rang.NK': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' }
 };
 
 // Teacher nickname dictionary for THCS Tân Kiều
@@ -228,13 +234,29 @@ export function matchTeacher(
   const lower = clean.toLowerCase();
   const noAccent = removeVietnameseAccents(clean);
 
+  // Special priority for Nguyễn Kim Rạng (avoid any misinterpretation as Nguyễn Kim Rang)
+  if (
+    clean === 'Rạng' || clean === 'Rang' ||
+    clean === 'Nguyễn Kim Rạng' || clean === 'Nguyễn Kim Rang' ||
+    clean === 'Rạng.NK' || clean === 'Rang.NK' ||
+    lower.includes('kim rang') || lower.includes('kim rạng') ||
+    lower === 'đặng văn rạng' || lower === 'dang van rang'
+  ) {
+    return { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' };
+  }
+
   // 1. Match by ID or exact full name or exact code
   const exact = teachers.find(
     t => t.id.toLowerCase() === lower ||
          t.name.trim().toLowerCase() === lower ||
          t.code.trim().toLowerCase() === lower
   );
-  if (exact) return { id: exact.id, name: exact.name, code: exact.code };
+  if (exact) {
+    if (exact.id === 'tch-td-2' || exact.name.toLowerCase().includes('kim rang')) {
+      return { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' };
+    }
+    return { id: exact.id, name: exact.name, code: exact.code };
+  }
 
   // 2. Campus context-aware VietSchool lookup
   const isTHPT = targetClass?.level === 'THPT' || targetClass?.campus === 'THPTDBK';
@@ -503,6 +525,483 @@ export function deconstructCellText(cellValue: any): { subjectText: string; teac
 }
 
 /**
+ * Normalizes teacher name from raw input or table headers
+ */
+export function normalizeTeacherRaw(raw: string): string {
+  if (!raw) return '';
+  let clean = String(raw)
+    .replace(/\*\*/g, '')
+    .replace(/\[|\]/g, '')
+    .replace(/\s+/g, ' ')
+    .replace(/\(ĐBK\)/gi, '')
+    .replace(/\(Tân Kiều\)/gi, '')
+    .replace(/\(Tân Kiểu\)/gi, '')
+    .replace(/\(TK\)/gi, '')
+    .trim();
+
+  // Handle common export typos or contractions
+  if (clean.toLowerCase().includes('lê tnị hoài an')) {
+    clean = 'Lê Thị Hoài An';
+  }
+  if (clean.toLowerCase().includes('ng thị kim xoa')) {
+    clean = 'Nguyễn Thị Kim Xoa';
+  }
+  return clean;
+}
+
+/**
+ * Deconstructs cell value into Class and Subject (e.g. "7A5-Toán" -> class: "7A5", subject: "Toán")
+ */
+export function deconstructTeacherSlotCell(cellVal: string): { rawClassName: string; rawSubjectName: string } {
+  const trimmed = String(cellVal || '')
+    .replace(/\*\*/g, '')
+    .replace(/\[|\]/g, '')
+    .trim();
+  if (!trimmed) return { rawClassName: '', rawSubjectName: '' };
+  
+  const dashIdx = trimmed.indexOf('-');
+  if (dashIdx > 0) {
+    return {
+      rawClassName: trimmed.substring(0, dashIdx).trim(),
+      rawSubjectName: trimmed.substring(dashIdx + 1).trim()
+    };
+  }
+  const parts = trimmed.split(/\s+/);
+  return {
+    rawClassName: parts[0] || '',
+    rawSubjectName: parts.slice(1).join(' ')
+  };
+}
+
+/**
+ * Dedicated Parser for Teacher-Centric Timetable in Markdown/Text format
+ */
+export function parseTeacherCentricFromMarkdown(
+  text: string,
+  classes: ClassGroup[],
+  subjects: Subject[],
+  teachers: Teacher[]
+): VietSchoolParseResult {
+  const lines = text.split(/\r?\n/);
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const slots: TimetableSlot[] = [];
+  const recognizedClassNames = new Set<string>();
+  const unrecognizedClassNames = new Set<string>();
+  const recognizedTeacherNames = new Set<string>();
+  const unrecognizedTeacherNames = new Set<string>();
+
+  interface TableBlock {
+    header: string[];
+    rows: string[][];
+  }
+
+  const allBlocks: TableBlock[] = [];
+  let currentBlock: TableBlock | null = null;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line.startsWith('|') || !line.endsWith('|')) continue;
+    if (/^\|(\s*[:-]+\s*\|)+$/.test(line)) continue;
+
+    const cells = line
+      .slice(1, -1)
+      .split('|')
+      .map(c => c.replace(/\*\*/g, '').replace(/\[|\]/g, '').trim());
+
+    const isHeader = cells.some(c => 
+      c.includes('Giáo Viên') || 
+      c === 'Thứ 7' || 
+      (c.includes('Thứ 6') && cells.includes('Thứ 7')) ||
+      (c.includes('Thứ 2') && c.includes('Thứ 3'))
+    );
+
+    if (isHeader) {
+      if (currentBlock) allBlocks.push(currentBlock);
+      currentBlock = { header: cells, rows: [] };
+      continue;
+    }
+
+    if (cells[0].includes('THỜI KHÓA BIỂU')) {
+      continue;
+    }
+
+    if (currentBlock) {
+      // Keep row as-is (including empty period rows) so that line indices map accurately
+      currentBlock.rows.push(cells);
+    }
+  }
+  if (currentBlock) allBlocks.push(currentBlock);
+
+  // Group blocks:
+  // Primary blocks have "Giáo Viên" in header
+  // Secondary blocks have "Thứ 6/7" or "Thứ 7" without "Giáo Viên"
+  const primaryBlocks: TableBlock[] = [];
+  const secondaryBlocks: TableBlock[] = [];
+
+  for (const block of allBlocks) {
+    const hasTeacherHeader = block.header.some(c => c.includes('Giáo Viên'));
+    if (hasTeacherHeader) {
+      primaryBlocks.push(block);
+    } else {
+      secondaryBlocks.push(block);
+    }
+  }
+
+  // Parse each primary block
+  for (let bIdx = 0; bIdx < primaryBlocks.length; bIdx++) {
+    const pBlock = primaryBlocks[bIdx];
+    const sBlock = secondaryBlocks[bIdx];
+
+    // Identify teacher name
+    let rawTeacher = '';
+    for (const r of pBlock.rows) {
+      if (r[0] && !r[0].includes('Giáo Viên')) {
+        rawTeacher = r[0];
+        break;
+      }
+    }
+
+    const cleanTeacher = normalizeTeacherRaw(rawTeacher);
+    const matchedTeacher = matchTeacher(cleanTeacher, teachers);
+    if (cleanTeacher) {
+      if (matchedTeacher) recognizedTeacherNames.add(matchedTeacher.name);
+      else unrecognizedTeacherNames.add(cleanTeacher);
+    }
+
+    // Day column mapping for primary block
+    const pDayColMap: Record<number, number> = {};
+    pBlock.header.forEach((h, colIdx) => {
+      const match = h.match(/Thứ\s*(\d)/i);
+      if (match) {
+        pDayColMap[colIdx] = parseInt(match[1], 10);
+      }
+    });
+
+    // Day column mapping for secondary block
+    const sDayColMap: Record<number, number> = {};
+    if (sBlock) {
+      sBlock.header.forEach((h, colIdx) => {
+        const match = h.match(/Thứ\s*(\d)/i);
+        if (match) {
+          sDayColMap[colIdx] = parseInt(match[1], 10);
+        }
+      });
+      if (Object.keys(sDayColMap).length === 0 && sBlock.header.some(h => h.includes('Thứ 7'))) {
+        sDayColMap[0] = 7;
+      }
+    }
+
+    // Filter valid period rows from pBlock to pair 1-to-1 with sBlock
+    interface ValidPeriodRow {
+      row: string[];
+      period: number;
+      session: 'SANG' | 'CHIEU';
+      pIndex: number;
+    }
+    const validPRows: ValidPeriodRow[] = [];
+    let currentSession: 'SANG' | 'CHIEU' = bIdx >= 49 ? 'SANG' : 'CHIEU';
+
+    for (let r = 0; r < pBlock.rows.length; r++) {
+      const row = pBlock.rows[r];
+      if (row[1] === 'S' || row[1] === 'Sáng' || row[1] === 'SANG') {
+        currentSession = 'SANG';
+      } else if (row[1] === 'C' || row[1] === 'Chiều' || row[1] === 'CHIEU') {
+        currentSession = 'CHIEU';
+      }
+
+      const period = parseInt(String(row[2] || '').replace(/[^0-9]/g, ''), 10);
+      if (!isNaN(period) && period >= 1 && period <= 5) {
+        validPRows.push({ row, period, session: currentSession, pIndex: validPRows.length });
+      }
+    }
+
+    for (let rIdx = 0; rIdx < validPRows.length; rIdx++) {
+      const { row, period, session } = validPRows[rIdx];
+
+      // Extract days from primary block
+      for (const [colIdxStr, day] of Object.entries(pDayColMap)) {
+        const colIdx = parseInt(colIdxStr, 10);
+        const cellVal = row[colIdx] || '';
+        if (!cellVal.trim()) continue;
+
+        const { rawClassName, rawSubjectName } = deconstructTeacherSlotCell(cellVal);
+        if (!rawClassName) continue;
+
+        const targetClass = matchClass(rawClassName, classes);
+        if (!targetClass) {
+          unrecognizedClassNames.add(rawClassName);
+          continue;
+        }
+        recognizedClassNames.add(targetClass.name);
+
+        const matchedSubject = matchSubject(rawSubjectName, subjects, targetClass);
+
+        const slotId = `${targetClass.id}_${day}_${session}_${period}`;
+        slots.push({
+          id: slotId,
+          classId: targetClass.id,
+          className: targetClass.name,
+          dayOfWeek: day,
+          session: session,
+          period,
+          subjectId: matchedSubject.id,
+          subjectName: matchedSubject.name,
+          teacherId: matchedTeacher?.id || '',
+          teacherName: matchedTeacher?.name || cleanTeacher,
+          teacherCode: matchedTeacher?.code || cleanTeacher,
+          room: targetClass.roomNumber || 'Phòng học'
+        });
+      }
+
+      // Extract days from secondary block matching index rIdx
+      if (sBlock && sBlock.rows[rIdx]) {
+        const sRow = sBlock.rows[rIdx];
+        for (const [colIdxStr, day] of Object.entries(sDayColMap)) {
+          const colIdx = parseInt(colIdxStr, 10);
+          const cellVal = sRow[colIdx] || '';
+          if (!cellVal.trim()) continue;
+
+          const { rawClassName, rawSubjectName } = deconstructTeacherSlotCell(cellVal);
+          if (!rawClassName) continue;
+
+          const targetClass = matchClass(rawClassName, classes);
+          if (!targetClass) {
+            unrecognizedClassNames.add(rawClassName);
+            continue;
+          }
+          recognizedClassNames.add(targetClass.name);
+
+          const matchedSubject = matchSubject(rawSubjectName, subjects, targetClass);
+
+          const slotId = `${targetClass.id}_${day}_${session}_${period}`;
+          slots.push({
+            id: slotId,
+            classId: targetClass.id,
+            className: targetClass.name,
+            dayOfWeek: day,
+            session: session,
+            period,
+            subjectId: matchedSubject.id,
+            subjectName: matchedSubject.name,
+            teacherId: matchedTeacher?.id || '',
+            teacherName: matchedTeacher?.name || cleanTeacher,
+            teacherCode: matchedTeacher?.code || cleanTeacher,
+            room: targetClass.roomNumber || 'Phòng học'
+          });
+        }
+      }
+    }
+  }
+
+  // Deduplicate slots
+  const slotMap = new Map<string, TimetableSlot>();
+  slots.forEach(s => {
+    const key = `${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`;
+    slotMap.set(key, s);
+  });
+  const dedupedSlots = Array.from(slotMap.values());
+
+  let thptSlots = 0;
+  let thcsDbkSlots = 0;
+  let thcsTkSlots = 0;
+
+  dedupedSlots.forEach(s => {
+    const cls = classes.find(c => c.id === s.classId);
+    if (cls?.level === 'THPT' || cls?.campus === 'THPTDBK') {
+      thptSlots++;
+    } else if (cls?.campus === 'THCSTK' || /^[6789]A([789]|10)$/i.test(cls?.name || '')) {
+      thcsTkSlots++;
+    } else {
+      thcsDbkSlots++;
+    }
+  });
+
+  return {
+    slots: normalizeTimetableSlots(dedupedSlots),
+    recognizedClasses: Array.from(recognizedClassNames),
+    unrecognizedClasses: Array.from(unrecognizedClassNames),
+    recognizedTeachers: Array.from(recognizedTeacherNames),
+    unrecognizedTeachers: Array.from(unrecognizedTeacherNames),
+    campusStats: {
+      thptSlots,
+      thcsDbkSlots,
+      thcsTkSlots
+    },
+    errors,
+    warnings,
+    sheetNames: ['Thời khóa biểu theo Giáo viên'],
+    detectedFormat: 'VietSchool - Thời khóa biểu theo Giáo viên',
+    successCount: dedupedSlots.length
+  };
+}
+
+/**
+ * Dedicated Parser for Teacher-Centric Timetable in Excel rows (any[][])
+ */
+export function parseTeacherCentricFromRows(
+  rawRows: any[][],
+  classes: ClassGroup[],
+  subjects: Subject[],
+  teachers: Teacher[]
+): VietSchoolParseResult | null {
+  if (!rawRows || rawRows.length < 2) return null;
+
+  // Search for header row
+  let headerRowIdx = -1;
+  let colTeacher = -1;
+  let colSession = -1;
+  let colPeriod = -1;
+  const dayColMap: Record<number, number> = {};
+
+  for (let r = 0; r < Math.min(rawRows.length, 25); r++) {
+    const row = rawRows[r] || [];
+    const lowerCells = row.map(c => String(c || '').toLowerCase().trim());
+    
+    const tIdx = lowerCells.findIndex(c => c.includes('giáo viên') || c === 'gv');
+    const pIdx = lowerCells.findIndex(c => c.includes('tiết') || c === 'period');
+    
+    if (tIdx >= 0 && pIdx >= 0) {
+      headerRowIdx = r;
+      colTeacher = tIdx;
+      colPeriod = pIdx;
+      colSession = lowerCells.findIndex(c => c.includes('buổi') || c.includes('ca') || c === 's/c');
+
+      // Map days
+      lowerCells.forEach((cell, cIdx) => {
+        const match = cell.match(/thứ\s*(\d)/i) || cell.match(/^t(\d)$/i);
+        if (match) {
+          dayColMap[cIdx] = parseInt(match[1], 10);
+        }
+      });
+      break;
+    }
+  }
+
+  if (headerRowIdx === -1 || Object.keys(dayColMap).length === 0) {
+    return null;
+  }
+
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const slots: TimetableSlot[] = [];
+  const recognizedClassNames = new Set<string>();
+  const unrecognizedClassNames = new Set<string>();
+  const recognizedTeacherNames = new Set<string>();
+  const unrecognizedTeacherNames = new Set<string>();
+
+  let currentTeacher = '';
+  let currentSession: 'SANG' | 'CHIEU' = 'SANG';
+
+  for (let r = headerRowIdx + 1; r < rawRows.length; r++) {
+    const row = rawRows[r];
+    if (!row || row.length === 0) continue;
+
+    // Check if new header
+    const lowerRow = row.map(c => String(c || '').toLowerCase().trim());
+    if (lowerRow.some(c => c.includes('giáo viên')) && lowerRow.some(c => c.includes('tiết'))) {
+      continue;
+    }
+
+    const tCell = String(row[colTeacher] || '').trim();
+    if (tCell && !tCell.toLowerCase().includes('giáo viên')) {
+      currentTeacher = normalizeTeacherRaw(tCell);
+    }
+
+    if (colSession >= 0) {
+      const sCell = String(row[colSession] || '').trim().toUpperCase();
+      if (sCell === 'S' || sCell.includes('SÁNG')) currentSession = 'SANG';
+      else if (sCell === 'C' || sCell.includes('CHIỀU')) currentSession = 'CHIEU';
+    }
+
+    const periodVal = parseInt(String(row[colPeriod] || '').replace(/[^0-9]/g, ''), 10);
+    if (isNaN(periodVal) || periodVal < 1 || periodVal > 5) continue;
+
+    const matchedTeacher = matchTeacher(currentTeacher, teachers);
+    if (currentTeacher) {
+      if (matchedTeacher) recognizedTeacherNames.add(matchedTeacher.name);
+      else unrecognizedTeacherNames.add(currentTeacher);
+    }
+
+    for (const [colIdxStr, day] of Object.entries(dayColMap)) {
+      const colIdx = parseInt(colIdxStr, 10);
+      const cellVal = String(row[colIdx] || '').trim();
+      if (!cellVal) continue;
+
+      const { rawClassName, rawSubjectName } = deconstructTeacherSlotCell(cellVal);
+      if (!rawClassName) continue;
+
+      const targetClass = matchClass(rawClassName, classes);
+      if (!targetClass) {
+        unrecognizedClassNames.add(rawClassName);
+        continue;
+      }
+      recognizedClassNames.add(targetClass.name);
+
+      const matchedSubject = matchSubject(rawSubjectName, subjects, targetClass);
+
+      const slotId = `${targetClass.id}_${day}_${currentSession}_${periodVal}`;
+      slots.push({
+        id: slotId,
+        classId: targetClass.id,
+        className: targetClass.name,
+        dayOfWeek: day,
+        session: currentSession,
+        period: periodVal,
+        subjectId: matchedSubject.id,
+        subjectName: matchedSubject.name,
+        teacherId: matchedTeacher?.id || '',
+        teacherName: matchedTeacher?.name || currentTeacher,
+        teacherCode: matchedTeacher?.code || currentTeacher,
+        room: targetClass.roomNumber || 'Phòng học'
+      });
+    }
+  }
+
+  if (slots.length === 0) return null;
+
+  const slotMap = new Map<string, TimetableSlot>();
+  slots.forEach(s => {
+    const key = `${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`;
+    slotMap.set(key, s);
+  });
+  const dedupedSlots = Array.from(slotMap.values());
+
+  let thptSlots = 0;
+  let thcsDbkSlots = 0;
+  let thcsTkSlots = 0;
+
+  dedupedSlots.forEach(s => {
+    const cls = classes.find(c => c.id === s.classId);
+    if (cls?.level === 'THPT' || cls?.campus === 'THPTDBK') {
+      thptSlots++;
+    } else if (cls?.campus === 'THCSTK' || /^[6789]A([789]|10)$/i.test(cls?.name || '')) {
+      thcsTkSlots++;
+    } else {
+      thcsDbkSlots++;
+    }
+  });
+
+  return {
+    slots: normalizeTimetableSlots(dedupedSlots),
+    recognizedClasses: Array.from(recognizedClassNames),
+    unrecognizedClasses: Array.from(unrecognizedClassNames),
+    recognizedTeachers: Array.from(recognizedTeacherNames),
+    unrecognizedTeachers: Array.from(unrecognizedTeacherNames),
+    campusStats: {
+      thptSlots,
+      thcsDbkSlots,
+      thcsTkSlots
+    },
+    errors,
+    warnings,
+    sheetNames: ['Thời khóa biểu theo Giáo viên'],
+    detectedFormat: 'VietSchool - Thời khóa biểu theo Giáo viên',
+    successCount: dedupedSlots.length
+  };
+}
+
+/**
  * Universal VietSchool Timetable Parser
  * Parses any VietSchool Excel file (multi-sheet), CSV, TSV or pasted content
  */
@@ -540,6 +1039,20 @@ export function parseVietSchoolTimetable(
 
     if (textContent !== null) {
       const trimmed = textContent.trim();
+      
+      // Fast path: Check if content is in Teacher-Centric format (Markdown tables or text)
+      const hasTeacherCentricKeywords = 
+        (trimmed.includes('Giáo Viên') || trimmed.includes('giáo viên') || trimmed.includes('GIÁO VIÊN')) &&
+        (trimmed.includes('Tiết') || trimmed.includes('tiết') || trimmed.includes('TIẾT') || trimmed.includes('Buổi') || trimmed.includes('buổi')) &&
+        (trimmed.includes('Thứ') || trimmed.includes('thứ') || trimmed.includes('THỨ'));
+
+      if (hasTeacherCentricKeywords) {
+        const teacherResult = parseTeacherCentricFromMarkdown(trimmed, classes, subjects, teachers);
+        if (teacherResult && teacherResult.slots.length > 0) {
+          return teacherResult;
+        }
+      }
+
       if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
         // Raw JSON
         const rawJson = JSON.parse(trimmed);
@@ -588,6 +1101,18 @@ export function parseVietSchoolTimetable(
 
     const rawRows: any[][] = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
     if (!rawRows || rawRows.length === 0) return;
+
+    // Check if Teacher-Centric format exists on this sheet
+    const teacherCentricResult = parseTeacherCentricFromRows(rawRows, classes, subjects, teachers);
+    if (teacherCentricResult && teacherCentricResult.slots.length > 0) {
+      detectedFormat = teacherCentricResult.detectedFormat;
+      teacherCentricResult.slots.forEach(s => slots.push(s));
+      teacherCentricResult.recognizedClasses.forEach(c => recognizedClassNames.add(c));
+      teacherCentricResult.unrecognizedClasses.forEach(c => unrecognizedClassNames.add(c));
+      teacherCentricResult.recognizedTeachers.forEach(t => recognizedTeacherNames.add(t));
+      teacherCentricResult.unrecognizedTeachers.forEach(t => unrecognizedTeacherNames.add(t));
+      return;
+    }
 
     // Check if Flat List format exists on row 0
     const headerRow = (rawRows[0] || []).map((h: any) => String(h || '').trim().toLowerCase());
@@ -683,15 +1208,37 @@ export function parseVietSchoolTimetable(
         detectedFormat = 'VietSchool - Ma trận Lớp theo cột';
         colClassMap.forEach(cg => recognizedClassNames.add(cg.name));
 
-        // Determine columns: Day, Session, Period
+        const firstClassCol = Math.min(...Array.from(colClassMap.keys()));
+
+        // Helper to parse day of week safely
+        const parseVietSchoolDay = (val: any): number | null => {
+          if (val === null || val === undefined) return null;
+          let str = String(val).toLowerCase().replace(/[\u00a0\s._-]+/g, ' ').trim();
+          if (!str) return null;
+          str = str.replace(/\([^)]*\)/g, '').replace(/[\/\-].*$/, '').trim();
+
+          if (/^(?:thứ|thu|t)?\s*(?:hai|2)$/i.test(str) || str.includes('thứ 2') || str.includes('thứ hai') || str === '2' || str === 'hai') return 2;
+          if (/^(?:thứ|thu|t)?\s*(?:ba|3)$/i.test(str) || str.includes('thứ 3') || str.includes('thứ ba') || str === '3' || str === 'ba') return 3;
+          if (/^(?:thứ|thu|t)?\s*(?:tư|tu|4)$/i.test(str) || str.includes('thứ 4') || str.includes('thứ tư') || str === '4' || str === 'tư' || str === 'tu') return 4;
+          if (/^(?:thứ|thu|t)?\s*(?:năm|nam|5)$/i.test(str) || str.includes('thứ 5') || str.includes('thứ năm') || str === '5' || str === 'năm' || str === 'nam') return 5;
+          if (/^(?:thứ|thu|t)?\s*(?:sáu|sau|6)$/i.test(str) || str.includes('thứ 6') || str.includes('thứ sáu') || str === '6' || str === 'sáu' || str === 'sau') return 6;
+          if (/^(?:thứ|thu|t)?\s*(?:bảy|bay|7)$/i.test(str) || str.includes('thứ 7') || str.includes('thứ bảy') || str === '7' || str === 'bảy' || str === 'bay') return 7;
+
+          return null;
+        };
+
+        // Determine columns: Day, Session, Period by inspecting headers and data rows
         let colDayIdx = -1;
         let colSessionIdx = -1;
         let colPeriodIdx = -1;
 
-        // Check columns before the first class column
-        const firstClassCol = Math.min(...Array.from(colClassMap.keys()));
         for (let c = 0; c < firstClassCol; c++) {
-          const headerText = String(row[c] || '').trim().toLowerCase();
+          const headerText = [
+            String(rawRows[r - 2]?.[c] || ''),
+            String(rawRows[r - 1]?.[c] || ''),
+            String(row[c] || '')
+          ].join(' ').toLowerCase();
+
           if (headerText.includes('thứ') || headerText.includes('ngày') || headerText.includes('thu') || headerText.includes('ngay') || headerText.includes('day')) {
             colDayIdx = c;
           } else if (headerText.includes('buổi') || headerText.includes('buoi') || headerText.includes('session') || headerText.includes('ca')) {
@@ -701,49 +1248,55 @@ export function parseVietSchoolTimetable(
           }
         }
 
-        // Fallbacks if not explicitly named
+        // Score columns based on first 30 data rows
+        if (colDayIdx === -1 || colPeriodIdx === -1) {
+          const dayScores = new Array(firstClassCol).fill(0);
+          const periodScores = new Array(firstClassCol).fill(0);
+          const sessionScores = new Array(firstClassCol).fill(0);
+
+          for (let sampleR = r + 1; sampleR < Math.min(rawRows.length, r + 30); sampleR++) {
+            const sRow = rawRows[sampleR];
+            if (!sRow) continue;
+            for (let c = 0; c < firstClassCol; c++) {
+              const val = String(sRow[c] || '').trim();
+              if (!val) continue;
+              if (parseVietSchoolDay(val) !== null) dayScores[c]++;
+              if (/^(?:tiết|tiet|t)?\s*([1-9]|10)$/i.test(val) || /^[1-5][SCsc]$/i.test(val) || /^[SCsc][1-5]$/i.test(val)) periodScores[c]++;
+              if (/^(?:sáng|chiều|sang|chieu|s|c)$/i.test(val)) sessionScores[c]++;
+            }
+          }
+
+          if (colDayIdx === -1) {
+            let maxDay = 0, bestCol = -1;
+            dayScores.forEach((score, c) => { if (score > maxDay) { maxDay = score; bestCol = c; } });
+            if (bestCol !== -1) colDayIdx = bestCol;
+          }
+          if (colPeriodIdx === -1) {
+            let maxP = 0, bestCol = -1;
+            periodScores.forEach((score, c) => { if (score > maxP && c !== colDayIdx) { maxP = score; bestCol = c; } });
+            if (bestCol !== -1) colPeriodIdx = bestCol;
+          }
+          if (colSessionIdx === -1) {
+            let maxS = 0, bestCol = -1;
+            sessionScores.forEach((score, c) => { if (score > maxS && c !== colDayIdx && c !== colPeriodIdx) { maxS = score; bestCol = c; } });
+            if (bestCol !== -1) colSessionIdx = bestCol;
+          }
+        }
+
+        // Fallbacks if not explicitly found
         if (colDayIdx === -1 && firstClassCol >= 1) colDayIdx = 0;
         if (colPeriodIdx === -1) {
           if (firstClassCol >= 3) {
+            colPeriodIdx = (colDayIdx === 0) ? 2 : 1;
             colSessionIdx = 1;
-            colPeriodIdx = 2;
           } else if (firstClassCol >= 2) {
-            colPeriodIdx = 1;
+            colPeriodIdx = (colDayIdx === 0) ? 1 : 0;
+          } else {
+            colPeriodIdx = 0;
           }
-        }
-
-        // Determine default session for this block
-        let blockDefaultSession: 'SANG' | 'CHIEU' = 'SANG';
-
-        // Check sheetName for session indicator (e.g. "Khối 10 - Chiều", "TKB Chiều", "Sheet_Chieu")
-        const lowerSheetName = sheetName.toLowerCase();
-        if (lowerSheetName.includes('chiều') || lowerSheetName.includes('chieu') || lowerSheetName.endsWith('_c') || lowerSheetName.includes(' pm')) {
-          blockDefaultSession = 'CHIEU';
-        } else if (lowerSheetName.includes('sáng') || lowerSheetName.includes('sang') || lowerSheetName.endsWith('_s') || lowerSheetName.includes(' am')) {
-          blockDefaultSession = 'SANG';
-        }
-
-        for (let lookback = Math.max(0, r - 6); lookback < r; lookback++) {
-          const prevRowText = (rawRows[lookback] || []).join(' ').toLowerCase();
-          if (prevRowText.includes('chiều') || prevRowText.includes('chieu')) {
-            blockDefaultSession = 'CHIEU';
-            break;
-          } else if (prevRowText.includes('sáng') || prevRowText.includes('sang')) {
-            blockDefaultSession = 'SANG';
-            break;
-          }
-        }
-
-        // If not explicitly declared in rows above, deduce from grade: 6, 7 -> CHIEU
-        const blockClasses = Array.from(colClassMap.values());
-        const isMostlyGrade67 = blockClasses.every(c => c.grade === '6' || c.grade === '7');
-        if (isMostlyGrade67) {
-          blockDefaultSession = 'CHIEU';
         }
 
         let currentDay = 2; // Default Monday (Thứ 2)
-        let currentSession: 'SANG' | 'CHIEU' = blockDefaultSession;
-        let currentPeriod = 1;
         let lastSeenPeriod = -1;
 
         let dataRowIdx = r + 1;
@@ -768,85 +1321,54 @@ export function parseVietSchoolTimetable(
 
           const entireRowText = dRow.join(' ').toLowerCase();
 
-          // Check for section divider rows like "BUỔI CHIỀU" or "BUỔI SÁNG"
-          if (entireRowText.includes('buổi chiều') || entireRowText.includes('buoi chieu') || (entireRowText.includes('chiều') && !entireRowText.includes('tiết') && !entireRowText.includes('thứ'))) {
-            currentSession = 'CHIEU';
-            lastSeenPeriod = -1;
-            dataRowIdx++;
-            continue;
-          } else if (entireRowText.includes('buổi sáng') || entireRowText.includes('buoi sang') || (entireRowText.includes('sáng') && !entireRowText.includes('tiết') && !entireRowText.includes('thứ'))) {
-            currentSession = 'SANG';
-            lastSeenPeriod = -1;
-            dataRowIdx++;
-            continue;
-          }
-
-          // Check if metadata row: "Năm học", "Học kỳ", "Trường", "Áp dụng", "Thời khóa biểu"
+          // Check if metadata row
           if (entireRowText.includes('năm học') || entireRowText.includes('nam hoc') ||
               entireRowText.includes('học kỳ') || entireRowText.includes('hoc ky') ||
               entireRowText.includes('thời khóa biểu') || entireRowText.includes('thoi khoa bieu') ||
               entireRowText.includes('áp dụng') || entireRowText.includes('ap dung') ||
-              (entireRowText.includes('trường') && !entireRowText.includes('lớp'))) {
+              (entireRowText.includes('trường') && !entireRowText.includes('lớp') && !entireRowText.includes('toán'))) {
             dataRowIdx++;
             continue;
           }
 
           // 1. Detect Day (Thứ 2 -> 7)
-          const colDayVal = colDayIdx >= 0 ? String(dRow[colDayIdx] || '').trim() : '';
-          const cleanDayVal = colDayVal.toLowerCase().replace(/\s+/g, ' ').trim();
-          let matchedDay = -1;
-          if (/^(?:thứ|thu|t)?\s*2$|^thứ\s*hai$/i.test(cleanDayVal) || cleanDayVal.includes('thứ 2') || cleanDayVal.includes('thứ hai') || cleanDayVal === '2') matchedDay = 2;
-          else if (/^(?:thứ|thu|t)?\s*3$|^thứ\s*ba$/i.test(cleanDayVal) || cleanDayVal.includes('thứ 3') || cleanDayVal.includes('thứ ba') || cleanDayVal === '3') matchedDay = 3;
-          else if (/^(?:thứ|thu|t)?\s*4$|^thứ\s*(?:tư|tu)$/i.test(cleanDayVal) || cleanDayVal.includes('thứ 4') || cleanDayVal.includes('thứ tư') || cleanDayVal === '4') matchedDay = 4;
-          else if (/^(?:thứ|thu|t)?\s*5$|^thứ\s*(?:năm|nam)$/i.test(cleanDayVal) || cleanDayVal.includes('thứ 5') || cleanDayVal.includes('thứ năm') || cleanDayVal === '5') matchedDay = 5;
-          else if (/^(?:thứ|thu|t)?\s*6$|^thứ\s*(?:sáu|sau)$/i.test(cleanDayVal) || cleanDayVal.includes('thứ 6') || cleanDayVal.includes('thứ sáu') || cleanDayVal === '6') matchedDay = 6;
-          else if (/^(?:thứ|thu|t)?\s*7$|^thứ\s*(?:bảy|bay)$/i.test(cleanDayVal) || cleanDayVal.includes('thứ 7') || cleanDayVal.includes('thứ bảy') || cleanDayVal === '7') matchedDay = 7;
-          else if (/^[2-7]$/.test(cleanDayVal)) matchedDay = parseInt(cleanDayVal, 10);
-
-          if (matchedDay !== -1 && matchedDay !== currentDay) {
-            currentDay = matchedDay;
-            // Day changed: reset session to the block's base session
-            currentSession = blockDefaultSession;
-            lastSeenPeriod = -1;
+          let matchedDay: number | null = null;
+          if (colDayIdx >= 0) {
+            matchedDay = parseVietSchoolDay(dRow[colDayIdx]);
           }
-
-          // Check if Day cell itself contains session indicator: e.g. "Thứ 2 (Chiều)", "2 - C"
-          if (cleanDayVal.includes('chiều') || cleanDayVal.includes('chieu') || cleanDayVal.includes('(c)') || cleanDayVal.endsWith('-c')) {
-            currentSession = 'CHIEU';
-          } else if (cleanDayVal.includes('sáng') || cleanDayVal.includes('sang') || cleanDayVal.includes('(s)') || cleanDayVal.endsWith('-s')) {
-            currentSession = 'SANG';
-          }
-
-          // 2. Detect Session from session column (Sáng / Chiều / S / C)
-          if (colSessionIdx >= 0) {
-            const colSessVal = String(dRow[colSessionIdx] || '').trim().toUpperCase();
-            if (colSessVal === 'C' || colSessVal.startsWith('CHIỀU') || colSessVal.startsWith('CHIEU') || colSessVal.includes('CHIỀU')) {
-              currentSession = 'CHIEU';
-            } else if (colSessVal === 'S' || colSessVal.startsWith('SÁNG') || colSessVal.startsWith('SANG') || colSessVal.includes('SÁNG')) {
-              currentSession = 'SANG';
+          if (matchedDay === null) {
+            for (let c = 0; c < firstClassCol; c++) {
+              if (c === colPeriodIdx) continue;
+              const d = parseVietSchoolDay(dRow[c]);
+              if (d !== null) {
+                matchedDay = d;
+                break;
+              }
             }
           }
 
-          // 3. Detect Period (Tiết 1 -> 10, including S1..S5, C1..C5, 1C..5C)
-          let rawPeriod = -1;
-          let periodExplicitSession: 'SANG' | 'CHIEU' | null = null;
+          if (matchedDay !== null && matchedDay !== currentDay) {
+            currentDay = matchedDay;
+            lastSeenPeriod = -1;
+          }
 
+          // 2. Detect Period
+          let rawPeriod = -1;
           if (colPeriodIdx >= 0) {
             const pVal = String(dRow[colPeriodIdx] || '').trim();
-            const pMatch = pVal.match(/^(?:Tiết|Tiet|T)?\s*([0-9]|10)$/i);
+            const pMatch = pVal.match(/^(?:tiết|tiet|t)?\s*([0-9]|10)$/i);
             if (pMatch) {
               rawPeriod = parseInt(pMatch[1], 10);
             } else {
-              // Format C1..C5 or S1..S5
-              const csMatch = pVal.match(/^([SC])\s*([1-5])$/i);
+              const csMatch = pVal.match(/^([SCsc])\s*([1-5])$/);
               if (csMatch) {
-                periodExplicitSession = csMatch[1].toUpperCase() === 'C' ? 'CHIEU' : 'SANG';
-                rawPeriod = parseInt(csMatch[2], 10);
+                const p = parseInt(csMatch[2], 10);
+                rawPeriod = csMatch[1].toUpperCase() === 'C' ? p + 5 : p;
               } else {
-                const scMatch = pVal.match(/^([1-5])\s*([SC])$/i);
+                const scMatch = pVal.match(/^([1-5])\s*([SCsc])$/);
                 if (scMatch) {
-                  periodExplicitSession = scMatch[2].toUpperCase() === 'C' ? 'CHIEU' : 'SANG';
-                  rawPeriod = parseInt(scMatch[1], 10);
+                  const p = parseInt(scMatch[1], 10);
+                  rawPeriod = scMatch[2].toUpperCase() === 'C' ? p + 5 : p;
                 }
               }
             }
@@ -855,15 +1377,11 @@ export function parseVietSchoolTimetable(
           // Fallback: check first columns before first class for period digit 1..10
           if (rawPeriod === -1) {
             for (let c = 0; c < Math.min(firstClassCol, dRow.length); c++) {
+              if (c === colDayIdx) continue;
               const val = String(dRow[c] || '').trim();
-              if (/^(?:10|[1-9])$/.test(val)) {
-                rawPeriod = parseInt(val, 10);
-                break;
-              }
-              const cs = val.match(/^([SC])\s*([1-5])$/i);
-              if (cs) {
-                periodExplicitSession = cs[1].toUpperCase() === 'C' ? 'CHIEU' : 'SANG';
-                rawPeriod = parseInt(cs[2], 10);
+              const pMatch = val.match(/^(?:tiết|tiet|t)?\s*([1-9]|10)$/i);
+              if (pMatch) {
+                rawPeriod = parseInt(pMatch[1], 10);
                 break;
               }
             }
@@ -875,29 +1393,16 @@ export function parseVietSchoolTimetable(
             continue;
           }
 
-          // Determine session and effective period
-          let effectivePeriod = rawPeriod;
-          let session = currentSession;
-
-          if (periodExplicitSession) {
-            session = periodExplicitSession;
-            currentSession = session;
-          } else if (rawPeriod > 5) {
-            // Periods 6..10 are unambiguously afternoon!
-            session = 'CHIEU';
-            effectivePeriod = rawPeriod - 5;
-            currentSession = 'CHIEU';
+          // 3. Day roll-over:
+          // If no explicit Day cell in this row (matchedDay === null, e.g. merged cell in Excel),
+          // but the period sequence reset (e.g. was 4 or 5, now 1 or 2):
+          // This indicates we reached the NEXT DAY!
+          if (matchedDay === null && lastSeenPeriod >= 4 && rawPeriod <= 2) {
+            currentDay = Math.min(7, currentDay + 1);
+            lastSeenPeriod = rawPeriod;
           } else {
-            // Period is 1..5. Check if period sequence reset within the same day
-            // E.g. Previous period was 3, 4, 5 and current period is 1 or 2 while still on the same day:
-            if (lastSeenPeriod >= 3 && rawPeriod <= 2 && currentSession === 'SANG') {
-              session = 'CHIEU';
-              currentSession = 'CHIEU';
-            }
+            lastSeenPeriod = rawPeriod;
           }
-
-          lastSeenPeriod = rawPeriod;
-          currentPeriod = effectivePeriod;
 
           // Read cells for each class in this row
           colClassMap.forEach((targetClass, colIdx) => {
@@ -906,6 +1411,29 @@ export function parseVietSchoolTimetable(
 
             const { subjectText, teacherText } = deconstructCellText(cellContent);
             if (!subjectText) return;
+
+            // Strict School Shift Rules:
+            // Khối 10, 11, 12 (THPT): ALWAYS BUỔI SÁNG (Morning only, never Afternoon)
+            // Khối 8, 9 (THCS): ALWAYS BUỔI SÁNG (Morning)
+            // Khối 6, 7 (THCS): ALWAYS BUỔI CHIỀU (Afternoon)
+            let session: 'SANG' | 'CHIEU' = 'SANG';
+            const gradeNum = parseInt(targetClass.grade, 10);
+            if (targetClass.level === 'THPT' || gradeNum >= 10 || /^(?:10|11|12)CB/i.test(targetClass.name)) {
+              session = 'SANG';
+            } else if (gradeNum === 8 || gradeNum === 9 || /^[89]A/i.test(targetClass.name)) {
+              session = 'SANG';
+            } else if (gradeNum === 6 || gradeNum === 7 || /^[67]A/i.test(targetClass.name)) {
+              session = 'CHIEU';
+            } else {
+              session = rawPeriod > 5 ? 'CHIEU' : 'SANG';
+            }
+
+            // Normalize period within session (1..5)
+            let effectivePeriod = rawPeriod;
+            if (effectivePeriod > 5) {
+              effectivePeriod = effectivePeriod - 5;
+            }
+            if (effectivePeriod < 1 || effectivePeriod > 5) return;
 
             const matchedSubject = matchSubject(subjectText, subjects, targetClass);
             let matchedTeacher = matchTeacher(teacherText, teachers, targetClass);
