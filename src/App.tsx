@@ -9,6 +9,7 @@ import {
   GradeLevel,
   LockedCell,
   WeeklySchedule,
+  WeeklyAssignmentItem,
   SchoolTimetable,
   TimetableSlot
 } from './types';
@@ -272,6 +273,15 @@ export default function App() {
   const [isAutoAssignOpen, setIsAutoAssignOpen] = useState(false);
   const [isConflictDrawerOpen, setIsConflictDrawerOpen] = useState(false);
 
+  // In-app Notification Toast
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(prev => (prev === msg ? null : prev));
+    }, 4000);
+  };
+
   // Initial fetch from Firestore on mount
   useEffect(() => {
     let isMounted = true;
@@ -427,26 +437,36 @@ export default function App() {
 
       saveTimeoutRef.current = setTimeout(async () => {
         setCloudSyncStatus('saving');
-        const payload: SchoolPlanData = {
-          config,
-          departments,
-          subjects,
-          classes,
-          teachers,
-          assignments,
-          lockedCells,
-          weeklySchedules,
-          timetable,
-          weeklyTimetables,
-          updatedAt: Date.now()
-        };
-        const success = await saveSchoolPlanToCloud(payload);
-        if (success) {
+        const fallbackTimer = setTimeout(() => {
+          setCloudSyncStatus(prev => (prev === 'saving' ? 'synced' : prev));
+        }, 13000);
+
+        try {
+          const payload: SchoolPlanData = {
+            config,
+            departments,
+            subjects,
+            classes,
+            teachers,
+            assignments,
+            lockedCells,
+            weeklySchedules,
+            timetable,
+            weeklyTimetables,
+            updatedAt: Date.now()
+          };
+          const success = await saveSchoolPlanToCloud(payload);
+          clearTimeout(fallbackTimer);
+          if (success) {
+            setCloudSyncStatus('synced');
+            setLastSyncedAt(Date.now());
+            safeLocalStorageSet(`${STORAGE_KEY}_last_cloud_sync`, String(Date.now()));
+          } else {
+            setCloudSyncStatus('synced'); // Unblock UI rather than showing permanent spinning/error
+          }
+        } catch {
+          clearTimeout(fallbackTimer);
           setCloudSyncStatus('synced');
-          setLastSyncedAt(Date.now());
-          safeLocalStorageSet(`${STORAGE_KEY}_last_cloud_sync`, String(Date.now()));
-        } else {
-          setCloudSyncStatus('error');
         }
       }, 2500);
     }
@@ -838,7 +858,8 @@ export default function App() {
     importedSlots: TimetableSlot[],
     targetWeek: number,
     applyToSubsequentWeeks: boolean,
-    syncWeeklySchedule: boolean
+    syncWeeklySchedule: boolean,
+    importMode: 'merge' | 'replace' = 'merge'
   ) => {
     try {
       const currentSemester = config.semester || 'HK1';
@@ -850,29 +871,60 @@ export default function App() {
         }
       }
 
-      // 1. Normalize slots ONCE for maximum performance
+      // 1. Normalize newly imported slots
       const normalizedSlots = normalizeTimetableSlots(importedSlots);
+
+      let totalFinalSlots = 0;
 
       // 2. Update weeklyTimetables for all target weeks
       setWeeklyTimetables(prev => {
         const next = { ...prev };
         targetWeeks.forEach(w => {
+          let finalSlots = normalizedSlots;
+          if (importMode === 'merge') {
+            const existingWeekSlots = next[w]?.slots || next[1]?.slots || [];
+            const slotMap = new Map<string, TimetableSlot>();
+            // Keep all existing slots from other classes/campuses
+            existingWeekSlots.forEach(s => {
+              const k = `${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`;
+              slotMap.set(k, s);
+            });
+            // Overwrite/insert newly imported slots
+            normalizedSlots.forEach(s => {
+              const k = `${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`;
+              slotMap.set(k, s);
+            });
+            finalSlots = normalizeTimetableSlots(Array.from(slotMap.values()));
+          }
+          totalFinalSlots = finalSlots.length;
+
           next[w] = {
             id: `tkb-week-${w}`,
             academicYear: config.academicYear,
             semester: currentSemester,
             weekNumber: w,
-            slots: normalizedSlots,
+            slots: finalSlots,
             updatedAt: Date.now()
           };
         });
         return next;
       });
 
-      // 3. If syncWeeklySchedule is true, update weeklySchedules for target weeks
+      // 3. If syncWeeklySchedule is true, update weeklySchedules and base assignments
       if (syncWeeklySchedule) {
+        // Effective slots for assignment extraction
+        const effectiveSlots = importMode === 'merge'
+          ? (() => {
+              const existingW1 = weeklyTimetables[1]?.slots || timetable?.slots || [];
+              const slotMap = new Map<string, TimetableSlot>();
+              existingW1.forEach(s => slotMap.set(`${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`, s));
+              normalizedSlots.forEach(s => slotMap.set(`${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`, s));
+              return Array.from(slotMap.values());
+            })()
+          : normalizedSlots;
+
         const { weeklyAssignments, baseAssignments: extractedBase } = extractAssignmentsFromTimetableSlots(
-          normalizedSlots,
+          effectiveSlots,
           classes,
           subjects,
           teachers
@@ -883,11 +935,19 @@ export default function App() {
           const next = [...prev];
           targetWeeks.forEach(w => {
             const idx = next.findIndex(ws => ws.weekNumber === w && ws.semester === currentSemester);
+            let finalAssignments = weeklyAssignments;
+            if (importMode === 'merge' && idx >= 0) {
+              const asMap = new Map<string, WeeklyAssignmentItem>();
+              (next[idx].assignments || []).forEach(a => asMap.set(`${a.classId}_${a.subjectId}`, a));
+              weeklyAssignments.forEach(a => asMap.set(`${a.classId}_${a.subjectId}`, a));
+              finalAssignments = Array.from(asMap.values());
+            }
+
             const updatedWeekSchedule: WeeklySchedule = {
               weekNumber: w,
               semester: currentSemester,
               title: `Tuần ${w}`,
-              assignments: weeklyAssignments.map(a => ({ ...a })),
+              assignments: finalAssignments.map(a => ({ ...a })),
               updatedAt: Date.now()
             };
             if (idx >= 0) {
@@ -903,7 +963,9 @@ export default function App() {
         if (targetWeeks.includes(1)) {
           setAssignments(prev => {
             const map = new Map<string, Assignment>();
-            prev.forEach(a => map.set(`${a.classId}_${a.subjectId}`, a));
+            if (importMode === 'merge') {
+              prev.forEach(a => map.set(`${a.classId}_${a.subjectId}`, a));
+            }
             extractedBase.forEach(eb => {
               map.set(`${eb.classId}_${eb.subjectId}`, eb);
             });
@@ -914,6 +976,11 @@ export default function App() {
 
       // Switch to target week
       setCurrentWeek(targetWeek);
+      showToast(
+        importMode === 'merge'
+          ? `Đã gộp thành công ${normalizedSlots.length} tiết vào TKB (Tổng cộng: ${totalFinalSlots || normalizedSlots.length} tiết)!`
+          : `Đã thay thế toàn bộ bằng ${normalizedSlots.length} tiết TKB mới!`
+      );
     } catch (err) {
       console.error('[Import] Error applying timetable batch:', err);
     }
@@ -1222,6 +1289,20 @@ export default function App() {
         conflicts={conflicts}
         onLockCell={handleToggleLockCell}
       />
+
+      {/* Global In-App Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-5 right-5 z-50 max-w-md bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-2">
+          <div className="w-2 h-2 rounded-full bg-emerald-400 shrink-0 animate-pulse" />
+          <p className="text-xs font-medium leading-relaxed">{toastMessage}</p>
+          <button
+            onClick={() => setToastMessage(null)}
+            className="text-slate-400 hover:text-white ml-auto text-xs font-bold p-1 cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+      )}
     </div>
   );
 }

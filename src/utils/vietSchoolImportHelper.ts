@@ -1617,3 +1617,76 @@ export function generateVietSchoolSampleExcel(
 
   XLSX.writeFile(wb, 'Mau_TKB_VietSchool_Chuan.xlsx');
 }
+
+/**
+ * Merge multiple VietSchoolParseResult objects into a single cohesive result.
+ * Useful when importing multiple files (e.g. 1 file per campus) at once or sequentially.
+ */
+export function mergeVietSchoolParseResults(results: VietSchoolParseResult[]): VietSchoolParseResult {
+  const validResults = results.filter(r => r && (r.slots?.length > 0 || r.errors?.length > 0));
+  if (validResults.length === 0) {
+    return {
+      slots: [],
+      recognizedClasses: [],
+      unrecognizedClasses: [],
+      recognizedTeachers: [],
+      unrecognizedTeachers: [],
+      campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
+      errors: [],
+      warnings: [],
+      sheetNames: [],
+      detectedFormat: 'Không xác định',
+      successCount: 0
+    };
+  }
+  if (validResults.length === 1) return validResults[0];
+
+  const slotMap = new Map<string, TimetableSlot>();
+  const recognizedClasses = new Set<string>();
+  const unrecognizedClasses = new Set<string>();
+  const recognizedTeachers = new Set<string>();
+  const unrecognizedTeachers = new Set<string>();
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const sheetNames = new Set<string>();
+  const formats = new Set<string>();
+
+  validResults.forEach(res => {
+    (res.slots || []).forEach(slot => {
+      const key = `${slot.classId}_${slot.dayOfWeek}_${slot.session}_${slot.period}`;
+      slotMap.set(key, slot);
+    });
+    (res.recognizedClasses || []).forEach(c => recognizedClasses.add(c));
+    (res.unrecognizedClasses || []).forEach(c => unrecognizedClasses.add(c));
+    (res.recognizedTeachers || []).forEach(t => recognizedTeachers.add(t));
+    (res.unrecognizedTeachers || []).forEach(t => unrecognizedTeachers.add(t));
+    (res.sheetNames || []).forEach(s => sheetNames.add(s));
+    if (res.detectedFormat) formats.add(res.detectedFormat);
+    if (res.errors) errors.push(...res.errors);
+    if (res.warnings) warnings.push(...res.warnings);
+  });
+
+  const allSlots = Array.from(slotMap.values());
+  const thptSlots = allSlots.filter(s => s.className && /^1[012]/i.test(s.className)).length;
+  const thcsTkSlots = allSlots.filter(s => s.className && (/^[6789]A([789]|10)$/i.test(s.className) || s.className.includes('TK'))).length;
+  const thcsDbkSlots = allSlots.filter(s => s.className && !(/^1[012]/i.test(s.className)) && !(/^[6789]A([789]|10)$/i.test(s.className)) && !s.className.includes('TK')).length;
+
+  return {
+    slots: allSlots,
+    recognizedClasses: Array.from(recognizedClasses).sort(),
+    unrecognizedClasses: Array.from(unrecognizedClasses).sort(),
+    recognizedTeachers: Array.from(recognizedTeachers).sort(),
+    unrecognizedTeachers: Array.from(unrecognizedTeachers).sort(),
+    campusStats: {
+      thptSlots,
+      thcsDbkSlots,
+      thcsTkSlots
+    },
+    errors: Array.from(new Set(errors)),
+    warnings: Array.from(new Set(warnings)),
+    sheetNames: Array.from(sheetNames),
+    detectedFormat: Array.from(formats).join(' + ') || 'VietSchool Tổng Hợp',
+    successCount: allSlots.length
+  };
+}
+

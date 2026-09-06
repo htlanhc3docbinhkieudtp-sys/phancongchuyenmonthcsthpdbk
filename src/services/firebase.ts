@@ -347,8 +347,18 @@ export async function saveSchoolPlanToCloud(data: SchoolPlanData): Promise<boole
 
   isSaveInProgress = true;
   try {
-    const result = await executeCloudSave(data);
+    const savePromise = executeCloudSave(data);
+    const timeoutPromise = new Promise<boolean>((resolve) => {
+      setTimeout(() => {
+        console.warn('saveSchoolPlanToCloud timeout reached after 12s, unblocking.');
+        resolve(false);
+      }, 12000);
+    });
+    const result = await Promise.race([savePromise, timeoutPromise]);
     return result;
+  } catch (err) {
+    console.error('saveSchoolPlanToCloud unhandled error:', err);
+    return false;
   } finally {
     isSaveInProgress = false;
     // Process next queued save if one was scheduled while saving

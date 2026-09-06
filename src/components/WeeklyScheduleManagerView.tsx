@@ -50,6 +50,7 @@ import {
   Search,
   Filter,
   Download,
+  Lock,
   X
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
@@ -574,16 +575,28 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
               </span>
             </button>
 
+            {isAdmin ? (
+              <button
+                onClick={handleSyncTimetableToWeek1}
+                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
+                title="Bổ sung & Đồng bộ tất cả 1,536 tiết TKB vào Tuần 1"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                Đồng Bộ Từ TKB Tuần 1
+              </button>
+            ) : (
+              <button
+                onClick={onPromptAdminLogin}
+                className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
+                title="Đăng nhập Quản trị viên để đồng bộ dữ liệu"
+              >
+                <Lock className="w-3.5 h-3.5 text-slate-500" />
+                Đồng Bộ Từ TKB (Cần Đăng nhập)
+              </button>
+            )}
+
             {isAdmin && (
               <>
-                <button
-                  onClick={handleSyncTimetableToWeek1}
-                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
-                  title="Bổ sung & Đồng bộ tất cả 1,536 tiết TKB vào Tuần 1"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Đồng Bộ Từ TKB Tuần 1
-                </button>
 
                 <button
                   onClick={() => {
@@ -724,7 +737,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
               <ArrowRightLeft className="w-4 h-4" />
               Xem Bảng Đối Chiếu TKB
             </button>
-            {isAdmin && (
+            {isAdmin ? (
               <button
                 onClick={handleSyncTimetableToWeek1}
                 className="px-3 py-1.5 bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-300 rounded-lg font-bold flex items-center gap-1.5 cursor-pointer transition-all"
@@ -732,6 +745,15 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
               >
                 <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
                 Đồng Bộ Lại
+              </button>
+            ) : (
+              <button
+                onClick={onPromptAdminLogin}
+                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-lg font-bold flex items-center gap-1.5 cursor-pointer transition-all"
+                title="Đăng nhập Quản trị viên để đồng bộ"
+              >
+                <Lock className="w-3.5 h-3.5 text-slate-500" />
+                Đồng Bộ Lại (Cần Đăng nhập)
               </button>
             )}
           </div>
@@ -1174,7 +1196,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
                   Xuất Excel Bảng Đối Chiếu
                 </button>
 
-                {isAdmin && (
+                {isAdmin ? (
                   <button
                     onClick={() => {
                       handleSyncTimetableToWeek1();
@@ -1184,6 +1206,15 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
                   >
                     <Sparkles className="w-3.5 h-3.5" />
                     Đồng Bộ Vào Bảng Tuần 1
+                  </button>
+                ) : (
+                  <button
+                    onClick={onPromptAdminLogin}
+                    className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold shadow-2xs flex items-center gap-1.5 cursor-pointer transition-all"
+                    title="Đăng nhập Quản trị viên để đồng bộ"
+                  >
+                    <Lock className="w-3.5 h-3.5 text-slate-500" />
+                    Đồng Bộ Vào Bảng Tuần 1 (Cần Đăng nhập)
                   </button>
                 )}
               </div>

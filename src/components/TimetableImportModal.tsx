@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import {
   X,
   Upload,
@@ -11,12 +11,12 @@ import {
   ClipboardList,
   Calendar,
   Layers,
-  Check,
   Search,
-  Filter,
-  ArrowRight,
   Info,
-  RefreshCw
+  RefreshCw,
+  Plus,
+  Trash2,
+  FolderPlus
 } from 'lucide-react';
 import {
   TimetableSlot,
@@ -28,6 +28,7 @@ import {
 import {
   parseVietSchoolTimetable,
   generateVietSchoolSampleExcel,
+  mergeVietSchoolParseResults,
   VietSchoolParseResult
 } from '../utils/vietSchoolImportHelper';
 
@@ -43,8 +44,16 @@ interface TimetableImportModalProps {
     importedSlots: TimetableSlot[],
     targetWeek: number,
     applyToSubsequentWeeks: boolean,
-    syncWeeklySchedule: boolean
+    syncWeeklySchedule: boolean,
+    importMode?: 'merge' | 'replace'
   ) => void;
+}
+
+interface LoadedFileInfo {
+  id: string;
+  name: string;
+  size: number;
+  result: VietSchoolParseResult;
 }
 
 export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
@@ -60,122 +69,204 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
   const [activeMode, setActiveMode] = useState<'file' | 'paste'>('file');
   const [dragActive, setDragActive] = useState(false);
   const [pasteText, setPasteText] = useState('');
-  const [fileName, setFileName] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
+
+  // Multi-file state
+  const [loadedFiles, setLoadedFiles] = useState<LoadedFileInfo[]>([]);
 
   // Target week configuration
   const [targetWeek, setTargetWeek] = useState<number>(currentWeek || 1);
   const [applyToSubsequentWeeks, setApplyToSubsequentWeeks] = useState(true);
   const [syncWeeklySchedule, setSyncWeeklySchedule] = useState(true);
 
+  // Import mode: 'merge' (default, preserves other campuses) vs 'replace' (wipes whole week)
+  const [importMode, setImportMode] = useState<'merge' | 'replace'>('merge');
+
   // Filter preview slots
   const [previewFilter, setPreviewFilter] = useState<'ALL' | 'THPT' | 'DBK' | 'TK'>('ALL');
   const [previewSearch, setPreviewSearch] = useState('');
 
-  const [parseResults, setParseResults] = useState<VietSchoolParseResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currentSemester = config.semester || 'HK1';
   const totalWeeks = currentSemester === 'HK1' ? 18 : 35;
 
+  // Reset loading and applying states when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsApplying(false);
+      setIsLoading(false);
+    }
+  }, [isOpen]);
+
+  // Combined parse results across all loaded files or pasted text
+  const parseResults: VietSchoolParseResult | null = useMemo(() => {
+    if (loadedFiles.length === 0) return null;
+    return mergeVietSchoolParseResults(loadedFiles.map(f => f.result));
+  }, [loadedFiles]);
+
   if (!isOpen) return null;
 
-  const handleFile = (file: File) => {
-    setIsLoading(true);
-    setFileName(file.name);
-    const isTextFile = /\.(csv|tsv|txt|md)$/i.test(file.name);
+  // Process a single file asynchronously and return its parse result
+  const parseSingleFile = (file: File): Promise<VietSchoolParseResult> => {
+    return new Promise((resolve) => {
+      const isTextFile = /\.(csv|tsv|txt|md)$/i.test(file.name);
 
-    if (isTextFile) {
-      const textReader = new FileReader();
-      textReader.onload = (e) => {
-        try {
-          const text = e.target?.result as string;
-          if (text) {
-            const res = parseVietSchoolTimetable(text, classes, subjects, teachers);
-            setParseResults(res);
+      if (isTextFile) {
+        const textReader = new FileReader();
+        textReader.onload = (e) => {
+          try {
+            const text = e.target?.result as string;
+            if (text) {
+              const res = parseVietSchoolTimetable(text, classes, subjects, teachers);
+              resolve(res);
+              return;
+            }
+          } catch (err: any) {
+            resolve({
+              slots: [],
+              recognizedClasses: [],
+              unrecognizedClasses: [],
+              recognizedTeachers: [],
+              unrecognizedTeachers: [],
+              campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
+              errors: [`Lỗi phân tích tệp CSV ${file.name}: ${err?.message || 'Không thể đọc'}`],
+              warnings: [],
+              sheetNames: [],
+              detectedFormat: 'Không xác định',
+              successCount: 0
+            });
+            return;
           }
-        } catch (err: any) {
-          setParseResults({
+          resolve({
             slots: [],
             recognizedClasses: [],
             unrecognizedClasses: [],
             recognizedTeachers: [],
             unrecognizedTeachers: [],
             campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
-            errors: [`Lỗi phân tích tệp CSV: ${err?.message || 'Không thể đọc tệp'}`],
+            errors: [`Tệp trống: ${file.name}`],
+            warnings: [],
+            sheetNames: [],
+            detectedFormat: 'Trống',
+            successCount: 0
+          });
+        };
+        textReader.onerror = () => {
+          resolve({
+            slots: [],
+            recognizedClasses: [],
+            unrecognizedClasses: [],
+            recognizedTeachers: [],
+            unrecognizedTeachers: [],
+            campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
+            errors: [`Không thể đọc tệp ${file.name}`],
+            warnings: [],
+            sheetNames: [],
+            detectedFormat: 'Lỗi',
+            successCount: 0
+          });
+        };
+        textReader.readAsText(file, 'utf-8');
+        return;
+      }
+
+      // Excel binary (.xlsx, .xls)
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const buffer = e.target?.result as ArrayBuffer;
+          if (buffer) {
+            const res = parseVietSchoolTimetable(buffer, classes, subjects, teachers);
+            resolve(res);
+            return;
+          }
+        } catch (err: any) {
+          resolve({
+            slots: [],
+            recognizedClasses: [],
+            unrecognizedClasses: [],
+            recognizedTeachers: [],
+            unrecognizedTeachers: [],
+            campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
+            errors: [`Lỗi phân tích tệp Excel ${file.name}: ${err?.message || 'Không thể đọc'}`],
             warnings: [],
             sheetNames: [],
             detectedFormat: 'Không xác định',
             successCount: 0
           });
-        } finally {
-          setIsLoading(false);
+          return;
         }
-      };
-      textReader.onerror = () => {
-        setIsLoading(false);
-        setParseResults({
+        resolve({
           slots: [],
           recognizedClasses: [],
           unrecognizedClasses: [],
           recognizedTeachers: [],
           unrecognizedTeachers: [],
           campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
-          errors: ['Không thể đọc tệp văn bản/CSV đã chọn. Vui lòng kiểm tra lại quyền truy cập file.'],
+          errors: [`Tệp Excel rỗng: ${file.name}`],
           warnings: [],
           sheetNames: [],
-          detectedFormat: 'Không xác định',
+          detectedFormat: 'Trống',
           successCount: 0
         });
       };
-      textReader.readAsText(file, 'utf-8');
-      return;
-    }
+      reader.onerror = () => {
+        resolve({
+          slots: [],
+          recognizedClasses: [],
+          unrecognizedClasses: [],
+          recognizedTeachers: [],
+          unrecognizedTeachers: [],
+          campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
+          errors: [`Không thể đọc tệp Excel ${file.name}`],
+          warnings: [],
+          sheetNames: [],
+          detectedFormat: 'Lỗi',
+          successCount: 0
+        });
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  };
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const buffer = e.target?.result as ArrayBuffer;
-        if (buffer) {
-          const res = parseVietSchoolTimetable(buffer, classes, subjects, teachers);
-          setParseResults(res);
-        }
-      } catch (err: any) {
-        setParseResults({
-          slots: [],
-          recognizedClasses: [],
-          unrecognizedClasses: [],
-          recognizedTeachers: [],
-          unrecognizedTeachers: [],
-          campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
-          errors: [`Lỗi phân tích tệp Excel: ${err?.message || 'Không thể đọc tệp Excel'}`],
-          warnings: [],
-          sheetNames: [],
-          detectedFormat: 'Không xác định',
-          successCount: 0
+  // Handle one or multiple files selected/dropped
+  const handleFiles = async (fileList: FileList | File[]) => {
+    if (!fileList || fileList.length === 0) return;
+    setIsLoading(true);
+
+    try {
+      const filesArray = Array.from(fileList);
+      const newLoadedFiles: LoadedFileInfo[] = [];
+
+      for (const file of filesArray) {
+        const result = await parseSingleFile(file);
+        newLoadedFiles.push({
+          id: `${file.name}_${Date.now()}_${Math.random()}`,
+          name: file.name,
+          size: file.size,
+          result
         });
-      } finally {
-        setIsLoading(false);
       }
-    };
-    reader.onerror = () => {
+
+      setLoadedFiles(prev => [...prev, ...newLoadedFiles]);
+    } catch (err) {
+      console.error('[Import] Error handling files:', err);
+    } finally {
       setIsLoading(false);
-      setParseResults({
-        slots: [],
-        recognizedClasses: [],
-        unrecognizedClasses: [],
-        recognizedTeachers: [],
-        unrecognizedTeachers: [],
-        campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
-        errors: ['Không thể đọc tệp Excel đã chọn. Vui lòng kiểm tra lại quyền truy cập file.'],
-        warnings: [],
-        sheetNames: [],
-        detectedFormat: 'Không xác định',
-        successCount: 0
-      });
-    };
-    reader.readAsArrayBuffer(file);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleRemoveFile = (id: string) => {
+    setLoadedFiles(prev => prev.filter(f => f.id !== id));
+  };
+
+  const handleClearAllFiles = () => {
+    setLoadedFiles([]);
   };
 
   const handleDrag = (e: React.DragEvent) => {
@@ -192,8 +283,8 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0]);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFiles(e.dataTransfer.files);
     }
   };
 
@@ -202,22 +293,16 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
     setIsLoading(true);
     try {
       const res = parseVietSchoolTimetable(pasteText, classes, subjects, teachers);
-      setParseResults(res);
-      setFileName('Dữ liệu dán từ clipboard');
+      const newFileItem: LoadedFileInfo = {
+        id: `paste_${Date.now()}`,
+        name: 'Dữ liệu dán từ clipboard',
+        size: pasteText.length,
+        result: res
+      };
+      setLoadedFiles(prev => [...prev, newFileItem]);
+      setPasteText('');
     } catch (err: any) {
-      setParseResults({
-        slots: [],
-        recognizedClasses: [],
-        unrecognizedClasses: [],
-        recognizedTeachers: [],
-        unrecognizedTeachers: [],
-        campusStats: { thptSlots: 0, thcsDbkSlots: 0, thcsTkSlots: 0 },
-        errors: [`Lỗi phân tích văn bản: ${err?.message || 'Lỗi xử lý'}`],
-        warnings: [],
-        sheetNames: [],
-        detectedFormat: 'Văn bản dán',
-        successCount: 0
-      });
+      console.error('[Import] Paste parse error:', err);
     } finally {
       setIsLoading(false);
     }
@@ -228,8 +313,12 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
   };
 
   const handleApply = () => {
-    if (parseResults && parseResults.slots.length > 0) {
+    if (parseResults && parseResults.slots.length > 0 && !isApplying) {
       setIsApplying(true);
+      const safetyTimer = setTimeout(() => {
+        setIsApplying(false);
+      }, 4000);
+
       // Allow React to paint the loading state first
       setTimeout(() => {
         try {
@@ -237,11 +326,15 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
             parseResults.slots,
             targetWeek,
             applyToSubsequentWeeks,
-            syncWeeklySchedule
+            syncWeeklySchedule,
+            importMode
           );
+          clearTimeout(safetyTimer);
+          setIsApplying(false);
           onClose();
         } catch (err) {
           console.error('[Import] Error applying slots:', err);
+          clearTimeout(safetyTimer);
           setIsApplying(false);
         }
       }, 60);
@@ -250,7 +343,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4">
-      <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-4xl overflow-hidden flex flex-col max-h-[94vh]">
+      <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-4xl overflow-hidden flex flex-col max-h-[95vh]">
         {/* Header */}
         <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-indigo-950 text-white p-4 sm:p-5 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
@@ -260,14 +353,14 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-white">
-                  Nhập Thời Khóa Biểu Trực Tiếp Từ VietSchool
+                  Nhập Thời Khóa Biểu VietSchool (Hỗ trợ 3 Điểm Trường)
                 </h3>
                 <span className="px-2 py-0.5 bg-emerald-500/30 text-emerald-200 text-[11px] font-bold rounded-full border border-emerald-400/30">
-                  Tự động nhận diện
+                  Gộp đa tệp
                 </span>
               </div>
               <p className="text-xs text-emerald-100/80 mt-0.5">
-                Đẩy TKB đã xếp từ phần mềm VietSchool lên webapp ngay lập tức mà không cần sửa code
+                Hỗ trợ tải riêng từng điểm trường (THPT, THCS Đốc Binh Kiều, Tân Kiều) hoặc chọn cùng lúc nhiều file để gộp thành TKB hoàn chỉnh
               </p>
             </div>
           </div>
@@ -280,45 +373,84 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
           </button>
         </div>
 
-        {/* Target Week and Scope Settings Bar */}
-        <div className="bg-slate-50 border-b border-slate-200 p-3 sm:px-5 flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-indigo-600" />
-              <span className="font-bold text-slate-700">Áp dụng cho:</span>
-              <select
-                value={targetWeek}
-                onChange={(e) => setTargetWeek(Number(e.target.value))}
-                className="bg-white border border-slate-300 text-slate-900 font-bold px-3 py-1.5 rounded-lg shadow-2xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden cursor-pointer"
-              >
-                {Array.from({ length: totalWeeks }, (_, i) => i + 1).map((w) => (
-                  <option key={w} value={w}>
-                    Tuần {w} {w === currentWeek ? '(Tuần đang xem)' : ''}
-                  </option>
-                ))}
-              </select>
+        {/* Target Week, Scope & Import Mode Settings Bar */}
+        <div className="bg-slate-50 border-b border-slate-200 p-3 sm:px-5 space-y-2.5 text-xs shrink-0">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-indigo-600" />
+                <span className="font-bold text-slate-700">Áp dụng cho:</span>
+                <select
+                  value={targetWeek}
+                  onChange={(e) => setTargetWeek(Number(e.target.value))}
+                  className="bg-white border border-slate-300 text-slate-900 font-bold px-3 py-1.5 rounded-lg shadow-2xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden cursor-pointer"
+                >
+                  {Array.from({ length: totalWeeks }, (_, i) => i + 1).map((w) => (
+                    <option key={w} value={w}>
+                      Tuần {w} {w === currentWeek ? '(Tuần đang xem)' : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <label className="flex items-center gap-2 text-slate-700 cursor-pointer font-medium hover:text-slate-900">
+                <input
+                  type="checkbox"
+                  checked={applyToSubsequentWeeks}
+                  onChange={(e) => setApplyToSubsequentWeeks(e.target.checked)}
+                  className="w-4 h-4 text-emerald-600 rounded-sm border-slate-300 focus:ring-emerald-500 cursor-pointer"
+                />
+                <span>Áp dụng cho Tuần {targetWeek} và tất cả các tuần tiếp theo</span>
+              </label>
             </div>
 
-            <label className="flex items-center gap-2 text-slate-700 cursor-pointer font-medium hover:text-slate-900">
+            <label className="flex items-center gap-2 text-indigo-900 bg-indigo-50/80 px-2.5 py-1.5 rounded-lg border border-indigo-200 cursor-pointer font-bold hover:bg-indigo-100 transition-colors">
               <input
                 type="checkbox"
-                checked={applyToSubsequentWeeks}
-                onChange={(e) => setApplyToSubsequentWeeks(e.target.checked)}
-                className="w-4 h-4 text-emerald-600 rounded-sm border-slate-300 focus:ring-emerald-500 cursor-pointer"
+                checked={syncWeeklySchedule}
+                onChange={(e) => setSyncWeeklySchedule(e.target.checked)}
+                className="w-4 h-4 text-indigo-600 rounded-sm border-indigo-300 focus:ring-indigo-500 cursor-pointer"
               />
-              <span>Áp dụng cho Tuần {targetWeek} và tất cả các tuần tiếp theo của học kỳ</span>
+              <span>Đồng bộ ngay bảng Phân công & Số tiết dạy thực tế</span>
             </label>
           </div>
 
-          <label className="flex items-center gap-2 text-indigo-900 bg-indigo-50/80 px-2.5 py-1.5 rounded-lg border border-indigo-200 cursor-pointer font-bold hover:bg-indigo-100 transition-colors">
-            <input
-              type="checkbox"
-              checked={syncWeeklySchedule}
-              onChange={(e) => setSyncWeeklySchedule(e.target.checked)}
-              className="w-4 h-4 text-indigo-600 rounded-sm border-indigo-300 focus:ring-indigo-500 cursor-pointer"
-            />
-            <span>Đồng bộ ngay bảng Phân công & Số tiết dạy thực tế</span>
-          </label>
+          {/* Import Mode Selector: Merge vs Replace */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-2 border-t border-slate-200">
+            <span className="font-bold text-slate-700 flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-emerald-600" />
+              Chế độ nhập dữ liệu:
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setImportMode('merge')}
+                className={`px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                  importMode === 'merge'
+                    ? 'bg-emerald-600 text-white shadow-2xs'
+                    : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100'
+                }`}
+                title="Giữ nguyên các lớp/điểm trường đã có trên hệ thống, chỉ thêm mới hoặc cập nhật các lớp trong file vừa nạp"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Gộp vào TKB hiện tại (Khuyên dùng khi nạp từng điểm trường)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setImportMode('replace')}
+                className={`px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                  importMode === 'replace'
+                    ? 'bg-amber-600 text-white shadow-2xs'
+                    : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100'
+                }`}
+                title="Xóa toàn bộ thời khóa biểu cũ của các tuần đã chọn và thay thế hoàn toàn bằng dữ liệu tệp này"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Thay thế toàn bộ</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Tab switcher */}
@@ -358,7 +490,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center cursor-pointer transition-all ${
+                className={`border-2 border-dashed rounded-2xl p-5 sm:p-7 text-center cursor-pointer transition-all ${
                   dragActive
                     ? 'border-emerald-500 bg-emerald-50/60 ring-4 ring-emerald-200/50'
                     : 'border-slate-300 hover:border-emerald-500 bg-slate-50/70 hover:bg-emerald-50/30'
@@ -367,34 +499,106 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                 <input
                   ref={fileInputRef}
                   type="file"
+                  multiple
                   accept=".xlsx, .xls, .csv, .tsv, .txt, .md"
                   className="hidden"
                   onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      handleFile(e.target.files[0]);
+                    if (e.target.files && e.target.files.length > 0) {
+                      handleFiles(e.target.files);
                     }
                   }}
                 />
 
-                <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-3 shadow-inner">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-2.5 shadow-inner">
                   {isLoading ? (
-                    <RefreshCw className="w-7 h-7 animate-spin text-emerald-600" />
+                    <RefreshCw className="w-6 h-6 animate-spin text-emerald-600" />
                   ) : (
-                    <FileSpreadsheet className="w-7 h-7" />
+                    <FileSpreadsheet className="w-6 h-6" />
                   )}
                 </div>
 
                 <h4 className="text-sm sm:text-base font-bold text-slate-800 mb-1">
-                  {fileName ? (
-                    <span className="text-emerald-700">Đã chọn: {fileName} (Nhấp để chọn lại)</span>
-                  ) : (
-                    'Kéo thả file Excel (.xlsx) hoặc Markdown (.md) vào đây'
-                  )}
+                  Kéo thả một hoặc nhiều file Excel (.xlsx) vào đây
                 </h4>
                 <p className="text-xs text-slate-500 max-w-md mx-auto">
-                  Hỗ trợ cả 2 định dạng: <strong>Phân công Thời khóa biểu theo Giáo viên</strong> (Markdown/Excel) và <strong>Ma trận Thời khóa biểu theo Lớp</strong> (VietSchool). Tự động nhận diện các điểm trường THPT & THCS Đốc Binh Kiều.
+                  Có thể <strong>chọn cùng lúc 3 file cho 3 điểm trường</strong> (hoặc tải từng file một, hệ thống sẽ tự động gộp dữ liệu). Nhận diện chính xác 14 lớp THPT, 22 lớp THCS Đốc Binh Kiều và điểm trường Tân Kiều.
                 </p>
               </div>
+
+              {/* Uploaded Files Chips Bar */}
+              {loadedFiles.length > 0 && (
+                <div className="p-3 bg-slate-100/80 rounded-xl border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <FolderPlus className="w-4 h-4 text-emerald-600" />
+                      Danh sách {loadedFiles.length} tệp đã nạp vào bộ nhớ:
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-all shadow-2xs"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Thêm tệp điểm trường khác</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleClearAllFiles}
+                        className="px-2 py-1 text-slate-500 hover:text-rose-600 text-xs font-medium cursor-pointer transition-colors"
+                      >
+                        Xóa tất cả
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                    {loadedFiles.map((fileItem) => {
+                      const res = fileItem.result;
+                      return (
+                        <div
+                          key={fileItem.id}
+                          className="bg-white border border-slate-200 rounded-xl p-2.5 flex items-start justify-between gap-2 shadow-2xs"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-bold text-slate-800 truncate" title={fileItem.name}>
+                              {fileItem.name}
+                            </p>
+                            <div className="flex items-center gap-1.5 mt-1 text-[11px] text-slate-500 flex-wrap">
+                              <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                                {res.successCount} tiết
+                              </span>
+                              {res.campusStats.thptSlots > 0 && (
+                                <span className="bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded">
+                                  THPT: {res.campusStats.thptSlots}
+                                </span>
+                              )}
+                              {res.campusStats.thcsDbkSlots > 0 && (
+                                <span className="bg-teal-50 text-teal-700 px-1.5 py-0.5 rounded">
+                                  ĐBK: {res.campusStats.thcsDbkSlots}
+                                </span>
+                              )}
+                              {res.campusStats.thcsTkSlots > 0 && (
+                                <span className="bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded">
+                                  TK: {res.campusStats.thcsTkSlots}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveFile(fileItem.id)}
+                            className="text-slate-400 hover:text-rose-600 p-1 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer shrink-0"
+                            title="Xóa file này"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               {/* Sample Download Bar */}
               <div className="flex flex-col sm:flex-row items-center justify-between p-3 bg-teal-50/70 rounded-xl border border-teal-200 gap-2">
@@ -419,7 +623,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
                   <Info className="w-4 h-4 text-indigo-600" />
-                  <span>Dán nội dung bảng Thời khóa biểu theo Giáo viên (Markdown/Excel) hoặc Ma trận theo Lớp:</span>
+                  <span>Dán nội dung bảng Thời khóa biểu theo Giáo viên hoặc Ma trận theo Lớp:</span>
                 </label>
               </div>
               <textarea
@@ -449,7 +653,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                   ) : (
                     <Sparkles className="w-4 h-4" />
                   )}
-                  <span>Phân Tích Bảng Dữ Liệu</span>
+                  <span>Phân Tích & Thêm Vào Danh Sách</span>
                 </button>
               </div>
             </div>
@@ -478,11 +682,11 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                     <div>
                       <h4 className="text-sm font-black text-slate-900">
                         {parseResults.successCount > 0
-                          ? `Đã nhận diện thành công: ${parseResults.successCount} tiết học`
+                          ? `Tổng cộng đã nhận diện: ${parseResults.successCount} tiết học`
                           : 'Không nhận diện được tiết học'}
                       </h4>
                       <p className="text-xs text-slate-600 mt-0.5">
-                        Định dạng phát hiện: <span className="font-bold text-slate-800">{parseResults.detectedFormat}</span> • Quét qua {parseResults.sheetNames.length} sheet ({parseResults.sheetNames.join(', ')})
+                        Gộp từ {loadedFiles.length} tệp • Định dạng: <span className="font-bold text-slate-800">{parseResults.detectedFormat}</span> • Quét qua {parseResults.sheetNames.length} sheet
                       </p>
                     </div>
                   </div>
@@ -522,7 +726,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
               {parseResults.warnings.length > 0 && (
                 <div className="p-3 mx-4 max-h-32 overflow-y-auto bg-amber-50 border border-amber-200 rounded-xl space-y-1">
                   <p className="text-xs font-bold text-amber-800">
-                    Cảnh báo ({parseResults.warnings.length} lưu ý về tên GV hoặc lớp):
+                    Cảnh báo ({parseResults.warnings.length} lưu ý):
                   </p>
                   {parseResults.warnings.slice(0, 10).map((warn, idx) => (
                     <p key={idx} className="text-xs text-amber-700">
@@ -542,7 +746,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                 <div className="px-4 pb-4 space-y-2">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
                     <span className="text-xs font-bold text-slate-700">
-                      Xem trước dữ liệu các tiết học đã bóc tách:
+                      Xem trước dữ liệu các tiết học đã bóc tách ({parseResults.slots.length} tiết):
                     </span>
 
                     {/* Filter controls */}
@@ -632,7 +836,9 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
           <div className="text-xs text-slate-600 flex items-center gap-1.5">
             <Info className="w-4 h-4 text-slate-400 shrink-0" />
             <span>
-              Dữ liệu sẽ được lưu vào hệ thống và tự động sao lưu lên đám mây Firestore.
+              {importMode === 'merge'
+                ? 'Chế độ GỘP: Các lớp/điểm trường đã có trên hệ thống sẽ được bảo lưu 100%.'
+                : 'Chế độ THAY THẾ: Toàn bộ TKB các tuần đã chọn sẽ được thay bằng dữ liệu file này.'}
             </span>
           </div>
 
@@ -660,7 +866,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                 <>
                   <CheckCircle2 className="w-4 h-4" />
                   <span>
-                    Áp Dụng {parseResults?.successCount || 0} Tiết Vào Tuần {targetWeek}
+                    {importMode === 'merge' ? 'Gộp' : 'Thay Thế Bằng'} {parseResults?.successCount || 0} Tiết Vào Tuần {targetWeek}
                     {applyToSubsequentWeeks ? ` (và các tuần tiếp theo)` : ''}
                   </span>
                 </>

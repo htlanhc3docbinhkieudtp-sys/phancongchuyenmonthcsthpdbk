@@ -72,7 +72,8 @@ interface SchoolTimetableViewProps {
     importedSlots: TimetableSlot[],
     targetWeek: number,
     applyToSubsequentWeeks: boolean,
-    syncWeeklySchedule: boolean
+    syncWeeklySchedule: boolean,
+    importMode?: 'merge' | 'replace'
   ) => void;
   onResetTimetable?: () => void;
 }
@@ -294,15 +295,29 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
     importedSlots: TimetableSlot[],
     targetWeek: number,
     applyToSubsequentWeeks: boolean,
-    syncWeeklySchedule: boolean
+    syncWeeklySchedule: boolean,
+    importMode: 'merge' | 'replace' = 'merge'
   ) => {
     if (onImportTimetableBatch) {
-      onImportTimetableBatch(importedSlots, targetWeek, applyToSubsequentWeeks, syncWeeklySchedule);
+      onImportTimetableBatch(importedSlots, targetWeek, applyToSubsequentWeeks, syncWeeklySchedule, importMode);
     } else {
+      let finalSlots = importedSlots;
+      if (importMode === 'merge') {
+        const slotMap = new Map<string, TimetableSlot>();
+        (timetable?.slots || []).forEach(s => {
+          const k = `${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`;
+          slotMap.set(k, s);
+        });
+        importedSlots.forEach(s => {
+          const k = `${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`;
+          slotMap.set(k, s);
+        });
+        finalSlots = Array.from(slotMap.values());
+      }
       onUpdateTimetable({
         ...timetable,
         weekNumber: targetWeek,
-        slots: importedSlots,
+        slots: finalSlots,
         updatedAt: Date.now()
       });
     }
