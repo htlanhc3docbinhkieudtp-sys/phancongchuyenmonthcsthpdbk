@@ -465,7 +465,7 @@ export const initialClasses: ClassGroup[] = [
   // Điểm trường Đốc Binh Kiều (8A1 - 8A6)
   { id: 'cls-8a1', name: '8A1', grade: '8', level: 'THCS', campus: 'THCSDBK', studentCount: 43, homeroomTeacherId: 'tch-t-9', roomNumber: 'P.8-1' },
   { id: 'cls-8a2', name: '8A2', grade: '8', level: 'THCS', campus: 'THCSDBK', studentCount: 42, homeroomTeacherId: 'tch-khtn-22', roomNumber: 'P.8-2' },
-  { id: 'cls-8a3', name: '8A3', grade: '8', level: 'THCS', campus: 'THCSDBK', studentCount: 43, homeroomTeacherId: 'tch-av-12', roomNumber: 'P.8-3' },
+  { id: 'cls-8a3', name: '8A3', grade: '8', level: 'THCS', campus: 'THCSDBK', studentCount: 43, homeroomTeacherId: 'tch-ls-13', roomNumber: 'P.8-3' },
   { id: 'cls-8a4', name: '8A4', grade: '8', level: 'THCS', campus: 'THCSDBK', studentCount: 43, homeroomTeacherId: 'tch-khtn-17', roomNumber: 'P.8-4' },
   { id: 'cls-8a5', name: '8A5', grade: '8', level: 'THCS', campus: 'THCSDBK', studentCount: 43, homeroomTeacherId: 'tch-khtn-12', roomNumber: 'P.8-5' },
   { id: 'cls-8a6', name: '8A6', grade: '8', level: 'THCS', campus: 'THCSDBK', studentCount: 42, homeroomTeacherId: 'tch-td-7', roomNumber: 'P.8-6' },

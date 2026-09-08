@@ -14,46 +14,143 @@ interface RawSlotDef {
   isSpecial?: boolean;
 }
 
-// Teacher code lookup dictionary with full names
+// Teacher code lookup dictionary with full names, codes and IDs
 export const THPT_TEACHER_LOOKUP: Record<string, { id: string; name: string; code: string }> = {
-  'Tùng': { id: 'tch-khtn-5', name: 'Phan Hoàng Tùng', code: 'Phan Hoàng Tùng' },
-  'Kiều': { id: 'tch-khtn-9', name: 'Đoàn Kiều', code: 'Đoàn Kiều' },
-  'Ny': { id: 'tch-v-5', name: 'Nguyễn Thị Cẩm Ny', code: 'Nguyễn Thị Cẩm Ny' },
-  'Diễm': { id: 'tch-av-9', name: 'Huỳnh Thị Bích Diễm', code: 'Huỳnh Thị Bích Diễm' },
-  'Nhịnh': { id: 'tch-v-4', name: 'Võ Thị Nhịnh', code: 'Võ Thị Nhịnh' },
-  'Hương': { id: 'tch-t-7', name: 'Lê Thị Ngọc Hương', code: 'Lê Thị Ngọc Hương' },
-  'Sơn': { id: 'tch-ls-2', name: 'Võ Văn Sơn', code: 'Võ Văn Sơn' },
-  'Ẩn': { id: 'tch-td-6', name: 'Nguyễn Văn Ẩn', code: 'Nguyễn Văn Ẩn' },
+  'CToàn': { id: 'tch-t-5', name: 'Lê Cao Toàn', code: 'Toàn.LC' },
+  'Lê Cao Toàn': { id: 'tch-t-5', name: 'Lê Cao Toàn', code: 'Toàn.LC' },
+  'Toàn.LC': { id: 'tch-t-5', name: 'Lê Cao Toàn', code: 'Toàn.LC' },
+
+  'VToàn': { id: 'tch-t-6', name: 'Lê Văn Toàn', code: 'Toàn.LV' },
+  'Lê Văn Toàn': { id: 'tch-t-6', name: 'Lê Văn Toàn', code: 'Toàn.LV' },
+  'Toàn.LV': { id: 'tch-t-6', name: 'Lê Văn Toàn', code: 'Toàn.LV' },
+
+  'Tới': { id: 'tch-t-1', name: 'Nguyễn Văn Tới', code: 'Tới.NV (TT)' },
+  'Nguyễn Văn Tới': { id: 'tch-t-1', name: 'Nguyễn Văn Tới', code: 'Tới.NV (TT)' },
+  'Tới.NV': { id: 'tch-t-1', name: 'Nguyễn Văn Tới', code: 'Tới.NV (TT)' },
+
+  'Giang': { id: 'tch-t-4', name: 'Trần Văn Giang', code: 'Giang.TV' },
+  'Trần Văn Giang': { id: 'tch-t-4', name: 'Trần Văn Giang', code: 'Giang.TV' },
+  'Giang.TV': { id: 'tch-t-4', name: 'Trần Văn Giang', code: 'Giang.TV' },
+
+  'Hương': { id: 'tch-t-7', name: 'Võ Thị Ngọc Hương', code: 'Hương.VTN (12CB3)' },
+  'Võ Thị Ngọc Hương': { id: 'tch-t-7', name: 'Võ Thị Ngọc Hương', code: 'Hương.VTN (12CB3)' },
+  'Hương.VTN': { id: 'tch-t-7', name: 'Võ Thị Ngọc Hương', code: 'Hương.VTN (12CB3)' },
+
+  'Thùy': { id: 'tch-khtn-3', name: 'Phạm Biên Thùy', code: 'Thùy.PB' },
+  'Phạm Biên Thùy': { id: 'tch-khtn-3', name: 'Phạm Biên Thùy', code: 'Thùy.PB' },
+  'Thùy.PB': { id: 'tch-khtn-3', name: 'Phạm Biên Thùy', code: 'Thùy.PB' },
+
+  'Hiền': { id: 'tch-khtn-6', name: 'Trần Thị Ngọc Hiền', code: 'Hiền.TTN' },
+  'Trần Thị Ngọc Hiền': { id: 'tch-khtn-6', name: 'Trần Thị Ngọc Hiền', code: 'Hiền.TTN' },
+  'Hiền.TTN': { id: 'tch-khtn-6', name: 'Trần Thị Ngọc Hiền', code: 'Hiền.TTN' },
+
+  'Phi': { id: 'tch-khtn-8', name: 'Phạm Long Phi', code: 'Phi.PL (11CB2)' },
+  'Phạm Long Phi': { id: 'tch-khtn-8', name: 'Phạm Long Phi', code: 'Phi.PL (11CB2)' },
+  'Phi.PL': { id: 'tch-khtn-8', name: 'Phạm Long Phi', code: 'Phi.PL (11CB2)' },
+
+  'Thơ': { id: 'tch-khtn-7', name: 'Phan Thị Ngọc Thơ', code: 'Thơ.PTN (12CB1)' },
+  'Phan Thị Ngọc Thơ': { id: 'tch-khtn-7', name: 'Phan Thị Ngọc Thơ', code: 'Thơ.PTN (12CB1)' },
+  'Thơ.PTN': { id: 'tch-khtn-7', name: 'Phan Thị Ngọc Thơ', code: 'Thơ.PTN (12CB1)' },
+
+  'Kiều': { id: 'tch-khtn-9', name: 'Trần Thị Kiều', code: 'Kiều.TT (10CB2)' },
+  'Trần Thị Kiều': { id: 'tch-khtn-9', name: 'Trần Thị Kiều', code: 'Kiều.TT (10CB2)' },
+  'Kiều.TT': { id: 'tch-khtn-9', name: 'Trần Thị Kiều', code: 'Kiều.TT (10CB2)' },
+
+  'Huỳnh': { id: 'tch-khtn-1', name: 'Bùi Kim Huỳnh', code: 'Huỳnh.BK (11CB1)' },
+  'Bùi Kim Huỳnh': { id: 'tch-khtn-1', name: 'Bùi Kim Huỳnh', code: 'Huỳnh.BK (11CB1)' },
+  'Huỳnh.BK': { id: 'tch-khtn-1', name: 'Bùi Kim Huỳnh', code: 'Huỳnh.BK (11CB1)' },
+
+  'Tùng': { id: 'tch-khtn-5', name: 'Cao Văn Tùng', code: 'Tùng.CV (10CB1)' },
+  'Cao Văn Tùng': { id: 'tch-khtn-5', name: 'Cao Văn Tùng', code: 'Tùng.CV (10CB1)' },
+  'Tùng.CV': { id: 'tch-khtn-5', name: 'Cao Văn Tùng', code: 'Tùng.CV (10CB1)' },
+
+  'Nhịnh': { id: 'tch-v-4', name: 'Hồ Văn Nhịnh', code: 'Nhịnh.HV (10CB5)' },
+  'Hồ Văn Nhịnh': { id: 'tch-v-4', name: 'Hồ Văn Nhịnh', code: 'Nhịnh.HV (10CB5)' },
+  'Nhịnh.HV': { id: 'tch-v-4', name: 'Hồ Văn Nhịnh', code: 'Nhịnh.HV (10CB5)' },
+
+  'Ny': { id: 'tch-v-5', name: 'Lê Thị Mỹ Ny', code: 'Ny.LTM (10CB3)' },
+  'Lê Thị Mỹ Ny': { id: 'tch-v-5', name: 'Lê Thị Mỹ Ny', code: 'Ny.LTM (10CB3)' },
+  'Ny.LTM': { id: 'tch-v-5', name: 'Lê Thị Mỹ Ny', code: 'Ny.LTM (10CB3)' },
+
+  'Lắm': { id: 'tch-v-1', name: 'Tô Thị Lắm', code: 'Lắm.TT' },
+  'Tô Thị Lắm': { id: 'tch-v-1', name: 'Tô Thị Lắm', code: 'Lắm.TT' },
+  'Tô Thị  Lắm': { id: 'tch-v-1', name: 'Tô Thị Lắm', code: 'Lắm.TT' },
+  'Lắm.TT': { id: 'tch-v-1', name: 'Tô Thị Lắm', code: 'Lắm.TT' },
+
+  'Duyên': { id: 'tch-v-6', name: 'Trương Thị Mỹ Duyên', code: 'Duyên.TTM (12CB2)' },
+  'Trương Thị Mỹ Duyên': { id: 'tch-v-6', name: 'Trương Thị Mỹ Duyên', code: 'Duyên.TTM (12CB2)' },
+  'Duyên.TTM': { id: 'tch-v-6', name: 'Trương Thị Mỹ Duyên', code: 'Duyên.TTM (12CB2)' },
+
+  'Trang': { id: 'tch-ls-4', name: 'Nguyễn Thị Bé Trang', code: 'Trang.NTB (12CB4)' },
+  'Nguyễn Thị Bé Trang': { id: 'tch-ls-4', name: 'Nguyễn Thị Bé Trang', code: 'Trang.NTB (12CB4)' },
+  'Trang.NTB': { id: 'tch-ls-4', name: 'Nguyễn Thị Bé Trang', code: 'Trang.NTB (12CB4)' },
+
+  'Rỡ': { id: 'tch-ls-5', name: 'Trần Văn Rỡ', code: 'Rỡ.TV (11CB3)' },
+  'Trần Văn Rỡ': { id: 'tch-ls-5', name: 'Trần Văn Rỡ', code: 'Rỡ.TV (11CB3)' },
+  'Rỡ.TV': { id: 'tch-ls-5', name: 'Trần Văn Rỡ', code: 'Rỡ.TV (11CB3)' },
+
+  'Sơn': { id: 'tch-ls-2', name: 'Trịnh Văn Sơn', code: 'Sơn.TV (12CB5)' },
+  'Trịnh Văn Sơn': { id: 'tch-ls-2', name: 'Trịnh Văn Sơn', code: 'Sơn.TV (12CB5)' },
+  'Sơn.TV': { id: 'tch-ls-2', name: 'Trịnh Văn Sơn', code: 'Sơn.TV (12CB5)' },
+
+  'Tuấn': { id: 'tch-ls-7', name: 'Ngô Anh Tuấn', code: 'Tuấn.NA' },
+  'Ngô Anh Tuấn': { id: 'tch-ls-7', name: 'Ngô Anh Tuấn', code: 'Tuấn.NA' },
+  'Tuấn.NA': { id: 'tch-ls-7', name: 'Ngô Anh Tuấn', code: 'Tuấn.NA' },
+
+  'Hòa': { id: 'tch-ls-6', name: 'Trần Phước Hòa', code: 'Hòa.TP' },
+  'Trần Phước Hòa': { id: 'tch-ls-6', name: 'Trần Phước Hòa', code: 'Hòa.TP' },
+  'Hòa.TP': { id: 'tch-ls-6', name: 'Trần Phước Hòa', code: 'Hòa.TP' },
+
+  'Quốc': { id: 'tch-av-5', name: 'Ngô Bảo Quốc', code: 'Quốc.NB' },
+  'Ngô Bảo Quốc': { id: 'tch-av-5', name: 'Ngô Bảo Quốc', code: 'Quốc.NB' },
+  'Quốc.NB': { id: 'tch-av-5', name: 'Ngô Bảo Quốc', code: 'Quốc.NB' },
+
+  'Anh': { id: 'tch-av-7', name: 'Nguyễn Thị Vân Anh', code: 'Anh.NTV' },
+  'VAnh': { id: 'tch-av-7', name: 'Nguyễn Thị Vân Anh', code: 'Anh.NTV' },
+  'Nguyễn Thị Vân Anh': { id: 'tch-av-7', name: 'Nguyễn Thị Vân Anh', code: 'Anh.NTV' },
+  'Anh.NTV': { id: 'tch-av-7', name: 'Nguyễn Thị Vân Anh', code: 'Anh.NTV' },
+
+  'Bền': { id: 'tch-av-6', name: 'Trương Sơn Bền', code: 'Bền.TS' },
+  'Trương Sơn Bền': { id: 'tch-av-6', name: 'Trương Sơn Bền', code: 'Bền.TS' },
+  'Bền.TS': { id: 'tch-av-6', name: 'Trương Sơn Bền', code: 'Bền.TS' },
+
+  'Thi': { id: 'tch-av-4', name: 'Võ Thị Hiền Thi', code: 'Thi.VTH' },
+  'Võ Thị Hiền Thi': { id: 'tch-av-4', name: 'Võ Thị Hiền Thi', code: 'Thi.VTH' },
+  'Thi.VTH': { id: 'tch-av-4', name: 'Võ Thị Hiền Thi', code: 'Thi.VTH' },
+
+  'Liên': { id: 'tch-av-8', name: 'Đào Thị Ngọc Liên', code: 'Liên.ĐTN (11CB4)' },
+  'Đào Thị Ngọc Liên': { id: 'tch-av-8', name: 'Đào Thị Ngọc Liên', code: 'Liên.ĐTN (11CB4)' },
+  'Liên.ĐTN': { id: 'tch-av-8', name: 'Đào Thị Ngọc Liên', code: 'Liên.ĐTN (11CB4)' },
+
+  'Diễm': { id: 'tch-av-9', name: 'Lê Thị Thu Diễm', code: 'Diễm.LTT (10CB4)' },
+  'Lê Thị Thu Diễm': { id: 'tch-av-9', name: 'Lê Thị Thu Diễm', code: 'Diễm.LTT (10CB4)' },
+  'Diễm.LTT': { id: 'tch-av-9', name: 'Lê Thị Thu Diễm', code: 'Diễm.LTT (10CB4)' },
+
+  'Hiếu': { id: 'tch-av-2', name: 'Nguyễn Trung Hiếu', code: 'Hiếu.NT (Tin)' },
+  'Nguyễn Trung Hiếu': { id: 'tch-av-2', name: 'Nguyễn Trung Hiếu', code: 'Hiếu.NT (Tin)' },
+  'Hiếu.NT': { id: 'tch-av-2', name: 'Nguyễn Trung Hiếu', code: 'Hiếu.NT (Tin)' },
+
+  'Trí': { id: 'tch-bgh-2', name: 'Nguyễn Minh Trí', code: 'Trí.NM (PHT)' },
+  'Nguyễn Minh Trí': { id: 'tch-bgh-2', name: 'Nguyễn Minh Trí', code: 'Trí.NM (PHT)' },
+  'Trí.NM': { id: 'tch-bgh-2', name: 'Nguyễn Minh Trí', code: 'Trí.NM (PHT)' },
+
+  'Ngân': { id: 'tch-td-4', name: 'Hồ Hoài Ngân', code: 'Ngân.HH' },
+  'Hồ Hoài Ngân': { id: 'tch-td-4', name: 'Hồ Hoài Ngân', code: 'Ngân.HH' },
+  'Ngân.HH': { id: 'tch-td-4', name: 'Hồ Hoài Ngân', code: 'Ngân.HH' },
+
+  'Ẩn': { id: 'tch-td-6', name: 'Lê Ngọc Ẩn', code: 'Ẩn.LN (7A4)' },
+  'Lê Ngọc Ẩn': { id: 'tch-td-6', name: 'Lê Ngọc Ẩn', code: 'Ẩn.LN (7A4)' },
+  'Lê Ngọc Ẩn (ĐBK)': { id: 'tch-td-6', name: 'Lê Ngọc Ẩn', code: 'Ẩn.LN (7A4)' },
+  'Ẩn.LN': { id: 'tch-td-6', name: 'Lê Ngọc Ẩn', code: 'Ẩn.LN (7A4)' },
+
   'Rạng': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' },
-  'Rang': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' },
   'Nguyễn Kim Rạng': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' },
-  'Nguyễn Kim Rang': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' },
+  'Rang': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' },
   'Rạng.NK': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' },
-  'Rang.NK': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' },
-  'Hiền': { id: 'tch-khtn-6', name: 'Nguyễn Thị Thu Hiền', code: 'Nguyễn Thị Thu Hiền' },
-  'Duyên': { id: 'tch-v-6', name: 'Hồ Thị Mỹ Duyên', code: 'Hồ Thị Mỹ Duyên' },
-  'Hòa': { id: 'tch-ls-6', name: 'Huỳnh Thị Hòa', code: 'Huỳnh Thị Hòa' },
-  'Giang': { id: 'tch-t-4', name: 'Hoàng Văn Giang', code: 'Hoàng Văn Giang' },
-  'Anh': { id: 'tch-av-7', name: 'Lê Văn Anh', code: 'Lê Văn Anh' },
-  'Thi': { id: 'tch-av-4', name: 'Trần Thị Thi', code: 'Trần Thị Thi' },
-  'Hiếu': { id: 'tch-av-2', name: 'Nguyễn Minh Hiếu', code: 'Nguyễn Minh Hiếu' },
-  'CToàn': { id: 'tch-t-5', name: 'Nguyễn Chí Toàn', code: 'Nguyễn Chí Toàn' },
-  'Trang': { id: 'tch-ls-4', name: 'Nguyễn Thị Trang', code: 'Nguyễn Thị Trang' },
-  'Quốc': { id: 'tch-av-5', name: 'Huỳnh Văn Quốc', code: 'Huỳnh Văn Quốc' },
-  'Trường': { id: 'tch-ls-8', name: 'Huỳnh Nhựt Trường', code: 'Huỳnh Nhựt Trường' },
-  'Bền': { id: 'tch-av-6', name: 'Lê Văn Bền', code: 'Lê Văn Bền' },
-  'Huỳnh': { id: 'tch-khtn-1', name: 'Nguyễn Văn Huỳnh', code: 'Nguyễn Văn Huỳnh' },
-  'Phi': { id: 'tch-khtn-8', name: 'Đoàn Hồng Phi', code: 'Đoàn Hồng Phi' },
-  'Rỡ': { id: 'tch-ls-5', name: 'Lê Văn Rỡ', code: 'Lê Văn Rỡ' },
-  'Liên': { id: 'tch-av-8', name: 'Nguyễn Thị Kiều Liên', code: 'Nguyễn Thị Kiều Liên' },
-  'Thơ': { id: 'tch-khtn-7', name: 'Nguyễn Thị Bích Thơ', code: 'Nguyễn Thị Bích Thơ' },
-  'Lắm': { id: 'tch-v-1', name: 'Phan Văn Lắm', code: 'Phan Văn Lắm' },
-  'Tuấn': { id: 'tch-ls-7', name: 'Nguyễn Công Tuấn', code: 'Nguyễn Công Tuấn' },
-  'VToàn': { id: 'tch-t-6', name: 'Võ Văn Toàn', code: 'Võ Văn Toàn' },
-  'Thùy': { id: 'tch-khtn-3', name: 'Nguyễn Thị Bích Thùy', code: 'Nguyễn Thị Bích Thùy' },
-  'Ngân': { id: 'tch-td-4', name: 'Nguyễn Thị Mỹ Ngân', code: 'Nguyễn Thị Mỹ Ngân' },
-  'Tới': { id: 'tch-t-1', name: 'Nguyễn Văn Tới', code: 'Nguyễn Văn Tới' },
-  'Trí': { id: 'tch-bgh-2', name: 'Nguyễn Minh Trí', code: 'Nguyễn Minh Trí' },
+
+  'Trường': { id: 'tch-ls-8', name: 'Phạm Nguyễn Văn Trường', code: 'Trường.PNV' },
+  'Phạm Nguyễn Văn Trường': { id: 'tch-ls-8', name: 'Phạm Nguyễn Văn Trường', code: 'Trường.PNV' },
+  'Trường.PNV': { id: 'tch-ls-8', name: 'Phạm Nguyễn Văn Trường', code: 'Trường.PNV' },
 };
 
 // Subject code lookup dictionary
@@ -82,137 +179,136 @@ export const THPT_SUBJECT_LOOKUP: Record<string, { id: string; fullName: string 
   'GDQP-AN': { id: 'sub-gdqp', fullName: 'GD Quốc phòng & An ninh' },
   'GDQPAN': { id: 'sub-gdqp', fullName: 'GD Quốc phòng & An ninh' },
   'GDQP': { id: 'sub-gdqp', fullName: 'GD Quốc phòng & An ninh' },
+  'HĐ TN-HN(CĐ)': { id: 'sub-hdtn', fullName: 'HĐTN - HN' },
   'HĐ TN-HN': { id: 'sub-hdtn', fullName: 'HĐTN - HN' },
   'HĐTN-HN': { id: 'sub-hdtn', fullName: 'HĐTN - HN' },
   'HĐTN, HN': { id: 'sub-hdtn', fullName: 'HĐTN - HN' },
 };
 
-// Data for Grade 10, 11, 12 from images
-// Matrix layout: [Day, Period, 10CB1, 10CB2, 10CB3, 10CB4, 10CB5]
+// Data for Grade 10: [Day, Period, 10CB1, 10CB2, 10CB3, 10CB4, 10CB5]
 export const RAW_GRADE_10_MATRIX: string[][] = [
   // Thứ 2 (Day 2)
-  ['2', '1', 'Chào cờ-Tùng', 'Chào cờ-Kiều', 'Chào cờ-Ny', 'Chào cờ-Diễm', 'Chào cờ-Nhịnh'],
-  ['2', '2', 'Toán-Hương', 'Hóa học-Kiều', 'Lịch Sử-Sơn', 'Tin học-Diễm', 'Ngữ văn-Nhịnh'],
-  ['2', '3', 'HĐ TN-HN-Tùng', 'GDTC-Ẩn', 'GD QP-AN-Rạng', 'Toán-Hương', 'Vật lí-Hiền'],
-  ['2', '4', 'Ngữ văn-Duyên', 'GDTC-Ẩn', 'Vật lí-Hiền', 'Địa Lí-Hòa', 'Toán-Giang'],
-  ['2', '5', 'Sinh học-Tùng', 'Vật lí-Hiền', 'Địa Lí-Hòa', 'Ngữ văn-Duyên', 'Ngoại ngữ-Anh'],
+  ["2", "1", "Chào cờ-Tùng", "Chào cờ-Kiều", "Chào cờ-Ny", "Chào cờ-Diễm", "Chào cờ-Nhịnh"],
+  ["2", "2", "Ngữ văn-Duyên", "Lịch Sử-Sơn", "GD QP-AN-Rạng", "Tin học-Diễm", "GD KTPL-Trường"],
+  ["2", "3", "Sinh học-Tùng", "Hóa học-Kiều", "Tin học-Diễm", "GDTC-Ẩn", "Ngoại ngữ-Anh"],
+  ["2", "4", "Hóa học-Kiều", "Ngoại ngữ-Quốc", "GD KTPL-Trường", "GDTC-Ẩn", "Vật lí-Hiền"],
+  ["2", "5", "Vật lí-Hiền", "Địa Lí-Hòa", "HĐ TN-HN(CĐ)-Kiều", "Ngoại ngữ-Anh", "Toán-Giang"],
   // Thứ 3 (Day 3)
-  ['3', '1', 'Ngoại ngữ-Thi', 'Địa Lí-Hòa', 'HĐ TN-HN-Kiều', 'Ngoại ngữ-Anh', 'Tin học-Hiếu'],
-  ['3', '2', 'Hóa học-Kiều', 'Ngữ văn-Nhịnh', 'Toán-CToàn', 'Địa Lí-Hòa', 'GDTC-Rạng'],
-  ['3', '3', 'Lịch Sử-Trang', 'Ngoại ngữ-Quốc', 'Toán-CToàn', 'Vật lí-Hiền', 'GDTC-Rạng'],
-  ['3', '4', 'Toán-Hương', 'Tin học-Diễm', 'GD KTPL-Trường', 'GD QP-AN-Rạng', 'Địa Lí-Hòa'],
-  ['3', '5', 'Toán-Hương', 'Lịch Sử-Sơn', 'Tin học-Diễm', 'Ngữ văn-Duyên', 'Vật lí-Hiền'],
+  ["3", "1", "Sinh học-Tùng", "HĐ TN-HN(CĐ)-Kiều", "Lịch Sử-Sơn", "GD QP-AN-Rạng", "Tin học-Hiếu"],
+  ["3", "2", "HĐ TN-HN(CĐ)-Tùng", "GD QP-AN-Rạng", "Vật lí-Hiền", "HĐ TN-HN(CĐ)-Kiều", "Ngữ văn-Nhịnh"],
+  ["3", "3", "Hóa học-Kiều", "Vật lí-Hiền", "Toán-CToàn", "Ngoại ngữ-Anh", "Toán-Giang"],
+  ["3", "4", "Tin học-Diễm", "Toán-CToàn", "Ngoại ngữ-Quốc", "Vật lí-Hiền", "HĐ TN-HN(CĐ)-Kiều"],
+  ["3", "5", "Toán-Hương", "Toán-CToàn", "HĐ TN-HN(CĐ)-Kiều", "Tin học-Diễm", "Ngoại ngữ-Anh"],
   // Thứ 4 (Day 4)
-  ['4', '1', 'Hóa học-Kiều', 'Ngoại ngữ-Quốc', 'Địa Lí-Hòa', 'Vật lí-Hiền', 'Lịch Sử-Trang'],
-  ['4', '2', 'Vật lí-Hiền', 'HĐ TN-HN-Kiều', 'Ngoại ngữ-Quốc', 'Ngoại ngữ-Anh', 'Tin học-Hiếu'],
-  ['4', '3', 'Ngoại ngữ-Thi', 'Toán-CToàn', 'Vật lí-Hiền', 'Toán-Hương', 'HĐ TN-HN-Kiều'],
-  ['4', '4', 'Sinh học-Tùng', 'Toán-CToàn', 'Ngữ văn-Ny', 'Toán-Hương', 'GD KTPL-Trường'],
-  ['4', '5', 'Toán-Hương', 'Hóa học-Kiều', 'Toán-CToàn', 'GD KTPL-Trường', 'Ngoại ngữ-Anh'],
+  ["4", "1", "Hóa học-Kiều", "Ngoại ngữ-Quốc", "Tin học-Diễm", "Toán-Hương", "Ngoại ngữ-Anh"],
+  ["4", "2", "Tin học-Diễm", "HĐ TN-HN(CĐ)-Kiều", "Ngoại ngữ-Quốc", "Toán-Hương", "GDTC-Rạng"],
+  ["4", "3", "Ngoại ngữ-Thi", "Tin học-Diễm", "Vật lí-Hiền", "Ngữ văn-Duyên", "GDTC-Rạng"],
+  ["4", "4", "Vật lí-Hiền", "Ngữ văn-Nhịnh", "Địa Lí-Hòa", "GD KTPL-Trường", "Toán-Giang"],
+  ["4", "5", "Lịch Sử-Trang", "Vật lí-Hiền", "Ngữ văn-Ny", "Địa Lí-Hòa", "Toán-Giang"],
   // Thứ 5 (Day 5)
-  ['5', '1', 'Tin học-Diễm', 'Ngữ văn-Nhịnh', 'Toán-CToàn', 'Ngữ văn-Duyên', 'Toán-Giang'],
-  ['5', '2', 'Ngữ văn-Duyên', 'Toán-CToàn', 'GD KTPL-Trường', 'Tin học-Diễm', 'Ngữ văn-Nhịnh'],
-  ['5', '3', 'Ngoại ngữ-Thi', 'Tin học-Diễm', 'Ngoại ngữ-Quốc', 'GD KTPL-Trường', 'Tin học-Hiếu'],
-  ['5', '4', '', '', '', '', ''],
-  ['5', '5', '', '', '', '', ''],
+  ["5", "1", "Toán-Hương", "GDTC-Ẩn", "Toán-CToàn", "Vật lí-Hiền", "Lịch Sử-Trang"],
+  ["5", "2", "Toán-Hương", "GDTC-Ẩn", "Toán-CToàn", "Ngoại ngữ-Anh", "Tin học-Hiếu"],
+  ["5", "3", "Ngoại ngữ-Thi", "Toán-CToàn", "Ngữ văn-Ny", "Lịch Sử-Trang", "Vật lí-Hiền"],
+  ["5", "4", "", "", "", "", ""],
+  ["5", "5", "", "", "", "", ""],
   // Thứ 6 (Day 6)
-  ['6', '1', 'Ngữ văn-Duyên', 'Ngoại ngữ-Quốc', 'Vật lí-Hiền', 'Lịch Sử-Trang', 'Ngoại ngữ-Anh'],
-  ['6', '2', 'Vật lí-Hiền', 'GD QP-AN-Rạng', 'Ngoại ngữ-Quốc', 'Ngoại ngữ-Anh', 'Địa Lí-Hòa'],
-  ['6', '3', 'GDTC-Ẩn', 'Địa Lí-Hòa', 'HĐ TN-HN-Kiều', 'Toán-Hương', 'GD QP-AN-Rạng'],
-  ['6', '4', 'GDTC-Ẩn', 'Ngữ văn-Nhịnh', 'Tin học-Diễm', 'HĐ TN-HN-Kiều', 'Toán-Giang'],
-  ['6', '5', 'Hóa học-Kiều', 'Toán-CToàn', 'Ngữ văn-Ny', 'Tin học-Diễm', 'Toán-Giang'],
+  ["6", "1", "Ngữ văn-Duyên", "Ngoại ngữ-Quốc", "Toán-CToàn", "Vật lí-Hiền", "Địa Lí-Hòa"],
+  ["6", "2", "GD QP-AN-Rạng", "Toán-CToàn", "GD KTPL-Trường", "Địa Lí-Hòa", "Ngữ văn-Nhịnh"],
+  ["6", "3", "GDTC-Ẩn", "Ngữ văn-Nhịnh", "Vật lí-Hiền", "HĐ TN-HN(CĐ)-Kiều", "GD QP-AN-Rạng"],
+  ["6", "4", "GDTC-Ẩn", "Hóa học-Kiều", "Ngoại ngữ-Quốc", "Tin học-Diễm", "Vật lí-Hiền"],
+  ["6", "5", "Ngoại ngữ-Thi", "Tin học-Diễm", "Địa Lí-Hòa", "Ngữ văn-Duyên", "HĐ TN-HN(CĐ)-Kiều"],
   // Thứ 7 (Day 7)
-  ['7', '1', 'Tin học-Diễm', 'Vật lí-Hiền', 'GDTC-Ẩn', 'HĐ TN-HN-Kiều', 'GD KTPL-Trường'],
-  ['7', '2', 'GD QP-AN-Rạng', 'Tin học-Diễm', 'GDTC-Ẩn', 'Vật lí-Hiền', 'HĐ TN-HN-Kiều'],
-  ['7', '3', 'HĐ TN-HN-Tùng', 'Hóa học-Kiều', 'Tin học-Diễm', 'GDTC-Ẩn', 'Vật lí-Hiền'],
-  ['7', '4', 'Sinh học-Tùng', 'HĐ TN-HN-Kiều', 'Ngữ văn-Ny', 'GDTC-Ẩn', 'Ngữ văn-Nhịnh'],
-  ['7', '5', 'SHL-Tùng', 'SHL-Kiều', 'SHL-Ny', 'SHL-Diễm', 'SHL-Nhịnh'],
+  ["7", "1", "HĐ TN-HN(CĐ)-Tùng", "Ngữ văn-Nhịnh", "GDTC-Ẩn", "Toán-Hương", "GD KTPL-Trường"],
+  ["7", "2", "Sinh học-Tùng", "Tin học-Diễm", "GDTC-Ẩn", "Toán-Hương", "Địa Lí-Hòa"],
+  ["7", "3", "Ngữ văn-Duyên", "Địa Lí-Hòa", "Tin học-Diễm", "GD KTPL-Trường", "Ngữ văn-Nhịnh"],
+  ["7", "4", "Toán-Hương", "Hóa học-Kiều", "Ngữ văn-Ny", "Ngữ văn-Duyên", "Tin học-Hiếu"],
+  ["7", "5", "SHL-Tùng", "SHL-Kiều", "SHL-Ny", "SHL-Diễm", "SHL-Nhịnh"],
 ];
 
-// Matrix layout for Grade 11: [Day, Period, 11CB1, 11CB2, 11CB3, 11CB4]
+// Data for Grade 11: [Day, Period, 11CB1, 11CB2, 11CB3, 11CB4]
 export const RAW_GRADE_11_MATRIX: string[][] = [
-  // Thứ 2
-  ['2', '1', 'Chào cờ-Huỳnh', 'Chào cờ-Phi', 'Chào cờ-Rỡ', 'Chào cờ-Liên'],
-  ['2', '2', 'GD QP-AN-Rạng', 'Tin học-Liên', 'Vật lí-Hiền', 'GDTC-Ngân'],
-  ['2', '3', 'Hóa học-Thơ', 'HĐ TN-HN-Phi', 'Tin học-Liên', 'GDTC-Ngân'],
-  ['2', '4', 'HĐ TN-HN-Phi', 'Ngữ văn-Nhịnh', 'Ngoại ngữ-Anh', 'Địa Lí-Tuấn'],
-  ['2', '5', 'Ngữ văn-Lắm', 'Hóa học-Phi', 'Ngữ văn-Nhịnh', 'Toán-Giang'],
-  // Thứ 3
-  ['3', '1', 'Tin học-Liên', 'Địa Lí-Tuấn', 'Ngữ văn-Nhịnh', 'Ngoại ngữ-Quốc'],
-  ['3', '2', 'Ngoại ngữ-Anh', 'Ngoại ngữ-Quốc', 'Địa Lí-Tuấn', 'Tin học-Liên'],
-  ['3', '3', 'Ngữ văn-Lắm', 'Ngữ văn-Nhịnh', 'Ngoại ngữ-Anh', 'Toán-Giang'],
-  ['3', '4', 'Sinh học-Huỳnh', 'Toán-CToàn', 'Vật lí-Hiền', 'Toán-Giang'],
-  ['3', '5', 'Toán-VToàn', 'Toán-CToàn', 'Toán-Giang', 'Ngữ văn-Lắm'],
-  // Thứ 4
-  ['4', '1', 'Toán-VToàn', 'Lịch Sử-Rỡ', 'GDTC-Ngân', 'Địa Lí-Tuấn'],
-  ['4', '2', 'Toán-VToàn', 'Toán-CToàn', 'GDTC-Ngân', 'GD KTPL-Trường'],
-  ['4', '3', 'Ngoại ngữ-Anh', 'GDTC-Ngân', 'Tin học-Liên', 'Lịch Sử-Rỡ'],
-  ['4', '4', 'Ngữ văn-Lắm', 'GDTC-Ngân', 'Ngoại ngữ-Anh', 'Tin học-Liên'],
-  ['4', '5', 'Tin học-Liên', 'Vật lí-Thùy', 'Vật lí-Hiền', 'Ngữ văn-Lắm'],
-  // Thứ 5
-  ['5', '1', 'Lịch Sử-Rỡ', 'Ngoại ngữ-Quốc', 'GD QP-AN-Rạng', 'GD KTPL-Trường'],
-  ['5', '2', 'HĐ TN-HN-Phi', 'Vật lí-Thùy', 'Toán-Giang', 'Ngoại ngữ-Quốc'],
-  ['5', '3', 'Sinh học-Huỳnh', 'Ngữ văn-Nhịnh', 'HĐ TN-HN-Phi', 'Vật lí-Thùy'],
-  ['5', '4', '', '', '', ''],
-  ['5', '5', '', '', '', ''],
-  // Thứ 6
-  ['6', '1', 'GDTC-Ngân', 'Địa Lí-Tuấn', 'Toán-Giang', 'Tin học-Liên'],
-  ['6', '2', 'GDTC-Ngân', 'Tin học-Liên', 'Toán-Giang', 'Vật lí-Thùy'],
-  ['6', '3', 'Ngoại ngữ-Anh', 'Ngoại ngữ-Quốc', 'Địa Lí-Tuấn', 'Toán-Giang'],
-  ['6', '4', 'Hóa học-Thơ', 'Toán-CToàn', 'GD KTPL-Trường', 'HĐ TN-HN-Phi'],
-  ['6', '5', 'Vật lí-Thùy', 'Hóa học-Phi', 'Ngữ văn-Nhịnh', 'Ngoại ngữ-Quốc'],
-  // Thứ 7
-  ['7', '1', 'Toán-VToàn', 'GD QP-AN-Rạng', 'HĐ TN-HN-Phi', 'Vật lí-Thùy'],
-  ['7', '2', 'Vật lí-Thùy', 'HĐ TN-HN-Phi', 'GD KTPL-Trường', 'Ngữ văn-Lắm'],
-  ['7', '3', 'Sinh học-Huỳnh', 'Hóa học-Phi', 'Tin học-Liên', 'GD QP-AN-Rạng'],
-  ['7', '4', 'Hóa học-Thơ', 'Tin học-Liên', 'Lịch Sử-Rỡ', 'HĐ TN-HN-Phi'],
-  ['7', '5', 'SHL-Huỳnh', 'SHL-Phi', 'SHL-Rỡ', 'SHL-Liên'],
+  // Thứ 2 (Day 2)
+  ["2", "1", "Chào cờ-Huỳnh", "Chào cờ-Phi", "Chào cờ-Rỡ", "Chào cờ-Liên"],
+  ["2", "2", "Vật lí-Thùy", "Lịch Sử-Rỡ", "Ngữ văn-Nhịnh", "Tin học-Liên"],
+  ["2", "3", "Hóa học-Thơ", "Ngoại ngữ-Quốc", "HĐ TN-HN(CĐ)-Phi", "GD KTPL-Trường"],
+  ["2", "4", "Ngoại ngữ-Anh", "Hóa học-Phi", "Tin học-Liên", "Toán-Giang"],
+  ["2", "5", "HĐ TN-HN(CĐ)-Phi", "Tin học-Liên", "GD KTPL-Trường", "Ngoại ngữ-Quốc"],
+  // Thứ 3 (Day 3)
+  ["3", "1", "Toán-VToàn", "Ngữ văn-Nhịnh", "Toán-Giang", "Tin học-Liên"],
+  ["3", "2", "Toán-VToàn", "Tin học-Liên", "Toán-Giang", "Ngữ văn-Lắm"],
+  ["3", "3", "Hóa học-Thơ", "Ngoại ngữ-Quốc", "Ngữ văn-Nhịnh", "HĐ TN-HN(CĐ)-Phi"],
+  ["3", "4", "Sinh học-Huỳnh", "HĐ TN-HN(CĐ)-Phi", "Ngoại ngữ-Anh", "GD QP-AN-Rạng"],
+  ["3", "5", "Ngữ văn-Lắm", "Hóa học-Phi", "Vật lí-Hiền", "Ngoại ngữ-Quốc"],
+  // Thứ 4 (Day 4)
+  ["4", "1", "Toán-VToàn", "Toán-CToàn", "Toán-Giang", "Lịch Sử-Rỡ"],
+  ["4", "2", "Ngoại ngữ-Anh", "Toán-CToàn", "Toán-Giang", "Ngữ văn-Lắm"],
+  ["4", "3", "Lịch Sử-Rỡ", "GDTC-Ngân", "Ngoại ngữ-Anh", "Toán-Giang"],
+  ["4", "4", "Hóa học-Thơ", "GDTC-Ngân", "Lịch Sử-Rỡ", "HĐ TN-HN(CĐ)-Phi"],
+  ["4", "5", "HĐ TN-HN(CĐ)-Phi", "Ngữ văn-Nhịnh", "Địa Lí-Tuấn", "GD KTPL-Trường"],
+  // Thứ 5 (Day 5)
+  ["5", "1", "Sinh học-Huỳnh", "Địa Lí-Tuấn", "Ngoại ngữ-Anh", "Ngữ văn-Lắm"],
+  ["5", "2", "Ngữ văn-Lắm", "HĐ TN-HN(CĐ)-Phi", "Vật lí-Hiền", "Địa Lí-Tuấn"],
+  ["5", "3", "Ngoại ngữ-Anh", "Hóa học-Phi", "Địa Lí-Tuấn", "Vật lí-Thùy"],
+  ["5", "4", "", "", "", ""],
+  ["5", "5", "", "", "", ""],
+  // Thứ 6 (Day 6)
+  ["6", "1", "Vật lí-Thùy", "Ngữ văn-Nhịnh", "GDTC-Ngân", "Địa Lí-Tuấn"],
+  ["6", "2", "Toán-VToàn", "Vật lí-Thùy", "GDTC-Ngân", "Ngoại ngữ-Quốc"],
+  ["6", "3", "GDTC-Ngân", "Ngoại ngữ-Quốc", "GD KTPL-Trường", "Vật lí-Thùy"],
+  ["6", "4", "GDTC-Ngân", "Toán-CToàn", "Tin học-Liên", "Toán-Giang"],
+  ["6", "5", "Tin học-Liên", "Toán-CToàn", "Vật lí-Hiền", "Toán-Giang"],
+  // Thứ 7 (Day 7)
+  ["7", "1", "Ngữ văn-Lắm", "Vật lí-Thùy", "GD QP-AN-Rạng", "Tin học-Liên"],
+  ["7", "2", "Tin học-Liên", "Địa Lí-Tuấn", "Ngữ văn-Nhịnh", "Vật lí-Thùy"],
+  ["7", "3", "Sinh học-Huỳnh", "GD QP-AN-Rạng", "Tin học-Liên", "GDTC-Ngân"],
+  ["7", "4", "GD QP-AN-Rạng", "Tin học-Liên", "HĐ TN-HN(CĐ)-Phi", "GDTC-Ngân"],
+  ["7", "5", "SHL-Huỳnh", "SHL-Phi", "SHL-Rỡ", "SHL-Liên"],
 ];
 
-// Matrix layout for Grade 12: [Day, Period, 12CB1, 12CB2, 12CB3, 12CB4, 12CB5]
+// Data for Grade 12: [Day, Period, 12CB1, 12CB2, 12CB3, 12CB4, 12CB5]
 export const RAW_GRADE_12_MATRIX: string[][] = [
-  // Thứ 2
-  ['2', '1', 'Chào cờ-Thơ', 'Chào cờ-Duyên', 'Chào cờ-Hương', 'Chào cờ-Trang', 'Chào cờ-Sơn'],
-  ['2', '2', 'Hóa học-Thơ', 'HĐ TN-HN-Duyên', 'Lịch Sử-Rỡ', 'Ngữ văn-Ny', 'Sinh học-Huỳnh'],
-  ['2', '3', 'Ngữ văn-Ny', 'Ngoại ngữ-Thi', 'Ngữ văn-Lắm', 'Lịch Sử-Trang', 'Lịch Sử-Sơn'],
-  ['2', '4', 'HĐ TN-HN-Thơ', 'Lịch Sử-Trang', 'Ngữ văn-Lắm', 'Ngoại ngữ-Thi', 'Công nghệ-Tùng'],
-  ['2', '5', 'Ngoại ngữ-Thi', 'Hóa học-Thơ', 'Địa Lí-Tuấn', 'HĐ TN-HN-Trang', 'Ngoại ngữ-Bền'],
-  // Thứ 3
-  ['3', '1', 'Toán-Tới', 'Lịch Sử-Trang', 'GD QP-AN-Rạng', 'GD KTPL-Trường', 'Ngữ văn-Lắm'],
-  ['3', '2', 'Toán-Tới', 'Ngoại ngữ-Thi', 'Tin học-Hiếu', 'Lịch Sử-Trang', 'Ngữ văn-Lắm'],
-  ['3', '3', 'Vật lí-Thùy', 'Địa Lí-Hòa', 'GD KTPL-Trường', 'Ngoại ngữ-Thi', 'Địa Lí-Tuấn'],
-  ['3', '4', 'Lịch Sử-Sơn', 'HĐ TN-HN-Duyên', 'Ngoại ngữ-Thi', 'Toán-Tới', 'Toán-VToàn'],
-  ['3', '5', 'Ngoại ngữ-Thi', 'Sinh học-Huỳnh', 'Vật lí-Thùy', 'Địa Lí-Hòa', 'Ngoại ngữ-Bền'],
-  // Thứ 4
-  ['4', '1', 'Tin học-Hiếu', 'Hóa học-Thơ', 'Ngoại ngữ-Thi', 'GD KTPL-Trường', 'Ngoại ngữ-Bền'],
-  ['4', '2', 'Hóa học-Thơ', 'Ngoại ngữ-Thi', 'Toán-Hương', 'Địa Lí-Hòa', 'Địa Lí-Tuấn'],
-  ['4', '3', 'Lịch Sử-Sơn', 'Lịch Sử-Trang', 'GD KTPL-Trường', 'Tin học-Hiếu', 'Toán-VToàn'],
-  ['4', '4', 'Toán-Tới', 'Toán-VToàn', 'HĐ TN-HN-Rỡ', 'Vật lí-Thùy', 'Lịch Sử-Sơn'],
-  ['4', '5', 'Ngữ văn-Ny', 'Toán-VToàn', 'Lịch Sử-Rỡ', 'Toán-Tới', 'Công nghệ-Tùng'],
-  // Thứ 5
-  ['5', '1', 'Vật lí-Thùy', 'Sinh học-Huỳnh', 'Tin học-Hiếu', 'Toán-Tới', 'GDTC-Ngân'],
-  ['5', '2', 'Sinh học-Huỳnh', 'GD QP-AN-Rạng', 'HĐ TN-HN-Rỡ', 'Toán-Tới', 'GDTC-Ngân'],
-  ['5', '3', 'Toán-Tới', 'Ngữ văn-Duyên', 'Lịch Sử-Rỡ', 'GDTC-Ngân', 'GD QP-AN-Rạng'],
-  ['5', '4', 'GD QP-AN-Rạng', 'Tin học-Hiếu', 'Ngoại ngữ-Thi', 'GDTC-Ngân', 'HĐ TN-HN-Trí'],
-  ['5', '5', '', '', '', '', ''],
-  // Thứ 6
-  ['6', '1', 'Ngữ văn-Ny', 'Địa Lí-Hòa', 'Vật lí-Thùy', 'GD QP-AN-Rạng', 'Ngữ văn-Lắm'],
-  ['6', '2', 'Ngữ văn-Ny', 'Ngữ văn-Duyên', 'Địa Lí-Tuấn', 'Lịch Sử-Trang', 'Ngữ văn-Lắm'],
-  ['6', '3', 'Lịch Sử-Sơn', 'GDTC-Ngân', 'Ngữ văn-Lắm', 'Vật lí-Thùy', 'Toán-VToàn'],
-  ['6', '4', 'Ngoại ngữ-Thi', 'GDTC-Ngân', 'Toán-Hương', 'Ngữ văn-Ny', 'Toán-VToàn'],
-  ['6', '5', 'HĐ TN-HN-Thơ', 'Toán-VToàn', 'Toán-Hương', 'Ngoại ngữ-Thi', 'GD KTPL-Trường'],
-  // Thứ 7
-  ['7', '1', 'Sinh học-Huỳnh', 'Tin học-Hiếu', 'GDTC-Ngân', 'Ngữ văn-Ny', 'HĐ TN-HN-Trí'],
-  ['7', '2', 'Tin học-Hiếu', 'Toán-VToàn', 'GDTC-Ngân', 'Ngữ văn-Ny', 'Sinh học-Huỳnh'],
-  ['7', '3', 'GDTC-Ngân', 'Ngữ văn-Duyên', 'Ngữ văn-Lắm', 'Tin học-Hiếu', 'GD KTPL-Trường'],
-  ['7', '4', 'GDTC-Ngân', 'Ngữ văn-Duyên', 'Toán-Hương', 'HĐ TN-HN-Trang', 'Lịch Sử-Sơn'],
-  ['7', '5', 'SHL-Thơ', 'SHL-Duyên', 'SHL-Hương', 'SHL-Trang', 'SHL-Sơn'],
+  // Thứ 2 (Day 2)
+  ["2", "1", "Chào cờ-Thơ", "Chào cờ-Duyên", "Chào cờ-Hương", "Chào cờ-Trang", "Chào cờ-Sơn"],
+  ["2", "2", "Ngữ văn-Ny", "Sinh học-Huỳnh", "Toán-Hương", "Lịch Sử-Trang", "Công nghệ-Tùng"],
+  ["2", "3", "Ngữ văn-Ny", "GD QP-AN-Rạng", "Toán-Hương", "Vật lí-Thùy", "Lịch Sử-Sơn"],
+  ["2", "4", "Ngoại ngữ-Thi", "Hóa học-Thơ", "HĐ TN-HN(CĐ)-Rỡ", "Địa Lí-Hòa", "GD QP-AN-Rạng"],
+  ["2", "5", "HĐ TN-HN(CĐ)-Thơ", "Ngoại ngữ-Thi", "Lịch Sử-Rỡ", "Ngữ văn-Ny", "Ngoại ngữ-Bền"],
+  // Thứ 3 (Day 3)
+  ["3", "1", "Sinh học-Huỳnh", "HĐ TN-HN(CĐ)-Duyên", "GDTC-Ngân", "Ngữ văn-Ny", "Ngữ văn-Lắm"],
+  ["3", "2", "Tin học-Hiếu", "Ngữ văn-Duyên", "GDTC-Ngân", "Ngữ văn-Ny", "Sinh học-Huỳnh"],
+  ["3", "3", "Lịch Sử-Sơn", "Sinh học-Huỳnh", "Ngữ văn-Lắm", "GD QP-AN-Rạng", "Toán-VToàn"],
+  ["3", "4", "Hóa học-Thơ", "Lịch Sử-Trang", "Toán-Hương", "Ngoại ngữ-Thi", "Toán-VToàn"],
+  ["3", "5", "HĐ TN-HN(CĐ)-Thơ", "Toán-VToàn", "Ngoại ngữ-Thi", "HĐ TN-HN(CĐ)-Trang", "HĐ TN-HN(CĐ)-Trí"],
+  // Thứ 4 (Day 4)
+  ["4", "1", "GD QP-AN-Rạng", "GDTC-Ngân", "Ngoại ngữ-Thi", "Lịch Sử-Trang", "Ngữ văn-Lắm"],
+  ["4", "2", "Ngoại ngữ-Thi", "GDTC-Ngân", "Lịch Sử-Rỡ", "HĐ TN-HN(CĐ)-Trang", "Toán-VToàn"],
+  ["4", "3", "Lịch Sử-Sơn", "Lịch Sử-Trang", "Địa Lí-Tuấn", "Ngữ văn-Ny", "HĐ TN-HN(CĐ)-Trí"],
+  ["4", "4", "Ngữ văn-Ny", "Ngữ văn-Duyên", "Vật lí-Thùy", "Ngoại ngữ-Thi", "Địa Lí-Tuấn"],
+  ["4", "5", "Hóa học-Thơ", "Ngữ văn-Duyên", "HĐ TN-HN(CĐ)-Rỡ", "Vật lí-Thùy", "Ngoại ngữ-Bền"],
+  // Thứ 5 (Day 5)
+  ["5", "1", "Toán-Tới", "Tin học-Hiếu", "Vật lí-Thùy", "GD KTPL-Trường", "GDTC-Ngân"],
+  ["5", "2", "Vật lí-Thùy", "Ngoại ngữ-Thi", "GD KTPL-Trường", "Toán-Tới", "GDTC-Ngân"],
+  ["5", "3", "Lịch Sử-Sơn", "Toán-VToàn", "Ngữ văn-Lắm", "GDTC-Ngân", "Sinh học-Huỳnh"],
+  ["5", "4", "Ngữ văn-Ny", "Toán-VToàn", "Ngữ văn-Lắm", "GDTC-Ngân", "Lịch Sử-Sơn"],
+  ["5", "5", "", "", "", "", ""],
+  // Thứ 6 (Day 6)
+  ["6", "1", "Tin học-Hiếu", "Ngoại ngữ-Thi", "GD QP-AN-Rạng", "GD KTPL-Trường", "Ngữ văn-Lắm"],
+  ["6", "2", "Ngoại ngữ-Thi", "Ngữ văn-Duyên", "Địa Lí-Tuấn", "Tin học-Hiếu", "Ngữ văn-Lắm"],
+  ["6", "3", "Toán-Tới", "Địa Lí-Hòa", "Tin học-Hiếu", "Ngoại ngữ-Thi", "Toán-VToàn"],
+  ["6", "4", "Toán-Tới", "HĐ TN-HN(CĐ)-Duyên", "Ngoại ngữ-Thi", "Địa Lí-Hòa", "GD KTPL-Trường"],
+  ["6", "5", "Vật lí-Thùy", "Toán-VToàn", "GD KTPL-Trường", "Toán-Tới", "Ngoại ngữ-Bền"],
+  // Thứ 7 (Day 7)
+  ["7", "1", "GDTC-Ngân", "Địa Lí-Hòa", "Tin học-Hiếu", "Toán-Tới", "Địa Lí-Tuấn"],
+  ["7", "2", "GDTC-Ngân", "Tin học-Hiếu", "Ngữ văn-Lắm", "Toán-Tới", "GD KTPL-Trường"],
+  ["7", "3", "Toán-Tới", "Lịch Sử-Trang", "Toán-Hương", "Tin học-Hiếu", "Công nghệ-Tùng"],
+  ["7", "4", "Sinh học-Huỳnh", "Hóa học-Thơ", "Lịch Sử-Rỡ", "Lịch Sử-Trang", "Lịch Sử-Sơn"],
+  ["7", "5", "SHL-Thơ", "SHL-Duyên", "SHL-Hương", "SHL-Trang", "SHL-Sơn"],
 ];
 
 function parseCell(cellText: string): { subject: string; teacherAlias: string } {
   const trimmed = (cellText || '').trim();
   if (!trimmed) return { subject: '', teacherAlias: '' };
   
-  // Use lastIndexOf('-') because subject names may contain hyphens (e.g., 'GD QP-AN-Rạng', 'HĐ TN-HN-Tùng')
   const hyphenIdx = trimmed.lastIndexOf('-');
   if (hyphenIdx === -1) {
     return { subject: trimmed, teacherAlias: '' };
