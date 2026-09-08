@@ -43,11 +43,13 @@ import {
   ChevronLeft,
   ChevronRight,
   Copy,
-  Lock
+  Lock,
+  Eye
 } from 'lucide-react';
 import { TimetableImportModal } from './TimetableImportModal';
 import { AutoScheduleModal } from './AutoScheduleModal';
 import { CopyTimetableModal } from './CopyTimetableModal';
+import { TeacherCollisionModal, TeacherCollisionDetail } from './TeacherCollisionModal';
 
 type CampusFilter = 'ALL' | 'THPT' | 'DBK' | 'TK';
 type ViewMode = 'BY_CLASS' | 'BY_TEACHER' | 'MASTER_GRID';
@@ -105,6 +107,8 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isAutoScheduleModalOpen, setIsAutoScheduleModalOpen] = useState(false);
   const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
+  const [isCollisionModalOpen, setIsCollisionModalOpen] = useState(false);
+  const [filterOnlyConflicts, setFilterOnlyConflicts] = useState(false);
 
 
   // Selected single class for focused view in BY_CLASS
@@ -157,6 +161,75 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
     return set;
   }, [teacherSlotsMap]);
 
+  // Structured collision details for rich inspection & quick navigation
+  const collisionDetails = useMemo<TeacherCollisionDetail[]>(() => {
+    const list: TeacherCollisionDetail[] = [];
+    teacherSlotsMap.forEach((slots, key) => {
+      if (slots.length > 1) {
+        const firstSlot = slots[0];
+        const teacher = teacherMap.get(firstSlot.teacherId);
+        list.push({
+          id: key,
+          teacherId: firstSlot.teacherId,
+          teacherName: teacher?.name || firstSlot.teacherName || 'Chưa rõ',
+          teacherCode: teacher?.code || firstSlot.teacherCode || '',
+          dayOfWeek: firstSlot.dayOfWeek,
+          session: firstSlot.session,
+          period: firstSlot.period,
+          slots: [...slots]
+        });
+      }
+    });
+
+    return list.sort((a, b) => {
+      if (a.dayOfWeek !== b.dayOfWeek) return a.dayOfWeek - b.dayOfWeek;
+      if (a.session !== b.session) return a.session === 'SANG' ? -1 : 1;
+      if (a.period !== b.period) return a.period - b.period;
+      return a.teacherName.localeCompare(b.teacherName);
+    });
+  }, [teacherSlotsMap, teacherMap]);
+
+  const conflictedTeacherIds = useMemo(() => {
+    return new Set(collisionDetails.map(c => c.teacherId));
+  }, [collisionDetails]);
+
+  const conflictedTeachers = useMemo(() => {
+    return teachers.filter(t => conflictedTeacherIds.has(t.id));
+  }, [teachers, conflictedTeacherIds]);
+
+  // Quick navigation handlers from conflict modal or alert banner
+  const handleNavigateToTeacher = (teacherId: string, session?: 'SANG' | 'CHIEU') => {
+    setViewMode('BY_TEACHER');
+    setSelectedTeacherId(teacherId);
+    setSelectedCampus('ALL');
+    if (session) {
+      setSelectedSession('ALL');
+    }
+    setSearchTerm('');
+    setIsCollisionModalOpen(false);
+  };
+
+  const handleNavigateToClass = (classId: string, session?: 'SANG' | 'CHIEU') => {
+    setViewMode('BY_CLASS');
+    setSelectedClassId(classId);
+    setSelectedCampus('ALL');
+    setSelectedGrade('ALL');
+    if (session) {
+      setSelectedSession('ALL');
+    }
+    setSearchTerm('');
+    setIsCollisionModalOpen(false);
+  };
+
+  const handleFilterOnlyConflicts = () => {
+    setViewMode('BY_TEACHER');
+    setFilterOnlyConflicts(true);
+    setSelectedTeacherId('ALL');
+    setSelectedCampus('ALL');
+    setSearchTerm('');
+    setIsCollisionModalOpen(false);
+  };
+
   // Filtered classes
   const filteredClasses = useMemo(() => {
     return classes.filter(cls => {
@@ -199,6 +272,9 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   // Filtered teachers for BY_TEACHER view
   const filteredTeachers = useMemo(() => {
     return teachers.filter(t => {
+      // If filtering only conflicts
+      if (filterOnlyConflicts && !conflictedTeacherIds.has(t.id)) return false;
+
       if (selectedTeacherId !== 'ALL' && t.id !== selectedTeacherId) return false;
 
       // Campus filter
@@ -221,7 +297,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
 
       return true;
     });
-  }, [teachers, selectedTeacherId, selectedCampus, searchTerm]);
+  }, [teachers, filterOnlyConflicts, conflictedTeacherIds, selectedTeacherId, selectedCampus, searchTerm, teacherSlotsMap, classMap]);
 
   // Total statistics
   const stats = useMemo(() => {
@@ -238,9 +314,9 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
       totalSlots,
       activeTeacherCount: activeTeachers.size,
       totalClasses: classes.length,
-      collisionCount: teacherCollisions.size
+      collisionCount: collisionDetails.length
     };
-  }, [timetable.slots, classes.length, teacherCollisions]);
+  }, [timetable.slots, classes.length, collisionDetails]);
 
   // Helper to get unified subject display name
   const getSubjectDisplayName = (slot?: TimetableSlot | { classId?: string; className?: string; subjectName?: string }) => {
@@ -789,19 +865,41 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
 
             {/* If BY_TEACHER, show Teacher selector */}
             {viewMode === 'BY_TEACHER' && (
-              <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                  Chọn Giáo Viên
-                </label>
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                    Chọn Giáo Viên
+                  </label>
+                  {collisionDetails.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setFilterOnlyConflicts(!filterOnlyConflicts)}
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-md transition-all cursor-pointer flex items-center gap-1 ${
+                        filterOnlyConflicts
+                          ? 'bg-rose-600 text-white shadow-2xs'
+                          : 'bg-rose-100 text-rose-800 hover:bg-rose-200'
+                      }`}
+                      title={filterOnlyConflicts ? 'Bỏ lọc để xem toàn bộ giáo viên' : 'Chỉ xem các giáo viên đang bị trùng lịch dạy'}
+                    >
+                      <AlertTriangle className="w-2.5 h-2.5" />
+                      <span>{filterOnlyConflicts ? 'Đang lọc GV trùng' : `Chỉ xem ${conflictedTeachers.length} GV trùng`}</span>
+                      {filterOnlyConflicts && <X className="w-2.5 h-2.5 ml-0.5" />}
+                    </button>
+                  )}
+                </div>
                 <select
                   value={selectedTeacherId}
                   onChange={(e) => setSelectedTeacherId(e.target.value)}
                   className="w-full h-9 px-3 text-xs font-semibold bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
                 >
-                  <option value="ALL">Tất cả giáo viên ({teachers.length} GV)</option>
-                  {teachers.map(t => (
+                  <option value="ALL">
+                    {filterOnlyConflicts
+                      ? `Các GV bị trùng lịch (${filteredTeachers.length} GV)`
+                      : `Tất cả giáo viên (${teachers.length} GV)`}
+                  </option>
+                  {filteredTeachers.map(t => (
                     <option key={t.id} value={t.id}>
-                      {t.name} ({t.code}) - {t.role}
+                      {t.name} ({t.code}) - {t.role} {conflictedTeacherIds.has(t.id) ? '⚠️ (Trùng tiết)' : ''}
                     </option>
                   ))}
                 </select>
@@ -851,17 +949,55 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
           </div>
 
           {/* Conflict Alert Banner if any */}
-          {stats.collisionCount > 0 && (
-            <div className="p-2.5 bg-rose-50 border border-rose-200 rounded-xl flex items-center justify-between text-xs text-rose-800">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
-                <span>
-                  <strong>Phát hiện {stats.collisionCount} trùng tiết giáo viên:</strong> Có giáo viên được xếp dạy cùng 1 tiết ở 2 lớp khác nhau.
-                </span>
+          {collisionDetails.length > 0 && (
+            <div className="p-3 bg-gradient-to-r from-rose-50 via-rose-50 to-orange-50 border-2 border-rose-300/90 rounded-2xl shadow-2xs text-xs text-rose-950 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 animate-in fade-in">
+              <div className="flex items-start gap-2.5">
+                <div className="p-2 rounded-xl bg-rose-100 text-rose-700 shrink-0 mt-0.5 shadow-2xs">
+                  <AlertTriangle className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-black text-rose-950 text-xs sm:text-sm">
+                      Phát hiện {collisionDetails.length} tiết trùng lịch ({conflictedTeachers.length} giáo viên):
+                    </span>
+                    {conflictedTeachers.map(t => (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => handleNavigateToTeacher(t.id)}
+                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-rose-200 hover:bg-rose-300 text-rose-950 font-bold text-[11px] transition-all cursor-pointer shadow-2xs group"
+                        title={`Bấm để chuyển ngay đến thời khóa biểu của ${t.name}`}
+                      >
+                        <User className="w-3 h-3 text-rose-700 group-hover:scale-110 transition-transform" />
+                        <span>{t.name}</span>
+                        <span className="text-rose-700 font-semibold">({t.code})</span>
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-rose-800 text-[11px] mt-0.5">
+                    Có giáo viên được xếp dạy cùng 1 thời điểm ở 2 lớp khác nhau. Nhấp vào tên giáo viên hoặc nút bên phải để xem ngay chi tiết từng lớp bị trùng.
+                  </p>
+                </div>
               </div>
-              <span className="font-bold underline text-rose-700 cursor-pointer" onClick={() => setViewMode('BY_TEACHER')}>
-                Kiểm tra theo giáo viên
-              </span>
+
+              <div className="flex items-center gap-2 shrink-0 w-full md:w-auto justify-end flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setIsCollisionModalOpen(true)}
+                  className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 text-xs"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>Xem chi tiết trùng ({collisionDetails.length})</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleFilterOnlyConflicts}
+                  className="px-3 py-1.5 bg-white hover:bg-rose-100/60 text-rose-900 border border-rose-300 font-semibold rounded-xl shadow-2xs transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 text-xs"
+                >
+                  <Filter className="w-3.5 h-3.5 text-rose-600" />
+                  <span>Chỉ hiện GV bị trùng ({conflictedTeachers.length})</span>
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -1051,9 +1187,18 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                               </div>
                                             )}
                                             {isCollision && (
-                                              <span className="inline-block text-[9px] font-bold text-rose-700 bg-rose-200 px-1 py-0.2 rounded-sm">
-                                                Trùng lịch GV
-                                              </span>
+                                              <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  setIsCollisionModalOpen(true);
+                                                }}
+                                                className="inline-flex items-center gap-1 text-[9px] font-bold text-rose-800 bg-rose-200 hover:bg-rose-300 px-1.5 py-0.5 rounded-sm transition-colors cursor-pointer"
+                                                title="Nhấp để xem chi tiết trùng lịch giáo viên"
+                                              >
+                                                <AlertTriangle className="w-2.5 h-2.5 text-rose-600" />
+                                                <span>Trùng lịch GV (Xem)</span>
+                                              </button>
                                             )}
                                           </div>
                                         ) : (
@@ -1124,6 +1269,20 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                                 {getTeacherDisplayName(slot)}
                                               </div>
                                             )}
+                                            {isCollision && (
+                                              <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  setIsCollisionModalOpen(true);
+                                                }}
+                                                className="inline-flex items-center gap-1 text-[9px] font-bold text-rose-800 bg-rose-200 hover:bg-rose-300 px-1.5 py-0.5 rounded-sm transition-colors cursor-pointer"
+                                                title="Nhấp để xem chi tiết trùng lịch giáo viên"
+                                              >
+                                                <AlertTriangle className="w-2.5 h-2.5 text-rose-600" />
+                                                <span>Trùng lịch GV (Xem)</span>
+                                              </button>
+                                            )}
                                           </div>
                                         ) : (
                                           <span className="text-slate-300 font-light italic text-[11px]">-</span>
@@ -1148,6 +1307,41 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         {/* VIEW 2: BY_TEACHER (Thời Khóa Biểu Từng Giáo Viên) */}
         {viewMode === 'BY_TEACHER' && (
           <div className="space-y-6">
+            {filterOnlyConflicts && (
+              <div className="p-3.5 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-amber-950 shadow-2xs animate-in fade-in">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-1.5 rounded-lg bg-amber-200 text-amber-800">
+                    <Filter className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-sm">
+                      Đang lọc chỉ hiển thị {filteredTeachers.length} giáo viên bị trùng lịch dạy ({collisionDetails.length} tiết trùng).
+                    </span>
+                    <p className="text-amber-800 text-[11px] mt-0.5">
+                      Bạn có thể xem từng lớp bị trùng của giáo viên ngay dưới đây hoặc mở hộp thoại đối chiếu chi tiết.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setIsCollisionModalOpen(true)}
+                    className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 font-bold text-white rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer text-xs flex items-center gap-1.5"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Xem danh sách đối chiếu</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFilterOnlyConflicts(false)}
+                    className="px-3 py-1.5 bg-white hover:bg-amber-100 border border-amber-300 font-bold text-amber-900 rounded-xl shadow-2xs transition-all active:scale-95 cursor-pointer text-xs"
+                  >
+                    ✕ Bỏ lọc (xem tất cả {teachers.length} GV)
+                  </button>
+                </div>
+              </div>
+            )}
+
             {filteredTeachers.length === 0 ? (
               <div className="bg-white rounded-2xl p-12 text-center border border-slate-200 text-slate-500">
                 <Users2 className="w-12 h-12 mx-auto text-slate-300 mb-2" />
@@ -1162,6 +1356,8 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                     teacherTotalPeriods++;
                   }
                 });
+
+                const teacherCollisionSlots = collisionDetails.filter(c => c.teacherId === teacher.id);
 
                 return (
                   <div
@@ -1195,6 +1391,26 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                         </span>
                       </div>
                     </div>
+
+                    {/* If teacher has collisions, display a warning banner */}
+                    {teacherCollisionSlots.length > 0 && (
+                      <div className="bg-rose-50 border-b border-rose-200 px-4 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-rose-950">
+                        <div className="flex items-center gap-2">
+                          <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                          <span>
+                            <strong>Cảnh báo:</strong> Thầy/Cô {teacher.name} đang bị trùng lịch ở <strong>{teacherCollisionSlots.length} tiết dạy</strong>: {teacherCollisionSlots.map(c => `Thứ ${c.dayOfWeek} (${c.session === 'SANG' ? 'Sáng' : 'Chiều'} T${c.period})`).join(', ')}.
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setIsCollisionModalOpen(true)}
+                          className="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg text-xs transition-all active:scale-95 cursor-pointer shrink-0 self-end sm:self-auto flex items-center gap-1 shadow-2xs"
+                        >
+                          <Eye className="w-3 h-3" />
+                          <span>Xem chi tiết các lớp trùng</span>
+                        </button>
+                      </div>
+                    )}
 
                     {/* Teacher Schedule Grid */}
                     <div className="overflow-x-auto">
@@ -1257,10 +1473,18 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                                 </div>
                                               );
                                             })}
-                                            {isCollision && (
-                                              <span className="block text-[9px] font-bold text-rose-700 bg-rose-200 px-1 rounded-xs">
-                                                Trùng lịch!
-                                              </span>
+                                             {isCollision && (
+                                              <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  setIsCollisionModalOpen(true);
+                                                }}
+                                                className="block w-full text-center text-[9px] font-bold text-rose-800 bg-rose-200 hover:bg-rose-300 px-1 py-0.5 rounded-xs transition-colors cursor-pointer"
+                                                title="Nhấp để xem chi tiết xung đột lịch dạy"
+                                              >
+                                                ⚠️ Trùng {slots.length} lớp! (Xem)
+                                              </button>
                                             )}
                                           </div>
                                         ) : (
@@ -1320,6 +1544,19 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                                 </div>
                                               );
                                             })}
+                                            {isCollision && (
+                                              <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  setIsCollisionModalOpen(true);
+                                                }}
+                                                className="block w-full text-center text-[9px] font-bold text-rose-800 bg-rose-200 hover:bg-rose-300 px-1 py-0.5 rounded-xs transition-colors cursor-pointer"
+                                                title="Nhấp để xem chi tiết xung đột lịch dạy"
+                                              >
+                                                ⚠️ Trùng {slots.length} lớp! (Xem)
+                                              </button>
+                                            )}
                                           </div>
                                         ) : (
                                           <span className="text-slate-300 italic text-[11px]">-</span>
@@ -1637,6 +1874,18 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
             onCopyTimetableToWeek(sourceWeek, targetWeeks, overwrite);
           }
         }}
+      />
+
+      {/* 8. Teacher Collision Modal */}
+      <TeacherCollisionModal
+        isOpen={isCollisionModalOpen}
+        onClose={() => setIsCollisionModalOpen(false)}
+        collisions={collisionDetails}
+        onNavigateToTeacher={handleNavigateToTeacher}
+        onNavigateToClass={handleNavigateToClass}
+        onFilterOnlyConflicts={handleFilterOnlyConflicts}
+        classMap={classMap}
+        getSubjectDisplayName={getSubjectDisplayName}
       />
     </div>
   );
