@@ -429,8 +429,8 @@ export const officialStaffList: Teacher[] = [
   },
   {
     id: 'tch-v-tk-vi',
-    name: 'Trần Thị Thúy Vi',
-    code: 'Vi.TTT',
+    name: 'Nguyễn Hiền Vi',
+    code: 'Vi.NH',
     gender: 'Nữ',
     birthDate: '01/01/1988',
     campus: 'THCSTK',

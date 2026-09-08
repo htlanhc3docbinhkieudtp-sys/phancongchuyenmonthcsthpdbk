@@ -58,6 +58,7 @@ import { ExcelImportExportModal } from './components/ExcelImportExportModal';
 import { AutoAssignModal } from './components/AutoAssignModal';
 import { ConflictAuditDrawer } from './components/ConflictAuditDrawer';
 import { AdminLoginModal } from './components/AdminLoginModal';
+import { Lock } from 'lucide-react';
 import {
   saveSchoolPlanToCloud,
   loadSchoolPlanFromCloud,
@@ -67,6 +68,8 @@ import {
 } from './services/firebase';
 
 const STORAGE_KEY = 'docbinhkieu_phancong_data_v9';
+
+export type UserRole = 'guest' | 'teacher' | 'admin';
 
 function safeLocalStorageSet(key: string, value: string): boolean {
   try {
@@ -92,12 +95,37 @@ function safeLocalStorageSet(key: string, value: string): boolean {
 }
 
 export default function App() {
-  // Admin role state (Public view-only by default, admin login with password)
-  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_is_admin`);
-    return saved === 'true';
+  // Authentication Role State:
+  // - 'guest': Chế độ xem tự do (Chỉ được xem tab Thời khóa biểu toàn trường, các tab khác bị khóa)
+  // - 'teacher': Giáo viên toàn trường (Mật khẩu: giaovien@123) - Được xem toàn bộ các tab, chỉ xem không sửa
+  // - 'admin': Quản trị viên (Mật khẩu: 68686868@#) - Toàn quyền xem và chỉnh sửa, đồng bộ Đám mây
+  const [userRole, setUserRole] = useState<UserRole>(() => {
+    const savedRole = localStorage.getItem(`${STORAGE_KEY}_user_role`) as UserRole | null;
+    if (savedRole === 'admin' || savedRole === 'teacher' || savedRole === 'guest') {
+      return savedRole;
+    }
+    const legacyAdmin = localStorage.getItem(`${STORAGE_KEY}_is_admin`);
+    if (legacyAdmin === 'true') {
+      return 'admin';
+    }
+    return 'guest'; // Mặc định là xem tự do (guest)
   });
-  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+
+  const isAdmin = userRole === 'admin';
+  const isTeacher = userRole === 'teacher' || userRole === 'admin';
+  const isGuest = userRole === 'guest';
+
+  // State for unified authentication modal (Giáo viên / Quản trị)
+  const [loginModalState, setLoginModalState] = useState<{
+    isOpen: boolean;
+    initialRole: 'teacher' | 'admin';
+    promptReason?: string | null;
+    pendingTab?: ActiveTabType;
+  }>({
+    isOpen: false,
+    initialRole: 'teacher',
+    promptReason: null,
+  });
 
   // Load saved state or default
   const [config, setConfig] = useState<SchoolConfig>(() => {
@@ -224,7 +252,7 @@ export default function App() {
         if (parsed && typeof parsed === 'object') {
           // Check Week 1 slots
           if (parsed[1] && parsed[1].slots && parsed[1].slots.length > 0) {
-            parsed[1].slots = normalizeTimetableSlots(parsed[1].slots);
+            parsed[1].slots = ensureTHPTOfficialSlots(parsed[1].slots);
           } else {
             parsed[1] = generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
           }
@@ -257,7 +285,85 @@ export default function App() {
     return createEmptyTimetableForWeek(currentWeek, config.academicYear);
   }, [weeklyTimetables, currentWeek, config.academicYear, classes, subjects, teachers, assignments, config]);
 
-  const [activeTab, setActiveTab] = useState<ActiveTabType>('official');
+  // Active tab state: If guest, restricted strictly to 'timetable' (Thời khóa biểu toàn trường)
+  const [activeTab, setActiveTab] = useState<ActiveTabType>(() => {
+    const savedRole = localStorage.getItem(`${STORAGE_KEY}_user_role`) as UserRole | null;
+    const legacyAdmin = localStorage.getItem(`${STORAGE_KEY}_is_admin`);
+    const isAuthed = savedRole === 'admin' || savedRole === 'teacher' || legacyAdmin === 'true';
+    if (!isAuthed) {
+      return 'timetable'; // Chế độ xem tự do chỉ được xem Thời khóa biểu
+    }
+    const saved = localStorage.getItem(`${STORAGE_KEY}_active_tab`) as ActiveTabType | null;
+    return saved || 'timetable';
+  });
+
+  // Enforce guest restriction: If user is guest, automatically constrain to timetable
+  useEffect(() => {
+    if (userRole === 'guest' && activeTab !== 'timetable') {
+      setActiveTab('timetable');
+    }
+  }, [userRole, activeTab]);
+
+  useEffect(() => {
+    safeLocalStorageSet(`${STORAGE_KEY}_active_tab`, activeTab);
+  }, [activeTab]);
+
+  const TAB_NAMES: Record<ActiveTabType, string> = {
+    official: 'Phân Công Chính Thức (3 Điểm Trường)',
+    timetable: 'Thời Khóa Biểu Toàn Trường',
+    weekly_schedule: 'Phân Công Tuần (TKB)',
+    weekly_log: 'Sổ Tiết Thực Dạy',
+    matrix: 'Ma Trận Kéo Thả (Lớp - Môn)',
+    workbench: 'Bàn Làm Việc Giáo Viên',
+    summary: 'Bảng Tổng Hợp Toàn Trường',
+    homeroom: 'Phân Công Chủ Nhiệm',
+    teachers: 'Giáo Viên & Định Mức',
+    curriculum: 'Khung Tiết GDPT 2018',
+  };
+
+  const handleTabChange = (tab: ActiveTabType) => {
+    if (userRole === 'guest' && tab !== 'timetable') {
+      setLoginModalState({
+        isOpen: true,
+        initialRole: 'teacher',
+        pendingTab: tab,
+        promptReason: `Nội dung "${TAB_NAMES[tab]}" yêu cầu đăng nhập Giáo viên (giaovien@123) hoặc Quản trị viên để xem.`,
+      });
+      return;
+    }
+    setActiveTab(tab);
+  };
+
+  const handleLoginAsTeacher = () => {
+    setUserRole('teacher');
+    if (loginModalState.pendingTab) {
+      setActiveTab(loginModalState.pendingTab);
+    }
+    setLoginModalState({ isOpen: false, initialRole: 'teacher', promptReason: null, pendingTab: undefined });
+  };
+
+  const handleLoginAsAdmin = () => {
+    setUserRole('admin');
+    if (loginModalState.pendingTab) {
+      setActiveTab(loginModalState.pendingTab);
+    }
+    setLoginModalState({ isOpen: false, initialRole: 'admin', promptReason: null, pendingTab: undefined });
+  };
+
+  const handleLogout = () => {
+    setUserRole('guest');
+    setActiveTab('timetable');
+  };
+
+  const handlePromptAdminLogin = (customReason?: string) => {
+    setLoginModalState({
+      isOpen: true,
+      initialRole: 'admin',
+      promptReason: customReason || (userRole === 'teacher'
+        ? 'Bạn đang ở chế độ xem của Giáo viên (Chỉ xem). Để chỉnh sửa phân công và lưu thay đổi, vui lòng đăng nhập quyền Quản trị viên.'
+        : 'Vui lòng đăng nhập quyền Quản trị viên để chỉnh sửa dữ liệu.'),
+    });
+  };
 
   // Cloud Sync state
   const [cloudSyncStatus, setCloudSyncStatus] = useState<'synced' | 'saving' | 'error' | 'offline'>('synced');
@@ -328,7 +434,7 @@ export default function App() {
           if (cloudData.weeklyTimetables && Object.keys(cloudData.weeklyTimetables).length > 0) {
             const merged = { ...cloudData.weeklyTimetables };
             if (merged[1] && merged[1].slots && merged[1].slots.length > 0) {
-              merged[1].slots = normalizeTimetableSlots(merged[1].slots);
+              merged[1].slots = ensureTHPTOfficialSlots(merged[1].slots);
             } else {
               merged[1] = generateInitialTimetable(cloudData.classes || classes, cloudData.subjects || subjects, cloudData.teachers || teachers, cloudData.assignments || assignments, cloudData.config || config);
             }
@@ -342,7 +448,7 @@ export default function App() {
             const tkb1: SchoolTimetable = {
               ...cloudData.timetable,
               weekNumber: 1,
-              slots: normalizeTimetableSlots(cloudData.timetable.slots)
+              slots: ensureTHPTOfficialSlots(cloudData.timetable.slots)
             };
             setWeeklyTimetables({ 1: tkb1 });
           }
@@ -389,10 +495,11 @@ export default function App() {
     };
   }, []);
 
-  // Save isAdmin state
+  // Save userRole and isAdmin state
   useEffect(() => {
+    localStorage.setItem(`${STORAGE_KEY}_user_role`, userRole);
     localStorage.setItem(`${STORAGE_KEY}_is_admin`, String(isAdmin));
-  }, [isAdmin]);
+  }, [userRole, isAdmin]);
 
   // Save currentWeek to localStorage independently (does NOT trigger cloud auto-save)
   useEffect(() => {
@@ -852,6 +959,7 @@ export default function App() {
       ...prev,
       1: officialTkb
     }));
+    showToast('Đã nạp lại Thời khóa biểu Tuần 1 chuẩn chính thức cho cả 3 điểm trường (THPT, THCS Đốc Binh Kiều, THCS Tân Kiều)!');
   };
 
   const handleImportTimetableBatch = (
@@ -1074,8 +1182,9 @@ export default function App() {
         cloudSyncStatus={cloudSyncStatus}
         lastSyncedAt={lastSyncedAt}
         isAdmin={isAdmin}
-        onOpenAdminLogin={() => setIsAdminModalOpen(true)}
-        onLogoutAdmin={() => setIsAdmin(false)}
+        userRole={userRole}
+        onOpenAdminLogin={() => setLoginModalState({ isOpen: true, initialRole: userRole === 'teacher' ? 'admin' : 'teacher', promptReason: null })}
+        onLogoutAdmin={handleLogout}
         onSaveToCloud={handleSaveToCloud}
         onExportJsonBackup={handleExportJsonBackup}
         onImportJsonBackup={handleImportJsonBackup}
@@ -1089,13 +1198,63 @@ export default function App() {
       {/* Primary Navigation Tabs */}
       <ViewTabs
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
         unassignedCount={unassignedCount}
+        userRole={userRole}
       />
+
+      {/* Notice Banner for Guest mode */}
+      {isGuest && (
+        <div className="bg-amber-50 border-b border-amber-200/80 px-4 py-2 text-xs text-amber-900">
+          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded-md bg-amber-200/80 font-bold text-amber-900 text-[11px]">
+                Xem Tự Do
+              </span>
+              <span>
+                Đang xem <strong>Thời khóa biểu toàn trường</strong> (3 điểm trường). Các tab khác yêu cầu mật khẩu Giáo viên để xem.
+              </span>
+            </div>
+            <button
+              onClick={() => setLoginModalState({ isOpen: true, initialRole: 'teacher', promptReason: 'Nhập mật khẩu giáo viên toàn trường (giaovien@123) để mở khóa tất cả các tab.' })}
+              className="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg shadow-2xs transition-all active:scale-95 cursor-pointer text-xs"
+            >
+              Đăng nhập Giáo viên (giaovien@123)
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Content Area */}
       <main className="flex-1 pb-16">
-        {activeTab === 'official' && (
+        {/* Guard fallback for guests attempting unauthorized tab access */}
+        {isGuest && activeTab !== 'timetable' && (
+          <div className="max-w-xl mx-auto my-12 p-8 bg-white rounded-2xl border border-slate-200 shadow-xl text-center space-y-4 animate-in fade-in">
+            <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
+              <Lock className="w-7 h-7" />
+            </div>
+            <h2 className="text-lg font-bold text-slate-900">Nội Dung Giới Hạn Quyền Xem</h2>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Ở chế độ xem tự do, người xem chỉ được xem tab <strong>Thời khóa biểu toàn trường</strong>. Để xem các nội dung phân công chuyên môn, ma trận và sổ thực dạy, quý Thầy/Cô vui lòng đăng nhập bằng mật khẩu giáo viên dùng chung (<code className="font-mono bg-slate-100 text-indigo-700 px-1.5 py-0.5 rounded font-bold">giaovien@123</code>).
+            </p>
+            <div className="pt-2 flex items-center justify-center gap-3">
+              <button
+                onClick={() => setActiveTab('timetable')}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
+              >
+                Về Thời Khóa Biểu
+              </button>
+              <button
+                onClick={() => setLoginModalState({ isOpen: true, initialRole: 'teacher', promptReason: 'Nhập mật khẩu giáo viên để xem nội dung này.' })}
+                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer"
+              >
+                Đăng Nhập Giáo Viên
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!isGuest && activeTab === 'official' && (
           <UnifiedOfficialTableView
             config={config}
             classes={classes}
@@ -1104,7 +1263,7 @@ export default function App() {
             assignments={assignments}
             workloads={workloads}
             isAdmin={isAdmin}
-            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
+            onPromptAdminLogin={() => handlePromptAdminLogin()}
             onAssignTeacher={handleAssignTeacher}
             onAssignHomeroom={handleAssignHomeroom}
             onUpdateClassSpecialTopic={handleUpdateClassSpecialTopic}
@@ -1126,13 +1285,13 @@ export default function App() {
             onCopyTimetableToWeek={handleCopyTimetableToWeeks}
             onRestoreWeek1Official={handleRestoreWeek1Official}
             isAdmin={isAdmin}
-            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
+            onPromptAdminLogin={() => handlePromptAdminLogin()}
             onUpdateTimetable={handleUpdateTimetable}
             onImportTimetableBatch={handleImportTimetableBatch}
           />
         )}
 
-        {activeTab === 'weekly_schedule' && (
+        {!isGuest && activeTab === 'weekly_schedule' && (
           <WeeklyScheduleManagerView
             config={config}
             classes={classes}
@@ -1142,7 +1301,7 @@ export default function App() {
             weeklySchedules={weeklySchedules}
             timetableSlots={weeklyTimetables[1]?.slots || timetable.slots}
             isAdmin={isAdmin}
-            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
+            onPromptAdminLogin={() => handlePromptAdminLogin()}
             onUpdateWeeklySchedule={handleUpdateWeeklySchedule}
             onAutoGenerateAllWeeks={handleAutoGenerateAllWeeks}
             onCopyWeekSchedule={handleCopyWeekSchedule}
@@ -1151,7 +1310,7 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'weekly_log' && (
+        {!isGuest && activeTab === 'weekly_log' && (
           <WeeklyTeachingLogView
             config={config}
             teachers={teachers}
@@ -1165,7 +1324,7 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'matrix' && (
+        {!isGuest && activeTab === 'matrix' && (
           <ClassMatrixView
             classes={classes}
             subjects={subjects}
@@ -1175,7 +1334,7 @@ export default function App() {
             workloads={workloads}
             lockedCells={lockedCells}
             isAdmin={isAdmin}
-            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
+            onPromptAdminLogin={() => handlePromptAdminLogin()}
             onAssignTeacher={handleAssignTeacher}
             onRemoveAssignment={handleRemoveAssignment}
             onToggleLockCell={handleToggleLockCell}
@@ -1185,7 +1344,7 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'workbench' && (
+        {!isGuest && activeTab === 'workbench' && (
           <TeacherWorkbenchView
             teachers={teachers}
             departments={departments}
@@ -1194,13 +1353,13 @@ export default function App() {
             assignments={assignments}
             workloads={workloads}
             isAdmin={isAdmin}
-            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
+            onPromptAdminLogin={() => handlePromptAdminLogin()}
             onAssignTeacher={handleAssignTeacher}
             onRemoveAssignment={handleRemoveAssignment}
           />
         )}
 
-        {activeTab === 'summary' && (
+        {!isGuest && activeTab === 'summary' && (
           <ComprehensiveTableView
             config={config}
             classes={classes}
@@ -1211,44 +1370,44 @@ export default function App() {
             workloads={workloads}
             lockedCells={lockedCells}
             isAdmin={isAdmin}
-            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
+            onPromptAdminLogin={() => handlePromptAdminLogin()}
             onAssignTeacher={handleAssignTeacher}
             onExportExcel={handleExportExcel}
           />
         )}
 
-        {activeTab === 'homeroom' && (
+        {!isGuest && activeTab === 'homeroom' && (
           <HomeroomView
             classes={classes}
             teachers={teachers}
             departments={departments}
             workloads={workloads}
             isAdmin={isAdmin}
-            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
+            onPromptAdminLogin={() => handlePromptAdminLogin()}
             onAssignHomeroom={handleAssignHomeroom}
           />
         )}
 
-        {activeTab === 'teachers' && (
+        {!isGuest && activeTab === 'teachers' && (
           <TeacherManagementView
             teachers={teachers}
             departments={departments}
             subjects={subjects}
             workloads={workloads}
             isAdmin={isAdmin}
-            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
+            onPromptAdminLogin={() => handlePromptAdminLogin()}
             onAddTeacher={handleAddTeacher}
             onUpdateTeacher={handleUpdateTeacher}
             onDeleteTeacher={handleDeleteTeacher}
           />
         )}
 
-        {activeTab === 'curriculum' && (
+        {!isGuest && activeTab === 'curriculum' && (
           <CurriculumView
             subjects={subjects}
             departments={departments}
             isAdmin={isAdmin}
-            onPromptAdminLogin={() => setIsAdminModalOpen(true)}
+            onPromptAdminLogin={() => handlePromptAdminLogin()}
             onUpdateSubjectPeriod={handleUpdateSubjectPeriod}
           />
         )}
@@ -1256,9 +1415,12 @@ export default function App() {
 
       {/* Modals & Slide-out Drawers */}
       <AdminLoginModal
-        isOpen={isAdminModalOpen}
-        onClose={() => setIsAdminModalOpen(false)}
-        onLoginSuccess={() => setIsAdmin(true)}
+        isOpen={loginModalState.isOpen}
+        onClose={() => setLoginModalState(prev => ({ ...prev, isOpen: false }))}
+        onLoginAsTeacher={handleLoginAsTeacher}
+        onLoginAsAdmin={handleLoginAsAdmin}
+        initialRole={loginModalState.initialRole}
+        promptReason={loginModalState.promptReason}
       />
 
       <ExcelImportExportModal

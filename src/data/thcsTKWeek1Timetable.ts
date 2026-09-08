@@ -13,7 +13,7 @@ const TEACHER_MAP: Record<string, { id: string; name: string; code: string }> = 
   'Tín': { id: 'tch-t-13', name: 'Nguyễn Thành Tín', code: 'Tín.NT' },
   'Tuyền': { id: 'tch-av-1', name: 'Lê Thị Ngọc Tuyền', code: 'Tuyền.LTN' },
   'Nga': { id: 'tch-t-14', name: 'Huỳnh Thị Huỳnh Nga', code: 'Nga.HTH' },
-  'Vi': { id: 'tch-v-tk-vi', name: 'Trần Thị Thúy Vi', code: 'Vi.TTT' },
+  'Vi': { id: 'tch-v-tk-vi', name: 'Nguyễn Hiền Vi', code: 'Vi.NH' },
   'Châu': { id: 'tch-ls-3', name: 'Phạm Thị Mỹ Châu', code: 'Châu.PTM' },
   'Diễm': { id: 'tch-khtn-25', name: 'Nguyễn Thị Ngọc Diễm', code: 'Diễm.NTN' },
   'Phượng': { id: 'tch-khtn-14', name: 'Nguyễn Thị Bích Phượng', code: 'Phượng.NTB' },
@@ -644,7 +644,6 @@ const rawImage2: Record<string, RawSlot[]> = {
     { d: 5, p: 2, text: 'SỬ - Hà' },
     { d: 5, p: 3, text: 'TA - Thành' },
     { d: 5, p: 4, text: 'AN - A.Văn' },
-    { d: 5, p: 5, text: 'TOÁN - Huy' },
     // T6
     { d: 6, p: 1, text: 'MT - Quốc' },
     { d: 6, p: 2, text: 'LÝ - Phượng' },
@@ -683,7 +682,6 @@ const rawImage2: Record<string, RawSlot[]> = {
     { d: 5, p: 2, text: 'TOÁN - Tín' },
     { d: 5, p: 3, text: 'AN - A.Văn' },
     { d: 5, p: 4, text: 'TIN - Hậu' },
-    { d: 5, p: 5, text: 'SỬ - Hà' },
     // T6
     { d: 6, p: 1, text: 'TOÁN - Tín' },
     { d: 6, p: 2, text: 'VĂN - Nhi' },
@@ -722,7 +720,6 @@ const rawImage2: Record<string, RawSlot[]> = {
     { d: 5, p: 2, text: 'TOÁN - Huy' },
     { d: 5, p: 3, text: 'GDTC - Chính' },
     { d: 5, p: 4, text: 'MT - Quốc' },
-    { d: 5, p: 5, text: 'VĂN - Nhi' },
     // T6
     { d: 6, p: 1, text: 'TA - Thành' },
     { d: 6, p: 2, text: 'TA - Thành' },
@@ -761,7 +758,6 @@ const rawImage2: Record<string, RawSlot[]> = {
     { d: 5, p: 2, text: 'GDTC - Chính' },
     { d: 5, p: 3, text: 'MT - Quốc' },
     { d: 5, p: 4, text: 'TA - Thành' },
-    { d: 5, p: 5, text: 'AN - A.Văn' },
     // T6
     { d: 6, p: 1, text: 'LÝ - Phượng' },
     { d: 6, p: 2, text: 'TOÁN - Tín' },
