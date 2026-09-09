@@ -408,12 +408,14 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={onOpenVisitorStats}
-                className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-indigo-900/90 hover:bg-indigo-800 text-amber-300 hover:text-amber-200 border border-indigo-700/80 transition-all cursor-pointer shadow-2xs"
-                title="Bấm để xem chi tiết thống kê lượt truy cập website toàn trường"
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-900/90 hover:bg-indigo-800 text-amber-300 hover:text-amber-200 border border-indigo-700/80 transition-all cursor-pointer shadow-xs"
+                title="Bấm để xem chi tiết thống kê lượt truy cập website toàn trường (Hôm nay, Tháng này, Tổng cộng)"
               >
-                <Eye className="w-3.5 h-3.5 text-amber-400" />
+                <Eye className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                 <span className="text-indigo-200">Truy cập:</span>
-                <strong className="font-mono font-bold">{visitorStats.totalVisits.toLocaleString('vi-VN')}</strong>
+                <strong className="font-mono font-bold text-amber-300">{visitorStats.totalVisits.toLocaleString('vi-VN')}</strong>
+                <span className="text-indigo-400 mx-0.5">•</span>
+                <span className="text-emerald-300 text-[11px] font-semibold">Hôm nay: {visitorStats.todayVisits.toLocaleString('vi-VN')}</span>
               </button>
             )}
           </div>

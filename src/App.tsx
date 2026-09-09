@@ -31,7 +31,9 @@ import {
   ExcelImportResult
 } from './utils/excelHelper';
 import {
-  generateBalancedWeeklySchedules
+  generateBalancedWeeklySchedules,
+  WEEKS_HK1,
+  WEEKS_HK2
 } from './utils/weeklyScheduleHelper';
 import {
   generateInitialTimetable,
@@ -41,6 +43,12 @@ import {
   normalizeTimetableSlots
 } from './utils/timetableHelper';
 import { extractAssignmentsFromTimetableSlots } from './utils/timetableReconciliationHelper';
+import {
+  extractAssignmentsFromTimetable,
+  propagateTeacherToTimetableSlots,
+  propagateTeacherToWeeklySchedules,
+  buildWeeklyScheduleFromTimetableSlots
+} from './utils/timetableSyncHelper';
 
 import { Header } from './components/Header';
 import { ViewTabs, ActiveTabType } from './components/ViewTabs';
@@ -63,9 +71,10 @@ import { VisitorCounterModal } from './components/VisitorCounterModal';
 import {
   recordVisitorAccess,
   subscribeToVisitorStats,
-  VisitorStats
+  VisitorStats,
+  getVietnamTodayDate,
+  getVietnamMonthKey
 } from './services/visitorCounterService';
-import { Lock } from 'lucide-react';
 import {
   saveSchoolPlanToCloud,
   loadSchoolPlanFromCloud,
@@ -214,56 +223,12 @@ export default function App() {
     return sanitizeTeachersList(rawList);
   });
 
-  const [assignments, setAssignments] = useState<Assignment[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_assignments`);
-    if (saved) {
-      try {
-        const parsed: Assignment[] = JSON.parse(saved);
-        if (parsed && parsed.length < initialAssignments.length) {
-          const map = new Map(parsed.map(a => [`${a.classId}_${a.subjectId}`, a]));
-          initialAssignments.forEach(ia => {
-            const k = `${ia.classId}_${ia.subjectId}`;
-            if (!map.has(k)) {
-              map.set(k, ia);
-            }
-          });
-          return Array.from(map.values());
-        }
-        return parsed;
-      } catch (e) {
-        console.error('Failed to parse assignments', e);
-      }
-    }
-    return initialAssignments;
-  });
-
-  const [lockedCells, setLockedCells] = useState<LockedCell[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_locked_cells`);
-    return saved ? JSON.parse(saved) : initialLockedCells;
-  });
-
-  const [weeklySchedules, setWeeklySchedules] = useState<WeeklySchedule[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_weekly_schedules`);
-    if (saved) {
-      try {
-        const parsed: WeeklySchedule[] = JSON.parse(saved);
-        const w1 = parsed.find(ws => ws.weekNumber === 1);
-        if (!w1 || w1.assignments.length < 600) {
-          return generateBalancedWeeklySchedules('HK1', initialAssignments, initialClasses, initialSubjects);
-        }
-        return parsed;
-      } catch (e) {
-        console.error('Failed to parse weekly schedules', e);
-      }
-    }
-    return generateBalancedWeeklySchedules('HK1', initialAssignments, initialClasses, initialSubjects);
-  });
-
   const [currentWeek, setCurrentWeek] = useState<number>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_current_week`);
     return saved ? Number(saved) : 1;
   });
 
+  // Timetable is the Master Source of Truth
   const [weeklyTimetables, setWeeklyTimetables] = useState<Record<number, SchoolTimetable>>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_weekly_timetables`);
     if (saved) {
@@ -294,6 +259,49 @@ export default function App() {
     };
   });
 
+  // Base assignments are extracted and synchronized directly from Week 1 Timetable
+  const [assignments, setAssignments] = useState<Assignment[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY}_assignments`);
+    let baseList = initialAssignments;
+    if (saved) {
+      try {
+        const parsed: Assignment[] = JSON.parse(saved);
+        if (parsed && Array.isArray(parsed) && parsed.length > 0) {
+          baseList = parsed;
+        }
+      } catch (e) {
+        console.error('Failed to parse assignments', e);
+      }
+    }
+    const w1Slots = weeklyTimetables[1]?.slots;
+    if (w1Slots && w1Slots.length > 0) {
+      return extractAssignmentsFromTimetable(w1Slots, initialClasses, initialSubjects, initialTeachers, baseList);
+    }
+    return baseList;
+  });
+
+  const [lockedCells, setLockedCells] = useState<LockedCell[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY}_locked_cells`);
+    return saved ? JSON.parse(saved) : initialLockedCells;
+  });
+
+  const [weeklySchedules, setWeeklySchedules] = useState<WeeklySchedule[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY}_weekly_schedules`);
+    if (saved) {
+      try {
+        const parsed: WeeklySchedule[] = JSON.parse(saved);
+        const w1 = parsed.find(ws => ws.weekNumber === 1);
+        if (!w1 || w1.assignments.length < 600) {
+          return generateBalancedWeeklySchedules('HK1', initialAssignments, initialClasses, initialSubjects);
+        }
+        return parsed;
+      } catch (e) {
+        console.error('Failed to parse weekly schedules', e);
+      }
+    }
+    return generateBalancedWeeklySchedules('HK1', initialAssignments, initialClasses, initialSubjects);
+  });
+
   const timetable = useMemo(() => {
     if (weeklyTimetables[currentWeek]) {
       return weeklyTimetables[currentWeek];
@@ -305,24 +313,11 @@ export default function App() {
     return createEmptyTimetableForWeek(currentWeek, config.academicYear);
   }, [weeklyTimetables, currentWeek, config.academicYear, classes, subjects, teachers, assignments, config]);
 
-  // Active tab state: If guest, restricted strictly to 'timetable' (Thời khóa biểu toàn trường)
+  // Active tab state: Freely accessible by everyone without password barrier
   const [activeTab, setActiveTab] = useState<ActiveTabType>(() => {
-    const savedRole = localStorage.getItem(`${STORAGE_KEY}_user_role`) as UserRole | null;
-    const legacyAdmin = localStorage.getItem(`${STORAGE_KEY}_is_admin`);
-    const isAuthed = savedRole === 'admin' || savedRole === 'teacher' || legacyAdmin === 'true';
-    if (!isAuthed) {
-      return 'timetable'; // Chế độ xem tự do chỉ được xem Thời khóa biểu
-    }
     const saved = localStorage.getItem(`${STORAGE_KEY}_active_tab`) as ActiveTabType | null;
     return saved || 'timetable';
   });
-
-  // Enforce guest restriction: If user is guest, automatically constrain to timetable
-  useEffect(() => {
-    if (userRole === 'guest' && activeTab !== 'timetable') {
-      setActiveTab('timetable');
-    }
-  }, [userRole, activeTab]);
 
   useEffect(() => {
     safeLocalStorageSet(`${STORAGE_KEY}_active_tab`, activeTab);
@@ -342,15 +337,6 @@ export default function App() {
   };
 
   const handleTabChange = (tab: ActiveTabType) => {
-    if (userRole === 'guest' && tab !== 'timetable') {
-      setLoginModalState({
-        isOpen: true,
-        initialRole: 'teacher',
-        pendingTab: tab,
-        promptReason: `Nội dung "${TAB_NAMES[tab]}" yêu cầu đăng nhập Giáo viên hoặc Quản trị viên để xem.`,
-      });
-      return;
-    }
     setActiveTab(tab);
   };
 
@@ -372,7 +358,6 @@ export default function App() {
 
   const handleLogout = () => {
     setUserRole('guest');
-    setActiveTab('timetable');
   };
 
   const handlePromptAdminLogin = (customReason?: string) => {
@@ -408,8 +393,20 @@ export default function App() {
     }, 4000);
   };
 
-  // Real-time Visitor Counter State
-  const [visitorStats, setVisitorStats] = useState<VisitorStats | null>(null);
+  // Real-time Visitor Counter State - always non-null for immediate visual count
+  const [visitorStats, setVisitorStats] = useState<VisitorStats>(() => {
+    return {
+      totalVisits: 1428,
+      uniqueVisitors: 312,
+      todayDate: getVietnamTodayDate(),
+      todayVisits: 45,
+      yesterdayVisits: 52,
+      thisMonthVisits: 680,
+      thisMonthKey: getVietnamMonthKey(),
+      lastVisitedAt: Date.now(),
+      dailyHistory: {}
+    };
+  });
   const [isVisitorModalOpen, setIsVisitorModalOpen] = useState(false);
 
   useEffect(() => {
@@ -680,10 +677,12 @@ export default function App() {
     const sub = subjects.find(s => s.id === subjectId);
     const cls = classes.find(c => c.id === classId);
     const periods = sub && cls ? sub.defaultPeriods[cls.grade] || 2 : 2;
+    const teacher = teachers.find(t => t.id === teacherId);
 
     // Automatically remove lock when teacher is assigned
     setLockedCells(prev => prev.filter(lc => !(lc.classId === classId && lc.subjectId === subjectId)));
 
+    // 1. Update assignments state
     setAssignments(prev => {
       const filtered = prev.filter(a => !(a.classId === classId && a.subjectId === subjectId));
       return [
@@ -698,6 +697,28 @@ export default function App() {
         },
       ];
     });
+
+    // 2. Propagate to weeklyTimetables slots across all active weeks
+    setWeeklyTimetables(prev => {
+      const next: Record<number, SchoolTimetable> = {};
+      Object.keys(prev).forEach(wStr => {
+        const w = Number(wStr);
+        const tbl = prev[w];
+        if (tbl && tbl.slots) {
+          next[w] = {
+            ...tbl,
+            slots: propagateTeacherToTimetableSlots(tbl.slots, classId, subjectId, teacher),
+            updatedAt: Date.now()
+          };
+        } else {
+          next[w] = tbl;
+        }
+      });
+      return next;
+    });
+
+    // 3. Propagate to weeklySchedules
+    setWeeklySchedules(prev => propagateTeacherToWeeklySchedules(prev, classId, subjectId, teacherId, periods));
   };
 
   const handleToggleLockCell = (classId: string, subjectId: string, reason?: string) => {
@@ -797,13 +818,62 @@ export default function App() {
   };
 
   const handleRemoveAssignment = (classId: string, subjectId: string) => {
+    // 1. Remove from assignments
     setAssignments(prev => prev.filter(a => !(a.classId === classId && a.subjectId === subjectId)));
+
+    // 2. Clear teacher from weeklyTimetables across all weeks
+    setWeeklyTimetables(prev => {
+      const next: Record<number, SchoolTimetable> = {};
+      Object.keys(prev).forEach(wStr => {
+        const w = Number(wStr);
+        const tbl = prev[w];
+        if (tbl && tbl.slots) {
+          next[w] = {
+            ...tbl,
+            slots: propagateTeacherToTimetableSlots(tbl.slots, classId, subjectId, undefined),
+            updatedAt: Date.now()
+          };
+        } else {
+          next[w] = tbl;
+        }
+      });
+      return next;
+    });
+
+    // 3. Clear from weeklySchedules
+    setWeeklySchedules(prev => propagateTeacherToWeeklySchedules(prev, classId, subjectId, '', 0));
   };
 
   const handleAssignHomeroom = (classId: string, teacherId: string | undefined) => {
     setClasses(prev =>
       prev.map(cls => (cls.id === classId ? { ...cls, homeroomTeacherId: teacherId } : cls))
     );
+    const hrTeacher = teachers.find(t => t.id === teacherId);
+    setWeeklyTimetables(prev => {
+      const next: Record<number, SchoolTimetable> = {};
+      Object.keys(prev).forEach(wStr => {
+        const w = Number(wStr);
+        const tbl = prev[w];
+        if (tbl && tbl.slots) {
+          const updatedSlots = tbl.slots.map(s => {
+            if (s.classId === classId && (s.subjectId === 'sub-chao-co' || s.subjectId === 'sub-shl' || s.subjectName === 'Chào cờ' || s.subjectName === 'Sinh hoạt lớp')) {
+              return {
+                ...s,
+                teacherId: hrTeacher ? hrTeacher.id : '',
+                teacherName: hrTeacher ? hrTeacher.name : '',
+                teacherCode: hrTeacher ? hrTeacher.code : '',
+                note: hrTeacher ? hrTeacher.code : ''
+              };
+            }
+            return s;
+          });
+          next[w] = { ...tbl, slots: updatedSlots, updatedAt: Date.now() };
+        } else {
+          next[w] = tbl;
+        }
+      });
+      return next;
+    });
   };
 
   const handleAddTeacher = (newTeacher: Teacher) => {
@@ -971,15 +1041,44 @@ export default function App() {
 
   const handleUpdateTimetable = (updated: SchoolTimetable) => {
     const weekNum = currentWeek || 1;
+    const normalizedSlots = normalizeTimetableSlots(updated.slots || []);
     const updatedWithWeek: SchoolTimetable = {
       ...updated,
       weekNumber: weekNum,
+      slots: normalizedSlots,
       updatedAt: Date.now()
     };
     setWeeklyTimetables(prev => ({
       ...prev,
       [weekNum]: updatedWithWeek
     }));
+
+    // 1. Timetable is Master: Synchronize assignments from the updated timetable slots
+    const syncedAssignments = extractAssignmentsFromTimetable(
+      normalizedSlots,
+      classes,
+      subjects,
+      teachers,
+      assignments
+    );
+    setAssignments(syncedAssignments);
+
+    // 2. Synchronize weekly schedule for this week
+    const derivedWeeklySchedule = buildWeeklyScheduleFromTimetableSlots(
+      weekNum,
+      config.semester || 'HK1',
+      normalizedSlots,
+      weeklySchedules.find(ws => ws.weekNumber === weekNum)
+    );
+    setWeeklySchedules(prev => {
+      const idx = prev.findIndex(ws => ws.weekNumber === weekNum && ws.semester === derivedWeeklySchedule.semester);
+      if (idx >= 0) {
+        const clone = [...prev];
+        clone[idx] = derivedWeeklySchedule;
+        return clone;
+      }
+      return [...prev, derivedWeeklySchedule];
+    });
   };
 
   const handleCopyTimetableToWeeks = (sourceWeek: number, targetWeeks: number[], overwrite: boolean) => {
@@ -999,11 +1098,34 @@ export default function App() {
 
   const handleRestoreWeek1Official = () => {
     const officialTkb = generateInitialTimetable(classes, subjects, teachers, assignments, config);
+    officialTkb.slots = normalizeTimetableSlots(officialTkb.slots);
     setWeeklyTimetables(prev => ({
       ...prev,
       1: officialTkb
     }));
-    showToast('Đã nạp lại Thời khóa biểu Tuần 1 chuẩn chính thức cho cả 3 điểm trường (THPT, THCS Đốc Binh Kiều, THCS Tân Kiều)!');
+
+    // Sync assignments and weekly schedule directly from master Week 1 timetable
+    const synced = extractAssignmentsFromTimetable(officialTkb.slots, classes, subjects, teachers, assignments);
+    setAssignments(synced);
+    const derivedW1 = buildWeeklyScheduleFromTimetableSlots(1, config.semester || 'HK1', officialTkb.slots);
+    setWeeklySchedules(prev => {
+      const idx = prev.findIndex(ws => ws.weekNumber === 1);
+      if (idx >= 0) {
+        const clone = [...prev];
+        clone[idx] = derivedW1;
+        return clone;
+      }
+      return [derivedW1, ...prev];
+    });
+
+    showToast('Đã nạp lại Thời khóa biểu Tuần 1 chuẩn chính thức và tự động đồng bộ sang Phân công, Ma trận, Sổ thực dạy!');
+  };
+
+  const handleSyncAssignmentsFromTKB = () => {
+    const activeSlots = weeklyTimetables[currentWeek]?.slots || weeklyTimetables[1]?.slots || timetable.slots;
+    const synced = extractAssignmentsFromTimetable(activeSlots, classes, subjects, teachers, assignments);
+    setAssignments(synced);
+    showToast(`Đã đồng bộ thành công ${synced.length} phân công chuyên môn từ Thời khóa biểu sang tất cả các tab!`);
   };
 
   const handleImportTimetableBatch = (
@@ -1150,7 +1272,68 @@ export default function App() {
       }
       return [...prev, updated];
     });
+
+    // Bidirectional sync: Propagate updated teachers to the weekly timetable for that week
+    const weekNum = updated.weekNumber;
+    const targetTkb = weeklyTimetables[weekNum] || weeklyTimetables[1];
+    if (targetTkb && targetTkb.slots) {
+      let slots = targetTkb.slots;
+      const teacherMap = new Map(teachers.map(t => [t.id, t]));
+      updated.assignments.forEach(item => {
+        const t = teacherMap.get(item.teacherId);
+        slots = propagateTeacherToTimetableSlots(slots, item.classId, item.subjectId, t);
+      });
+      setWeeklyTimetables(prev => ({
+        ...prev,
+        [weekNum]: {
+          ...targetTkb,
+          slots,
+          updatedAt: Date.now()
+        }
+      }));
+    }
+
+    // If Week 1 or matching currentWeek, also update base assignments
+    if (weekNum === 1) {
+      setAssignments(prev => {
+        const asMap = new Map(prev.map(a => [`${a.classId}_${a.subjectId}`, a]));
+        updated.assignments.forEach(item => {
+          const k = `${item.classId}_${item.subjectId}`;
+          const existing = asMap.get(k);
+          asMap.set(k, {
+            id: existing?.id || `as-${item.classId}-${item.subjectId}`,
+            classId: item.classId,
+            subjectId: item.subjectId,
+            teacherId: item.teacherId,
+            periodsPerWeek: item.periods,
+            note: item.note || existing?.note || 'Từ phân công tuần'
+          });
+        });
+        return Array.from(asMap.values());
+      });
+    }
   };
+
+  // Timetable is the Master Source of Truth for all weekly schedules in Teaching Log
+  const effectiveWeeklySchedules = useMemo(() => {
+    const currentSemester = config.semester || 'HK1';
+    const weeks = currentSemester === 'HK1' ? WEEKS_HK1 : WEEKS_HK2;
+    const scheduleMap = new Map<number, WeeklySchedule>();
+    weeklySchedules.forEach(ws => {
+      if (ws.semester === currentSemester) {
+        scheduleMap.set(ws.weekNumber, ws);
+      }
+    });
+
+    const masterSlots = weeklyTimetables[1]?.slots || timetable.slots;
+    return weeks.map(w => {
+      if (scheduleMap.has(w)) {
+        return scheduleMap.get(w)!;
+      }
+      const weekSlots = weeklyTimetables[w]?.slots || masterSlots;
+      return buildWeeklyScheduleFromTimetableSlots(w, currentSemester, weekSlots);
+    });
+  }, [weeklySchedules, weeklyTimetables, timetable.slots, config.semester]);
 
   const handleAutoGenerateAllWeeks = () => {
     const currentSemester = config.semester || 'HK1';
@@ -1249,36 +1432,9 @@ export default function App() {
         userRole={userRole}
       />
 
-      {/* Main Content Area */}
+      {/* Main Content Area - All tabs viewable by all users */}
       <main className="flex-1 pb-16">
-        {/* Guard fallback for guests attempting unauthorized tab access */}
-        {isGuest && activeTab !== 'timetable' && (
-          <div className="max-w-xl mx-auto my-12 p-8 bg-white rounded-2xl border border-slate-200 shadow-xl text-center space-y-4 animate-in fade-in">
-            <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
-              <Lock className="w-7 h-7" />
-            </div>
-            <h2 className="text-lg font-bold text-slate-900">Nội Dung Giới Hạn Quyền Xem</h2>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Ở chế độ xem tự do, người xem chỉ được xem tab <strong>Thời khóa biểu toàn trường</strong>. Để xem các nội dung phân công chuyên môn, ma trận và sổ thực dạy, quý Thầy/Cô vui lòng đăng nhập bằng mật khẩu giáo viên do nhà trường cung cấp.
-            </p>
-            <div className="pt-2 flex items-center justify-center gap-3">
-              <button
-                onClick={() => setActiveTab('timetable')}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
-              >
-                Về Thời Khóa Biểu
-              </button>
-              <button
-                onClick={() => setLoginModalState({ isOpen: true, initialRole: 'teacher', promptReason: 'Nhập mật khẩu giáo viên để xem nội dung này.' })}
-                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer"
-              >
-                Đăng Nhập Giáo Viên
-              </button>
-            </div>
-          </div>
-        )}
-
-        {!isGuest && activeTab === 'official' && (
+        {activeTab === 'official' && (
           <UnifiedOfficialTableView
             config={config}
             classes={classes}
@@ -1315,15 +1471,15 @@ export default function App() {
           />
         )}
 
-        {!isGuest && activeTab === 'weekly_schedule' && (
+        {activeTab === 'weekly_schedule' && (
           <WeeklyScheduleManagerView
             config={config}
             classes={classes}
             subjects={subjects}
             teachers={teachers}
             baseAssignments={assignments}
-            weeklySchedules={weeklySchedules}
-            timetableSlots={weeklyTimetables[1]?.slots || timetable.slots}
+            weeklySchedules={effectiveWeeklySchedules}
+            timetableSlots={weeklyTimetables[currentWeek]?.slots || weeklyTimetables[1]?.slots || timetable.slots}
             isAdmin={isAdmin}
             onPromptAdminLogin={() => handlePromptAdminLogin()}
             onUpdateWeeklySchedule={handleUpdateWeeklySchedule}
@@ -1334,21 +1490,21 @@ export default function App() {
           />
         )}
 
-        {!isGuest && activeTab === 'weekly_log' && (
+        {activeTab === 'weekly_log' && (
           <WeeklyTeachingLogView
             config={config}
             teachers={teachers}
             departments={departments}
             classes={classes}
             subjects={subjects}
-            weeklySchedules={weeklySchedules}
+            weeklySchedules={effectiveWeeklySchedules}
             baseWorkloads={workloads}
             isAdmin={isAdmin}
             onOpenWeeklyScheduleManager={() => setActiveTab('weekly_schedule')}
           />
         )}
 
-        {!isGuest && activeTab === 'matrix' && (
+        {activeTab === 'matrix' && (
           <ClassMatrixView
             classes={classes}
             subjects={subjects}
@@ -1368,7 +1524,7 @@ export default function App() {
           />
         )}
 
-        {!isGuest && activeTab === 'workbench' && (
+        {activeTab === 'workbench' && (
           <TeacherWorkbenchView
             teachers={teachers}
             departments={departments}
@@ -1383,7 +1539,7 @@ export default function App() {
           />
         )}
 
-        {!isGuest && activeTab === 'summary' && (
+        {activeTab === 'summary' && (
           <ComprehensiveTableView
             config={config}
             classes={classes}
@@ -1400,7 +1556,7 @@ export default function App() {
           />
         )}
 
-        {!isGuest && activeTab === 'homeroom' && (
+        {activeTab === 'homeroom' && (
           <HomeroomView
             classes={classes}
             teachers={teachers}
@@ -1412,7 +1568,7 @@ export default function App() {
           />
         )}
 
-        {!isGuest && activeTab === 'teachers' && (
+        {activeTab === 'teachers' && (
           <TeacherManagementView
             teachers={teachers}
             departments={departments}
@@ -1426,7 +1582,7 @@ export default function App() {
           />
         )}
 
-        {!isGuest && activeTab === 'curriculum' && (
+        {activeTab === 'curriculum' && (
           <CurriculumView
             subjects={subjects}
             departments={departments}

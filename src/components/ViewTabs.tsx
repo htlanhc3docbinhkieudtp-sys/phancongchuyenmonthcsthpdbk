@@ -10,8 +10,7 @@ import {
   CalendarRange,
   TrendingUp,
   ChevronLeft,
-  ChevronRight,
-  Lock
+  ChevronRight
 } from 'lucide-react';
 
 export type ActiveTabType =
@@ -155,42 +154,23 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
           {tabs.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
-            const isTabLocked = isGuest && !tab.isPublic;
 
             return (
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                title={isTabLocked ? `Tab ${tab.label} yêu cầu đăng nhập Giáo viên hoặc Quản trị` : tab.label}
+                title={tab.label}
                 className={`flex items-center gap-1.5 h-9 px-3 text-xs font-bold transition-all whitespace-nowrap rounded-lg cursor-pointer shrink-0 ${
                   isActive
                     ? 'bg-indigo-600 text-white shadow-xs font-extrabold'
-                    : isTabLocked
-                    ? 'text-slate-400 hover:text-slate-700 hover:bg-slate-100/80'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                {isTabLocked ? (
-                  <Lock className="w-3.5 h-3.5 text-amber-500/80 shrink-0" />
-                ) : (
-                  <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                )}
+                <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                 <span className="hidden lg:inline">{tab.label}</span>
                 <span className="lg:hidden">{tab.shortLabel}</span>
 
-                {isTabLocked && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100/80 text-amber-800 border border-amber-200/60 ml-0.5">
-                    Khóa
-                  </span>
-                )}
-
-                {!isTabLocked && isGuest && tab.isPublic && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-700 ml-0.5">
-                    Tự do
-                  </span>
-                )}
-
-                {tab.badge && !isTabLocked && (
+                {tab.badge && (
                   <span className={`ml-1 text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
                     isActive ? 'bg-white text-indigo-700' : 'bg-rose-100 text-rose-700'
                   }`}>
