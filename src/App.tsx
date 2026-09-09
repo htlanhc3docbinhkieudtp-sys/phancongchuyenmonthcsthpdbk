@@ -82,6 +82,7 @@ import {
   exportDataAsJsonFile,
   SchoolPlanData
 } from './services/firebase';
+import { Lock } from 'lucide-react';
 
 const STORAGE_KEY = 'docbinhkieu_phancong_data_v9';
 
@@ -313,11 +314,24 @@ export default function App() {
     return createEmptyTimetableForWeek(currentWeek, config.academicYear);
   }, [weeklyTimetables, currentWeek, config.academicYear, classes, subjects, teachers, assignments, config]);
 
-  // Active tab state: Freely accessible by everyone without password barrier
+  // Active tab state: If guest, restricted strictly to 'timetable' (Thời khóa biểu toàn trường)
   const [activeTab, setActiveTab] = useState<ActiveTabType>(() => {
+    const savedRole = localStorage.getItem(`${STORAGE_KEY}_user_role`) as UserRole | null;
+    const legacyAdmin = localStorage.getItem(`${STORAGE_KEY}_is_admin`);
+    const isAuthed = savedRole === 'admin' || savedRole === 'teacher' || legacyAdmin === 'true';
+    if (!isAuthed) {
+      return 'timetable'; // Chế độ xem tự do chỉ được xem Thời khóa biểu
+    }
     const saved = localStorage.getItem(`${STORAGE_KEY}_active_tab`) as ActiveTabType | null;
     return saved || 'timetable';
   });
+
+  // Enforce guest restriction: If user is guest, automatically constrain to timetable
+  useEffect(() => {
+    if (userRole === 'guest' && activeTab !== 'timetable') {
+      setActiveTab('timetable');
+    }
+  }, [userRole, activeTab]);
 
   useEffect(() => {
     safeLocalStorageSet(`${STORAGE_KEY}_active_tab`, activeTab);
@@ -337,6 +351,15 @@ export default function App() {
   };
 
   const handleTabChange = (tab: ActiveTabType) => {
+    if (userRole === 'guest' && tab !== 'timetable') {
+      setLoginModalState({
+        isOpen: true,
+        initialRole: 'teacher',
+        pendingTab: tab,
+        promptReason: `Nội dung "${TAB_NAMES[tab] || tab}" yêu cầu mật khẩu Giáo viên (giaovien@123) hoặc Quản trị viên để xem.`,
+      });
+      return;
+    }
     setActiveTab(tab);
   };
 
@@ -358,6 +381,7 @@ export default function App() {
 
   const handleLogout = () => {
     setUserRole('guest');
+    setActiveTab('timetable');
   };
 
   const handlePromptAdminLogin = (customReason?: string) => {
@@ -1432,9 +1456,42 @@ export default function App() {
         userRole={userRole}
       />
 
-      {/* Main Content Area - All tabs viewable by all users */}
+      {/* Main Content Area */}
       <main className="flex-1 pb-16">
-        {activeTab === 'official' && (
+        {/* Guard fallback for guests attempting unauthorized tab access */}
+        {isGuest && activeTab !== 'timetable' && (
+          <div className="max-w-xl mx-auto my-12 p-8 bg-white rounded-2xl border border-slate-200 shadow-xl text-center space-y-4 animate-in fade-in">
+            <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
+              <Lock className="w-7 h-7" />
+            </div>
+            <h2 className="text-lg font-bold text-slate-900">Nội Dung Giới Hạn Quyền Xem</h2>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Mọi người đều được xem tự do ở tab <strong>Thời khóa biểu toàn trường</strong>. Để xem các nội dung phân công chuyên môn, ma trận, sổ thực dạy và hồ sơ giáo viên, quý Thầy/Cô vui lòng đăng nhập bằng mật khẩu Giáo viên (<strong>giaovien@123</strong>) hoặc Quản trị viên.
+            </p>
+            <div className="pt-2 flex items-center justify-center gap-3">
+              <button
+                onClick={() => setActiveTab('timetable')}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
+              >
+                Về Thời Khóa Biểu
+              </button>
+              <button
+                onClick={() => setLoginModalState({
+                  isOpen: true,
+                  initialRole: 'teacher',
+                  pendingTab: activeTab,
+                  promptReason: 'Nhập mật khẩu giáo viên (giaovien@123) hoặc quản trị để xem nội dung này.'
+                })}
+                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer"
+              >
+                Đăng Nhập Giáo Viên (giaovien@123)
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 1: Phân Công Chính Thức - Yêu cầu đăng nhập */}
+        {!isGuest && activeTab === 'official' && (
           <UnifiedOfficialTableView
             config={config}
             classes={classes}
@@ -1451,6 +1508,7 @@ export default function App() {
           />
         )}
 
+        {/* Tab 2: Thời Khóa Biểu Toàn Trường - Mọi người được xem tự do */}
         {activeTab === 'timetable' && (
           <SchoolTimetableView
             config={config}
@@ -1471,7 +1529,8 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'weekly_schedule' && (
+        {/* Tab 3: Phân Công Tuần - Yêu cầu đăng nhập */}
+        {!isGuest && activeTab === 'weekly_schedule' && (
           <WeeklyScheduleManagerView
             config={config}
             classes={classes}
@@ -1490,7 +1549,8 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'weekly_log' && (
+        {/* Tab 4: Sổ Thực Dạy - Yêu cầu đăng nhập */}
+        {!isGuest && activeTab === 'weekly_log' && (
           <WeeklyTeachingLogView
             config={config}
             teachers={teachers}
@@ -1504,7 +1564,8 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'matrix' && (
+        {/* Tab 5: Ma Trận - Yêu cầu đăng nhập */}
+        {!isGuest && activeTab === 'matrix' && (
           <ClassMatrixView
             classes={classes}
             subjects={subjects}
@@ -1524,7 +1585,8 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'workbench' && (
+        {/* Tab 6: Bàn Làm Việc - Yêu cầu đăng nhập */}
+        {!isGuest && activeTab === 'workbench' && (
           <TeacherWorkbenchView
             teachers={teachers}
             departments={departments}
@@ -1539,7 +1601,8 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'summary' && (
+        {/* Tab 7: Tổng Hợp Trường - Yêu cầu đăng nhập */}
+        {!isGuest && activeTab === 'summary' && (
           <ComprehensiveTableView
             config={config}
             classes={classes}
@@ -1556,7 +1619,8 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'homeroom' && (
+        {/* Tab 8: Chủ Nhiệm - Yêu cầu đăng nhập */}
+        {!isGuest && activeTab === 'homeroom' && (
           <HomeroomView
             classes={classes}
             teachers={teachers}
@@ -1568,7 +1632,8 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'teachers' && (
+        {/* Tab 9: Hồ Sơ Giáo Viên - Yêu cầu đăng nhập */}
+        {!isGuest && activeTab === 'teachers' && (
           <TeacherManagementView
             teachers={teachers}
             departments={departments}
@@ -1582,7 +1647,8 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'curriculum' && (
+        {/* Tab 10: Khung Tiết GDPT - Yêu cầu đăng nhập */}
+        {!isGuest && activeTab === 'curriculum' && (
           <CurriculumView
             subjects={subjects}
             departments={departments}

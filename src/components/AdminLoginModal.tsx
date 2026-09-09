@@ -153,10 +153,15 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
 
           {/* Role explanation */}
           {selectedRole === 'teacher' ? (
-            <div className="bg-indigo-50/80 border border-indigo-200/80 rounded-xl p-3.5 text-xs text-indigo-950 space-y-1">
-              <div className="flex items-center gap-1.5 font-bold text-indigo-900">
-                <GraduationCap className="w-4 h-4 text-indigo-600" />
-                <span>Quyền dành cho Giáo viên toàn trường:</span>
+            <div className="bg-indigo-50/80 border border-indigo-200/80 rounded-xl p-3.5 text-xs text-indigo-950 space-y-1.5">
+              <div className="flex items-center justify-between font-bold text-indigo-900">
+                <div className="flex items-center gap-1.5">
+                  <GraduationCap className="w-4 h-4 text-indigo-600" />
+                  <span>Quyền dành cho Giáo viên toàn trường:</span>
+                </div>
+                <span className="text-[11px] bg-indigo-200/70 text-indigo-800 px-2 py-0.5 rounded-full font-mono font-bold">
+                  giaovien@123
+                </span>
               </div>
               <p className="text-slate-600 leading-relaxed pl-5.5">
                 Được xem <strong>toàn bộ các tab và dữ liệu</strong> trong ứng dụng (Phân công, Ma trận, Sổ thực dạy, Bàn làm việc...). Quyền này ở chế độ <strong>Chỉ Xem</strong>, không làm ảnh hưởng đến dữ liệu phân công gốc.
@@ -175,9 +180,20 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
           )}
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              {selectedRole === 'teacher' ? 'Mật khẩu Giáo viên toàn trường' : 'Mật khẩu Quản trị viên'}
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                {selectedRole === 'teacher' ? 'Mật khẩu Giáo viên toàn trường' : 'Mật khẩu Quản trị viên'}
+              </label>
+              {selectedRole === 'teacher' && (
+                <button
+                  type="button"
+                  onClick={() => setPassword('giaovien@123')}
+                  className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
+                >
+                  Dùng giaovien@123
+                </button>
+              )}
+            </div>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                 <Lock className="w-4 h-4" />
@@ -190,7 +206,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
                   setPassword(e.target.value);
                   if (errorMsg) setErrorMsg('');
                 }}
-                placeholder={selectedRole === 'teacher' ? 'Nhập mật khẩu giáo viên...' : 'Nhập mật khẩu quản trị...'}
+                placeholder={selectedRole === 'teacher' ? 'Nhập mật khẩu: giaovien@123' : 'Nhập mật khẩu quản trị...'}
                 className="w-full pl-9 pr-10 py-2.5 bg-slate-50 border border-slate-300 focus:border-indigo-600 focus:bg-white rounded-xl text-sm font-mono text-slate-900 placeholder:text-slate-400 outline-none transition-all"
               />
               <button
