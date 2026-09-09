@@ -128,7 +128,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
   // Effective timetable slots (all 3 campuses: THPT, THCS DBK, THCS TK)
   const effectiveSlots = useMemo(() => {
     if (timetableSlots && timetableSlots.length > 0) {
-      return ensureTHPTOfficialSlots(timetableSlots);
+      return normalizeTimetableSlots(timetableSlots);
     }
     return normalizeTimetableSlots([
       ...buildTHPTWeek1Slots(),

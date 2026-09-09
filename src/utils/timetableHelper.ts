@@ -217,33 +217,19 @@ export function generateInitialTimetable(
 }
 
 /**
- * Ensure THPT, THCS DBK, and THCS TK classes always contain the official timetable data from the uploaded matrices
+ * Ensure THPT, THCS DBK, and THCS TK classes contain timetable data.
+ * IMPORTANT: If existingSlots already has slots (user edits or saved state),
+ * it preserves them so manual modifications are NEVER wiped out on reload.
  */
 export function ensureTHPTOfficialSlots(existingSlots: TimetableSlot[]): TimetableSlot[] {
+  if (existingSlots && existingSlots.length > 0) {
+    return normalizeTimetableSlots(existingSlots);
+  }
+
   const thptWeek1Slots = buildTHPTWeek1Slots();
   const thcsDBKWeek1Slots = buildTHCSDBKWeek1Slots();
   const thcsTKWeek1Slots = buildTHCSTKWeek1Slots();
-
-  const officialClassIds = new Set([
-    // THPT (14 lớp)
-    'cls-10cb1', 'cls-10cb2', 'cls-10cb3', 'cls-10cb4', 'cls-10cb5',
-    'cls-11cb1', 'cls-11cb2', 'cls-11cb3', 'cls-11cb4',
-    'cls-12cb1', 'cls-12cb2', 'cls-12cb3', 'cls-12cb4', 'cls-12cb5',
-    // THCS DBK (24 lớp)
-    'cls-6a1', 'cls-6a2', 'cls-6a3', 'cls-6a4', 'cls-6a5', 'cls-6a6',
-    'cls-7a1', 'cls-7a2', 'cls-7a3', 'cls-7a4', 'cls-7a5', 'cls-7a6',
-    'cls-8a1', 'cls-8a2', 'cls-8a3', 'cls-8a4', 'cls-8a5', 'cls-8a6',
-    'cls-9a1', 'cls-9a2', 'cls-9a3', 'cls-9a4', 'cls-9a5', 'cls-9a6',
-    // THCS TK (15 lớp)
-    'cls-6a7', 'cls-6a8', 'cls-6a9', 'cls-6a10',
-    'cls-7a7', 'cls-7a8', 'cls-7a9',
-    'cls-8a7', 'cls-8a8', 'cls-8a9', 'cls-8a10',
-    'cls-9a7', 'cls-9a8', 'cls-9a9', 'cls-9a10'
-  ]);
-
-  const nonOfficialSlots = (existingSlots || []).filter(s => !officialClassIds.has(s.classId));
-  const combined = [...thptWeek1Slots, ...thcsDBKWeek1Slots, ...thcsTKWeek1Slots, ...nonOfficialSlots];
-  return normalizeTimetableSlots(combined);
+  return normalizeTimetableSlots([...thptWeek1Slots, ...thcsDBKWeek1Slots, ...thcsTKWeek1Slots]);
 }
 
 /**

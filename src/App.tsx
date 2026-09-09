@@ -252,7 +252,7 @@ export default function App() {
         if (parsed && typeof parsed === 'object') {
           // Check Week 1 slots
           if (parsed[1] && parsed[1].slots && parsed[1].slots.length > 0) {
-            parsed[1].slots = ensureTHPTOfficialSlots(parsed[1].slots);
+            parsed[1].slots = normalizeTimetableSlots(parsed[1].slots);
           } else {
             parsed[1] = generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
           }
@@ -434,7 +434,7 @@ export default function App() {
           if (cloudData.weeklyTimetables && Object.keys(cloudData.weeklyTimetables).length > 0) {
             const merged = { ...cloudData.weeklyTimetables };
             if (merged[1] && merged[1].slots && merged[1].slots.length > 0) {
-              merged[1].slots = ensureTHPTOfficialSlots(merged[1].slots);
+              merged[1].slots = normalizeTimetableSlots(merged[1].slots);
             } else {
               merged[1] = generateInitialTimetable(cloudData.classes || classes, cloudData.subjects || subjects, cloudData.teachers || teachers, cloudData.assignments || assignments, cloudData.config || config);
             }
@@ -448,7 +448,7 @@ export default function App() {
             const tkb1: SchoolTimetable = {
               ...cloudData.timetable,
               weekNumber: 1,
-              slots: ensureTHPTOfficialSlots(cloudData.timetable.slots)
+              slots: normalizeTimetableSlots(cloudData.timetable.slots)
             };
             setWeeklyTimetables({ 1: tkb1 });
           }
