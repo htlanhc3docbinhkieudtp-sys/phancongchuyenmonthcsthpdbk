@@ -233,23 +233,40 @@ export function ensureTHPTOfficialSlots(existingSlots: TimetableSlot[]): Timetab
 }
 
 /**
- * Normalizes subject names for HĐTNHN in THCS classes (grades 6-9 in DBK and TK)
- * - "Tiết hoạt động chủ nhiệm, hoạt động quy mô lớp" -> HĐTNHN (Sinh hoạt lớp)
- * - "Tiết hoạt động trải nghiệm theo chủ đề, hoạt động TN" -> HĐTNHN (Chuyên đề)
- * - For THPT (grades 10-12): keep original subject name intact
+ * Normalizes subject names for HĐTNHN and Sinh hoạt lớp:
+ * - Thứ 7, tiết cuối cùng (tiết 5) của mọi lớp đều là "Sinh hoạt lớp"
+ * - Tiết sinh hoạt lớp (SHL) -> Sinh hoạt lớp (mã sub-shl)
+ * - Tiết hoạt động quy mô lớp / chuyên đề -> HĐTNHN (Quy mô lớp) / HĐTNHN (Chuyên đề)
  */
-export function getUnifiedSubjectName(slot: { classId?: string; className?: string; subjectName?: string }): string {
+export function getUnifiedSubjectName(slot: { classId?: string; className?: string; subjectName?: string; dayOfWeek?: number; period?: number }): string {
   if (!slot?.subjectName) return '';
   const sub = slot.subjectName.trim();
   const cName = (slot.className || '').trim().toUpperCase();
   const cId = (slot.classId || '').toLowerCase();
 
+  // 1. Thứ 7, tiết cuối cùng (tiết 5) của tất cả các lớp ĐỀU là Sinh hoạt lớp
+  if (slot.dayOfWeek === 7 && slot.period === 5) {
+    return 'Sinh hoạt lớp';
+  }
+
+  // 2. Các tiết SHL / Sinh hoạt lớp
+  if (sub === 'SHL' || sub.startsWith('SHL-') || sub.startsWith('SHL -') || sub === 'Sinh hoạt lớp' || sub.startsWith('Sinh hoạt lớp')) {
+    return 'Sinh hoạt lớp';
+  }
+
   // Check if class is grade 6-9 (THCS DBK or TK: 6A1..6A10, 7A1..7A9, 8A1..8A10, 9A1..9A10)
-  // Grade 10-12 are THPT (10CB1..5, 11CB1..4, 12CB1..5)
   const isTHCS = /^[6789]A\d+/i.test(cName) || cId.includes('-6') || cId.includes('-7') || cId.includes('-8') || cId.includes('-9');
 
   if (isTHCS) {
-    // 1. Tiết hoạt động chủ nhiệm, hoạt động quy mô lớp sửa lại là HĐTNHN (Sinh hoạt lớp)
+    // Sửa nhầm: nếu bị ghi là HĐTNHN (Sinh hoạt lớp)
+    if (sub === 'HĐTNHN (Sinh hoạt lớp)') {
+      if (slot.dayOfWeek === 7 && slot.period === 5) {
+        return 'Sinh hoạt lớp';
+      }
+      return 'HĐTNHN (Quy mô lớp)';
+    }
+
+    // Tiết hoạt động chủ nhiệm, hoạt động quy mô lớp sửa lại là HĐTNHN (Quy mô lớp)
     if (
       sub === 'HĐCN' ||
       sub.startsWith('HĐCN') ||
@@ -261,10 +278,10 @@ export function getUnifiedSubjectName(slot: { classId?: string; className?: stri
       sub.toLowerCase().includes('quy mô lớp') ||
       sub.toLowerCase().includes('chủ nhiệm')
     ) {
-      return 'HĐTNHN (Sinh hoạt lớp)';
+      return 'HĐTNHN (Quy mô lớp)';
     }
 
-    // 2. Tiết hoạt động trải nghiệm theo chủ đề, hoạt động TN sửa lại thành HĐTNHN (Chuyên đề)
+    // Tiết hoạt động trải nghiệm theo chủ đề sửa lại thành HĐTNHN (Chuyên đề)
     if (
       sub === 'HĐ CĐ' ||
       sub.startsWith('HĐ CĐ') ||
@@ -281,7 +298,6 @@ export function getUnifiedSubjectName(slot: { classId?: string; className?: stri
     }
   }
 
-  // Khối 10-12 THPT: giữ nguyên tên gọi của môn HĐTNHN
   return sub;
 }
 
@@ -291,10 +307,18 @@ export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[]
     let subjectName = unifiedName || s.subjectName;
     let subjectId = s.subjectId;
 
-    if (subjectName === 'HĐTNHN (Chuyên đề)') {
+    // Thứ 7, tiết 5 luôn là Sinh hoạt lớp
+    if (s.dayOfWeek === 7 && s.period === 5) {
+      subjectName = 'Sinh hoạt lớp';
+      subjectId = 'sub-shl';
+    } else if (subjectName === 'Sinh hoạt lớp' || subjectName === 'SHL') {
+      subjectName = 'Sinh hoạt lớp';
+      subjectId = 'sub-shl';
+    } else if (subjectName === 'HĐTNHN (Chuyên đề)') {
       subjectId = 'sub-hdtn-cd';
-    } else if (subjectName === 'HĐTNHN (Sinh hoạt lớp)') {
-      subjectId = 'sub-hdtn-shl';
+    } else if (subjectName === 'HĐTNHN (Quy mô lớp)' || subjectName === 'HĐTNHN (Sinh hoạt lớp)') {
+      subjectName = 'HĐTNHN (Quy mô lớp)';
+      subjectId = 'sub-hdtn-cd';
     } else if (subjectName === 'Chào cờ') {
       subjectId = 'sub-chao-co';
     } else if (subjectName === 'HĐTN - HN' || subjectName === 'HĐTN-HN' || subjectName === 'HĐTN, HN' || subjectName === 'HĐ Trải nghiệm, Hướng nghiệp (THPT)' || subjectName === 'HĐ Trải nghiệm, Hướng nghiệp') {
@@ -318,6 +342,31 @@ export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[]
       teacherId = 'tch-td-2';
       teacherName = 'Nguyễn Kim Rạng';
       teacherCode = 'Rạng.NK';
+    } else if (
+      teacherId === 'tch-ls-1' ||
+      tNameLower === 'lê hồng thủy' ||
+      tNameLower === 'le hong thuy' ||
+      (teacherCode && teacherCode.toLowerCase() === 'thủy.lh')
+    ) {
+      teacherId = 'tch-ls-1';
+      teacherName = 'Lê Hồng Thúy';
+      teacherCode = 'Thúy.LH';
+    } else if (
+      teacherId === 'tch-td-1' ||
+      tNameLower === 'lê văn nguyện' ||
+      (teacherCode && teacherCode.toLowerCase() === 'nguyện.lv')
+    ) {
+      teacherId = 'tch-td-1';
+      teacherName = 'Lê Văn Nguyên';
+      teacherCode = 'Nguyên.LV';
+    } else if (
+      teacherId === 'tch-khtn-15' ||
+      tNameLower === 'võ ngọc đỉnh văn' ||
+      tNameLower === 'vo ngoc dinh van'
+    ) {
+      teacherId = 'tch-khtn-15';
+      teacherName = 'Võ Ngọc Đình Văn';
+      teacherCode = 'Văn.VNĐ';
     }
 
     // Enforce school shift rules:

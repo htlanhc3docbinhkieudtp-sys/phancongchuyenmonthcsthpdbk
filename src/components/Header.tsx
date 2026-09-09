@@ -37,6 +37,12 @@ interface HeaderProps {
   lastSyncedAt: number | null;
   isAdmin: boolean;
   userRole?: 'guest' | 'teacher' | 'admin';
+  visitorStats?: {
+    totalVisits: number;
+    uniqueVisitors: number;
+    todayVisits: number;
+  } | null;
+  onOpenVisitorStats?: () => void;
   onOpenAdminLogin: () => void;
   onLogoutAdmin: () => void;
   onSaveToCloud: () => void;
@@ -60,6 +66,8 @@ export const Header: React.FC<HeaderProps> = ({
   lastSyncedAt,
   isAdmin,
   userRole = 'guest',
+  visitorStats,
+  onOpenVisitorStats,
   onOpenAdminLogin,
   onLogoutAdmin,
   onSaveToCloud,
@@ -366,7 +374,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={onOpenAdminLogin}
                 className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer"
-                title="Đăng nhập Giáo viên (giaovien@123) hoặc Quản trị viên"
+                title="Đăng nhập Giáo viên hoặc Quản trị viên"
               >
                 <KeyRound className="w-3.5 h-3.5" />
                 <span>Đăng Nhập</span>
@@ -395,6 +403,19 @@ export const Header: React.FC<HeaderProps> = ({
               <span>Tiến độ gán tiết:</span>
               <strong className="text-emerald-300 font-bold">{assignedPercentage}%</strong>
             </div>
+
+            {visitorStats && (
+              <button
+                type="button"
+                onClick={onOpenVisitorStats}
+                className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-indigo-900/90 hover:bg-indigo-800 text-amber-300 hover:text-amber-200 border border-indigo-700/80 transition-all cursor-pointer shadow-2xs"
+                title="Bấm để xem chi tiết thống kê lượt truy cập website toàn trường"
+              >
+                <Eye className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-indigo-200">Truy cập:</span>
+                <strong className="font-mono font-bold">{visitorStats.totalVisits.toLocaleString('vi-VN')}</strong>
+              </button>
+            )}
           </div>
 
           {/* Compact progress bar */}

@@ -58,6 +58,13 @@ import { ExcelImportExportModal } from './components/ExcelImportExportModal';
 import { AutoAssignModal } from './components/AutoAssignModal';
 import { ConflictAuditDrawer } from './components/ConflictAuditDrawer';
 import { AdminLoginModal } from './components/AdminLoginModal';
+import { Footer } from './components/Footer';
+import { VisitorCounterModal } from './components/VisitorCounterModal';
+import {
+  recordVisitorAccess,
+  subscribeToVisitorStats,
+  VisitorStats
+} from './services/visitorCounterService';
 import { Lock } from 'lucide-react';
 import {
   saveSchoolPlanToCloud,
@@ -177,10 +184,8 @@ export default function App() {
     return saved ? JSON.parse(saved) : initialClasses;
   });
 
-  const [teachers, setTeachers] = useState<Teacher[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_teachers`);
-    const rawList: Teacher[] = saved ? JSON.parse(saved) : initialTeachers;
-    return rawList
+  const sanitizeTeachersList = (list: Teacher[]): Teacher[] => {
+    return (list || [])
       .filter(t => 
         t.departmentId !== 'dept-van-phong' && 
         !t.id.startsWith('tch-vp') &&
@@ -190,8 +195,23 @@ export default function App() {
         if (t.id === 'tch-td-2' || t.name === 'Nguyễn Kim Rang' || t.name === 'Đặng Văn Rạng') {
           return { ...t, name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' };
         }
+        if (t.id === 'tch-ls-1' || t.name === 'Lê Hồng Thủy') {
+          return { ...t, name: 'Lê Hồng Thúy', code: 'Thúy.LH' };
+        }
+        if (t.id === 'tch-td-1' || t.name === 'Lê Văn Nguyện') {
+          return { ...t, name: 'Lê Văn Nguyên', code: 'Nguyên.LV' };
+        }
+        if (t.id === 'tch-khtn-15' || t.name === 'Võ Ngọc Đỉnh Văn') {
+          return { ...t, name: 'Võ Ngọc Đình Văn', code: 'Văn.VNĐ' };
+        }
         return t;
       });
+  };
+
+  const [teachers, setTeachers] = useState<Teacher[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY}_teachers`);
+    const rawList: Teacher[] = saved ? JSON.parse(saved) : initialTeachers;
+    return sanitizeTeachersList(rawList);
   });
 
   const [assignments, setAssignments] = useState<Assignment[]>(() => {
@@ -327,7 +347,7 @@ export default function App() {
         isOpen: true,
         initialRole: 'teacher',
         pendingTab: tab,
-        promptReason: `Nội dung "${TAB_NAMES[tab]}" yêu cầu đăng nhập Giáo viên (giaovien@123) hoặc Quản trị viên để xem.`,
+        promptReason: `Nội dung "${TAB_NAMES[tab]}" yêu cầu đăng nhập Giáo viên hoặc Quản trị viên để xem.`,
       });
       return;
     }
@@ -388,6 +408,30 @@ export default function App() {
     }, 4000);
   };
 
+  // Real-time Visitor Counter State
+  const [visitorStats, setVisitorStats] = useState<VisitorStats | null>(null);
+  const [isVisitorModalOpen, setIsVisitorModalOpen] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    recordVisitorAccess().then(initialStats => {
+      if (isMounted && initialStats) {
+        setVisitorStats(initialStats);
+      }
+    });
+
+    const unsubscribe = subscribeToVisitorStats(stats => {
+      if (isMounted && stats) {
+        setVisitorStats(stats);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
+  }, []);
+
   // Initial fetch from Firestore on mount
   useEffect(() => {
     let isMounted = true;
@@ -425,7 +469,7 @@ export default function App() {
             setSubjects(updatedSubs);
           }
           if (cloudData.classes && cloudData.classes.length > 0) setClasses(cloudData.classes);
-          if (cloudData.teachers && cloudData.teachers.length > 0) setTeachers(cloudData.teachers);
+          if (cloudData.teachers && cloudData.teachers.length > 0) setTeachers(sanitizeTeachersList(cloudData.teachers));
           if (cloudData.assignments) setAssignments(cloudData.assignments);
           if (cloudData.lockedCells) setLockedCells(cloudData.lockedCells);
           if (cloudData.weeklySchedules && cloudData.weeklySchedules.length > 0) {
@@ -904,7 +948,7 @@ export default function App() {
           if (parsed.departments) setDepartments(parsed.departments);
           if (parsed.subjects) setSubjects(parsed.subjects);
           if (parsed.classes) setClasses(parsed.classes);
-          if (parsed.teachers) setTeachers(parsed.teachers);
+          if (parsed.teachers) setTeachers(sanitizeTeachersList(parsed.teachers));
           if (parsed.assignments) setAssignments(parsed.assignments);
           if (parsed.lockedCells) setLockedCells(parsed.lockedCells);
           if (parsed.weeklySchedules) setWeeklySchedules(parsed.weeklySchedules);
@@ -1183,6 +1227,8 @@ export default function App() {
         lastSyncedAt={lastSyncedAt}
         isAdmin={isAdmin}
         userRole={userRole}
+        visitorStats={visitorStats}
+        onOpenVisitorStats={() => setIsVisitorModalOpen(true)}
         onOpenAdminLogin={() => setLoginModalState({ isOpen: true, initialRole: userRole === 'teacher' ? 'admin' : 'teacher', promptReason: null })}
         onLogoutAdmin={handleLogout}
         onSaveToCloud={handleSaveToCloud}
@@ -1203,28 +1249,6 @@ export default function App() {
         userRole={userRole}
       />
 
-      {/* Notice Banner for Guest mode */}
-      {isGuest && (
-        <div className="bg-amber-50 border-b border-amber-200/80 px-4 py-2 text-xs text-amber-900">
-          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded-md bg-amber-200/80 font-bold text-amber-900 text-[11px]">
-                Xem Tự Do
-              </span>
-              <span>
-                Đang xem <strong>Thời khóa biểu toàn trường</strong> (3 điểm trường). Các tab khác yêu cầu mật khẩu Giáo viên để xem.
-              </span>
-            </div>
-            <button
-              onClick={() => setLoginModalState({ isOpen: true, initialRole: 'teacher', promptReason: 'Nhập mật khẩu giáo viên toàn trường (giaovien@123) để mở khóa tất cả các tab.' })}
-              className="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg shadow-2xs transition-all active:scale-95 cursor-pointer text-xs"
-            >
-              Đăng nhập Giáo viên (giaovien@123)
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Main Content Area */}
       <main className="flex-1 pb-16">
         {/* Guard fallback for guests attempting unauthorized tab access */}
@@ -1235,7 +1259,7 @@ export default function App() {
             </div>
             <h2 className="text-lg font-bold text-slate-900">Nội Dung Giới Hạn Quyền Xem</h2>
             <p className="text-sm text-slate-600 leading-relaxed">
-              Ở chế độ xem tự do, người xem chỉ được xem tab <strong>Thời khóa biểu toàn trường</strong>. Để xem các nội dung phân công chuyên môn, ma trận và sổ thực dạy, quý Thầy/Cô vui lòng đăng nhập bằng mật khẩu giáo viên dùng chung (<code className="font-mono bg-slate-100 text-indigo-700 px-1.5 py-0.5 rounded font-bold">giaovien@123</code>).
+              Ở chế độ xem tự do, người xem chỉ được xem tab <strong>Thời khóa biểu toàn trường</strong>. Để xem các nội dung phân công chuyên môn, ma trận và sổ thực dạy, quý Thầy/Cô vui lòng đăng nhập bằng mật khẩu giáo viên do nhà trường cung cấp.
             </p>
             <div className="pt-2 flex items-center justify-center gap-3">
               <button
@@ -1413,7 +1437,19 @@ export default function App() {
         )}
       </main>
 
+      {/* Modern School Footer with Live Visitor Counter */}
+      <Footer
+        stats={visitorStats}
+        onOpenStatsModal={() => setIsVisitorModalOpen(true)}
+      />
+
       {/* Modals & Slide-out Drawers */}
+      <VisitorCounterModal
+        isOpen={isVisitorModalOpen}
+        onClose={() => setIsVisitorModalOpen(false)}
+        stats={visitorStats}
+      />
+
       <AdminLoginModal
         isOpen={loginModalState.isOpen}
         onClose={() => setLoginModalState(prev => ({ ...prev, isOpen: false }))}

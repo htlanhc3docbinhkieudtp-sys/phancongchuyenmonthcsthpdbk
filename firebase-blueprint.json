@@ -37,6 +37,21 @@
         "timetable": { "type": "object", "description": "Timetable object containing slot details" },
         "updatedAt": { "type": "number", "description": "Last modified timestamp" }
       }
+    },
+    "VisitorAnalyticsDoc": {
+      "title": "Visitor Analytics",
+      "description": "Persistent visitor counter and traffic analytics for the school website",
+      "type": "object",
+      "properties": {
+        "totalVisits": { "type": "number", "description": "Total visits count" },
+        "uniqueVisitors": { "type": "number", "description": "Unique visitors count" },
+        "todayDate": { "type": "string", "description": "Today's date in YYYY-MM-DD format" },
+        "todayVisits": { "type": "number", "description": "Number of visits today" },
+        "yesterdayVisits": { "type": "number", "description": "Number of visits yesterday" },
+        "thisMonthVisits": { "type": "number", "description": "Number of visits this month" },
+        "lastVisitedAt": { "type": "number", "description": "Timestamp of the last visit" },
+        "dailyHistory": { "type": "object", "description": "Daily visit breakdown for the last 30 days" }
+      }
     }
   },
   "firestore": {
@@ -51,6 +66,10 @@
     "/school_plans/{planId}/weekly_timetables/{weekId}": {
       "schema": "WeeklyTimetableDoc",
       "description": "Weekly timetable slots partitioned to ensure under 1MB Firestore limit"
+    },
+    "/site_analytics/{docId}": {
+      "schema": "VisitorAnalyticsDoc",
+      "description": "Website visitor counter and traffic analytics"
     }
   }
 }

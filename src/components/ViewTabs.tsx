@@ -161,7 +161,7 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                title={isTabLocked ? `Tab ${tab.label} yêu cầu mật khẩu Giáo viên (giaovien@123) hoặc Quản trị` : tab.label}
+                title={isTabLocked ? `Tab ${tab.label} yêu cầu đăng nhập Giáo viên hoặc Quản trị` : tab.label}
                 className={`flex items-center gap-1.5 h-9 px-3 text-xs font-bold transition-all whitespace-nowrap rounded-lg cursor-pointer shrink-0 ${
                   isActive
                     ? 'bg-indigo-600 text-white shadow-xs font-extrabold'

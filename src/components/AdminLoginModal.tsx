@@ -71,7 +71,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
 
     // Invalid password
     if (selectedRole === 'teacher') {
-      setErrorMsg('Mật khẩu giáo viên không chính xác. Mật khẩu mặc định toàn trường là giaovien@123');
+      setErrorMsg('Mật khẩu giáo viên không chính xác. Vui lòng liên hệ nhà trường để nhận mật khẩu.');
     } else {
       setErrorMsg('Mật khẩu quản trị không chính xác. Vui lòng kiểm tra lại!');
     }
@@ -161,9 +161,6 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
               <p className="text-slate-600 leading-relaxed pl-5.5">
                 Được xem <strong>toàn bộ các tab và dữ liệu</strong> trong ứng dụng (Phân công, Ma trận, Sổ thực dạy, Bàn làm việc...). Quyền này ở chế độ <strong>Chỉ Xem</strong>, không làm ảnh hưởng đến dữ liệu phân công gốc.
               </p>
-              <p className="text-[11px] text-indigo-700 font-semibold pl-5.5 pt-0.5">
-                💡 Mật khẩu dùng chung: <span className="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-indigo-200 select-all">giaovien@123</span>
-              </p>
             </div>
           ) : (
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-xs text-amber-950 space-y-1">
@@ -193,7 +190,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
                   setPassword(e.target.value);
                   if (errorMsg) setErrorMsg('');
                 }}
-                placeholder={selectedRole === 'teacher' ? 'Nhập mật khẩu (mặc định: giaovien@123)...' : 'Nhập mật khẩu quản trị...'}
+                placeholder={selectedRole === 'teacher' ? 'Nhập mật khẩu giáo viên...' : 'Nhập mật khẩu quản trị...'}
                 className="w-full pl-9 pr-10 py-2.5 bg-slate-50 border border-slate-300 focus:border-indigo-600 focus:bg-white rounded-xl text-sm font-mono text-slate-900 placeholder:text-slate-400 outline-none transition-all"
               />
               <button

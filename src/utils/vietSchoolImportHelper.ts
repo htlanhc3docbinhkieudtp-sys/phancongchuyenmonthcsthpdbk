@@ -51,7 +51,7 @@ const THCS_DBK_TEACHER_LOOKUP: Record<string, { id: string; name: string; code: 
   'Dương': { id: 'tch-v-10', name: 'Hứa Thùy Dương', code: 'Dương.HT' },
   'An': { id: 'tch-v-11', name: 'Lê Thị Hoài An', code: 'An.LTH' },
   // Tổ KHXH
-  'Thúy': { id: 'tch-ls-1', name: 'Lê Hồng Thủy', code: 'Thủy.LH' },
+  'Thúy': { id: 'tch-ls-1', name: 'Lê Hồng Thúy', code: 'Thúy.LH' },
   'Lê The': { id: 'tch-ls-9', name: 'Lê Thị Kim The', code: 'The.LTK' },
   'Tân': { id: 'tch-ls-10', name: 'Nguyễn Quốc Tấn', code: 'Tấn.NQ' },
   'Đỉnh': { id: 'tch-ls-11', name: 'Nguyễn Thị Kim Đỉnh', code: 'Đỉnh.NTK' },
@@ -81,8 +81,8 @@ const THCS_DBK_TEACHER_LOOKUP: Record<string, { id: string; name: string; code: 
   'Chi': { id: 'tch-av-13', name: 'Lê Thị Mỹ Chi', code: 'Chi.LTM' },
   'Ngọc Như': { id: 'tch-av-14', name: 'Trần Ngọc Như', code: 'Như.TN' },
   // Tổ GDTC - QPAN - Nghệ thuật
-  'Nguyện': { id: 'tch-td-1', name: 'Lê Văn Nguyện', code: 'Nguyện.LV' },
-  'Nguyên': { id: 'tch-td-1', name: 'Lê Văn Nguyện', code: 'Nguyện.LV' },
+  'Nguyện': { id: 'tch-td-1', name: 'Lê Văn Nguyên', code: 'Nguyên.LV' },
+  'Nguyên': { id: 'tch-td-1', name: 'Lê Văn Nguyên', code: 'Nguyên.LV' },
   'Đạt': { id: 'tch-td-5', name: 'Lê Minh Đạt', code: 'Đạt.LM' },
   'Ẩn': { id: 'tch-td-6', name: 'Lê Ngọc Ẩn', code: 'Ẩn.LN' },
   'Dân': { id: 'tch-td-7', name: 'Huỳnh Thanh Dân', code: 'Dân.HT' },
@@ -127,7 +127,7 @@ const THCS_TK_TEACHER_LOOKUP: Record<string, { id: string; name: string; code: s
   'Nhi': { id: 'tch-v-3', name: 'Huỳnh Thị Vân Nhi', code: 'Nhi.HTV' },
   'Thành': { id: 'tch-av-15', name: 'Lê Minh Thành', code: 'Thành.LM' },
   'Tiến': { id: 'tch-khtn-2', name: 'Thái Văn Tiến', code: 'Tiến.TV' },
-  'Đ.Văn': { id: 'tch-khtn-15', name: 'Võ Ngọc Đỉnh Văn', code: 'Văn.VNĐ' },
+  'Đ.Văn': { id: 'tch-khtn-15', name: 'Võ Ngọc Đình Văn', code: 'Văn.VNĐ' },
   'Giàu': { id: 'tch-khtn-20', name: 'Đinh Thị Giàu', code: 'Giàu.ĐT' },
   'Tòng': { id: 'tch-bgh-4', name: 'Nguyễn Thanh Tòng', code: 'Tòng.NT' }
 };
@@ -345,9 +345,12 @@ export function matchSubject(
   }
 
   // 2. Sinh hoạt lớp (SHL)
-  if (upper.startsWith('SHL') || upper.startsWith('SINH HOẠT LỚP') || upper === 'HĐCN' || upper === 'HĐ QML' || upper.includes('QUY MÔ LỚP') || upper.includes('HĐ TN-HN(SHL)') || upper.includes('HĐTNHN (SHL)')) {
+  if (upper.startsWith('SHL') || upper.startsWith('SINH HOẠT LỚP')) {
+    return { id: 'sub-shl', name: 'Sinh hoạt lớp' };
+  }
+  if (upper === 'HĐCN' || upper === 'HĐ QML' || upper.includes('QUY MÔ LỚP') || upper.includes('HĐ TN-HN(SHL)') || upper.includes('HĐTNHN (SHL)')) {
     if (isTHCS) {
-      return { id: 'sub-hdtn-shl', name: 'HĐTNHN (Sinh hoạt lớp)' };
+      return { id: 'sub-hdtn-cd', name: 'HĐTNHN (Quy mô lớp)' };
     }
     return { id: 'sub-shl', name: 'Sinh hoạt lớp' };
   }

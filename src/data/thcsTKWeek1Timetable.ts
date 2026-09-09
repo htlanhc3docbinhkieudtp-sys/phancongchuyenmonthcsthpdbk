@@ -33,7 +33,7 @@ const TEACHER_MAP: Record<string, { id: string; name: string; code: string }> = 
   'Nhi': { id: 'tch-v-3', name: 'Huỳnh Thị Vân Nhi', code: 'Nhi.HTV' },
   'Thành': { id: 'tch-av-15', name: 'Lê Minh Thành', code: 'Thành.LM' },
   'Tiến': { id: 'tch-khtn-2', name: 'Thái Văn Tiến', code: 'Tiến.TV' },
-  'Đ.Văn': { id: 'tch-khtn-15', name: 'Võ Ngọc Đỉnh Văn', code: 'Văn.VNĐ' },
+  'Đ.Văn': { id: 'tch-khtn-15', name: 'Võ Ngọc Đình Văn', code: 'Văn.VNĐ' },
   'Giàu': { id: 'tch-khtn-20', name: 'Đinh Thị Giàu', code: 'Giàu.ĐT' },
   'Tòng': { id: 'tch-bgh-4', name: 'Nguyễn Thanh Tòng', code: 'Tòng.NT' }
 };
@@ -169,9 +169,12 @@ function parseSlotText(raw: string, className: string): {
   } else if (upperSub === 'MT' || upperSub === 'MỸ THUẬT') {
     subjectId = 'sub-my-thuat';
     subjectName = 'Mỹ thuật';
-  } else if (upperSub.startsWith('HĐ QML') || upperSub === 'HD QML' || upperSub.startsWith('HĐCN') || upperSub.includes('QUY MÔ LỚP') || upperSub.includes('CHỦ NHIỆM') || upperSub.startsWith('SHL')) {
-    subjectId = 'sub-hdtn-shl';
-    subjectName = 'HĐTNHN (Sinh hoạt lớp)';
+  } else if (upperSub.startsWith('SHL') || upperSub.startsWith('SINH HOẠT LỚP')) {
+    subjectId = 'sub-shl';
+    subjectName = 'Sinh hoạt lớp';
+  } else if (upperSub.startsWith('HĐ QML') || upperSub === 'HD QML' || upperSub.startsWith('HĐCN') || upperSub.includes('QUY MÔ LỚP') || upperSub.includes('CHỦ NHIỆM')) {
+    subjectId = 'sub-hdtn-cd';
+    subjectName = 'HĐTNHN (Quy mô lớp)';
   } else if (upperSub.startsWith('HĐ CĐ') || upperSub === 'HD CD' || upperSub.startsWith('HĐTN') || upperSub.startsWith('HDTN') || upperSub.includes('CHỦ ĐỀ') || upperSub.includes('CHUYÊN ĐỀ')) {
     subjectId = 'sub-hdtn-cd';
     subjectName = 'HĐTNHN (Chuyên đề)';

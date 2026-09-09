@@ -1711,25 +1711,33 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 </label>
                 <select
                   value={
-                    editingSlot.subjectName === 'HĐTNHN (Sinh hoạt lớp)'
-                      ? 'sub-hdtn-shl'
-                      : editingSlot.subjectName === 'HĐTNHN (Chuyên đề)'
+                    editingSlot.subjectName === 'Sinh hoạt lớp' || editingSlot.subjectId === 'sub-shl' || editingSlot.subjectId === 'sub-hdtn-shl'
+                      ? 'sub-shl'
+                      : editingSlot.subjectName === 'HĐTNHN (Chuyên đề)' || editingSlot.subjectId === 'sub-hdtn-cd'
                       ? 'sub-hdtn-cd'
+                      : editingSlot.subjectName === 'HĐTNHN (Quy mô lớp)' || editingSlot.subjectId === 'sub-hdtn-qml'
+                      ? 'sub-hdtn-qml'
                       : editingSlot.subjectId || ''
                   }
                   onChange={(e) => {
                     const val = e.target.value;
-                    if (val === 'sub-hdtn-shl') {
+                    if (val === 'sub-shl') {
                       setEditingSlot({
                         ...editingSlot,
-                        subjectId: 'sub-hdtn',
-                        subjectName: 'HĐTNHN (Sinh hoạt lớp)'
+                        subjectId: 'sub-shl',
+                        subjectName: 'Sinh hoạt lớp'
                       });
                     } else if (val === 'sub-hdtn-cd') {
                       setEditingSlot({
                         ...editingSlot,
-                        subjectId: 'sub-hdtn',
+                        subjectId: 'sub-hdtn-cd',
                         subjectName: 'HĐTNHN (Chuyên đề)'
+                      });
+                    } else if (val === 'sub-hdtn-qml') {
+                      setEditingSlot({
+                        ...editingSlot,
+                        subjectId: 'sub-hdtn-qml',
+                        subjectName: 'HĐTNHN (Quy mô lớp)'
                       });
                     } else {
                       const sub = subjectMap.get(val);
@@ -1743,11 +1751,12 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                   className="w-full h-9 px-3 text-xs font-semibold bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
                 >
                   <option value="">-- Để trống (Không có tiết) --</option>
-                  <option value="sub-hdtn">Chào cờ / Hoạt động trải nghiệm</option>
-                  <option value="sub-hdtn-shl">HĐTNHN (Sinh hoạt lớp)</option>
-                  <option value="sub-hdtn-cd">HĐTNHN (Chuyên đề)</option>
                   <option value="sub-shl">Sinh hoạt lớp</option>
-                  {subjects.map(s => (
+                  <option value="sub-chao-co">Chào cờ</option>
+                  <option value="sub-hdtn-cd">HĐTNHN (Chuyên đề)</option>
+                  <option value="sub-hdtn-qml">HĐTNHN (Quy mô lớp)</option>
+                  <option value="sub-hdtn">HĐ Trải nghiệm, Hướng nghiệp (THPT)</option>
+                  {subjects.filter(s => !['sub-shl', 'sub-hdtn-shl', 'sub-hdtn-cd', 'sub-hdtn-qml', 'sub-hdtn', 'sub-chao-co'].includes(s.id)).map(s => (
                     <option key={s.id} value={s.id}>
                       {s.name}
                     </option>

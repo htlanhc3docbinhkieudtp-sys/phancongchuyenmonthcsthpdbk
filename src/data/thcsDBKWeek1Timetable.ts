@@ -36,7 +36,7 @@ export const THCS_DBK_TEACHER_MAP: Record<string, { id: string; name: string; co
   'An': { id: 'tch-v-11', name: 'Lê Thị Hoài An', code: 'An.LTH' },
   
   // Tổ KHXH (Sử, Địa, GDCD)
-  'Thúy': { id: 'tch-ls-1', name: 'Lê Hồng Thủy', code: 'Thủy.LH' },
+  'Thúy': { id: 'tch-ls-1', name: 'Lê Hồng Thúy', code: 'Thúy.LH' },
   'Lê The': { id: 'tch-ls-9', name: 'Lê Thị Kim The', code: 'The.LTK' },
   'Tân': { id: 'tch-ls-10', name: 'Nguyễn Quốc Tân', code: 'Tấn.NQ' },
   'Đỉnh': { id: 'tch-ls-11', name: 'Nguyễn Thị Kim Đỉnh', code: 'Đỉnh.NTK' },
@@ -65,8 +65,8 @@ export const THCS_DBK_TEACHER_MAP: Record<string, { id: string; name: string; co
   'Phướng': { id: 'tch-av-14', name: 'Bùi Kim Phướng', code: 'Phướng.BK' },
   
   // Tổ GDTC - QPAN - Nghệ thuật
-  'Nguyện': { id: 'tch-td-1', name: 'Lê Văn Nguyện', code: 'Nguyện.LV' },
-  'Nguyên': { id: 'tch-td-1', name: 'Lê Văn Nguyện', code: 'Nguyện.LV' },
+  'Nguyện': { id: 'tch-td-1', name: 'Lê Văn Nguyên', code: 'Nguyên.LV' },
+  'Nguyên': { id: 'tch-td-1', name: 'Lê Văn Nguyên', code: 'Nguyên.LV' },
   'Đạt': { id: 'tch-td-5', name: 'Lê Minh Đạt', code: 'Đạt.LM' },
   'Ẩn': { id: 'tch-td-6', name: 'Lê Ngọc Ẩn', code: 'Ẩn.LN' },
   'Dân': { id: 'tch-td-7', name: 'Huỳnh Thanh Dân', code: 'Dân.HT' },
@@ -95,8 +95,11 @@ export function getTHCSDBKSubjectInfo(rawSubject: string): { id: string; name: s
   if (s.startsWith('HĐ TN-HN(CĐ)') || s.startsWith('HĐTN-HN(CĐ)') || s.startsWith('HĐ TN-HN (CĐ)') || s.includes('Chuyên đề') || s.includes('theo chủ đề') || s.includes('HĐ CĐ') || s.includes('HD CD')) {
     return { id: 'sub-hdtn-cd', name: 'HĐTNHN (Chuyên đề)' };
   }
-  if (s.startsWith('HĐ TN-HN(SHL)') || s.startsWith('HĐTN-HN(SHL)') || s.startsWith('HĐCN') || s.startsWith('HĐ Chủ nhiệm') || s.includes('QML') || s.includes('quy mô lớp') || s.includes('chủ nhiệm') || s === 'SHL' || s.startsWith('SHL-')) {
-    return { id: 'sub-hdtn-shl', name: 'HĐTNHN (Sinh hoạt lớp)' };
+  if (s === 'SHL' || s.startsWith('SHL-') || s.startsWith('SHL -') || s === 'Sinh hoạt lớp' || s.startsWith('Sinh hoạt lớp')) {
+    return { id: 'sub-shl', name: 'Sinh hoạt lớp' };
+  }
+  if (s.startsWith('HĐ TN-HN(SHL)') || s.startsWith('HĐTN-HN(SHL)') || s.startsWith('HĐCN') || s.startsWith('HĐ Chủ nhiệm') || s.includes('QML') || s.includes('quy mô lớp') || s.includes('chủ nhiệm')) {
+    return { id: 'sub-hdtn-cd', name: 'HĐTNHN (Quy mô lớp)' };
   }
   if (s.startsWith('HĐ TN-HN') || s.startsWith('HĐTN-HN') || s.startsWith('HĐ TN') || s.startsWith('HĐTN')) {
     return { id: 'sub-hdtn-cd', name: 'HĐTNHN (Chuyên đề)' };
@@ -371,8 +374,8 @@ export const rawKhôi7: Record<string, { day: number; period: number; text: stri
     { day: 4, period: 1, text: 'Ngữ văn-An' },
     { day: 4, period: 2, text: 'Ngữ văn-An' },
     { day: 4, period: 3, text: 'Âm nhạc-Xanh' },
-    { day: 4, period: 4, text: 'GDTC-Nguyện' },
-    { day: 4, period: 5, text: 'GDTC-Nguyện' },
+    { day: 4, period: 4, text: 'GDTC-Nguyên' },
+    { day: 4, period: 5, text: 'GDTC-Nguyên' },
     { day: 5, period: 1, text: 'Ngoại ngữ-Khanh' },
     { day: 5, period: 2, text: 'Mỹ thuật-Đạt' },
     { day: 5, period: 3, text: 'KHTN-Thị Hiếu' },
@@ -395,8 +398,8 @@ export const rawKhôi7: Record<string, { day: number; period: number; text: stri
     { day: 2, period: 4, text: 'Tin học-Lộc' },
     { day: 2, period: 5, text: 'Chào cờ-Lộc' },
     { day: 3, period: 1, text: 'Địa Lí-Đỉnh' },
-    { day: 3, period: 2, text: 'GDTC-Nguyện' },
-    { day: 3, period: 3, text: 'GDTC-Nguyện' },
+    { day: 3, period: 2, text: 'GDTC-Nguyên' },
+    { day: 3, period: 3, text: 'GDTC-Nguyên' },
     { day: 3, period: 4, text: 'Ngoại ngữ-Thùy Dương' },
     { day: 3, period: 5, text: 'Lịch Sử-Lê The' },
     { day: 4, period: 1, text: 'Ngữ văn-Dương' },
@@ -428,8 +431,8 @@ export const rawKhôi7: Record<string, { day: number; period: number; text: stri
     { day: 3, period: 1, text: 'Ngữ văn-Dương' },
     { day: 3, period: 2, text: 'HĐ TN-HN(CĐ)-Cẩm' },
     { day: 3, period: 3, text: 'Lịch Sử-Lê The' },
-    { day: 3, period: 4, text: 'GDTC-Nguyện' },
-    { day: 3, period: 5, text: 'GDTC-Nguyện' },
+    { day: 3, period: 4, text: 'GDTC-Nguyên' },
+    { day: 3, period: 5, text: 'GDTC-Nguyên' },
     { day: 4, period: 1, text: 'Âm nhạc-Xanh' },
     { day: 4, period: 2, text: 'KHTN-Nhung' },
     { day: 4, period: 3, text: 'KHTN-Nhung' },
@@ -499,8 +502,8 @@ export const rawKhôi7: Record<string, { day: number; period: number; text: stri
     { day: 4, period: 5, text: 'Ngữ văn-Xoa' },
     { day: 5, period: 1, text: 'Mỹ thuật-Đạt' },
     { day: 5, period: 2, text: 'Ngoại ngữ-Khanh' },
-    { day: 5, period: 3, text: 'GDTC-Nguyện' },
-    { day: 5, period: 4, text: 'GDTC-Nguyện' },
+    { day: 5, period: 3, text: 'GDTC-Nguyên' },
+    { day: 5, period: 4, text: 'GDTC-Nguyên' },
     { day: 6, period: 1, text: 'Ngoại ngữ-Khanh' },
     { day: 6, period: 2, text: 'Ngữ văn-Xoa' },
     { day: 6, period: 3, text: 'Địa Lí-Tuấn' },
@@ -555,8 +558,8 @@ export const rawKhôi8: Record<string, { day: number; period: number; text: stri
     { day: 2, period: 3, text: 'Toán-Thái Hùng' },
     { day: 2, period: 4, text: 'Vật lí-Thắm' },
     { day: 2, period: 5, text: 'Vật lí-Thắm' },
-    { day: 3, period: 1, text: 'GDTC-Nguyện' },
-    { day: 3, period: 2, text: 'GDTC-Nguyện' },
+    { day: 3, period: 1, text: 'GDTC-Nguyên' },
+    { day: 3, period: 2, text: 'GDTC-Nguyên' },
     { day: 3, period: 3, text: 'Vật lí-Thắm' },
     { day: 3, period: 4, text: 'Âm nhạc-Xanh' },
     { day: 3, period: 5, text: 'HĐ TN-HN(CĐ)-Thị Hậu' },
@@ -594,8 +597,8 @@ export const rawKhôi8: Record<string, { day: number; period: number; text: stri
     { day: 3, period: 5, text: 'Ngoại ngữ-Thùy Dương' },
     { day: 4, period: 1, text: 'Ngữ văn-An' },
     { day: 4, period: 2, text: 'Ngữ văn-An' },
-    { day: 4, period: 3, text: 'GDTC-Nguyện' },
-    { day: 4, period: 4, text: 'GDTC-Nguyện' },
+    { day: 4, period: 3, text: 'GDTC-Nguyên' },
+    { day: 4, period: 4, text: 'GDTC-Nguyên' },
     { day: 4, period: 5, text: 'Mỹ thuật-Đạt' },
     { day: 5, period: 1, text: 'Toán-Thái Hùng' },
     { day: 5, period: 2, text: 'Toán-Thái Hùng' },

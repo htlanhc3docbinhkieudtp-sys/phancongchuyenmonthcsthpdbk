@@ -446,8 +446,8 @@ export const officialStaffList: Teacher[] = [
   // ==========================================
   {
     id: 'tch-ls-1',
-    name: 'Lê Hồng Thủy',
-    code: 'Thủy.LH',
+    name: 'Lê Hồng Thúy',
+    code: 'Thúy.LH',
     gender: 'Nữ',
     birthDate: '17/07/1975',
     campus: 'THCSDBK',
@@ -840,7 +840,7 @@ export const officialStaffList: Teacher[] = [
   },
   {
     id: 'tch-khtn-15',
-    name: 'Võ Ngọc Đỉnh Văn',
+    name: 'Võ Ngọc Đình Văn',
     code: 'Văn.VNĐ',
     gender: 'Nam',
     birthDate: '23/11/1995',
@@ -1212,8 +1212,8 @@ export const officialStaffList: Teacher[] = [
   // ==========================================
   {
     id: 'tch-td-1',
-    name: 'Lê Văn Nguyện',
-    code: 'Nguyện.LV',
+    name: 'Lê Văn Nguyên',
+    code: 'Nguyên.LV',
     gender: 'Nam',
     birthDate: '01/01/1975',
     campus: 'THCSDBK',
