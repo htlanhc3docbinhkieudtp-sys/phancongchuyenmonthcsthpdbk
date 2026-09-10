@@ -126,7 +126,7 @@ export function exportComprehensiveExcel(
   const hrData: any[][] = [];
   hrData.push([`DANH SÁCH PHÂN CÔNG GIÁO VIÊN CHỦ NHIỆM - ${config.academicYear}`]);
   hrData.push([]);
-  hrData.push(['STT', 'Lớp', 'Khối', 'Ban / Phân ban', 'Sĩ số', 'Phòng học', 'Họ tên GVCN', 'Tổ chuyên môn', 'Số điện thoại']);
+  hrData.push(['STT', 'Lớp', 'Khối', 'Ban / Phân ban', 'Sĩ số', 'Họ tên GVCN', 'Tổ chuyên môn', 'Số điện thoại']);
 
   classes.forEach((cls, idx) => {
     const hr = teachers.find(t => t.id === cls.homeroomTeacherId);
@@ -137,7 +137,6 @@ export function exportComprehensiveExcel(
       `Khối ${cls.grade}`,
       cls.track || 'Cơ bản',
       cls.studentCount || '',
-      cls.roomNumber || '',
       hr ? hr.name : 'Chưa phân công',
       dept?.name || '',
       hr?.phone || '',

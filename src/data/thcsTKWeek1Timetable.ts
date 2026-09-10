@@ -807,7 +807,7 @@ function buildClassSchedule(
         teacherId: parsed.teacherId,
         teacherName: parsed.teacherName,
         teacherCode: parsed.teacherCode,
-        room: className,
+        room: '',
         isSpecialActivity: parsed.isSpecialActivity
       });
     }

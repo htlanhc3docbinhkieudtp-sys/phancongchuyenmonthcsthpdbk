@@ -158,7 +158,7 @@ function buildClassSchedule(
       teacherId: tchInfo.id,
       teacherName: tchInfo.name,
       teacherCode: tchInfo.code,
-      room: className,
+      room: '',
       isSpecialActivity: isSpecial
     };
   });

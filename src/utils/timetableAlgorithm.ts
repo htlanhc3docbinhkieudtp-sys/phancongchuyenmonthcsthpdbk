@@ -133,7 +133,7 @@ export function executeSmartScheduleAlgorithm(
         teacherId: cls.homeroomTeacherId || '',
         teacherName: homeroomTeacher?.name || 'GVCN',
         teacherCode: homeroomTeacher?.code || 'GVCN',
-        room: cls.roomNumber || cls.name,
+        room: '',
         isSpecialActivity: true
       };
       generatedSlots.push(flagSlot);
@@ -154,7 +154,7 @@ export function executeSmartScheduleAlgorithm(
         teacherId: cls.homeroomTeacherId || '',
         teacherName: homeroomTeacher?.name || 'GVCN',
         teacherCode: homeroomTeacher?.code || 'GVCN',
-        room: cls.roomNumber || cls.name,
+        room: '',
         isSpecialActivity: true
       };
       generatedSlots.push(shlSlot);
@@ -175,7 +175,7 @@ export function executeSmartScheduleAlgorithm(
         teacherId: cls.homeroomTeacherId || '',
         teacherName: homeroomTeacher?.name || 'GVCN',
         teacherCode: homeroomTeacher?.code || 'GVCN',
-        room: cls.roomNumber || cls.name,
+        room: '',
         isSpecialActivity: true
       };
       generatedSlots.push(flagSlot);
@@ -195,7 +195,7 @@ export function executeSmartScheduleAlgorithm(
         teacherId: cls.homeroomTeacherId || '',
         teacherName: homeroomTeacher?.name || 'GVCN',
         teacherCode: homeroomTeacher?.code || 'GVCN',
-        room: cls.roomNumber || cls.name,
+        room: '',
         isSpecialActivity: true
       };
       generatedSlots.push(shlSlot);
@@ -384,7 +384,7 @@ export function executeSmartScheduleAlgorithm(
             teacherId: block.teacherId,
             teacherName: teacher?.name || '',
             teacherCode: teacher?.code || '',
-            room: cls.roomNumber || cls.name
+            room: ''
           };
 
           classGrid.set(`${best.day}_${currentP}`, slot);
@@ -425,7 +425,7 @@ export function executeSmartScheduleAlgorithm(
             dayOfWeek: day,
             session: mainSession,
             period: p,
-            room: cls.roomNumber || cls.name
+            room: ''
           });
         }
       }

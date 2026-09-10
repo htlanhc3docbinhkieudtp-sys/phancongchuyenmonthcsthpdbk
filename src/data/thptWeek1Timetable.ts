@@ -355,7 +355,7 @@ export function buildTHPTWeek1Slots(): TimetableSlot[] {
           teacherId: tchInfo.id,
           teacherName: tchInfo.name,
           teacherCode: tchInfo.code,
-          room: cls.room,
+          room: '',
           isSpecialActivity: isSpecial
         });
       } else {
@@ -366,7 +366,7 @@ export function buildTHPTWeek1Slots(): TimetableSlot[] {
           dayOfWeek: day,
           session: 'SANG',
           period,
-          room: cls.room
+          room: ''
         });
       }
     });
@@ -374,10 +374,10 @@ export function buildTHPTWeek1Slots(): TimetableSlot[] {
 
   // Grade 11 classes
   const g11Classes = [
-    { id: 'cls-11cb1', name: '11CB1', room: 'P.11-1' },
-    { id: 'cls-11cb2', name: '11CB2', room: 'P.11-2' },
-    { id: 'cls-11cb3', name: '11CB3', room: 'P.11-3' },
-    { id: 'cls-11cb4', name: '11CB4', room: 'P.11-4' },
+    { id: 'cls-11cb1', name: '11CB1' },
+    { id: 'cls-11cb2', name: '11CB2' },
+    { id: 'cls-11cb3', name: '11CB3' },
+    { id: 'cls-11cb4', name: '11CB4' },
   ];
 
   RAW_GRADE_11_MATRIX.forEach(row => {
@@ -404,7 +404,7 @@ export function buildTHPTWeek1Slots(): TimetableSlot[] {
           teacherId: tchInfo.id,
           teacherName: tchInfo.name,
           teacherCode: tchInfo.code,
-          room: cls.room,
+          room: '',
           isSpecialActivity: isSpecial
         });
       } else {
@@ -415,7 +415,7 @@ export function buildTHPTWeek1Slots(): TimetableSlot[] {
           dayOfWeek: day,
           session: 'SANG',
           period,
-          room: cls.room
+          room: ''
         });
       }
     });
@@ -423,11 +423,11 @@ export function buildTHPTWeek1Slots(): TimetableSlot[] {
 
   // Grade 12 classes
   const g12Classes = [
-    { id: 'cls-12cb1', name: '12CB1', room: 'P.12-1' },
-    { id: 'cls-12cb2', name: '12CB2', room: 'P.12-2' },
-    { id: 'cls-12cb3', name: '12CB3', room: 'P.12-3' },
-    { id: 'cls-12cb4', name: '12CB4', room: 'P.12-4' },
-    { id: 'cls-12cb5', name: '12CB5', room: 'P.12-5' },
+    { id: 'cls-12cb1', name: '12CB1' },
+    { id: 'cls-12cb2', name: '12CB2' },
+    { id: 'cls-12cb3', name: '12CB3' },
+    { id: 'cls-12cb4', name: '12CB4' },
+    { id: 'cls-12cb5', name: '12CB5' },
   ];
 
   RAW_GRADE_12_MATRIX.forEach(row => {
@@ -454,7 +454,7 @@ export function buildTHPTWeek1Slots(): TimetableSlot[] {
           teacherId: tchInfo.id,
           teacherName: tchInfo.name,
           teacherCode: tchInfo.code,
-          room: cls.room,
+          room: '',
           isSpecialActivity: isSpecial
         });
       } else {
@@ -465,7 +465,7 @@ export function buildTHPTWeek1Slots(): TimetableSlot[] {
           dayOfWeek: day,
           session: 'SANG',
           period,
-          room: cls.room
+          room: ''
         });
       }
     });

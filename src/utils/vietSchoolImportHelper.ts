@@ -753,7 +753,7 @@ export function parseTeacherCentricFromMarkdown(
           teacherId: matchedTeacher?.id || '',
           teacherName: matchedTeacher?.name || cleanTeacher,
           teacherCode: matchedTeacher?.code || cleanTeacher,
-          room: targetClass.roomNumber || 'Phòng học'
+          room: ''
         });
       }
 
@@ -790,7 +790,7 @@ export function parseTeacherCentricFromMarkdown(
             teacherId: matchedTeacher?.id || '',
             teacherName: matchedTeacher?.name || cleanTeacher,
             teacherCode: matchedTeacher?.code || cleanTeacher,
-            room: targetClass.roomNumber || 'Phòng học'
+            room: ''
           });
         }
       }
@@ -956,7 +956,7 @@ export function parseTeacherCentricFromRows(
         teacherId: matchedTeacher?.id || '',
         teacherName: matchedTeacher?.name || currentTeacher,
         teacherCode: matchedTeacher?.code || currentTeacher,
-        room: targetClass.roomNumber || 'Phòng học'
+        room: ''
       });
     }
   }
@@ -1175,7 +1175,7 @@ export function parseVietSchoolTimetable(
           teacherId: matchedTeacher?.id || '',
           teacherName: matchedTeacher?.name || teacherRaw,
           teacherCode: matchedTeacher?.code || teacherRaw,
-          room: targetClass.roomNumber || targetClass.name
+          room: ''
         };
         if (existingIdx >= 0) slots[existingIdx] = newSlot;
         else slots.push(newSlot);
@@ -1478,7 +1478,7 @@ export function parseVietSchoolTimetable(
               teacherId: matchedTeacher?.id || '',
               teacherName: matchedTeacher?.name || teacherText || '',
               teacherCode: matchedTeacher?.code || teacherText || '',
-              room: targetClass.roomNumber || targetClass.name
+              room: ''
             };
 
             if (existingIdx >= 0) {
@@ -1604,16 +1604,16 @@ export function generateVietSchoolSampleExcel(
   XLSX.utils.book_append_sheet(wb, wsMatrix, 'TKB_THPT_VietSchool');
 
   // Sheet 2: Danh sách chi tiết mẫu
-  const detailHeaders = ['Lớp', 'Thứ', 'Buổi', 'Tiết', 'Môn Học', 'Giáo Viên Giảng Dạy', 'Mã GV', 'Phòng Học'];
+  const detailHeaders = ['Lớp', 'Thứ', 'Buổi', 'Tiết', 'Môn Học', 'Giáo Viên Giảng Dạy', 'Mã GV'];
   const sampleDetailData: any[][] = [
     detailHeaders,
-    ['10CB1', 2, 'Sáng', 1, 'Chào cờ', 'Phan Hoàng Tùng', 'Tùng.PH', 'P.101'],
-    ['10CB1', 2, 'Sáng', 2, 'Toán học', 'Lê Thị Ngọc Hương', 'Hương.LTN', 'P.101'],
-    ['10CB1', 2, 'Sáng', 3, 'HĐTN - HN', 'Phan Hoàng Tùng', 'Tùng.PH', 'P.101'],
-    ['6A1', 2, 'Sáng', 1, 'Chào cờ', 'Hồ Thị Ngọc Tài', 'Tài.HTN', 'P.6-1'],
-    ['6A1', 2, 'Sáng', 2, 'Toán học', 'Nguyễn Văn Tới', 'Tới.NV', 'P.6-1'],
-    ['6A7', 2, 'Sáng', 1, 'Chào cờ', 'Nguyễn Thị Kim Sang', 'Sang.NTK', 'P.6-7'],
-    ['6A7', 2, 'Sáng', 2, 'Toán học', 'Trần Văn Nhuận', 'Nhuận.TV', 'P.6-7']
+    ['10CB1', 2, 'Sáng', 1, 'Chào cờ', 'Phan Hoàng Tùng', 'Tùng.PH'],
+    ['10CB1', 2, 'Sáng', 2, 'Toán học', 'Lê Thị Ngọc Hương', 'Hương.LTN'],
+    ['10CB1', 2, 'Sáng', 3, 'HĐTN - HN', 'Phan Hoàng Tùng', 'Tùng.PH'],
+    ['6A1', 2, 'Sáng', 1, 'Chào cờ', 'Hồ Thị Ngọc Tài', 'Tài.HTN'],
+    ['6A1', 2, 'Sáng', 2, 'Toán học', 'Nguyễn Văn Tới', 'Tới.NV'],
+    ['6A7', 2, 'Sáng', 1, 'Chào cờ', 'Nguyễn Thị Kim Sang', 'Sang.NTK'],
+    ['6A7', 2, 'Sáng', 2, 'Toán học', 'Trần Văn Nhuận', 'Nhuận.TV']
   ];
   const wsDetail = XLSX.utils.aoa_to_sheet(sampleDetailData);
   XLSX.utils.book_append_sheet(wb, wsDetail, 'TKB_DanhSach_ChiTiet');

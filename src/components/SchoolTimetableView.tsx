@@ -114,6 +114,9 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   // Selected single class for focused view in BY_CLASS
   const [selectedClassId, setSelectedClassId] = useState<string>('ALL');
 
+  // Realtime week date range info for dynamic header display
+  const weekInfo = useMemo(() => getWeekDateRange(currentWeek, config.academicYear), [currentWeek, config.academicYear]);
+
   // Editing slot modal
   const [editingSlot, setEditingSlot] = useState<TimetableSlot | null>(null);
 
@@ -1099,14 +1102,14 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                           </div>
                           <p className="text-xs text-indigo-200/90 font-medium">
                             GVCN: <strong className="text-white">{homeroomTeacher?.name || 'Chưa phân công'}</strong>
-                            {cls.roomNumber && ` • Phòng: ${cls.roomNumber}`}
                           </p>
                         </div>
                       </div>
 
-                      <div className="text-xs text-indigo-200 flex items-center gap-3">
-                        <span>Học kỳ {config.semester || 'HK1'}</span>
-                        <span>•</span>
+                      <div className="text-xs text-indigo-200 flex flex-wrap sm:flex-nowrap items-center gap-2 font-medium">
+                        <span className="font-bold text-white tracking-wide">
+                          Tuần {currentWeek} ({weekInfo.startDateShort} - {weekInfo.endDateShort})
+                        </span>
                         <span>Năm học {config.academicYear || '2026 - 2027'}</span>
                       </div>
                     </div>
@@ -1385,8 +1388,13 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                         </div>
                       </div>
 
-                      <div className="text-xs text-indigo-200 flex items-center gap-2">
-                        <span className="px-2.5 py-1 bg-white/10 rounded-lg font-bold text-white">
+                      <div className="text-xs text-indigo-200 flex flex-wrap items-center gap-2 sm:gap-3 font-medium">
+                        <span className="font-bold text-white tracking-wide">
+                          Tuần {currentWeek} ({weekInfo.startDateShort} - {weekInfo.endDateShort})
+                        </span>
+                        <span className="hidden sm:inline">•</span>
+                        <span>Năm học {config.academicYear || '2026 - 2027'}</span>
+                        <span className="px-2.5 py-1 bg-white/10 rounded-lg font-bold text-white ml-1">
                           Định mức: {teacher.baseStandardPeriods}t
                         </span>
                       </div>
@@ -1586,8 +1594,8 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 <h3 className="font-extrabold text-sm sm:text-base uppercase tracking-tight">
                   Bảng Tổng Hợp Thời Khóa Biểu Toàn Trường
                 </h3>
-                <p className="text-xs text-indigo-200">
-                  Hiển thị tất cả {filteredClasses.length} lớp học trên cùng một bảng ma trận
+                <p className="text-xs text-indigo-200 font-medium">
+                  Hiển thị tất cả {filteredClasses.length} lớp học • <span className="font-bold text-white">Tuần {currentWeek} ({weekInfo.startDateShort} - {weekInfo.endDateShort})</span> Năm học {config.academicYear || '2026 - 2027'}
                 </p>
               </div>
             </div>
@@ -1789,20 +1797,6 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                     </option>
                   ))}
                 </select>
-              </div>
-
-              {/* Room */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Phòng học / Ghi chú
-                </label>
-                <input
-                  type="text"
-                  value={editingSlot.room || ''}
-                  onChange={(e) => setEditingSlot({ ...editingSlot, room: e.target.value })}
-                  placeholder="Ví dụ: P.101, Phòng Tin học, Sân bóng..."
-                  className="w-full h-9 px-3 text-xs font-medium bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
-                />
               </div>
             </div>
 

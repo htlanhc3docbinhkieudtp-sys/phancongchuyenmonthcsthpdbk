@@ -113,7 +113,7 @@ export const HomeroomView: React.FC<HomeroomViewProps> = ({
                         Khối {cls.grade} ({cls.level})
                       </div>
                       <div className="text-[10px] text-slate-500">
-                        {cls.studentCount || 40} HS • {cls.roomNumber || 'Phòng học'}
+                        {cls.studentCount || 40} học sinh
                       </div>
                     </div>
                   </div>

@@ -115,7 +115,7 @@ export function generateInitialTimetable(
       teacherId: cls.homeroomTeacherId || '',
       teacherName: homeroomTeacher?.name || 'GVCN',
       teacherCode: homeroomTeacher?.code || 'GVCN',
-      room: cls.roomNumber || cls.name,
+      room: '',
       isSpecialActivity: true
     });
 
@@ -132,7 +132,7 @@ export function generateInitialTimetable(
       teacherId: cls.homeroomTeacherId || '',
       teacherName: homeroomTeacher?.name || 'GVCN',
       teacherCode: homeroomTeacher?.code || 'GVCN',
-      room: cls.roomNumber || cls.name,
+      room: '',
       isSpecialActivity: true
     });
 
@@ -185,7 +185,7 @@ export function generateInitialTimetable(
             teacherId: item.teacherId,
             teacherName: teacher?.name || '',
             teacherCode: teacher?.code || '',
-            room: cls.roomNumber || cls.name
+            room: ''
           });
 
           poolIndex++;
@@ -197,7 +197,7 @@ export function generateInitialTimetable(
             dayOfWeek: day,
             session,
             period,
-            room: cls.roomNumber || cls.name
+            room: ''
           });
         }
       }
@@ -434,7 +434,16 @@ export function createEmptyTimetableForWeek(
 /**
  * Calculate dates for each week (HK1 starts 07/09/2026, HK2 starts 18/01/2027)
  */
-export function getWeekDateRange(weekNumber: number): { startDate: string; endDate: string; label: string; fullTitle: string } {
+export function getWeekDateRange(weekNumber: number, academicYear: string = '2026 - 2027'): {
+  startDate: string;
+  endDate: string;
+  startDateShort: string;
+  endDateShort: string;
+  label: string;
+  fullTitle: string;
+  realtimeLabel: string;
+  headerString: string;
+} {
   let startBase: Date;
   if (weekNumber >= 19) {
     // HK2 start: 18/01/2027
@@ -451,15 +460,23 @@ export function getWeekDateRange(weekNumber: number): { startDate: string; endDa
   const endBase = new Date(startBase);
   endBase.setDate(endBase.getDate() + 5); // Saturday
 
-  const fmt = (d: Date) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-  const startStr = fmt(startBase);
-  const endStr = fmt(endBase);
+  const fmtFull = (d: Date) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+  const fmtShort = (d: Date) => `${String(d.getDate()).padStart(2, '0')}/${d.getMonth() + 1}/${d.getFullYear()}`;
+
+  const startStr = fmtFull(startBase);
+  const endStr = fmtFull(endBase);
+  const startShort = fmtShort(startBase);
+  const endShort = fmtShort(endBase);
 
   return {
     startDate: startStr,
     endDate: endStr,
-    label: `Tuần ${weekNumber} (${startStr.slice(0, 5)} - ${endStr.slice(0, 5)})`,
-    fullTitle: `Thời khóa biểu Tuần ${weekNumber} (Áp dụng từ ${startStr} đến ${endStr})`
+    startDateShort: startShort,
+    endDateShort: endShort,
+    label: `Tuần ${weekNumber} (${startShort} - ${endShort})`,
+    fullTitle: `Thời khóa biểu Tuần ${weekNumber} (Áp dụng từ ${startShort} đến ${endShort})`,
+    realtimeLabel: `Tuần ${weekNumber} (${startShort} - ${endShort})`,
+    headerString: `Tuần ${weekNumber} (${startShort} - ${endShort}) Năm học ${academicYear}`
   };
 }
 
@@ -515,7 +532,6 @@ export function exportTimetableToExcel(
       'Khối',
       'Lớp',
       'GVCN',
-      'Phòng',
       'Buổi',
       // Thứ 2 (T1-T5)
       'T2 - Tiết 1', 'T2 - Tiết 2', 'T2 - Tiết 3', 'T2 - Tiết 4', 'T2 - Tiết 5',
@@ -553,7 +569,6 @@ export function exportTimetableToExcel(
       `Khối ${cls.grade}`,
       cls.name,
       homeroomName,
-      cls.roomNumber || cls.name,
       session === 'SANG' ? 'Sáng' : 'Chiều'
     ];
 
@@ -577,7 +592,7 @@ export function exportTimetableToExcel(
 
   // 2. Sheet 2: Danh sách chi tiết từng tiết (Dạng danh sách để dễ import/phân tích)
   const detailData: (string | number)[][] = [
-    ['Lớp', 'Thứ', 'Buổi', 'Tiết', 'Môn Học', 'Giáo Viên Giảng Dạy', 'Mã GV', 'Phòng Học', 'Ghi Chú']
+    ['Lớp', 'Thứ', 'Buổi', 'Tiết', 'Môn Học', 'Giáo Viên Giảng Dạy', 'Mã GV', 'Ghi Chú']
   ];
 
   timetable.slots.forEach(s => {
@@ -590,7 +605,6 @@ export function exportTimetableToExcel(
         s.subjectName || '',
         s.teacherName || '',
         s.teacherCode || '',
-        s.room || '',
         s.note || ''
       ]);
     }
@@ -697,7 +711,6 @@ export function parseImportedTimetable(
         const subjectNameRaw = colMon >= 0 ? String(r[colMon] || '').trim() : '';
         const teacherNameRaw = colGv >= 0 ? String(r[colGv] || '').trim() : '';
         const teacherCodeRaw = colMaGv >= 0 ? String(r[colMaGv] || '').trim() : '';
-        const roomRaw = colPhong >= 0 ? String(r[colPhong] || '').trim() : targetClass.roomNumber;
 
         const matchedSubject = subjectByName.get(subjectNameRaw.toLowerCase());
         const matchedTeacher = teacherByName.get(teacherCodeRaw.toLowerCase()) || teacherByName.get(teacherNameRaw.toLowerCase());
@@ -714,7 +727,7 @@ export function parseImportedTimetable(
           teacherId: matchedTeacher?.id || '',
           teacherName: matchedTeacher?.name || teacherNameRaw,
           teacherCode: matchedTeacher?.code || teacherCodeRaw,
-          room: roomRaw || targetClass.name
+          room: ''
         });
       }
     } else {
@@ -736,16 +749,16 @@ export function parseImportedTimetable(
  * Generate sample CSV template for download
  */
 export function getTimetableSampleCSV(): string {
-  return `Lớp,Thứ,Buổi,Tiết,Môn Học,Giáo Viên Giảng Dạy,Mã GV,Phòng Học,Ghi Chú
-10A1,2,Sáng,1,Chào cờ / HĐTN,Đoàn Kiều.T,Kiều.ĐT,P.101,Sinh hoạt toàn trường
-10A1,2,Sáng,2,Toán,Đoàn Kiều.T,Kiều.ĐT,P.101,
-10A1,2,Sáng,3,Toán,Đoàn Kiều.T,Kiều.ĐT,P.101,
-10A1,2,Sáng,4,Ngữ văn,Lê Văn Anh,Anh.LV,P.101,
-10A1,2,Sáng,5,Tiếng Anh,Phạm Thị Hoa,Hoa.PT,P.101,
-10A2,2,Sáng,1,Chào cờ / HĐTN,Trần Văn Bình,Bình.TV,P.102,
-10A2,2,Sáng,2,Ngữ văn,Lê Văn Anh,Anh.LV,P.102,
-10A2,2,Sáng,3,Toán,Nguyễn Văn Cường,Cường.NV,P.102,
-6A1,2,Sáng,1,Chào cờ / HĐTN,Hoàng Văn Giang,Giang.HV,P.201,ĐBK
-6A1,2,Sáng,2,Toán,Hoàng Văn Giang,Giang.HV,P.201,
-6/1,2,Sáng,1,Chào cờ / HĐTN,Phạm Văn Nam,Nam.PV,P.TK1,Tân Kiều`;
+  return `Lớp,Thứ,Buổi,Tiết,Môn Học,Giáo Viên Giảng Dạy,Mã GV,Ghi Chú
+10A1,2,Sáng,1,Chào cờ / HĐTN,Đoàn Kiều.T,Kiều.ĐT,Sinh hoạt toàn trường
+10A1,2,Sáng,2,Toán,Đoàn Kiều.T,Kiều.ĐT,
+10A1,2,Sáng,3,Toán,Đoàn Kiều.T,Kiều.ĐT,
+10A1,2,Sáng,4,Ngữ văn,Lê Văn Anh,Anh.LV,
+10A1,2,Sáng,5,Tiếng Anh,Phạm Thị Hoa,Hoa.PT,
+10A2,2,Sáng,1,Chào cờ / HĐTN,Trần Văn Bình,Bình.TV,
+10A2,2,Sáng,2,Ngữ văn,Lê Văn Anh,Anh.LV,
+10A2,2,Sáng,3,Toán,Nguyễn Văn Cường,Cường.NV,
+6A1,2,Sáng,1,Chào cờ / HĐTN,Hoàng Văn Giang,Giang.HV,ĐBK
+6A1,2,Sáng,2,Toán,Hoàng Văn Giang,Giang.HV,
+6/1,2,Sáng,1,Chào cờ / HĐTN,Phạm Văn Nam,Nam.PV,Tân Kiều`;
 }

@@ -258,11 +258,6 @@ export const TeacherCollisionModal: React.FC<TeacherCollisionModalProps> = ({
                                   {getSubjectDisplayName(slot)}
                                 </strong>
                               </div>
-                              {slot.room && (
-                                <div className="text-[11px] text-slate-500 mt-0.5">
-                                  Phòng học: {slot.room}
-                                </div>
-                              )}
                             </div>
 
                             <button
