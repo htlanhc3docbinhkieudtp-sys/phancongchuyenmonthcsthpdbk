@@ -25,6 +25,7 @@ import {
   KeyRound
 } from 'lucide-react';
 import { SchoolConfig, ConflictIssue } from '../types';
+import { setBrowserFavicon } from '../utils/faviconHelper';
 
 interface HeaderProps {
   config: SchoolConfig;
@@ -105,10 +106,7 @@ export const Header: React.FC<HeaderProps> = ({
         });
         try {
           localStorage.setItem('docbinhkieu_phancong_data_v9_school_logo', dataUrl);
-          const favicon = document.getElementById('app-favicon') as HTMLLinkElement | null;
-          if (favicon) {
-            favicon.href = dataUrl;
-          }
+          setBrowserFavicon(dataUrl);
         } catch (err) {
           console.error('Error saving logo:', err);
         }
@@ -404,7 +402,7 @@ export const Header: React.FC<HeaderProps> = ({
               <strong className="text-emerald-300 font-bold">{assignedPercentage}%</strong>
             </div>
 
-            {visitorStats && (
+            {visitorStats ? (
               <button
                 type="button"
                 onClick={onOpenVisitorStats}
@@ -417,6 +415,15 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="text-indigo-400 mx-0.5">•</span>
                 <span className="text-emerald-300 text-[11px] font-semibold">Hôm nay: {visitorStats.todayVisits.toLocaleString('vi-VN')}</span>
               </button>
+            ) : (
+              <div
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-900/50 border border-indigo-800/60 text-indigo-300 text-xs animate-pulse cursor-default"
+                title="Đang đồng bộ số lượt truy cập thực tế..."
+              >
+                <Eye className="w-3.5 h-3.5 text-amber-400 shrink-0 opacity-70" />
+                <span className="text-indigo-200">Truy cập:</span>
+                <span className="font-mono text-indigo-300 font-bold">...</span>
+              </div>
             )}
           </div>
 

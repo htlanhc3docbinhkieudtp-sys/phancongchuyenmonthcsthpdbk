@@ -41,16 +41,55 @@ export function getVietnamMonthKey(): string {
   return today.slice(0, 7); // e.g. "2026-09"
 }
 
-// Memory cache to avoid redundant fast writes
+// Memory and localStorage cache to ensure instantaneous rendering without jumping
+const CACHE_STORAGE_KEY = 'dbk_visitor_counter_cached_stats_v2';
 let cachedStats: VisitorStats | null = null;
 let isRecording = false;
+
+/**
+ * Get cached visitor statistics from localStorage if available.
+ * Adjusts todayVisits if the calendar date has rolled over since last visit.
+ */
+export function getCachedVisitorStats(): VisitorStats | null {
+  if (cachedStats) return cachedStats;
+  try {
+    const raw = localStorage.getItem(CACHE_STORAGE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw) as VisitorStats;
+    if (data && typeof data.totalVisits === 'number' && data.totalVisits > 0) {
+      const todayStr = getVietnamTodayDate();
+      if (data.todayDate !== todayStr) {
+        data.yesterdayVisits = data.todayVisits || 0;
+        data.todayVisits = 1;
+        data.todayDate = todayStr;
+      }
+      cachedStats = data;
+      return data;
+    }
+  } catch (e) {
+    console.warn('Error reading cached visitor stats:', e);
+  }
+  return null;
+}
+
+/**
+ * Save visitor statistics to memory and localStorage for fast initial render
+ */
+export function saveCachedVisitorStats(stats: VisitorStats): void {
+  cachedStats = stats;
+  try {
+    localStorage.setItem(CACHE_STORAGE_KEY, JSON.stringify(stats));
+  } catch (e) {
+    console.warn('Error saving visitor stats cache:', e);
+  }
+}
 
 /**
  * Record visitor access safely in Firestore using transactions.
  * Prevents multiple counts on page reloads within the same session.
  */
 export async function recordVisitorAccess(): Promise<VisitorStats | null> {
-  if (isRecording) return cachedStats;
+  if (isRecording) return cachedStats || getCachedVisitorStats();
   isRecording = true;
 
   try {
@@ -81,8 +120,9 @@ export async function recordVisitorAccess(): Promise<VisitorStats | null> {
     if (alreadyCountedInSession) {
       const snap = await getDoc(docRef);
       if (snap.exists()) {
-        cachedStats = snap.data() as VisitorStats;
-        return cachedStats;
+        const data = snap.data() as VisitorStats;
+        saveCachedVisitorStats(data);
+        return data;
       }
     }
 
@@ -172,11 +212,13 @@ export async function recordVisitorAccess(): Promise<VisitorStats | null> {
       // Ignore
     }
 
-    cachedStats = updatedStats;
+    if (updatedStats) {
+      saveCachedVisitorStats(updatedStats);
+    }
     return updatedStats;
   } catch (err) {
     console.warn('Notice recording visitor counter to Firestore:', err);
-    return null;
+    return getCachedVisitorStats();
   } finally {
     isRecording = false;
   }
@@ -195,7 +237,7 @@ export function subscribeToVisitorStats(
     (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.data() as VisitorStats;
-        cachedStats = data;
+        saveCachedVisitorStats(data);
         onUpdate(data);
       }
     },

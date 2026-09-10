@@ -43,6 +43,7 @@ import {
   normalizeTimetableSlots
 } from './utils/timetableHelper';
 import { extractAssignmentsFromTimetableSlots } from './utils/timetableReconciliationHelper';
+import { setBrowserFavicon } from './utils/faviconHelper';
 import {
   extractAssignmentsFromTimetable,
   propagateTeacherToTimetableSlots,
@@ -72,6 +73,7 @@ import {
   recordVisitorAccess,
   subscribeToVisitorStats,
   VisitorStats,
+  getCachedVisitorStats,
   getVietnamTodayDate,
   getVietnamMonthKey
 } from './services/visitorCounterService';
@@ -165,10 +167,7 @@ export default function App() {
 
   // Dynamically synchronize browser tab favicon with school logo
   useEffect(() => {
-    const favicon = document.getElementById('app-favicon') as HTMLLinkElement | null;
-    if (favicon && config.logoUrl) {
-      favicon.href = config.logoUrl;
-    }
+    setBrowserFavicon(config.logoUrl);
   }, [config.logoUrl]);
 
   const [departments, setDepartments] = useState<Department[]>(() => {
@@ -417,19 +416,9 @@ export default function App() {
     }, 4000);
   };
 
-  // Real-time Visitor Counter State - always non-null for immediate visual count
-  const [visitorStats, setVisitorStats] = useState<VisitorStats>(() => {
-    return {
-      totalVisits: 1428,
-      uniqueVisitors: 312,
-      todayDate: getVietnamTodayDate(),
-      todayVisits: 45,
-      yesterdayVisits: 52,
-      thisMonthVisits: 680,
-      thisMonthKey: getVietnamMonthKey(),
-      lastVisitedAt: Date.now(),
-      dailyHistory: {}
-    };
+  // Real-time Visitor Counter State - initialized from real cached storage or null (loading state)
+  const [visitorStats, setVisitorStats] = useState<VisitorStats | null>(() => {
+    return getCachedVisitorStats();
   });
   const [isVisitorModalOpen, setIsVisitorModalOpen] = useState(false);
 
