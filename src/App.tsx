@@ -100,7 +100,7 @@ function safeLocalStorageSet(key: string, value: string): boolean {
       const keysToClear: string[] = [];
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i);
-        if (k && k.startsWith('docbinhkieu') && !k.includes('_v9')) {
+        if (k && k.startsWith('docbinhkieu') && !k.includes('_v9') && !k.includes('emergency')) {
           keysToClear.push(k);
         }
       }
@@ -230,7 +230,19 @@ export default function App() {
 
   // Timetable is the Master Source of Truth
   const [weeklyTimetables, setWeeklyTimetables] = useState<Record<number, SchoolTimetable>>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_weekly_timetables`);
+    let saved = localStorage.getItem(`${STORAGE_KEY}_weekly_timetables`);
+    if (!saved) {
+      saved = localStorage.getItem('docbinhkieu_emergency_timetable_backup');
+    }
+    if (!saved) {
+      for (let v = 9; v >= 1; v--) {
+        const prev = localStorage.getItem(`docbinhkieu_phancong_data_v${v}_weekly_timetables`);
+        if (prev) {
+          saved = prev;
+          break;
+        }
+      }
+    }
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -239,7 +251,18 @@ export default function App() {
           if (parsed[1] && parsed[1].slots && parsed[1].slots.length > 0) {
             parsed[1].slots = normalizeTimetableSlots(parsed[1].slots);
           } else {
-            parsed[1] = generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
+            const emergencyW1 = localStorage.getItem('docbinhkieu_emergency_w1_timetable_backup');
+            if (emergencyW1) {
+              try {
+                const pW1 = JSON.parse(emergencyW1);
+                if (pW1 && pW1.slots && pW1.slots.length > 0) {
+                  parsed[1] = pW1;
+                }
+              } catch { /* ignore */ }
+            }
+            if (!parsed[1] || !parsed[1].slots || parsed[1].slots.length === 0) {
+              parsed[1] = generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
+            }
           }
           // Normalize subject names for all loaded weeks
           Object.keys(parsed).forEach(wk => {
@@ -252,6 +275,16 @@ export default function App() {
       } catch (e) {
         console.error('Failed to parse weekly timetables', e);
       }
+    }
+    // Emergency W1 check before initial generation
+    const emergencyW1 = localStorage.getItem('docbinhkieu_emergency_w1_timetable_backup');
+    if (emergencyW1) {
+      try {
+        const pW1 = JSON.parse(emergencyW1);
+        if (pW1 && pW1.slots && pW1.slots.length > 0) {
+          return { 1: pW1 };
+        }
+      } catch { /* ignore */ }
     }
     const week1Tkb = generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
     return {
@@ -485,46 +518,51 @@ export default function App() {
           if (cloudData.weeklySchedules && cloudData.weeklySchedules.length > 0) {
             setWeeklySchedules(cloudData.weeklySchedules);
           }
+          let cloudTimetablesToApply: Record<number, SchoolTimetable> | null = null;
           if (cloudData.weeklyTimetables && Object.keys(cloudData.weeklyTimetables).length > 0) {
             const merged = { ...cloudData.weeklyTimetables };
             if (merged[1] && merged[1].slots && merged[1].slots.length > 0) {
               merged[1].slots = normalizeTimetableSlots(merged[1].slots);
             } else {
-              merged[1] = generateInitialTimetable(cloudData.classes || classes, cloudData.subjects || subjects, cloudData.teachers || teachers, cloudData.assignments || assignments, cloudData.config || config);
+              // Prefer preserving already loaded timetable instead of resetting with generateInitialTimetable
+              setWeeklyTimetables(prev => {
+                if (prev[1]?.slots?.length) {
+                  merged[1] = prev[1];
+                }
+                return prev;
+              });
             }
             Object.keys(merged).forEach(wk => {
-              if (merged[wk]?.slots) {
-                merged[wk].slots = normalizeTimetableSlots(merged[wk].slots);
+              if (merged[Number(wk)]?.slots) {
+                merged[Number(wk)].slots = normalizeTimetableSlots(merged[Number(wk)].slots);
               }
             });
-            setWeeklyTimetables(merged);
+            cloudTimetablesToApply = merged;
           } else if (cloudData.timetable && cloudData.timetable.slots && cloudData.timetable.slots.length > 0) {
             const tkb1: SchoolTimetable = {
               ...cloudData.timetable,
               weekNumber: 1,
               slots: normalizeTimetableSlots(cloudData.timetable.slots)
             };
-            setWeeklyTimetables({ 1: tkb1 });
+            cloudTimetablesToApply = { 1: tkb1 };
           }
+
+          if (cloudTimetablesToApply) {
+            setWeeklyTimetables(cloudTimetablesToApply);
+            // Save immediately to emergency backups so user edits are persistent
+            try {
+              localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(cloudTimetablesToApply));
+              if (cloudTimetablesToApply[1]) {
+                localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(cloudTimetablesToApply[1]));
+              }
+            } catch { /* storage full */ }
+          }
+
           if (cloudData.updatedAt) setLastSyncedAt(cloudData.updatedAt);
           setCloudSyncStatus('synced');
         } else if (isMounted) {
-          // If no remote doc exists yet, upload initial plan
-          const initialPayload: SchoolPlanData = {
-            config,
-            departments,
-            subjects,
-            classes,
-            teachers,
-            assignments,
-            lockedCells,
-            weeklySchedules,
-            timetable,
-            weeklyTimetables,
-            updatedAt: Date.now()
-          };
-          await saveSchoolPlanToCloud(initialPayload);
-          setLastSyncedAt(Date.now());
+          // If no remote doc exists or network error, retain local state and DO NOT overwrite cloud with default initial data
+          console.warn('[Cloud] Cloud data was null. Retaining local state without pushing initial defaults.');
           setCloudSyncStatus('synced');
         }
       } catch (err) {
@@ -589,6 +627,14 @@ export default function App() {
 
     safeLocalStorageSet(`${STORAGE_KEY}_weekly_timetables`, JSON.stringify(prunedWeeklyTimetables));
     safeLocalStorageSet(`${STORAGE_KEY}_timetable`, JSON.stringify(timetable));
+
+    // Also persist directly into unversioned emergency localStorage
+    try {
+      localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(prunedWeeklyTimetables));
+      if (prunedWeeklyTimetables[1]) {
+        localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(prunedWeeklyTimetables[1]));
+      }
+    } catch { /* storage full */ }
 
     // Debounced Firebase Auto-Save (Only admin changes push to Cloud to prevent view-only overwrites)
     if (!isInitialCloudLoadRef.current && isAdmin) {
@@ -978,7 +1024,7 @@ export default function App() {
     }
   };
 
-  const handleSaveToCloud = async () => {
+  const handleSaveToCloud = async (isForced = true) => {
     setCloudSyncStatus('saving');
     const payload: SchoolPlanData = {
       config,
@@ -993,13 +1039,15 @@ export default function App() {
       weeklyTimetables,
       updatedAt: Date.now()
     };
-    const success = await saveSchoolPlanToCloud(payload);
+    const success = await saveSchoolPlanToCloud(payload, isForced);
     if (success) {
       setCloudSyncStatus('synced');
       setLastSyncedAt(Date.now());
-      localStorage.setItem(`${STORAGE_KEY}_last_cloud_sync`, String(Date.now()));
+      safeLocalStorageSet(`${STORAGE_KEY}_last_cloud_sync`, String(Date.now()));
+      showToast('Đã lưu toàn bộ Thời khóa biểu & Dữ liệu lên Đám mây Firebase và tạo bản sao lưu an toàn!');
     } else {
       setCloudSyncStatus('error');
+      showToast('Không thể lưu lên Đám mây. Vui lòng kiểm tra kết nối mạng!');
     }
   };
 
@@ -1053,7 +1101,7 @@ export default function App() {
   };
 
   const handleUpdateTimetable = (updated: SchoolTimetable) => {
-    const weekNum = currentWeek || 1;
+    const weekNum = updated.weekNumber || currentWeek || 1;
     const normalizedSlots = normalizeTimetableSlots(updated.slots || []);
     const updatedWithWeek: SchoolTimetable = {
       ...updated,
@@ -1061,10 +1109,19 @@ export default function App() {
       slots: normalizedSlots,
       updatedAt: Date.now()
     };
-    setWeeklyTimetables(prev => ({
-      ...prev,
-      [weekNum]: updatedWithWeek
-    }));
+    setWeeklyTimetables(prev => {
+      const next = {
+        ...prev,
+        [weekNum]: updatedWithWeek
+      };
+      try {
+        localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(next));
+        if (weekNum === 1) {
+          localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(updatedWithWeek));
+        }
+      } catch { /* storage full */ }
+      return next;
+    });
 
     // 1. Timetable is Master: Synchronize assignments from the updated timetable slots
     const syncedAssignments = extractAssignmentsFromTimetable(
@@ -1515,6 +1572,7 @@ export default function App() {
             onPromptAdminLogin={() => handlePromptAdminLogin()}
             onUpdateTimetable={handleUpdateTimetable}
             onImportTimetableBatch={handleImportTimetableBatch}
+            onShowToast={showToast}
           />
         )}
 

@@ -44,12 +44,14 @@ import {
   ChevronRight,
   Copy,
   Lock,
-  Eye
+  Eye,
+  ShieldCheck
 } from 'lucide-react';
 import { TimetableImportModal } from './TimetableImportModal';
 import { AutoScheduleModal } from './AutoScheduleModal';
 import { CopyTimetableModal } from './CopyTimetableModal';
 import { TeacherCollisionModal, TeacherCollisionDetail } from './TeacherCollisionModal';
+import { TimetableBackupModal } from './TimetableBackupModal';
 
 type CampusFilter = 'ALL' | 'THPT' | 'DBK' | 'TK';
 type ViewMode = 'BY_CLASS' | 'BY_TEACHER' | 'MASTER_GRID';
@@ -78,6 +80,7 @@ interface SchoolTimetableViewProps {
     importMode?: 'merge' | 'replace'
   ) => void;
   onResetTimetable?: () => void;
+  onShowToast?: (msg: string) => void;
 }
 
 export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
@@ -96,7 +99,8 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   onPromptAdminLogin,
   onUpdateTimetable,
   onImportTimetableBatch,
-  onResetTimetable
+  onResetTimetable,
+  onShowToast
 }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('BY_CLASS');
   const [selectedCampus, setSelectedCampus] = useState<CampusFilter>('ALL');
@@ -108,6 +112,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   const [isAutoScheduleModalOpen, setIsAutoScheduleModalOpen] = useState(false);
   const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
   const [isCollisionModalOpen, setIsCollisionModalOpen] = useState(false);
+  const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
   const [filterOnlyConflicts, setFilterOnlyConflicts] = useState(false);
 
 
@@ -620,6 +625,16 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                   >
                     <Upload className="w-3.5 h-3.5" />
                     <span>Đẩy TKB VietSchool vào Tuần {currentWeek}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsBackupModalOpen(true)}
+                    className="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                    title="Lịch sử sao lưu, xuất file an toàn và khôi phục Thời khóa biểu"
+                  >
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>Sao Lưu & Khôi Phục TKB</span>
                   </button>
 
                   <button
@@ -1911,6 +1926,17 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         onFilterOnlyConflicts={handleFilterOnlyConflicts}
         classMap={classMap}
         getSubjectDisplayName={getSubjectDisplayName}
+      />
+
+      {/* 9. Timetable Backup & Restore Modal */}
+      <TimetableBackupModal
+        isOpen={isBackupModalOpen}
+        onClose={() => setIsBackupModalOpen(false)}
+        currentTimetable={timetable}
+        currentWeek={currentWeek}
+        onRestoreTimetable={onUpdateTimetable}
+        isAdmin={isAdmin}
+        onShowToast={onShowToast}
       />
     </div>
   );

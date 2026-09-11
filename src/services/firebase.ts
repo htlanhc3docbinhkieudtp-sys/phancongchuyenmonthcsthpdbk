@@ -9,6 +9,9 @@ import {
   collection,
   writeBatch,
   onSnapshot,
+  query,
+  orderBy,
+  limit,
   Firestore
 } from 'firebase/firestore';
 import {
@@ -123,6 +126,16 @@ export interface SchoolPlanData {
   version?: number;
 }
 
+export interface TimetableSnapshotItem {
+  id: string;
+  createdAt: number;
+  description: string;
+  weekNumber: number;
+  slotCount: number;
+  timetable: SchoolTimetable;
+  createdBy?: string;
+}
+
 const COLLECTION_NAME = 'school_plans';
 const DOC_ID = 'active_plan_thcs_thpt_docbinhkieu';
 
@@ -130,6 +143,7 @@ const DOC_ID = 'active_plan_thcs_thpt_docbinhkieu';
 let savedRootFingerprint: string | null = null;
 const savedWeeklyScheduleFingerprints = new Map<number, string>();
 const savedWeeklyTimetableFingerprints = new Map<number, string>();
+let lastAutoSnapshotTimestamp = 0;
 
 /**
  * Record current fingerprints so subsequent saves only write changed documents
@@ -176,9 +190,67 @@ let pendingSaveRequest: {
 } | null = null;
 
 /**
+ * Save a dedicated historical snapshot of a timetable to prevent data loss
+ */
+export async function saveTimetableSnapshot(
+  timetable: SchoolTimetable,
+  description: string,
+  createdBy = 'Admin'
+): Promise<boolean> {
+  try {
+    const timestamp = Date.now();
+    const backupId = `snapshot_${timetable.weekNumber || 1}_${timestamp}`;
+    const backupRef = doc(db, COLLECTION_NAME, DOC_ID, 'timetable_backups', backupId);
+    await setDoc(backupRef, sanitizeForFirestore({
+      id: backupId,
+      createdAt: timestamp,
+      weekNumber: timetable.weekNumber || 1,
+      description,
+      slotCount: timetable.slots?.length || 0,
+      timetable,
+      createdBy
+    }));
+    return true;
+  } catch (err) {
+    console.warn('Notice saving timetable snapshot backup:', err);
+    return false;
+  }
+}
+
+/**
+ * Fetch available timetable historical backups from cloud
+ */
+export async function getTimetableSnapshots(): Promise<TimetableSnapshotItem[]> {
+  try {
+    const backupsRef = collection(db, COLLECTION_NAME, DOC_ID, 'timetable_backups');
+    const q = query(backupsRef, orderBy('createdAt', 'desc'), limit(30));
+    const snap = await getDocs(q);
+    const results: TimetableSnapshotItem[] = [];
+    snap.forEach(docSnap => {
+      const data = docSnap.data();
+      if (data && data.timetable) {
+        results.push({
+          id: docSnap.id,
+          createdAt: data.createdAt || Date.now(),
+          description: data.description || 'Bản sao lưu TKB',
+          weekNumber: data.weekNumber || 1,
+          slotCount: data.slotCount || data.timetable?.slots?.length || 0,
+          timetable: data.timetable,
+          createdBy: data.createdBy || 'Admin'
+        });
+      }
+    });
+    return results;
+  } catch (err) {
+    console.warn('Notice fetching timetable snapshots:', err);
+    return [];
+  }
+}
+
+/**
  * Internal execution of cloud save with delta-checking and batch chunking
  */
-async function executeCloudSave(data: SchoolPlanData): Promise<boolean> {
+async function executeCloudSave(data: SchoolPlanData, force = false): Promise<boolean> {
   const docPath = `${COLLECTION_NAME}/${DOC_ID}`;
   try {
     const planRef = doc(db, COLLECTION_NAME, DOC_ID);
@@ -194,7 +266,7 @@ async function executeCloudSave(data: SchoolPlanData): Promise<boolean> {
       lockedCells: data.lockedCells,
     };
     const currentRootFp = JSON.stringify(currentRootObj);
-    const rootNeedsSave = savedRootFingerprint !== currentRootFp;
+    const rootNeedsSave = force || savedRootFingerprint !== currentRootFp;
 
     interface PendingWriteItem {
       ref: any;
@@ -226,7 +298,7 @@ async function executeCloudSave(data: SchoolPlanData): Promise<boolean> {
     if (data.weeklySchedules && Array.isArray(data.weeklySchedules)) {
       for (const ws of data.weeklySchedules) {
         const fp = JSON.stringify(ws.assignments || []);
-        if (savedWeeklyScheduleFingerprints.get(ws.weekNumber) !== fp) {
+        if (force || savedWeeklyScheduleFingerprints.get(ws.weekNumber) !== fp) {
           const wsRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_schedules', `week_${ws.weekNumber}`);
           writesToCommit.push({
             ref: wsRef,
@@ -245,35 +317,30 @@ async function executeCloudSave(data: SchoolPlanData): Promise<boolean> {
     }
 
     // 3. Weekly timetables (subcollection: weekly_timetables)
-    // Only write weeks whose timetable slots have actually changed
     if (data.weeklyTimetables && typeof data.weeklyTimetables === 'object') {
-      const week1SlotsCount = data.weeklyTimetables[1]?.slots?.length || 0;
       for (const [wKey, tt] of Object.entries(data.weeklyTimetables)) {
-        if (tt) {
+        if (tt && tt.slots) {
           const wkNum = Number(wKey);
-          // Master week 1, active week, or customized weeks
-          if (wkNum === 1 || wkNum === (data.config as any)?.activeWeek || (tt.slots && tt.slots.length !== week1SlotsCount)) {
-            const fp = JSON.stringify(tt.slots || []);
-            if (savedWeeklyTimetableFingerprints.get(wkNum) !== fp) {
-              const ttRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${wKey}`);
-              writesToCommit.push({
-                ref: ttRef,
-                payload: sanitizeForFirestore({
-                  weekNumber: wkNum,
-                  timetable: tt,
-                  updatedAt: Date.now()
-                }),
-                onSuccess: () => {
-                  savedWeeklyTimetableFingerprints.set(wkNum, fp);
-                }
-              });
-            }
+          const fp = JSON.stringify(tt.slots || []);
+          if (force || savedWeeklyTimetableFingerprints.get(wkNum) !== fp) {
+            const ttRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${wKey}`);
+            writesToCommit.push({
+              ref: ttRef,
+              payload: sanitizeForFirestore({
+                weekNumber: wkNum,
+                timetable: tt,
+                updatedAt: Date.now()
+              }),
+              onSuccess: () => {
+                savedWeeklyTimetableFingerprints.set(wkNum, fp);
+              }
+            });
           }
         }
       }
-    } else if (data.timetable) {
+    } else if (data.timetable && data.timetable.slots) {
       const fp = JSON.stringify(data.timetable.slots || []);
-      if (savedWeeklyTimetableFingerprints.get(1) !== fp) {
+      if (force || savedWeeklyTimetableFingerprints.get(1) !== fp) {
         const ttRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', 'week_1');
         writesToCommit.push({
           ref: ttRef,
@@ -316,6 +383,23 @@ async function executeCloudSave(data: SchoolPlanData): Promise<boolean> {
       }
     }
 
+    // Auto-create snapshot if week 1 timetable was updated (throttled to 5 mins unless force=true)
+    const hasWeek1Write = writesToCommit.some(w => String(w.ref.path).includes('week_1'));
+    if (hasWeek1Write) {
+      const targetTt = data.weeklyTimetables?.[1] || data.timetable;
+      if (targetTt && targetTt.slots && targetTt.slots.length > 0) {
+        const now = Date.now();
+        if (force || now - lastAutoSnapshotTimestamp > 5 * 60 * 1000) {
+          lastAutoSnapshotTimestamp = now;
+          saveTimetableSnapshot(
+            targetTt,
+            force ? 'Bản sao lưu thủ công (Admin đã bấm lưu)' : 'Tự động sao lưu phiên bản khi có chỉnh sửa',
+            data.lastUpdatedBy || 'Admin'
+          ).catch(e => console.warn('Background timetable snapshot notice:', e));
+        }
+      }
+    }
+
     return true;
   } catch (error: any) {
     const errorStr = String(error?.message || error || '');
@@ -334,7 +418,13 @@ async function executeCloudSave(data: SchoolPlanData): Promise<boolean> {
  * Ensures that at most ONE write operation is in-flight at any given time,
  * eliminating the "Write stream exhausted maximum allowed queued writes" error.
  */
-export async function saveSchoolPlanToCloud(data: SchoolPlanData): Promise<boolean> {
+export async function saveSchoolPlanToCloud(data: SchoolPlanData, force = false): Promise<boolean> {
+  if (force) {
+    savedRootFingerprint = null;
+    savedWeeklyScheduleFingerprints.clear();
+    savedWeeklyTimetableFingerprints.clear();
+  }
+
   if (isSaveInProgress) {
     // If a save is already running, coalesce into pending request
     return new Promise<boolean>((resolve) => {
@@ -347,7 +437,7 @@ export async function saveSchoolPlanToCloud(data: SchoolPlanData): Promise<boole
 
   isSaveInProgress = true;
   try {
-    const savePromise = executeCloudSave(data);
+    const savePromise = executeCloudSave(data, force);
     const timeoutPromise = new Promise<boolean>((resolve) => {
       setTimeout(() => {
         console.warn('saveSchoolPlanToCloud timeout reached after 12s, unblocking.');
@@ -437,6 +527,24 @@ export async function loadSchoolPlanFromCloud(): Promise<SchoolPlanData | null> 
         if (loadedTimetables[1]) {
           timetable = loadedTimetables[1];
         }
+      }
+    }
+
+    // Direct fallback for week_1 if subcollection listing returned empty
+    if (!weeklyTimetables[1] && (!timetablesSnap || timetablesSnap.empty)) {
+      try {
+        const w1Ref = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', 'week_1');
+        const w1Snap = await getDoc(w1Ref);
+        if (w1Snap.exists()) {
+          const w1Data = w1Snap.data();
+          const loadedTkb = (w1Data.timetable || w1Data) as SchoolTimetable;
+          if (loadedTkb && loadedTkb.slots && loadedTkb.slots.length > 0) {
+            weeklyTimetables[1] = loadedTkb;
+            timetable = loadedTkb;
+          }
+        }
+      } catch (e) {
+        console.warn('Fallback direct week_1 fetch notice:', e);
       }
     }
 

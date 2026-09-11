@@ -357,7 +357,7 @@ const rawImage1: Record<string, RawSlot[]> = {
     { d: 2, p: 5, text: 'CHÀO CỜ' },
     // T3
     { d: 3, p: 1, text: 'KHTN - Phương' },
-    { d: 3, p: 2, text: 'TA - Bền' },
+    { d: 3, p: 2, text: 'AN - A.Văn' },
     { d: 3, p: 3, text: 'TA - Bền' },
     { d: 3, p: 4, text: 'S&Đ - Châu' },
     { d: 3, p: 5, text: 'S&Đ - Châu' },
@@ -379,7 +379,7 @@ const rawImage1: Record<string, RawSlot[]> = {
     { d: 6, p: 4, text: 'TA - Bền' },
     { d: 6, p: 5, text: 'CN - Tặt' },
     // T7
-    { d: 7, p: 1, text: 'AN - A.Văn' },
+    { d: 7, p: 1, text: 'TA - Bền' },
     { d: 7, p: 2, text: 'VĂN - Vi' },
     { d: 7, p: 3, text: 'TOÁN - Nga' },
     { d: 7, p: 4, text: 'GDTC - Chính' },
@@ -444,7 +444,7 @@ const rawImage1: Record<string, RawSlot[]> = {
     { d: 4, p: 4, text: 'HĐ CĐ - Tặt' },
     { d: 4, p: 5, text: 'MT - Quốc' },
     // T5
-    { d: 5, p: 1, text: 'TA - Bền' },
+    { d: 5, p: 1, text: 'AN - A.Văn' },
     { d: 5, p: 2, text: 'TA - Bền' },
     { d: 5, p: 3, text: 'GDCD - Ngân' },
     { d: 5, p: 4, text: 'TOÁN - Nga' },
@@ -457,7 +457,7 @@ const rawImage1: Record<string, RawSlot[]> = {
     // T7
     { d: 7, p: 1, text: 'KHTN - Phương' },
     { d: 7, p: 2, text: 'KHTN - Phương' },
-    { d: 7, p: 3, text: 'AN - A.Văn' },
+    { d: 7, p: 3, text: 'TA - Bền' },
     { d: 7, p: 4, text: 'S&Đ - Châu' },
     { d: 7, p: 5, text: 'SHL - Chính' }
   ]
