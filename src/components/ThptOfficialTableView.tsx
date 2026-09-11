@@ -224,7 +224,7 @@ export const ThptOfficialTableView: React.FC<ThptOfficialTableViewProps> = ({
           </div>
 
           <h2 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight mt-2">
-            PHÂN CÔNG CHUYÊN MÔN HỆ THPT
+            PHÂN CÔNG CHUYÊN MÔN HỆ THPT (ĐIỂM CHÍNH)
           </h2>
           <p className="text-xs text-slate-600 font-semibold mt-0.5">
             Học kỳ I - Năm học {displayAcademicYear} (Chương trình GDPT 2018)

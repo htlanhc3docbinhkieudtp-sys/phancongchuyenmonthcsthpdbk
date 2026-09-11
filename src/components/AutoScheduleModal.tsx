@@ -161,8 +161,8 @@ export const AutoScheduleModal: React.FC<AutoScheduleModalProps> = ({
                     }`}
                   >
                     <BookOpen className="w-4 h-4 text-indigo-600 mb-1" />
-                    <div className="text-xs font-black">Điểm THPT</div>
-                    <div className="text-[10px] text-slate-500">14 lớp (K10, 11, 12)</div>
+                    <div className="text-xs font-black">Điểm chính</div>
+                    <div className="text-[10px] text-slate-500">14 lớp (Khối 10, 11, 12)</div>
                   </button>
 
                   <button
@@ -175,8 +175,8 @@ export const AutoScheduleModal: React.FC<AutoScheduleModalProps> = ({
                     }`}
                   >
                     <School className="w-4 h-4 text-indigo-600 mb-1" />
-                    <div className="text-xs font-black">THCS Đốc Binh Kiều</div>
-                    <div className="text-[10px] text-slate-500">Điểm chính THCS</div>
+                    <div className="text-xs font-black">Điểm Đốc Binh Kiều</div>
+                    <div className="text-[10px] text-slate-500">24 lớp THCS (K6-9)</div>
                   </button>
 
                   <button
@@ -189,8 +189,8 @@ export const AutoScheduleModal: React.FC<AutoScheduleModalProps> = ({
                     }`}
                   >
                     <GraduationCap className="w-4 h-4 text-indigo-600 mb-1" />
-                    <div className="text-xs font-black">THCS Tân Kiều</div>
-                    <div className="text-[10px] text-slate-500">Điểm lẻ Tân Kiều</div>
+                    <div className="text-xs font-black">Điểm Tân Kiều</div>
+                    <div className="text-[10px] text-slate-500">15 lớp THCS (K6-9)</div>
                   </button>
                 </div>
               </div>

@@ -295,10 +295,10 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
             onChange={e => setSelectedCampus(e.target.value as CampusFilter)}
             className="text-xs font-bold px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-slate-800"
           >
-            <option value="ALL">Tất cả cơ sở</option>
-            <option value="THPT">Khối THPT</option>
-            <option value="DBK">THCS Đốc Binh Kiều</option>
-            <option value="TK">THCS Tân Kiều</option>
+            <option value="ALL">Tất cả điểm trường</option>
+            <option value="THPT">Điểm chính</option>
+            <option value="DBK">Điểm Đốc Binh Kiều</option>
+            <option value="TK">Điểm Tân Kiều</option>
           </select>
         </div>
 

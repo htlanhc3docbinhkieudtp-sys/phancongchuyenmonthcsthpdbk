@@ -78,9 +78,9 @@ export const TeacherCollisionModal: React.FC<TeacherCollisionModalProps> = ({
 
   const getCampusLabel = (cls?: ClassGroup) => {
     if (!cls) return 'Chưa rõ';
-    if (cls.campus === 'THCSTK') return 'THCS Tân Kiều';
-    if (cls.level === 'THPT' || cls.campus === 'THPTDBK') return 'THPT Đốc Binh Kiều';
-    return 'THCS Đốc Binh Kiều';
+    if (cls.campus === 'THCSTK') return 'Điểm Tân Kiều';
+    if (cls.level === 'THPT' || cls.campus === 'THPTDBK') return 'Điểm chính';
+    return 'Điểm Đốc Binh Kiều';
   };
 
   const getCampusBadgeClass = (cls?: ClassGroup) => {

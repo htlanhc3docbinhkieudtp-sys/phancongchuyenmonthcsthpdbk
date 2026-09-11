@@ -248,10 +248,10 @@ export const ClassMatrixView: React.FC<ClassMatrixViewProps> = ({
                 onChange={e => setSelectedCampusFilter(e.target.value)}
                 className="text-xs font-semibold bg-slate-50 border border-slate-300 rounded px-2 py-1 text-slate-800 focus:outline-hidden focus:ring-1 focus:ring-indigo-500 cursor-pointer"
               >
-                <option value="ALL">Tất cả điểm trường / hệ</option>
-                <option value="THPTDBK">THPT Đốc Binh Kiều (K10-12)</option>
-                <option value="THCSDBK">THCS Đốc Binh Kiều (K6-9)</option>
-                <option value="THCSTK">THCS Trần Kiều (K6-9)</option>
+                <option value="ALL">Tất cả điểm trường</option>
+                <option value="THPTDBK">Điểm chính (K10-12)</option>
+                <option value="THCSDBK">Điểm Đốc Binh Kiều (K6-9)</option>
+                <option value="THCSTK">Điểm Tân Kiều (K6-9)</option>
               </select>
             </div>
 

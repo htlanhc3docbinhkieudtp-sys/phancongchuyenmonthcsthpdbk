@@ -360,7 +360,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                 </span>
               </div>
               <p className="text-xs text-emerald-100/80 mt-0.5">
-                Hỗ trợ tải riêng từng điểm trường (THPT, THCS Đốc Binh Kiều, Tân Kiều) hoặc chọn cùng lúc nhiều file để gộp thành TKB hoàn chỉnh
+                Hỗ trợ tải riêng từng điểm trường (Điểm chính, Điểm Đốc Binh Kiều, Điểm Tân Kiều) hoặc chọn cùng lúc nhiều file để gộp thành TKB hoàn chỉnh
               </p>
             </div>
           </div>
@@ -521,7 +521,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                   Kéo thả một hoặc nhiều file Excel (.xlsx) vào đây
                 </h4>
                 <p className="text-xs text-slate-500 max-w-md mx-auto">
-                  Có thể <strong>chọn cùng lúc 3 file cho 3 điểm trường</strong> (hoặc tải từng file một, hệ thống sẽ tự động gộp dữ liệu). Nhận diện chính xác 14 lớp THPT, 22 lớp THCS Đốc Binh Kiều và điểm trường Tân Kiều.
+                  Có thể <strong>chọn cùng lúc 3 file cho 3 điểm trường</strong> (hoặc tải từng file một, hệ thống sẽ tự động gộp dữ liệu). Nhận diện chính xác 14 lớp Điểm chính, 24 lớp Điểm Đốc Binh Kiều và 15 lớp Điểm Tân Kiều.
                 </p>
               </div>
 
@@ -768,9 +768,9 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                         className="text-xs bg-white border border-slate-300 rounded-lg px-2 py-1 font-semibold text-slate-700 focus:outline-hidden"
                       >
                         <option value="ALL">Tất cả điểm trường</option>
-                        <option value="THPT">THPT</option>
-                        <option value="DBK">THCS ĐBK</option>
-                        <option value="TK">THCS Tân Kiều</option>
+                        <option value="THPT">Điểm chính</option>
+                        <option value="DBK">Điểm Đốc Binh Kiều</option>
+                        <option value="TK">Điểm Tân Kiều</option>
                       </select>
                     </div>
                   </div>

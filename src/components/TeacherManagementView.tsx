@@ -308,10 +308,10 @@ export const TeacherManagementView: React.FC<TeacherManagementViewProps> = ({
               onChange={e => setSelectedCampusFilter(e.target.value)}
               className="text-xs bg-slate-50 border border-slate-200 rounded px-2 py-1 text-slate-700 focus:outline-hidden cursor-pointer"
             >
-              <option value="ALL">Tất cả phân hiệu / hệ</option>
-              <option value="THPTDBK">Hệ THPT Đốc Binh Kiều (K10-12)</option>
-              <option value="THCSDBK">Hệ THCS Đốc Binh Kiều (K6-9)</option>
-              <option value="THCSTK">Hệ THCS Trần Kiều (K6-9)</option>
+              <option value="ALL">Tất cả điểm trường</option>
+              <option value="THPTDBK">Điểm chính (K10-12)</option>
+              <option value="THCSDBK">Điểm Đốc Binh Kiều (K6-9)</option>
+              <option value="THCSTK">Điểm Tân Kiều (K6-9)</option>
             </select>
           </div>
 
@@ -440,7 +440,7 @@ export const TeacherManagementView: React.FC<TeacherManagementViewProps> = ({
                             ? 'bg-emerald-100 text-emerald-800' 
                             : 'bg-purple-100 text-purple-800'
                         }`}>
-                          {teacher.campus || 'THPTDBK'}
+                          {teacher.campus === 'THCSTK' ? 'Điểm Tân Kiều' : teacher.campus === 'THCSDBK' ? 'Điểm Đốc Binh Kiều' : 'Điểm chính'}
                         </span>
                       </td>
                       <td className="p-2">
@@ -808,9 +808,9 @@ export const TeacherManagementView: React.FC<TeacherManagementViewProps> = ({
                     }}
                     className="w-full p-1.5 text-xs border border-slate-200 rounded focus:ring-1 focus:ring-indigo-500 focus:outline-hidden cursor-pointer font-bold text-indigo-900"
                   >
-                    <option value="THPTDBK">THPTDBK (Khối 10-12 • Chuẩn 17t)</option>
-                    <option value="THCSDBK">THCSDBK (Khối 6-9 • Chuẩn 19t)</option>
-                    <option value="THCSTK">THCSTK (Khối 6-9 • Chuẩn 19t)</option>
+                    <option value="THPTDBK">Điểm chính (Khối 10-12 • Chuẩn 17t)</option>
+                    <option value="THCSDBK">Điểm Đốc Binh Kiều (Khối 6-9 • Chuẩn 19t)</option>
+                    <option value="THCSTK">Điểm Tân Kiều (Khối 6-9 • Chuẩn 19t)</option>
                   </select>
                 </div>
 

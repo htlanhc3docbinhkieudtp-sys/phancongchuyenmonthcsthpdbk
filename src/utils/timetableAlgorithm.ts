@@ -457,9 +457,9 @@ export function executeSmartScheduleAlgorithm(
     unplacedCount: Math.max(0, totalRequiredSlots - placedSlotsCount),
     conflicts,
     campusStats: [
-      { campus: 'THPT', classCount: classes.filter(c => c.level === 'THPT').length, placedSlots: placedSlotsCount },
-      { campus: 'THCS ĐBK', classCount: classes.filter(c => c.level === 'THCS' && c.campus !== 'THCSTK').length, placedSlots: placedSlotsCount },
-      { campus: 'THCS Tân Kiều', classCount: classes.filter(c => c.campus === 'THCSTK').length, placedSlots: placedSlotsCount }
+      { campus: 'Điểm chính', classCount: classes.filter(c => c.level === 'THPT').length, placedSlots: placedSlotsCount },
+      { campus: 'Điểm Đốc Binh Kiều', classCount: classes.filter(c => c.level === 'THCS' && c.campus !== 'THCSTK').length, placedSlots: placedSlotsCount },
+      { campus: 'Điểm Tân Kiều', classCount: classes.filter(c => c.campus === 'THCSTK').length, placedSlots: placedSlotsCount }
     ],
     executionTimeMs
   };

@@ -817,7 +817,7 @@ function buildClassSchedule(
 }
 
 /**
- * Builds all official slots for THCS Tân Kiều (15 classes: 6A7-6A10, 7A7-7A9, 8A7-8A10, 9A7-9A10)
+ * Builds all official slots for Điểm Tân Kiều (15 classes: 6A7-6A10, 7A7-7A9, 8A7-8A10, 9A7-9A10)
  */
 export function buildTHCSTKWeek1Slots(): TimetableSlot[] {
   const slots: TimetableSlot[] = [];

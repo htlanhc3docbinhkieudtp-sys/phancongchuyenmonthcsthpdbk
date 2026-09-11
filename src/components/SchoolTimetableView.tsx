@@ -421,7 +421,29 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
     <div className="space-y-4">
       {/* 1. Header Banner */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2">
-        <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        {/* Formal Vietnamese School Header for Print / PDF */}
+        <div className="hidden print:block text-center pb-3 border-b border-slate-300 mb-3">
+          <div className="flex justify-between items-start text-xs uppercase font-bold text-slate-800 mb-1">
+            <div className="text-left">
+              <div className="text-[11px] text-slate-600">{config.subTitle || 'SỞ GD&ĐT TỈNH ĐỒNG THÁP'}</div>
+              <div className="text-slate-900 font-extrabold text-xs">{config.schoolName || 'TRƯỜNG THCS & THPT ĐỐC BINH KIỀU'}</div>
+            </div>
+            <div className="text-right">
+              <div className="text-[11px]">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+              <div className="font-normal normal-case text-[11px] text-slate-600">
+                Độc lập - Tự do - Hạnh phúc
+              </div>
+            </div>
+          </div>
+          <h2 className="text-base font-black text-slate-900 uppercase tracking-tight mt-1.5">
+            THỜI KHÓA BIỂU {viewMode === 'BY_TEACHER' ? 'GIÁO VIÊN' : 'CÁC LỚP HỌC'}
+          </h2>
+          <p className="text-xs text-slate-600 font-semibold mt-0.5">
+            Tuần {currentWeek} ({weekInfo.startDateShort} - {weekInfo.endDateShort}) • Năm học {config.academicYear || '2026 - 2027'}
+          </p>
+        </div>
+
+        <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-4 print:hidden">
           <div className="flex items-center gap-3.5">
             <div className="p-3 bg-indigo-500/20 text-indigo-300 rounded-xl border border-indigo-400/30">
               <Calendar className="w-6 h-6" />
@@ -436,7 +458,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 </span>
               </div>
               <p className="text-xs text-indigo-200/90 font-medium mt-0.5">
-                Áp dụng cho cả 3 điểm trường: THPT (14 lớp) • THCS Đốc Binh Kiều • THCS Tân Kiều ({stats.totalClasses} lớp)
+                Áp dụng cho cả 3 điểm trường: Điểm chính (14 lớp) • Điểm Đốc Binh Kiều (24 lớp) • Điểm Tân Kiều (15 lớp) ({stats.totalClasses} lớp)
               </p>
             </div>
           </div>
@@ -614,12 +636,12 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                     <button
                       type="button"
                       onClick={() => {
-                        if (window.confirm('Khôi phục lại dữ liệu Thời khóa biểu Tuần 1 chuẩn chính thức cho cả 3 điểm trường (14 lớp THPT + 24 lớp THCS Đốc Binh Kiều + 15 lớp THCS Tân Kiều từ ma trận và file phân công)?')) {
+                        if (window.confirm('Khôi phục lại dữ liệu Thời khóa biểu Tuần 1 chuẩn chính thức cho cả 3 điểm trường (14 lớp Điểm chính + 24 lớp Điểm Đốc Binh Kiều + 15 lớp Điểm Tân Kiều từ ma trận và file phân công)?')) {
                           onRestoreWeek1Official();
                         }
                       }}
                       className="px-3 py-2 bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 border border-slate-200 hover:border-rose-200 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
-                      title="Nạp lại dữ liệu TKB Tuần 1 chuẩn chính thức của 3 điểm trường (THPT, THCS Đốc Binh Kiều, THCS Tân Kiều)"
+                      title="Nạp lại dữ liệu TKB Tuần 1 chuẩn chính thức của 3 điểm trường (Điểm chính, Điểm Đốc Binh Kiều, Điểm Tân Kiều)"
                     >
                       <RotateCcw className="w-3.5 h-3.5 text-rose-600" />
                       <span>Khôi Phục TKB Tuần 1 Chuẩn (3 Điểm Trường)</span>
@@ -706,7 +728,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                   </span>
                 </div>
                 <p className="text-xs text-amber-50 font-medium">
-                  Tự động xếp theo từng điểm trường (THPT, THCS ĐBK, THCS Tân Kiều), bảo đảm không trùng giờ, tránh nắng Thể dục & tối ưu tiết đôi.
+                  Tự động xếp theo từng điểm trường (Điểm chính, Điểm Đốc Binh Kiều, Điểm Tân Kiều), bảo đảm không trùng giờ, tránh nắng Thể dục & tối ưu tiết đôi.
                 </p>
               </div>
             </div>
@@ -785,7 +807,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 }`}
               >
                 <BookOpen className="w-3.5 h-3.5" />
-                <span>THPT (14 lớp)</span>
+                <span>Điểm chính (14 lớp)</span>
               </button>
 
               <button
@@ -797,7 +819,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 }`}
               >
                 <School className="w-3.5 h-3.5" />
-                <span>THCS Đốc Binh Kiều (24 lớp)</span>
+                <span>Điểm Đốc Binh Kiều (24 lớp)</span>
               </button>
 
               <button
@@ -809,7 +831,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 }`}
               >
                 <GraduationCap className="w-3.5 h-3.5" />
-                <span>THCS Tân Kiều (15 lớp)</span>
+                <span>Điểm Tân Kiều (15 lớp)</span>
               </button>
             </div>
           </div>
@@ -859,7 +881,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                   <option value="ALL">Tất cả các lớp ({filteredClasses.length} lớp)</option>
                   {classes.map(cls => (
                     <option key={cls.id} value={cls.id}>
-                      {cls.name} - Khối {cls.grade} ({cls.campus === 'THCSTK' ? 'Tân Kiều' : cls.level === 'THPT' ? 'THPT' : 'THCS ĐBK'})
+                      {cls.name} - Khối {cls.grade} ({cls.campus === 'THCSTK' ? 'Điểm Tân Kiều' : cls.level === 'THPT' ? 'Điểm chính' : 'Điểm Đốc Binh Kiều'})
                     </option>
                   ))}
                 </select>
@@ -1075,39 +1097,39 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
               filteredClasses.map(cls => {
                 const homeroomTeacher = cls.homeroomTeacherId ? teacherMap.get(cls.homeroomTeacherId) : undefined;
                 const campusLabel = cls.campus === 'THPTDBK' || cls.level === 'THPT'
-                  ? 'THPT Đốc Binh Kiều'
+                  ? 'Điểm chính'
                   : cls.campus === 'THCSTK'
-                  ? 'THCS Tân Kiều'
-                  : 'THCS Đốc Binh Kiều';
+                  ? 'Điểm Tân Kiều'
+                  : 'Điểm Đốc Binh Kiều';
 
                 return (
                   <div
                     key={cls.id}
-                    className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden print:border-none print:shadow-none print:break-inside-avoid"
+                    className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden print:border print:border-slate-300 print:shadow-none print:break-inside-avoid print:mb-4"
                   >
                     {/* Class Header Card */}
-                    <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 print:bg-slate-100 print:text-slate-900 print:border-b print:border-slate-300 print:p-2.5">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-sm shadow-xs border border-indigo-400/30">
+                        <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-sm shadow-xs border border-indigo-400/30 print:bg-slate-800">
                           {cls.name}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <h3 className="font-extrabold text-sm sm:text-base tracking-tight text-white uppercase">
+                            <h3 className="font-extrabold text-sm sm:text-base tracking-tight text-white print:text-slate-900 uppercase">
                               Lớp {cls.name} • Khối {cls.grade}
                             </h3>
-                            <span className="px-2 py-0.5 bg-white/10 text-indigo-200 text-[10px] font-bold rounded-md">
+                            <span className="px-2 py-0.5 bg-white/10 text-indigo-200 text-[10px] font-bold rounded-md print:bg-white print:text-slate-800 print:border print:border-slate-300">
                               {campusLabel}
                             </span>
                           </div>
-                          <p className="text-xs text-indigo-200/90 font-medium">
-                            GVCN: <strong className="text-white">{homeroomTeacher?.name || 'Chưa phân công'}</strong>
+                          <p className="text-xs text-indigo-200/90 font-medium print:text-slate-700">
+                            GVCN: <strong className="text-white print:text-slate-900">{homeroomTeacher?.name || 'Chưa phân công'}</strong>
                           </p>
                         </div>
                       </div>
 
-                      <div className="text-xs text-indigo-200 flex flex-wrap sm:flex-nowrap items-center gap-2 font-medium">
-                        <span className="font-bold text-white tracking-wide">
+                      <div className="text-xs text-indigo-200 print:text-slate-700 flex flex-wrap sm:flex-nowrap items-center gap-2 font-medium">
+                        <span className="font-bold text-white print:text-slate-900 tracking-wide">
                           Tuần {currentWeek} ({weekInfo.startDateShort} - {weekInfo.endDateShort})
                         </span>
                         <span>Năm học {config.academicYear || '2026 - 2027'}</span>
@@ -1365,25 +1387,25 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 return (
                   <div
                     key={teacher.id}
-                    className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden print:border-none print:shadow-none print:break-inside-avoid"
+                    className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden print:border print:border-slate-300 print:shadow-none print:break-inside-avoid print:mb-4"
                   >
                     {/* Teacher Card Header */}
-                    <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 print:bg-slate-100 print:text-slate-900 print:border-b print:border-slate-300 print:p-2.5">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-sm shadow-xs border border-indigo-400/30">
+                        <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-sm shadow-xs border border-indigo-400/30 print:bg-slate-800">
                           {teacher.code || teacher.name.slice(0, 2)}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <h3 className="font-extrabold text-sm sm:text-base tracking-tight text-white uppercase">
+                            <h3 className="font-extrabold text-sm sm:text-base tracking-tight text-white print:text-slate-900 uppercase">
                               {teacher.name} ({teacher.code})
                             </h3>
-                            <span className="px-2 py-0.5 bg-indigo-500/30 text-indigo-200 text-[10px] font-bold rounded-md border border-indigo-400/30">
+                            <span className="px-2 py-0.5 bg-indigo-500/30 text-indigo-200 text-[10px] font-bold rounded-md border border-indigo-400/30 print:bg-white print:text-slate-800 print:border-slate-300">
                               {teacher.role}
                             </span>
                           </div>
-                          <p className="text-xs text-indigo-200/90 font-medium">
-                            Cơ sở: {teacher.campus === 'THCSTK' ? 'Tân Kiều' : teacher.campus === 'THCSDBK' ? 'THCS ĐBK' : 'THPT'} • Tổng tiết TKB: <strong className="text-white">{teacherTotalPeriods} tiết/tuần</strong>
+                          <p className="text-xs text-indigo-200/90 font-medium print:text-slate-700">
+                            Điểm trường: <strong className="text-white print:text-slate-900">{teacher.campus === 'THCSTK' ? 'Điểm Tân Kiều' : teacher.campus === 'THCSDBK' ? 'Điểm Đốc Binh Kiều' : 'Điểm chính'}</strong> • Tổng tiết TKB: <strong className="text-white print:text-slate-900">{teacherTotalPeriods} tiết/tuần</strong>
                           </p>
                         </div>
                       </div>

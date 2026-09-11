@@ -212,7 +212,7 @@ export function generateInitialTimetable(
     title: `Thời Khóa Biểu Tuần 1 - ${config.semester === 'HK2' ? 'Học kỳ II' : 'Học kỳ I'} Năm học ${config.academicYear || '2026 - 2027'}`,
     slots,
     updatedAt: Date.now(),
-    notes: 'TKB Tuần 1 chính thức toàn trường (14 lớp THPT, 24 lớp THCS Đốc Binh Kiều, 15 lớp THCS Tân Kiều)'
+    notes: 'TKB Tuần 1 chính thức toàn trường (14 lớp Điểm chính, 24 lớp Điểm Đốc Binh Kiều, 15 lớp Điểm Tân Kiều)'
   };
 }
 
@@ -556,10 +556,10 @@ export function exportTimetableToExcel(
 
   classes.forEach((cls, idx) => {
     const campusName = cls.campus === 'THPTDBK' || cls.level === 'THPT'
-      ? 'THPT'
+      ? 'Điểm chính'
       : cls.campus === 'THCSTK'
-      ? 'THCS Tân Kiều'
-      : 'THCS Đốc Binh Kiều';
+      ? 'Điểm Tân Kiều'
+      : 'Điểm Đốc Binh Kiều';
     const homeroomName = cls.homeroomTeacherId ? (teacherMap.get(cls.homeroomTeacherId)?.name || '') : '';
     const session = 'SANG';
 

@@ -522,7 +522,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
             stt++,
             cls.grade,
             cls.name,
-            cls.level === 'THPT' ? 'THPT' : (cls.campus === 'THCSTK' || (!cls.campus && parseInt(cls.name.replace(/[^0-9]/g, '').slice(1), 10) > 6) ? 'Tân Kiều' : 'Đốc Binh Kiều'),
+            cls.level === 'THPT' ? 'Điểm chính' : (cls.campus === 'THCSTK' || (!cls.campus && parseInt(cls.name.replace(/[^0-9]/g, '').slice(1), 10) > 6) ? 'Điểm Tân Kiều' : 'Điểm Đốc Binh Kiều'),
             col.name,
             teacher?.name || '—',
             teacher?.code || '—',
@@ -725,7 +725,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
                 </span>
               </h4>
               <p className="text-emerald-800 text-xs mt-0.5">
-                Toàn bộ các ô phân công của 53 lớp (bao gồm cả cơ sở Đốc Binh Kiều, Tân Kiều và THPT) đã được đối chiếu và điền đủ giáo viên, số tiết thực dạy từ Thời khóa biểu chính thức.
+                Toàn bộ các ô phân công của 53 lớp (bao gồm cả Điểm chính, Điểm Đốc Binh Kiều và Điểm Tân Kiều) đã được đối chiếu và điền đủ giáo viên, số tiết thực dạy từ Thời khóa biểu chính thức.
               </p>
             </div>
           </div>
@@ -791,10 +791,10 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
             <Building2 className="w-3.5 h-3.5" /> Điểm trường:
           </span>
           {[
-            { key: 'ALL', label: 'Tất cả cơ sở' },
-            { key: 'DBK', label: 'THCS Đốc Binh Kiều' },
-            { key: 'TK', label: 'THCS Tân Kiều' },
-            { key: 'THPT', label: 'Khối THPT' }
+            { key: 'ALL', label: 'Tất cả điểm trường' },
+            { key: 'THPT', label: 'Điểm chính' },
+            { key: 'DBK', label: 'Điểm Đốc Binh Kiều' },
+            { key: 'TK', label: 'Điểm Tân Kiều' }
           ].map(c => (
             <button
               key={c.key}
@@ -917,7 +917,7 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
                       </div>
                     </td>
                     <td className="p-2 border border-slate-200 text-[11px] text-slate-500 font-medium">
-                      {cls.level === 'THPT' ? 'THPT' : (cls.campus === 'THCSTK' || (!cls.campus && parseInt(cls.name.replace(/[^0-9]/g, '').slice(1), 10) > 6) ? 'Tân Kiều' : 'Đốc Binh Kiều')}
+                      {cls.level === 'THPT' ? 'Điểm chính' : (cls.campus === 'THCSTK' || (!cls.campus && parseInt(cls.name.replace(/[^0-9]/g, '').slice(1), 10) > 6) ? 'Điểm Tân Kiều' : 'Điểm Đốc Binh Kiều')}
                     </td>
                     <td className="p-2 border border-slate-200 text-left">
                       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1.5">
@@ -1139,10 +1139,10 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
                   onChange={e => setReconcileCampus(e.target.value as any)}
                   className="text-xs font-bold px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-slate-800"
                 >
-                  <option value="ALL">Tất cả cơ sở</option>
-                  <option value="THPT">Khối THPT</option>
-                  <option value="DBK">THCS Đốc Binh Kiều</option>
-                  <option value="TK">THCS Tân Kiều</option>
+                  <option value="ALL">Tất cả điểm trường</option>
+                  <option value="THPT">Điểm chính</option>
+                  <option value="DBK">Điểm Đốc Binh Kiều</option>
+                  <option value="TK">Điểm Tân Kiều</option>
                 </select>
 
                 {/* Grade filter */}

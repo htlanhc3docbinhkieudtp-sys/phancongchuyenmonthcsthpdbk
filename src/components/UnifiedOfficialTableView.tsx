@@ -98,7 +98,7 @@ export const UnifiedOfficialTableView: React.FC<UnifiedOfficialTableViewProps> =
               }`}
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span>Khối THPT (14 lớp)</span>
+              <span>Điểm chính (14 lớp)</span>
             </button>
 
             <button
@@ -110,7 +110,7 @@ export const UnifiedOfficialTableView: React.FC<UnifiedOfficialTableViewProps> =
               }`}
             >
               <GraduationCap className="w-3.5 h-3.5" />
-              <span>THCS Đốc Binh Kiều</span>
+              <span>Điểm Đốc Binh Kiều</span>
             </button>
 
             <button
@@ -122,7 +122,7 @@ export const UnifiedOfficialTableView: React.FC<UnifiedOfficialTableViewProps> =
               }`}
             >
               <School className="w-3.5 h-3.5" />
-              <span>THCS Tân Kiều</span>
+              <span>Điểm Tân Kiều</span>
             </button>
           </div>
         </div>
@@ -136,7 +136,7 @@ export const UnifiedOfficialTableView: React.FC<UnifiedOfficialTableViewProps> =
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-2 flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-indigo-600"></span>
               <h3 className="text-xs font-black uppercase text-indigo-900 tracking-wider">
-                Phần 1: Khối Trung Học Phổ Thông (Khối 10, 11, 12)
+                Phần 1: Điểm chính (Khối THPT 10, 11, 12)
               </h3>
             </div>
             <ThptOfficialTableView
@@ -159,7 +159,7 @@ export const UnifiedOfficialTableView: React.FC<UnifiedOfficialTableViewProps> =
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-2 flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-indigo-600"></span>
               <h3 className="text-xs font-black uppercase text-indigo-900 tracking-wider">
-                Phần 2: Khối Trung Học Cơ Sở (Điểm Đốc Binh Kiều & Tân Kiều)
+                Phần 2: Khối THCS (Điểm Đốc Binh Kiều & Điểm Tân Kiều)
               </h3>
             </div>
             <ThcsOfficialTableView

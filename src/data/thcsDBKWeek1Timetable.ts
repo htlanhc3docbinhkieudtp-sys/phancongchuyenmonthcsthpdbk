@@ -9,7 +9,7 @@ interface RawSlot {
   tchId: string;
 }
 
-// Map of Teacher ID & Full Name & Code based on the official School Staff list for THCS Đốc Binh Kiều
+// Map of Teacher ID & Full Name & Code based on the official School Staff list for Điểm Đốc Binh Kiều
 export const THCS_DBK_TEACHER_MAP: Record<string, { id: string; name: string; code: string }> = {
   // BGH & Chuyên môn
   'Sơn': { id: 'tch-ls-2', name: 'Trịnh Văn Sơn', code: 'Sơn.TV' },
@@ -939,7 +939,7 @@ export const rawKhôi9: Record<string, { day: number; period: number; text: stri
 };
 
 /**
- * Builds all official slots for THCS Đốc Binh Kiều (6A1-6A6, 7A1-7A6, 8A1-8A6, 9A1-9A6)
+ * Builds all official slots for Điểm Đốc Binh Kiều (6A1-6A6, 7A1-7A6, 8A1-8A6, 9A1-9A6)
  */
 export function buildTHCSDBKWeek1Slots(): TimetableSlot[] {
   const slots: TimetableSlot[] = [];

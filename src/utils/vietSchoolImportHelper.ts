@@ -27,7 +27,7 @@ export interface VietSchoolParseResult {
   successCount: number;
 }
 
-// Teacher nickname dictionary for THCS Đốc Binh Kiều
+// Teacher nickname dictionary for Điểm Đốc Binh Kiều
 const THCS_DBK_TEACHER_LOOKUP: Record<string, { id: string; name: string; code: string }> = {
   // BGH & Chuyên môn
   'Sơn': { id: 'tch-ls-2', name: 'Trịnh Văn Sơn', code: 'Sơn.TV' },
@@ -100,7 +100,7 @@ const THCS_DBK_TEACHER_LOOKUP: Record<string, { id: string; name: string; code: 
   'Rang.NK': { id: 'tch-td-2', name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' }
 };
 
-// Teacher nickname dictionary for THCS Tân Kiều
+// Teacher nickname dictionary for Điểm Tân Kiều
 const THCS_TK_TEACHER_LOOKUP: Record<string, { id: string; name: string; code: string }> = {
   'Nhuận': { id: 'tch-t-15', name: 'Trần Văn Nhuận', code: 'Nhuận.TV' },
   'Hà': { id: 'tch-ls-14', name: 'Châu Thị Kim Hà', code: 'Hà.CTK' },

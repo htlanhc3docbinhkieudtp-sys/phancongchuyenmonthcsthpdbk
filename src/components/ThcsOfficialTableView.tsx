@@ -163,8 +163,8 @@ export const ThcsOfficialTableView: React.FC<ThcsOfficialTableViewProps> = ({
   if (selectedCampus === 'ALL' || selectedCampus === 'DBK') {
     campusesToRender.push({
       key: 'DBK',
-      campusName: 'Điểm trường THCS Đốc Binh Kiều',
-      tableTitle: 'PHÂN CÔNG CHUYÊN MÔN HỆ THCS (ĐIỂM TRƯỜNG ĐỐC BINH KIỀU)',
+      campusName: 'Điểm Đốc Binh Kiều',
+      tableTitle: 'PHÂN CÔNG CHUYÊN MÔN HỆ THCS (ĐIỂM ĐỐC BINH KIỀU)',
       classes: dbkClasses
     });
   }
@@ -172,8 +172,8 @@ export const ThcsOfficialTableView: React.FC<ThcsOfficialTableViewProps> = ({
   if (selectedCampus === 'ALL' || selectedCampus === 'TK') {
     campusesToRender.push({
       key: 'TK',
-      campusName: 'Điểm trường Tân Kiều',
-      tableTitle: 'PHÂN CÔNG CHUYÊN MÔN HỆ THCS (ĐIỂM TRƯỜNG TÂN KIỀU)',
+      campusName: 'Điểm Tân Kiều',
+      tableTitle: 'PHÂN CÔNG CHUYÊN MÔN HỆ THCS (ĐIỂM TÂN KIỀU)',
       classes: tkClasses
     });
   }
@@ -230,7 +230,7 @@ export const ThcsOfficialTableView: React.FC<ThcsOfficialTableViewProps> = ({
                   : 'text-emerald-900 hover:bg-emerald-100/70'
               }`}
             >
-              Cả 2 Điểm Trường ({thcsClasses.length} lớp)
+              Cả 2 Điểm THCS ({thcsClasses.length} lớp)
             </button>
             <button
               onClick={() => handleSelectCampus('DBK')}
@@ -240,7 +240,7 @@ export const ThcsOfficialTableView: React.FC<ThcsOfficialTableViewProps> = ({
                   : 'text-emerald-900 hover:bg-emerald-100/70'
               }`}
             >
-              Đốc Binh Kiều ({dbkClasses.length} lớp)
+              Điểm Đốc Binh Kiều ({dbkClasses.length} lớp)
             </button>
             <button
               onClick={() => handleSelectCampus('TK')}
@@ -250,7 +250,7 @@ export const ThcsOfficialTableView: React.FC<ThcsOfficialTableViewProps> = ({
                   : 'text-emerald-900 hover:bg-emerald-100/70'
               }`}
             >
-              Tân Kiều ({tkClasses.length} lớp)
+              Điểm Tân Kiều ({tkClasses.length} lớp)
             </button>
           </div>
 
