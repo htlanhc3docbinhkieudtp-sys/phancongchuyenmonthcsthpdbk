@@ -520,8 +520,16 @@ async function executeCloudSave(data: SchoolPlanData, force = false): Promise<bo
       timetableSlotsCount: primaryTimetable?.slots?.length || 0
     });
 
-    // ZERO WRITE OPTIMIZATION: If data has not changed, completely skip Firestore write!
-    if (!force && savedConsolidatedFingerprint === currentFp) {
+    // ZERO WRITE OPTIMIZATION: Manual save may still create a local snapshot,
+    // but never rewrite an unchanged Firestore document.
+    if (savedConsolidatedFingerprint === currentFp) {
+      if (force && primaryTimetable && primaryTimetable.slots) {
+        await saveTimetableSnapshot(
+          primaryTimetable,
+          'Bản sao lưu thủ công (dữ liệu không thay đổi)',
+          data.lastUpdatedBy || 'Admin'
+        );
+      }
       return true;
     }
 

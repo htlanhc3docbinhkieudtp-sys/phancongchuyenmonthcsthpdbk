@@ -68,19 +68,9 @@ import { AutoAssignModal } from './components/AutoAssignModal';
 import { ConflictAuditDrawer } from './components/ConflictAuditDrawer';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { Footer } from './components/Footer';
-import { VisitorCounterModal } from './components/VisitorCounterModal';
-import {
-  recordVisitorAccess,
-  subscribeToVisitorStats,
-  VisitorStats,
-  getCachedVisitorStats,
-  getVietnamTodayDate,
-  getVietnamMonthKey
-} from './services/visitorCounterService';
 import {
   saveSchoolPlanToCloud,
   loadSchoolPlanFromCloud,
-  subscribeToSchoolPlan,
   exportDataAsJsonFile,
   markDataAsCloudSynced,
   isFirestoreWriteQuotaExhausted,
@@ -435,8 +425,6 @@ export default function App() {
     return saved ? Number(saved) : null;
   });
   const isInitialCloudLoadRef = React.useRef(true);
-  const saveTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-  const lastAutoSaveTimeRef = React.useRef<number>(0);
 
   // Modals state
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -451,32 +439,6 @@ export default function App() {
       setToastMessage(prev => (prev === msg ? null : prev));
     }, 4000);
   };
-
-  // Real-time Visitor Counter State - initialized from real cached storage or null (loading state)
-  const [visitorStats, setVisitorStats] = useState<VisitorStats | null>(() => {
-    return getCachedVisitorStats();
-  });
-  const [isVisitorModalOpen, setIsVisitorModalOpen] = useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
-    recordVisitorAccess().then(initialStats => {
-      if (isMounted && initialStats) {
-        setVisitorStats(initialStats);
-      }
-    });
-
-    const unsubscribe = subscribeToVisitorStats(stats => {
-      if (isMounted && stats) {
-        setVisitorStats(stats);
-      }
-    });
-
-    return () => {
-      isMounted = false;
-      unsubscribe();
-    };
-  }, []);
 
   // Initial fetch from Firestore on mount
   useEffect(() => {
@@ -655,54 +617,10 @@ export default function App() {
       }
     } catch { /* storage full */ }
 
-    // Debounced Firebase Auto-Save:
-    // Only admin changes push to Cloud to prevent view-only overwrites.
-    // Throttled to 25s idle inactivity and at most once per 60 seconds
-    // to strictly protect the 20,000 writes/day free limit!
-    if (!isInitialCloudLoadRef.current && isAdmin) {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-
-      const elapsedSinceLastSave = Date.now() - lastAutoSaveTimeRef.current;
-      const delay = elapsedSinceLastSave < 60000 ? Math.max(25000, 60000 - elapsedSinceLastSave) : 25000;
-
-      saveTimeoutRef.current = setTimeout(async () => {
-        setCloudSyncStatus('saving');
-        const fallbackTimer = setTimeout(() => {
-          setCloudSyncStatus(prev => (prev === 'saving' ? 'synced' : prev));
-        }, 13000);
-
-        try {
-          const payload: SchoolPlanData = {
-            config,
-            departments,
-            subjects,
-            classes,
-            teachers,
-            assignments,
-            lockedCells,
-            weeklySchedules,
-            timetable,
-            weeklyTimetables,
-            updatedAt: Date.now()
-          };
-          const success = await saveSchoolPlanToCloud(payload);
-          lastAutoSaveTimeRef.current = Date.now();
-          clearTimeout(fallbackTimer);
-          if (success) {
-            setCloudSyncStatus('synced');
-            setLastSyncedAt(Date.now());
-            safeLocalStorageSet(`${STORAGE_KEY}_last_cloud_sync`, String(Date.now()));
-          } else {
-            setCloudSyncStatus('synced'); // Unblock UI rather than showing permanent spinning/error
-          }
-        } catch {
-          clearTimeout(fallbackTimer);
-          setCloudSyncStatus('synced');
-        }
-      }, delay);
+    if (!isInitialCloudLoadRef.current) {
+      setCloudSyncStatus('offline');
     }
+
   }, [config, departments, subjects, classes, teachers, assignments, lockedCells, weeklySchedules, weeklyTimetables, timetable, isAdmin]);
 
   // Derived Calculations
@@ -1051,10 +969,6 @@ export default function App() {
   };
 
   const handleSaveToCloud = async (isForced = true) => {
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-    lastAutoSaveTimeRef.current = Date.now();
     setCloudSyncStatus('saving');
     const payload: SchoolPlanData = {
       config,
@@ -1122,10 +1036,8 @@ export default function App() {
           } else if (parsed.timetable) {
             setWeeklyTimetables({ 1: parsed.timetable });
           }
-          await saveSchoolPlanToCloud(parsed);
-          setCloudSyncStatus('synced');
-          setLastSyncedAt(Date.now());
-          alert('Đã khôi phục thành công dữ liệu từ file sao lưu JSON!');
+          setCloudSyncStatus('offline');
+          alert('Đã khôi phục dữ liệu từ file sao lưu JSON trên máy. Bấm Lưu Cloud nếu muốn đồng bộ lên Firebase.');
         }
       } catch (err) {
         alert('File sao lưu không hợp lệ hoặc bị lỗi định dạng!');
@@ -1496,7 +1408,6 @@ export default function App() {
       const defaultWeekly = generateBalancedWeeklySchedules('HK1', initialAssignments, initialClasses, initialSubjects);
       setWeeklySchedules(defaultWeekly);
       localStorage.clear();
-      handleSaveToCloud();
     }
   };
 
@@ -1514,8 +1425,6 @@ export default function App() {
         lastSyncedAt={lastSyncedAt}
         isAdmin={isAdmin}
         userRole={userRole}
-        visitorStats={visitorStats}
-        onOpenVisitorStats={() => setIsVisitorModalOpen(true)}
         onOpenAdminLogin={() => setLoginModalState({ isOpen: true, initialRole: userRole === 'teacher' ? 'admin' : 'teacher', promptReason: null })}
         onLogoutAdmin={handleLogout}
         onSaveToCloud={handleSaveToCloud}
@@ -1740,18 +1649,9 @@ export default function App() {
         )}
       </main>
 
-      {/* Modern School Footer with Live Visitor Counter */}
-      <Footer
-        stats={visitorStats}
-        onOpenStatsModal={() => setIsVisitorModalOpen(true)}
-      />
+      <Footer />
 
       {/* Modals & Slide-out Drawers */}
-      <VisitorCounterModal
-        isOpen={isVisitorModalOpen}
-        onClose={() => setIsVisitorModalOpen(false)}
-        stats={visitorStats}
-      />
 
       <AdminLoginModal
         isOpen={loginModalState.isOpen}

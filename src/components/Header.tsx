@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { SchoolConfig, ConflictIssue } from '../types';
 import { setBrowserFavicon } from '../utils/faviconHelper';
+import { FirestoreWriteQuotaBadge } from './FirestoreWriteQuotaBadge';
 
 interface HeaderProps {
   config: SchoolConfig;
@@ -38,12 +39,6 @@ interface HeaderProps {
   lastSyncedAt: number | null;
   isAdmin: boolean;
   userRole?: 'guest' | 'teacher' | 'admin';
-  visitorStats?: {
-    totalVisits: number;
-    uniqueVisitors: number;
-    todayVisits: number;
-  } | null;
-  onOpenVisitorStats?: () => void;
   onOpenAdminLogin: () => void;
   onLogoutAdmin: () => void;
   onSaveToCloud: () => void;
@@ -67,8 +62,6 @@ export const Header: React.FC<HeaderProps> = ({
   lastSyncedAt,
   isAdmin,
   userRole = 'guest',
-  visitorStats,
-  onOpenVisitorStats,
   onOpenAdminLogin,
   onLogoutAdmin,
   onSaveToCloud,
@@ -238,6 +231,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Cloud Auto-Sync Indicator & Manual Save */}
           <div className="flex items-center gap-1">
+            <FirestoreWriteQuotaBadge />
             <button
               onClick={isAdmin ? onSaveToCloud : undefined}
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all ${
@@ -252,6 +246,8 @@ export const Header: React.FC<HeaderProps> = ({
               title={
                 cloudSyncStatus === 'saving'
                   ? 'Đang tự động lưu lên đám mây Firebase...'
+                  : cloudSyncStatus === 'offline'
+                  ? 'Dữ liệu đã lưu trên máy nhưng chưa ghi lên Firebase. Bấm nút này để lưu Cloud.'
                   : lastSyncedAt
                   ? `Đã lưu đám mây lúc ${new Date(lastSyncedAt).toLocaleTimeString('vi-VN')}`
                   : 'Đã kết nối Đám mây Firebase'
@@ -267,6 +263,8 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="hidden xl:inline text-[11px]">
                 {cloudSyncStatus === 'saving'
                   ? 'Đang lưu Cloud...'
+                  : cloudSyncStatus === 'offline'
+                  ? 'Chưa lưu Cloud'
                   : 'Cloud Firebase'}
               </span>
             </button>
@@ -426,29 +424,6 @@ export const Header: React.FC<HeaderProps> = ({
               <strong className="text-emerald-300 font-bold">{assignedPercentage}%</strong>
             </div>
 
-            {visitorStats ? (
-              <button
-                type="button"
-                onClick={onOpenVisitorStats}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-900/90 hover:bg-indigo-800 text-amber-300 hover:text-amber-200 border border-indigo-700/80 transition-all cursor-pointer shadow-xs"
-                title="Bấm để xem chi tiết thống kê lượt truy cập website toàn trường (Hôm nay, Tháng này, Tổng cộng)"
-              >
-                <Eye className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span className="text-indigo-200">Truy cập:</span>
-                <strong className="font-mono font-bold text-amber-300">{visitorStats.totalVisits.toLocaleString('vi-VN')}</strong>
-                <span className="text-indigo-400 mx-0.5">•</span>
-                <span className="text-emerald-300 text-[11px] font-semibold">Hôm nay: {visitorStats.todayVisits.toLocaleString('vi-VN')}</span>
-              </button>
-            ) : (
-              <div
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-900/50 border border-indigo-800/60 text-indigo-300 text-xs animate-pulse cursor-default"
-                title="Đang đồng bộ số lượt truy cập thực tế..."
-              >
-                <Eye className="w-3.5 h-3.5 text-amber-400 shrink-0 opacity-70" />
-                <span className="text-indigo-200">Truy cập:</span>
-                <span className="font-mono text-indigo-300 font-bold">...</span>
-              </div>
-            )}
           </div>
 
           {/* Compact progress bar */}
