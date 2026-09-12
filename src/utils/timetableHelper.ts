@@ -369,27 +369,31 @@ export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[]
       teacherCode = 'Văn.VNĐ';
     }
 
-    // Enforce school shift rules:
-    // Khối 10, 11, 12 (THPT): 100% Buổi Sáng (Morning only, never Afternoon)
-    // Khối 8, 9 (THCS): Buổi Sáng
-    // Khối 6, 7 (THCS): Buổi Chiều
+    // Normalize period and session:
+    // If period is > 5 (e.g. VietSchool period 6-10), it represents the afternoon session (Tiết 1-5 Chiều)
     let session = s.session;
     let period = s.period;
-    const cName = (s.className || '').toUpperCase();
-    const cId = (s.classId || '').toLowerCase();
 
-    const isTHPT = /^(?:10|11|12)CB/i.test(cName) || cId.includes('-10') || cId.includes('-11') || cId.includes('-12');
-    const isGrade89 = /^[89]A/i.test(cName) || cId.includes('-8') || cId.includes('-9');
-    const isGrade67 = /^[67]A/i.test(cName) || cId.includes('-6') || cId.includes('-7');
-
-    if (isTHPT || isGrade89) {
-      session = 'SANG';
-      if (period > 5) period = period - 5;
-    } else if (isGrade67) {
+    if (period > 5) {
       session = 'CHIEU';
-      if (period > 5) period = period - 5;
-    } else if (period > 5) {
       period = period - 5;
+    }
+
+    // Respect existing explicit session if already set ('SANG' or 'CHIEU').
+    // Classes may have off-session subjects (học trái buổi):
+    // e.g. Khối 6, 7 can have HĐTNHN, Thể dục, GDĐP in the morning (Sáng).
+    // Khối 8, 9 or THPT can have Thể dục or GDQP in the afternoon (Chiều).
+    // ONLY fallback to grade default if session is missing or invalid!
+    if (!session || (session !== 'SANG' && session !== 'CHIEU')) {
+      const cName = (s.className || '').toUpperCase();
+      const cId = (s.classId || '').toLowerCase();
+      const isGrade67 = /^[67]A/i.test(cName) || cId.includes('-6') || cId.includes('-7');
+
+      if (isGrade67) {
+        session = 'CHIEU';
+      } else {
+        session = 'SANG';
+      }
     }
 
     const newId = `${s.classId}_${s.dayOfWeek}_${session}_${period}`;

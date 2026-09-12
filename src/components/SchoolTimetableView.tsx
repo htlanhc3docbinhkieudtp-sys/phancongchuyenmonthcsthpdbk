@@ -1684,7 +1684,15 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                         {DAYS_OF_WEEK.map(d => (
                           <React.Fragment key={d.value}>
                             {PERIODS.map(p => {
-                              const slot = slotMap.get(`${cls.id}_${d.value}_SANG_${p}`);
+                              const isMainAfternoon = cls.grade === '6' || cls.grade === '7' || /^[67]A/i.test(cls.name);
+                              const primarySession = isMainAfternoon ? 'CHIEU' : 'SANG';
+                              const secondarySession = isMainAfternoon ? 'SANG' : 'CHIEU';
+
+                              const slot = selectedSession === 'SANG'
+                                ? slotMap.get(`${cls.id}_${d.value}_SANG_${p}`)
+                                : selectedSession === 'CHIEU'
+                                ? slotMap.get(`${cls.id}_${d.value}_CHIEU_${p}`)
+                                : (slotMap.get(`${cls.id}_${d.value}_${primarySession}_${p}`) || slotMap.get(`${cls.id}_${d.value}_${secondarySession}_${p}`));
                               return (
                                 <td
                                   key={p}
@@ -1698,8 +1706,13 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                 >
                                   {slot?.subjectName ? (
                                     <div className="leading-tight">
-                                      <div className="font-bold text-[11px] text-slate-900 truncate" title={getSubjectDisplayName(slot)}>
-                                        {getSubjectDisplayName(slot)}
+                                      <div className="font-bold text-[11px] text-slate-900 truncate flex items-center justify-center gap-1" title={getSubjectDisplayName(slot)}>
+                                        <span>{getSubjectDisplayName(slot)}</span>
+                                        {selectedSession === 'ALL' && slot.session !== primarySession && (
+                                          <span className="text-[8px] px-1 py-0.2 rounded bg-amber-100 text-amber-800 font-extrabold uppercase">
+                                            {slot.session === 'SANG' ? 'S' : 'C'}
+                                          </span>
+                                        )}
                                       </div>
                                       {getTeacherDisplayName(slot) && (
                                         <div className="text-[10px] text-indigo-700 font-semibold truncate" title={getTeacherDisplayName(slot)}>
