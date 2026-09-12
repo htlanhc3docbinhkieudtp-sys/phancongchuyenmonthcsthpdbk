@@ -399,9 +399,11 @@ export function markDataAsCloudSynced(data: SchoolPlanData): void {
       timetableSlotsCount: primaryTimetable?.slots?.length || 0
     });
 
-    if (savedConsolidatedFingerprint) {
-      sessionStorage.setItem(SESSION_FP_ROOT_KEY, savedConsolidatedFingerprint);
-    }
+    try {
+      if (savedConsolidatedFingerprint && typeof sessionStorage !== 'undefined') {
+        sessionStorage.setItem(SESSION_FP_ROOT_KEY, savedConsolidatedFingerprint);
+      }
+    } catch { /* ignore */ }
   } catch (e) {
     console.warn('Notice computing cloud sync fingerprints:', e);
   }
