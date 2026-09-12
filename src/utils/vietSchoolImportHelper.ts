@@ -636,22 +636,25 @@ export function parseTeacherCentricFromMarkdown(
   }
   if (currentBlock) allBlocks.push(currentBlock);
 
-  // Pair primary blocks (containing teacher info) with their corresponding secondary blocks
-  for (let bIdx = 0; bIdx < allBlocks.length; bIdx++) {
-    const block = allBlocks[bIdx];
-    const hasTeacherHeader = block.header.some(c => c.includes('Giáo Viên') || c === 'GV');
-    if (!hasTeacherHeader) continue;
+  // Group blocks:
+  // Primary blocks have "Giáo Viên" in header
+  // Secondary blocks have "Thứ 6/7" or "Thứ 7" without "Giáo Viên"
+  const primaryBlocks: TableBlock[] = [];
+  const secondaryBlocks: TableBlock[] = [];
 
-    const pBlock = block;
-    // Check if the immediately following block is a secondary continuation block (e.g. Thứ 6 / Thứ 7)
-    let sBlock: TableBlock | undefined;
-    if (bIdx + 1 < allBlocks.length) {
-      const nextBlock = allBlocks[bIdx + 1];
-      const nextHasTeacher = nextBlock.header.some(c => c.includes('Giáo Viên') || c === 'GV');
-      if (!nextHasTeacher) {
-        sBlock = nextBlock;
-      }
+  for (const block of allBlocks) {
+    const hasTeacherHeader = block.header.some(c => c.includes('Giáo Viên') || c === 'GV');
+    if (hasTeacherHeader) {
+      primaryBlocks.push(block);
+    } else {
+      secondaryBlocks.push(block);
     }
+  }
+
+  // Parse each primary block paired with its secondary continuation block
+  for (let bIdx = 0; bIdx < primaryBlocks.length; bIdx++) {
+    const pBlock = primaryBlocks[bIdx];
+    const sBlock = secondaryBlocks[bIdx];
 
     // Identify teacher name
     let rawTeacher = '';
@@ -692,6 +695,20 @@ export function parseTeacherCentricFromMarkdown(
       }
     }
 
+    const lowerHeader = pBlock.header.map(c => c.toLowerCase().trim());
+    let colTeacherIdx = lowerHeader.findIndex(c => c.includes('giáo viên') || c === 'gv' || c.includes('họ và tên'));
+    if (colTeacherIdx === -1) colTeacherIdx = 0;
+
+    let colSessionIdx = lowerHeader.findIndex(c => c.includes('buổi') || c.includes('ca') || c === 'b');
+    let colPeriodIdx = lowerHeader.findIndex(c => c.includes('tiết') || c === 'period' || c === 't');
+
+    if (colPeriodIdx === -1) {
+      colPeriodIdx = colSessionIdx >= 0 ? colSessionIdx + 1 : (pBlock.rows[0]?.length > 2 ? 2 : 1);
+    }
+    if (colSessionIdx === -1 && colPeriodIdx === 2) {
+      colSessionIdx = 1;
+    }
+
     // Filter valid period rows from pBlock to pair 1-to-1 with sBlock
     interface ValidPeriodRow {
       row: string[];
@@ -701,24 +718,54 @@ export function parseTeacherCentricFromMarkdown(
     }
     const validPRows: ValidPeriodRow[] = [];
     
-    // Determine initial session: inspect first non-empty session cell
+    // Determine initial session for this block:
     let currentSession: 'SANG' | 'CHIEU' = 'SANG';
-    const firstSessionVal = pBlock.rows.find(r => r[1]?.trim())?.[1]?.trim().toUpperCase();
-    if (firstSessionVal === 'C' || firstSessionVal?.includes('CHIỀU')) {
-      currentSession = 'CHIEU';
+    let foundExplicitSession: 'SANG' | 'CHIEU' | null = null;
+    for (const r of pBlock.rows) {
+      const sVal = (colSessionIdx >= 0 ? r[colSessionIdx] : r[1])?.trim().toUpperCase();
+      if (sVal === 'C' || sVal?.includes('CHIỀU') || sVal === 'C1' || sVal === 'C2') {
+        foundExplicitSession = 'CHIEU';
+        break;
+      } else if (sVal === 'S' || sVal?.includes('SÁNG') || sVal === 'S1' || sVal === 'S2') {
+        foundExplicitSession = 'SANG';
+        break;
+      }
+    }
+
+    if (foundExplicitSession) {
+      currentSession = foundExplicitSession;
+    } else {
+      // Inspect classes inside pBlock
+      let count67 = 0;
+      let countOther = 0;
+      for (const r of pBlock.rows) {
+        for (const [colIdxStr] of Object.entries(pDayColMap)) {
+          const colIdx = parseInt(colIdxStr, 10);
+          const cell = r[colIdx] || '';
+          if (/^[67]A/i.test(cell)) count67++;
+          else if (/^(?:10|11|12|[89]A)/i.test(cell)) countOther++;
+        }
+      }
+      if (count67 > countOther) {
+        currentSession = 'CHIEU';
+      } else if (countOther > count67) {
+        currentSession = 'SANG';
+      } else {
+        currentSession = bIdx >= 49 ? 'SANG' : 'CHIEU';
+      }
     }
 
     let lastP = 0;
     for (let r = 0; r < pBlock.rows.length; r++) {
       const row = pBlock.rows[r];
-      const sVal = (row[1] || '').trim().toUpperCase();
+      const sVal = (colSessionIdx >= 0 ? row[colSessionIdx] : row[1])?.trim().toUpperCase() || '';
       if (sVal === 'S' || sVal.includes('SÁNG') || sVal === 'S1' || sVal === 'S2') {
         currentSession = 'SANG';
       } else if (sVal === 'C' || sVal.includes('CHIỀU') || sVal === 'C1' || sVal === 'C2') {
         currentSession = 'CHIEU';
       }
 
-      const rawPStr = String(row[2] || '').trim().toUpperCase();
+      const rawPStr = String((colPeriodIdx >= 0 ? row[colPeriodIdx] : row[2]) || '').trim().toUpperCase();
       let pSession = currentSession;
       if (rawPStr.startsWith('S') || rawPStr.endsWith('S')) pSession = 'SANG';
       else if (rawPStr.startsWith('C') || rawPStr.endsWith('C')) pSession = 'CHIEU';
@@ -729,9 +776,9 @@ export function parseTeacherCentricFromMarkdown(
           pSession = 'CHIEU';
           period = period - 5;
         } else if (period >= 1 && period <= 5) {
-          if (lastP >= 4 && period <= 2 && currentSession === 'SANG' && !sVal) {
-            currentSession = 'CHIEU';
-            pSession = 'CHIEU';
+          if (lastP >= 4 && period <= 2 && !sVal) {
+            currentSession = currentSession === 'SANG' ? 'CHIEU' : 'SANG';
+            pSession = currentSession;
           }
         }
         if (period >= 1 && period <= 5) {
@@ -762,13 +809,23 @@ export function parseTeacherCentricFromMarkdown(
 
         const matchedSubject = matchSubject(rawSubjectName, subjects, targetClass);
 
-        const slotId = `${targetClass.id}_${day}_${session}_${period}`;
+        let slotSession = session;
+        const isGrade67 = /^[67]A/i.test(targetClass.name) || targetClass.grade === '6' || targetClass.grade === '7';
+        const isOffSessionSubject = /HĐ|trải nghiệm|hướng nghiệp|GDTC|thể dục|GDĐP/i.test(matchedSubject.name || rawSubjectName);
+
+        if (isGrade67 && !isOffSessionSubject && slotSession === 'SANG' && !(colSessionIdx >= 0 && row[colSessionIdx]?.trim().toUpperCase().startsWith('S'))) {
+          slotSession = 'CHIEU';
+        } else if (!isGrade67 && slotSession === 'CHIEU' && !isOffSessionSubject && !(colSessionIdx >= 0 && row[colSessionIdx]?.trim().toUpperCase().startsWith('C'))) {
+          slotSession = 'SANG';
+        }
+
+        const slotId = `${targetClass.id}_${day}_${slotSession}_${period}`;
         slots.push({
           id: slotId,
           classId: targetClass.id,
           className: targetClass.name,
           dayOfWeek: day,
-          session: session,
+          session: slotSession,
           period,
           subjectId: matchedSubject.id,
           subjectName: matchedSubject.name,
@@ -799,13 +856,23 @@ export function parseTeacherCentricFromMarkdown(
 
           const matchedSubject = matchSubject(rawSubjectName, subjects, targetClass);
 
-          const slotId = `${targetClass.id}_${day}_${session}_${period}`;
+          let slotSession = session;
+          const isGrade67 = /^[67]A/i.test(targetClass.name) || targetClass.grade === '6' || targetClass.grade === '7';
+          const isOffSessionSubject = /HĐ|trải nghiệm|hướng nghiệp|GDTC|thể dục|GDĐP/i.test(matchedSubject.name || rawSubjectName);
+
+          if (isGrade67 && !isOffSessionSubject && slotSession === 'SANG' && !(colSessionIdx >= 0 && row[colSessionIdx]?.trim().toUpperCase().startsWith('S'))) {
+            slotSession = 'CHIEU';
+          } else if (!isGrade67 && slotSession === 'CHIEU' && !isOffSessionSubject && !(colSessionIdx >= 0 && row[colSessionIdx]?.trim().toUpperCase().startsWith('C'))) {
+            slotSession = 'SANG';
+          }
+
+          const slotId = `${targetClass.id}_${day}_${slotSession}_${period}`;
           slots.push({
             id: slotId,
             classId: targetClass.id,
             className: targetClass.name,
             dayOfWeek: day,
-            session: session,
+            session: slotSession,
             period,
             subjectId: matchedSubject.id,
             subjectName: matchedSubject.name,
@@ -1006,13 +1073,23 @@ export function parseTeacherCentricFromRows(
 
       const matchedSubject = matchSubject(rawSubjectName, subjects, targetClass);
 
-      const slotId = `${targetClass.id}_${day}_${rowSession}_${periodVal}`;
+      let slotSession = rowSession;
+      const isGrade67 = /^[67]A/i.test(targetClass.name) || targetClass.grade === '6' || targetClass.grade === '7';
+      const isOffSessionSubject = /HĐ|trải nghiệm|hướng nghiệp|GDTC|thể dục|GDĐP/i.test(matchedSubject.name || rawSubjectName);
+
+      if (isGrade67 && !isOffSessionSubject && slotSession === 'SANG' && (!colSession || colSession < 0 || !String(row[colSession] || '').trim().toUpperCase().startsWith('S'))) {
+        slotSession = 'CHIEU';
+      } else if (!isGrade67 && slotSession === 'CHIEU' && !isOffSessionSubject && (!colSession || colSession < 0 || !String(row[colSession] || '').trim().toUpperCase().startsWith('C'))) {
+        slotSession = 'SANG';
+      }
+
+      const slotId = `${targetClass.id}_${day}_${slotSession}_${periodVal}`;
       slots.push({
         id: slotId,
         classId: targetClass.id,
         className: targetClass.name,
         dayOfWeek: day,
-        session: rowSession,
+        session: slotSession,
         period: periodVal,
         subjectId: matchedSubject.id,
         subjectName: matchedSubject.name,

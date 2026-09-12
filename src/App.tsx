@@ -82,6 +82,8 @@ import {
   loadSchoolPlanFromCloud,
   subscribeToSchoolPlan,
   exportDataAsJsonFile,
+  markDataAsCloudSynced,
+  isFirestoreWriteQuotaExhausted,
   SchoolPlanData
 } from './services/firebase';
 import { Lock } from 'lucide-react';
@@ -434,6 +436,7 @@ export default function App() {
   });
   const isInitialCloudLoadRef = React.useRef(true);
   const saveTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const lastAutoSaveTimeRef = React.useRef<number>(0);
 
   // Modals state
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -482,6 +485,7 @@ export default function App() {
       try {
         setCloudSyncStatus('saving');
         const cloudData = await loadSchoolPlanFromCloud();
+        let appliedConfig = config;
         if (cloudData && isMounted) {
           if (cloudData.config) {
             const savedLogo = localStorage.getItem(`${STORAGE_KEY}_school_logo`) || localStorage.getItem('phancong_dbk_v2_school_logo');
@@ -495,6 +499,7 @@ export default function App() {
                 : (cloudData.config.vicePrincipalName || 'Nguyễn Minh Trí'),
               logoUrl: cloudData.config.logoUrl || savedLogo || '/logo.png'
             };
+            appliedConfig = sanitizedConfig;
             setConfig(sanitizedConfig);
           }
           if (cloudData.departments && cloudData.departments.length > 0) setDepartments(cloudData.departments);
@@ -557,6 +562,20 @@ export default function App() {
               }
             } catch { /* storage full */ }
           }
+
+          // Mark memory and session fingerprints as in-sync with current loaded state to prevent immediate false auto-save
+          markDataAsCloudSynced({
+            config: appliedConfig,
+            departments: cloudData.departments || [],
+            subjects: (cloudData.subjects && cloudData.subjects.length > 0) ? (cloudData.subjects.map(s => (s.id === 'sub-gddp' ? { ...s, defaultPeriods: { '10': 3, '11': 3, '12': 3, '6': 3, '7': 3, '8': 3, '9': 3 } } : s))) : [],
+            classes: cloudData.classes || [],
+            teachers: sanitizeTeachersList(cloudData.teachers || []),
+            assignments: cloudData.assignments || [],
+            lockedCells: cloudData.lockedCells || [],
+            weeklySchedules: cloudData.weeklySchedules || [],
+            timetable: cloudData.timetable,
+            weeklyTimetables: cloudTimetablesToApply || cloudData.weeklyTimetables
+          });
 
           if (cloudData.updatedAt) setLastSyncedAt(cloudData.updatedAt);
           setCloudSyncStatus('synced');
@@ -636,11 +655,17 @@ export default function App() {
       }
     } catch { /* storage full */ }
 
-    // Debounced Firebase Auto-Save (Only admin changes push to Cloud to prevent view-only overwrites)
+    // Debounced Firebase Auto-Save:
+    // Only admin changes push to Cloud to prevent view-only overwrites.
+    // Throttled to 25s idle inactivity and at most once per 60 seconds
+    // to strictly protect the 20,000 writes/day free limit!
     if (!isInitialCloudLoadRef.current && isAdmin) {
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
       }
+
+      const elapsedSinceLastSave = Date.now() - lastAutoSaveTimeRef.current;
+      const delay = elapsedSinceLastSave < 60000 ? Math.max(25000, 60000 - elapsedSinceLastSave) : 25000;
 
       saveTimeoutRef.current = setTimeout(async () => {
         setCloudSyncStatus('saving');
@@ -663,6 +688,7 @@ export default function App() {
             updatedAt: Date.now()
           };
           const success = await saveSchoolPlanToCloud(payload);
+          lastAutoSaveTimeRef.current = Date.now();
           clearTimeout(fallbackTimer);
           if (success) {
             setCloudSyncStatus('synced');
@@ -675,7 +701,7 @@ export default function App() {
           clearTimeout(fallbackTimer);
           setCloudSyncStatus('synced');
         }
-      }, 2500);
+      }, delay);
     }
   }, [config, departments, subjects, classes, teachers, assignments, lockedCells, weeklySchedules, weeklyTimetables, timetable, isAdmin]);
 
@@ -1025,6 +1051,10 @@ export default function App() {
   };
 
   const handleSaveToCloud = async (isForced = true) => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    lastAutoSaveTimeRef.current = Date.now();
     setCloudSyncStatus('saving');
     const payload: SchoolPlanData = {
       config,
@@ -1044,7 +1074,11 @@ export default function App() {
       setCloudSyncStatus('synced');
       setLastSyncedAt(Date.now());
       safeLocalStorageSet(`${STORAGE_KEY}_last_cloud_sync`, String(Date.now()));
-      showToast('Đã lưu toàn bộ Thời khóa biểu & Dữ liệu lên Đám mây Firebase và tạo bản sao lưu an toàn!');
+      if (isFirestoreWriteQuotaExhausted()) {
+        showToast('Đã lưu an toàn toàn bộ dữ liệu vào bộ nhớ máy! (Cloud Firebase đạt giới hạn miễn phí hôm nay, sẽ tự động đồng bộ khi Cloud làm mới).');
+      } else {
+        showToast('Đã lưu toàn bộ Thời khóa biểu & Dữ liệu lên Đám mây Firebase và tạo bản sao lưu an toàn!');
+      }
     } else {
       setCloudSyncStatus('error');
       showToast('Không thể lưu lên Đám mây. Vui lòng kiểm tra kết nối mạng!');
