@@ -168,6 +168,14 @@ export const initialSubjects: Subject[] = [
     color: '#15803d',
   },
   {
+    id: 'sub-qpan',
+    name: 'GD Quốc phòng & An ninh',
+    shortName: 'GDQP',
+    departmentId: 'dept-gdtc-qpan-nt',
+    defaultPeriods: { '10': 1, '11': 1, '12': 1, '6': 0, '7': 0, '8': 0, '9': 0 },
+    color: '#15803d',
+  },
+  {
     id: 'sub-am-nhac',
     name: 'Âm nhạc',
     shortName: 'Âm nhạc',
@@ -230,6 +238,14 @@ export const initialSubjects: Subject[] = [
     departmentId: 'dept-khxh',
     defaultPeriods: { '10': 3, '11': 3, '12': 3, '6': 3, '7': 3, '8': 3, '9': 3 },
     color: '#06b6d4',
+  },
+  {
+    id: 'sub-chao-co',
+    name: 'Chào cờ',
+    shortName: 'Chào cờ',
+    departmentId: 'dept-bgh',
+    defaultPeriods: { '10': 1, '11': 1, '12': 1, '6': 1, '7': 1, '8': 1, '9': 1 },
+    color: '#e11d48',
   }
 ];
 

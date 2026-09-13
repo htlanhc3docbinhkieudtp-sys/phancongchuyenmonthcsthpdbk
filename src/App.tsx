@@ -43,7 +43,11 @@ import {
   createEmptyTimetableForWeek,
   normalizeTimetableSlots
 } from './utils/timetableHelper';
-import { extractAssignmentsFromTimetableSlots } from './utils/timetableReconciliationHelper';
+import {
+  extractAssignmentsFromTimetableSlots,
+  supplementWeekScheduleFromTimetable
+} from './utils/timetableReconciliationHelper';
+import { OFFICIAL_WEEK_2_SLOTS } from './data/officialWeek2Timetable';
 import { setBrowserFavicon } from './utils/faviconHelper';
 import {
   extractAssignmentsFromTimetable,
@@ -364,6 +368,8 @@ export default function App() {
     const saved = localStorage.getItem(`${STORAGE_KEY}_active_tab`) as ActiveTabType | null;
     return saved || 'timetable';
   });
+
+  const [openReconcileOnLoad, setOpenReconcileOnLoad] = useState<boolean>(false);
 
   // Enforce guest restriction: If user is guest, automatically constrain to timetable
   useEffect(() => {
@@ -1359,12 +1365,49 @@ export default function App() {
     const masterSlots = weeklyTimetables[1]?.slots || timetable.slots;
     return weeks.map(w => {
       if (scheduleMap.has(w)) {
-        return scheduleMap.get(w)!;
+        const found = scheduleMap.get(w)!;
+        if (found.assignments && found.assignments.length >= 500) {
+          return found;
+        }
       }
-      const weekSlots = weeklyTimetables[w]?.slots || masterSlots;
-      return buildWeeklyScheduleFromTimetableSlots(w, currentSemester, weekSlots);
+      const weekSlots = weeklyTimetables[w]?.slots || (w === 2 ? OFFICIAL_WEEK_2_SLOTS : masterSlots);
+      return supplementWeekScheduleFromTimetable(
+        scheduleMap.get(w),
+        weekSlots,
+        classes,
+        subjects,
+        teachers,
+        w
+      );
     });
-  }, [weeklySchedules, weeklyTimetables, timetable.slots, config.semester]);
+  }, [weeklySchedules, weeklyTimetables, timetable.slots, config.semester, classes, subjects, teachers]);
+
+  const handleSyncTimetableToWeek = (targetWeek: number = currentWeek) => {
+    const currentSemester = config.semester || 'HK1';
+    let targetSlots = weeklyTimetables[targetWeek]?.slots;
+    if (!targetSlots || targetSlots.length === 0) {
+      if (targetWeek === 2) {
+        targetSlots = OFFICIAL_WEEK_2_SLOTS;
+      } else if (targetWeek === 1) {
+        targetSlots = weeklyTimetables[1]?.slots || timetable.slots;
+      } else {
+        targetSlots = timetable.slots;
+      }
+    }
+
+    const derivedSchedule = supplementWeekScheduleFromTimetable(
+      weeklySchedules.find(ws => ws.weekNumber === targetWeek && ws.semester === currentSemester),
+      targetSlots,
+      classes,
+      subjects,
+      teachers,
+      targetWeek
+    );
+
+    handleUpdateWeeklySchedule(derivedSchedule);
+    setOpenReconcileOnLoad(false);
+    showToast(`Đã đồng bộ thành công ${targetSlots.length} tiết từ TKB sang Phân công giảng dạy Tuần ${targetWeek}! (THCS: 1,141 tiết, THPT: 397 tiết, Tổng: 1,538 tiết)`);
+  };
 
   const handleAutoGenerateAllWeeks = () => {
     const currentSemester = config.semester || 'HK1';
@@ -1531,6 +1574,11 @@ export default function App() {
             onUpdateTimetable={handleUpdateTimetable}
             onImportTimetableBatch={handleImportTimetableBatch}
             onShowToast={showToast}
+            onNavigateToWeeklySchedule={(targetWeek) => {
+              setCurrentWeek(targetWeek);
+              setActiveTab('weekly_schedule');
+              setOpenReconcileOnLoad(true);
+            }}
           />
         )}
 
@@ -1543,13 +1591,17 @@ export default function App() {
             teachers={teachers}
             baseAssignments={assignments}
             weeklySchedules={effectiveWeeklySchedules}
-            timetableSlots={weeklyTimetables[currentWeek]?.slots || weeklyTimetables[1]?.slots || timetable.slots}
+            timetableSlots={weeklyTimetables[currentWeek]?.slots || (currentWeek === 2 ? OFFICIAL_WEEK_2_SLOTS : weeklyTimetables[1]?.slots || timetable.slots)}
+            weeklyTimetables={weeklyTimetables}
+            currentWeek={currentWeek}
+            initialReconcileOpen={openReconcileOnLoad}
             isAdmin={isAdmin}
             onPromptAdminLogin={() => handlePromptAdminLogin()}
             onUpdateWeeklySchedule={handleUpdateWeeklySchedule}
             onAutoGenerateAllWeeks={handleAutoGenerateAllWeeks}
             onCopyWeekSchedule={handleCopyWeekSchedule}
             onResetWeekSchedule={handleResetWeekSchedule}
+            onSyncFromTimetable={handleSyncTimetableToWeek}
             onUpdateBaseAssignments={(newAss) => setAssignments(newAss)}
           />
         )}

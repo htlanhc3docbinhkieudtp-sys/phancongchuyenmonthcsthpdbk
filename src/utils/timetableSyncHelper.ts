@@ -208,6 +208,7 @@ export function syncSlotChangeToAssignments(
 
 /**
  * Construct an authoritative WeeklySchedule from Timetable slots for any week.
+ * Preserves all teaching slots and split teachers so that the total periods match the official timetable (e.g. 1538 slots).
  */
 export function buildWeeklyScheduleFromTimetableSlots(
   weekNumber: number,
@@ -215,51 +216,45 @@ export function buildWeeklyScheduleFromTimetableSlots(
   slots: TimetableSlot[],
   existingSchedule?: WeeklySchedule
 ): WeeklySchedule {
-  const validSlots = slots.filter(s => 
-    s.classId && 
-    s.subjectId && 
-    s.teacherId && 
-    s.subjectId !== 'sub-chao-co' && 
-    s.subjectId !== 'sub-shl'
-  );
+  const validSlots = (slots || []).filter(s => s.classId && s.subjectId);
 
+  // Group by (classId, subjectId, teacherId)
   const groupMap = new Map<string, { classId: string; subjectId: string; teacherId: string; periods: number }>();
 
   validSlots.forEach(s => {
-    const k = `${s.classId}_${s.subjectId}`;
+    let subId = s.subjectId;
+    if (subId === 'sub-qpan') subId = 'sub-gdqp';
+    if (subId === 'sub-ktpl') subId = 'sub-gdktpl';
+    const tId = s.teacherId || '';
+    const k = `${s.classId}_${subId}_${tId}`;
     if (!groupMap.has(k)) {
       groupMap.set(k, {
         classId: s.classId,
-        subjectId: s.subjectId,
-        teacherId: s.teacherId || '',
+        subjectId: subId,
+        teacherId: tId,
         periods: 0
       });
     }
-    const item = groupMap.get(k)!;
-    item.periods++;
+    groupMap.get(k)!.periods++;
   });
 
   const existingNoteMap = new Map<string, string>();
   if (existingSchedule && existingSchedule.assignments) {
     existingSchedule.assignments.forEach(a => {
-      if (a.note) existingNoteMap.set(`${a.classId}_${a.subjectId}`, a.note);
+      let subId = a.subjectId;
+      if (subId === 'sub-qpan') subId = 'sub-gdqp';
+      if (subId === 'sub-ktpl') subId = 'sub-gdktpl';
+      if (a.note) existingNoteMap.set(`${a.classId}_${subId}_${a.teacherId || ''}`, a.note);
     });
   }
 
   const items: WeeklyAssignmentItem[] = Array.from(groupMap.values()).map(g => {
-    let periods = g.periods;
-    if (g.subjectId === 'sub-hdtn-cd' || g.subjectId === 'sub-hdtn-shl' || g.subjectId === 'sub-hdtn-qml') {
-      periods = 1;
-    } else if (g.subjectId === 'sub-hdtn') {
-      periods = 2;
-    }
-
     return {
       classId: g.classId,
       subjectId: g.subjectId,
       teacherId: g.teacherId,
-      periods,
-      note: existingNoteMap.get(`${g.classId}_${g.subjectId}`) || ''
+      periods: g.periods,
+      note: existingNoteMap.get(`${g.classId}_${g.subjectId}_${g.teacherId}`) || `TKB Tuần ${weekNumber}`
     };
   });
 
