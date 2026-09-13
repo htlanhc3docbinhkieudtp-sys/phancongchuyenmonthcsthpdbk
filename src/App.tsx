@@ -998,8 +998,8 @@ export default function App() {
       weeklyTimetables,
       updatedAt: Date.now()
     };
-    const success = await saveSchoolPlanToCloud(payload, isForced);
-    if (success) {
+    const result = await saveSchoolPlanToCloud(payload, isForced);
+    if (result.success) {
       setCloudSyncStatus('synced');
       setLastSyncedAt(Date.now());
       safeLocalStorageSet(`${STORAGE_KEY}_last_cloud_sync`, String(Date.now()));
@@ -1010,7 +1010,7 @@ export default function App() {
       }
     } else {
       setCloudSyncStatus('error');
-      showToast('Không thể lưu lên Đám mây. Vui lòng kiểm tra kết nối mạng!');
+      showToast(`Không thể lưu lên Đám mây: ${result.error || 'Vui lòng kiểm tra kết nối mạng hoặc hạn mức.'}`);
     }
   };
 

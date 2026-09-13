@@ -23,7 +23,8 @@ import {
   Assignment,
   LockedCell,
   WeeklySchedule,
-  SchoolTimetable
+  SchoolTimetable,
+  TimetableSlot
 } from '../types';
 import firebaseConfigJson from '../../firebase-applet-config.json';
 
@@ -368,8 +369,30 @@ export function compactWeeklySchedules(
   });
 }
 
-// In-memory dirty-checking cache to avoid redundant document writes
-let savedConsolidatedFingerprint: string | null = (() => {
+// Fingerprint caches for dirty checking to avoid redundant document writes
+export function computeRootFingerprint(data: Partial<SchoolPlanData>): string {
+  return JSON.stringify({
+    config: data.config,
+    departments: data.departments,
+    subjects: data.subjects,
+    classes: data.classes,
+    teachers: data.teachers,
+    assignments: data.assignments,
+    lockedCells: data.lockedCells
+  });
+}
+
+export function computeTimetableSlotsFingerprint(slots?: TimetableSlot[]): string {
+  if (!slots || slots.length === 0) return 'empty';
+  return `${slots.length}_${slots.map(s => `${s.id}:${s.teacherId || ''}:${s.subjectId || ''}`).join(';')}`;
+}
+
+export function computeScheduleFingerprint(ws?: WeeklySchedule): string {
+  if (!ws || !ws.assignments || ws.assignments.length === 0) return 'empty';
+  return `${ws.assignments.length}_${ws.assignments.map(a => `${a.classId}:${a.subjectId}:${a.teacherId}:${a.periods}`).join(';')}`;
+}
+
+let savedRootFingerprint: string | null = (() => {
   try {
     return sessionStorage.getItem(SESSION_FP_ROOT_KEY) || null;
   } catch {
@@ -377,33 +400,40 @@ let savedConsolidatedFingerprint: string | null = (() => {
   }
 })();
 
+const savedTimetableFingerprints = new Map<number, string>();
+const savedScheduleFingerprints = new Map<number, string>();
+
 /**
  * Record current fingerprints so subsequent saves only write changed documents
  */
 export function markDataAsCloudSynced(data: SchoolPlanData): void {
   try {
-    const compactedTimetables = compactWeeklyTimetables(data.weeklyTimetables, data.timetable);
-    const compactedSchedules = compactWeeklySchedules(data.weeklySchedules, data.assignments);
-    const primaryTimetable = data.timetable || compactedTimetables[1];
-
-    savedConsolidatedFingerprint = JSON.stringify({
-      config: data.config,
-      departments: data.departments,
-      subjects: data.subjects,
-      classes: data.classes,
-      teachers: data.teachers,
-      assignments: data.assignments,
-      lockedCells: data.lockedCells,
-      weeklySchedules: compactedSchedules,
-      weeklyTimetables: compactedTimetables,
-      timetableSlotsCount: primaryTimetable?.slots?.length || 0
-    });
-
+    savedRootFingerprint = computeRootFingerprint(data);
     try {
-      if (savedConsolidatedFingerprint && typeof sessionStorage !== 'undefined') {
-        sessionStorage.setItem(SESSION_FP_ROOT_KEY, savedConsolidatedFingerprint);
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.setItem(SESSION_FP_ROOT_KEY, savedRootFingerprint);
       }
     } catch { /* ignore */ }
+
+    if (data.weeklyTimetables) {
+      for (const [wKey, tt] of Object.entries(data.weeklyTimetables)) {
+        const wkNum = Number(wKey);
+        if (tt && tt.slots) {
+          const fp = computeTimetableSlotsFingerprint(tt.slots);
+          savedTimetableFingerprints.set(wkNum, fp);
+        }
+      }
+    } else if (data.timetable && data.timetable.slots) {
+      savedTimetableFingerprints.set(1, computeTimetableSlotsFingerprint(data.timetable.slots));
+    }
+
+    if (data.weeklySchedules && Array.isArray(data.weeklySchedules)) {
+      for (const ws of data.weeklySchedules) {
+        if (ws.weekNumber && ws.assignments) {
+          savedScheduleFingerprints.set(ws.weekNumber, computeScheduleFingerprint(ws));
+        }
+      }
+    }
   } catch (e) {
     console.warn('Notice computing cloud sync fingerprints:', e);
   }
@@ -413,7 +443,7 @@ export function markDataAsCloudSynced(data: SchoolPlanData): void {
 let isSaveInProgress = false;
 let pendingSaveRequest: {
   data: SchoolPlanData;
-  resolve: (success: boolean) => void;
+  resolve: (res: { success: boolean; error?: string }) => void;
 } | null = null;
 
 /**
@@ -487,80 +517,146 @@ export async function getTimetableSnapshots(): Promise<TimetableSnapshotItem[]> 
 
 /**
  * Internal execution of cloud save:
- * Consolidates the entire school plan, weekly schedules, and weekly timetables
- * into EXACTLY ONE document write operation.
- * Reduces Firebase writes by up to 98% compared to multi-collection saves!
+ * Consolidates the school plan configuration, subjects, teachers, and assignments
+ * into the root document (~150KB), while storing weekly timetables into subcollection
+ * `weekly_timetables/week_{N}` (~400KB each).
+ * This guarantees NO document ever exceeds Google Firestore's 1MB limit.
+ * Uses smart dirty-checking to write ONLY modified documents (conserving daily quota).
  */
-async function executeCloudSave(data: SchoolPlanData, force = false): Promise<boolean> {
+async function executeCloudSave(
+  data: SchoolPlanData,
+  force = false
+): Promise<{ success: boolean; error?: string }> {
   const docPath = `${COLLECTION_NAME}/${DOC_ID}`;
 
-  // 1. Quota Circuit Breaker: If quota is currently exhausted, skip remote Firestore writes
-  if (isFirestoreWriteQuotaExhausted()) {
+  if (force) {
+    clearFirestoreWriteQuotaExhausted();
+  } else if (isFirestoreWriteQuotaExhausted()) {
     console.warn('[Firestore Quota Guard] Bỏ qua ghi Cloud: Đã đạt hạn mức miễn phí trong ngày. Dữ liệu được bảo vệ an toàn trên máy.');
-    return true;
+    return {
+      success: true,
+      error: 'Hạn mức ghi Cloud hôm nay đã hết. Dữ liệu đang được bảo vệ an toàn trên máy.'
+    };
   }
 
   try {
     const planRef = doc(db, COLLECTION_NAME, DOC_ID);
+    let writesCount = 0;
 
-    const compactedTimetables = compactWeeklyTimetables(data.weeklyTimetables, data.timetable);
-    const compactedSchedules = compactWeeklySchedules(data.weeklySchedules, data.assignments);
-    const primaryTimetable = data.timetable || compactedTimetables[1];
+    // 1. Root Document Check & Save
+    // Contains config, departments, subjects, classes, teachers, assignments, lockedCells
+    // Kept under 200KB by avoiding inlining multi-week timetables with thousands of slots.
+    const currentRootFp = computeRootFingerprint(data);
+    const rootChanged = force || savedRootFingerprint !== currentRootFp;
 
-    const currentFp = JSON.stringify({
-      config: data.config,
-      departments: data.departments,
-      subjects: data.subjects,
-      classes: data.classes,
-      teachers: data.teachers,
-      assignments: data.assignments,
-      lockedCells: data.lockedCells,
-      weeklySchedules: compactedSchedules,
-      weeklyTimetables: compactedTimetables,
-      timetableSlotsCount: primaryTimetable?.slots?.length || 0
-    });
-
-    // ZERO WRITE OPTIMIZATION: Manual save may still create a local snapshot,
-    // but never rewrite an unchanged Firestore document.
-    if (savedConsolidatedFingerprint === currentFp) {
-      if (force && primaryTimetable && primaryTimetable.slots) {
-        await saveTimetableSnapshot(
-          primaryTimetable,
-          'Bản sao lưu thủ công (dữ liệu không thay đổi)',
-          data.lastUpdatedBy || 'Admin'
-        );
-      }
-      return true;
+    if (rootChanged) {
+      const rootPayload = {
+        config: data.config,
+        departments: data.departments,
+        subjects: data.subjects,
+        classes: data.classes,
+        teachers: data.teachers,
+        assignments: data.assignments,
+        lockedCells: data.lockedCells,
+        updatedAt: Date.now(),
+        lastUpdatedBy: data.lastUpdatedBy || 'Admin THCS & THPT Đốc Binh Kiều',
+        hasSubcollections: true,
+        version: 2
+      };
+      await setDoc(planRef, sanitizeForFirestore(rootPayload));
+      writesCount++;
+      savedRootFingerprint = currentRootFp;
+      try {
+        sessionStorage.setItem(SESSION_FP_ROOT_KEY, currentRootFp);
+      } catch { /* ignore */ }
     }
 
-    // Consolidated payload: everything contained in the single root document
-    const consolidatedPayload = {
-      config: data.config,
-      departments: data.departments,
-      subjects: data.subjects,
-      classes: data.classes,
-      teachers: data.teachers,
-      assignments: data.assignments,
-      lockedCells: data.lockedCells,
-      weeklySchedules: compactedSchedules,
-      weeklyTimetables: compactedTimetables,
-      timetable: primaryTimetable,
-      updatedAt: Date.now(),
-      lastUpdatedBy: data.lastUpdatedBy || 'Admin THCS & THPT Đốc Binh Kiều',
-      hasSubcollections: false,
-      version: 3
-    };
+    // 2. Weekly Timetables Check & Save
+    // Each week's timetable is stored in its own subdocument: weekly_timetables/week_{wkNum}
+    // Only modified or customized weeks are written!
+    if (data.weeklyTimetables && Object.keys(data.weeklyTimetables).length > 0) {
+      const week1Slots = data.weeklyTimetables[1]?.slots || data.timetable?.slots || [];
+      const week1Fp = computeTimetableSlotsFingerprint(week1Slots);
 
-    // EXACTLY 1 WRITE OPERATION:
-    await setDoc(planRef, sanitizeForFirestore(consolidatedPayload));
-    incrementDailyFirestoreWriteCount(1);
+      for (const [wKey, tt] of Object.entries(data.weeklyTimetables)) {
+        const wkNum = Number(wKey);
+        if (!tt || !tt.slots || tt.slots.length === 0) continue;
 
-    savedConsolidatedFingerprint = currentFp;
-    try {
-      sessionStorage.setItem(SESSION_FP_ROOT_KEY, currentFp);
-    } catch { /* ignore */ }
+        const thisFp = computeTimetableSlotsFingerprint(tt.slots);
+        const prevSavedFp = savedTimetableFingerprints.get(wkNum);
+
+        // A week is saved if:
+        // - Its slots changed since last save (thisFp !== prevSavedFp), OR
+        // - It's Week 1 and changed/not saved, OR
+        // - It's Week 2..37 that differs from Week 1 and changed/not saved
+        const isCustomized = wkNum === 1 || thisFp !== week1Fp;
+        const needsWrite = isCustomized && (thisFp !== prevSavedFp || (force && !prevSavedFp));
+
+        if (needsWrite) {
+          const weekDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${wkNum}`);
+          await setDoc(weekDocRef, sanitizeForFirestore({
+            weekNumber: wkNum,
+            timetable: tt,
+            updatedAt: Date.now()
+          }));
+          writesCount++;
+          savedTimetableFingerprints.set(wkNum, thisFp);
+          try {
+            sessionStorage.setItem(`docbinhkieu_fp_tt_${wkNum}`, thisFp);
+          } catch { /* ignore */ }
+        }
+      }
+    } else if (data.timetable && data.timetable.slots && data.timetable.slots.length > 0) {
+      // Fallback: save master timetable to week_1
+      const ttFp = computeTimetableSlotsFingerprint(data.timetable.slots);
+      if (force || ttFp !== savedTimetableFingerprints.get(1)) {
+        const weekDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', 'week_1');
+        await setDoc(weekDocRef, sanitizeForFirestore({
+          weekNumber: 1,
+          timetable: data.timetable,
+          updatedAt: Date.now()
+        }));
+        writesCount++;
+        savedTimetableFingerprints.set(1, ttFp);
+      }
+    }
+
+    // 3. Weekly Schedules Check & Save
+    if (data.weeklySchedules && Array.isArray(data.weeklySchedules)) {
+      const masterFp = JSON.stringify(data.assignments || []);
+      for (const ws of data.weeklySchedules) {
+        const wkNum = ws.weekNumber;
+        if (!wkNum || !ws.assignments || ws.assignments.length === 0) continue;
+
+        const schedFp = computeScheduleFingerprint(ws);
+        const prevSavedSchedFp = savedScheduleFingerprints.get(wkNum);
+
+        if (schedFp !== prevSavedSchedFp || (force && !prevSavedSchedFp)) {
+          // Only save if it's week 1 or differs from master assignments
+          if (wkNum === 1 || JSON.stringify(ws.assignments) !== masterFp) {
+            const schedDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_schedules', `week_${wkNum}`);
+            await setDoc(schedDocRef, sanitizeForFirestore({
+              weekNumber: wkNum,
+              semester: ws.semester || 'HK1',
+              assignments: ws.assignments,
+              updatedAt: Date.now()
+            }));
+            writesCount++;
+            savedScheduleFingerprints.set(wkNum, schedFp);
+            try {
+              sessionStorage.setItem(`docbinhkieu_fp_sched_${wkNum}`, schedFp);
+            } catch { /* ignore */ }
+          }
+        }
+      }
+    }
+
+    if (writesCount > 0) {
+      incrementDailyFirestoreWriteCount(writesCount);
+    }
 
     // If manual force save, also save snapshot to local storage (0 Cloud writes!)
+    const primaryTimetable = data.timetable || data.weeklyTimetables?.[1];
     if (force && primaryTimetable && primaryTimetable.slots) {
       saveTimetableSnapshot(
         primaryTimetable,
@@ -569,9 +665,11 @@ async function executeCloudSave(data: SchoolPlanData, force = false): Promise<bo
       ).catch(e => console.warn('Snapshot storage notice:', e));
     }
 
-    return true;
+    return { success: true };
   } catch (error: any) {
     const errorStr = String(error?.message || error || '');
+    console.error('executeCloudSave error:', error);
+
     if (
       errorStr.includes('resource-exhausted') ||
       errorStr.includes('Quota limit exceeded') ||
@@ -579,14 +677,22 @@ async function executeCloudSave(data: SchoolPlanData, force = false): Promise<bo
     ) {
       markFirestoreWriteQuotaExhausted();
       console.warn('[Firestore Quota Guard] Đã chạm giới hạn ghi miễn phí Firestore. Dữ liệu được bảo vệ an toàn trên máy.', errorStr);
-      return true; // Return true so UI stays unblocked and local changes are safe
-    } else if (errorStr.includes('queued writes')) {
-      console.warn('Firestore write stream throttled. Applying backoff cooldown...', errorStr);
-      await new Promise(res => setTimeout(res, 2000));
+      return {
+        success: true,
+        error: 'Đã chạm giới hạn ghi miễn phí Firestore hôm nay. Dữ liệu được bảo vệ an toàn trên máy.'
+      };
+    } else if (errorStr.includes('exceeds the maximum allowed size')) {
+      return {
+        success: false,
+        error: 'Kích thước dữ liệu vượt quá giới hạn tài liệu Firebase (1MB).'
+      };
     } else {
       handleFirestoreError(error, OperationType.WRITE, docPath);
+      return {
+        success: false,
+        error: error?.message || 'Lỗi khi lưu dữ liệu lên Firebase.'
+      };
     }
-    return false;
   }
 }
 
@@ -595,26 +701,25 @@ async function executeCloudSave(data: SchoolPlanData, force = false): Promise<bo
  * Ensures that at most ONE write operation is in-flight at any given time,
  * eliminating the "Write stream exhausted maximum allowed queued writes" error.
  */
-export async function saveSchoolPlanToCloud(data: SchoolPlanData, force = false): Promise<boolean> {
-  if (isFirestoreWriteQuotaExhausted()) {
-    console.warn('[Firestore] Hạn mức ghi Cloud đã hết. Lưu trữ an toàn cục bộ trên trình duyệt đang hoạt động.');
-    return true;
-  }
-
+export async function saveSchoolPlanToCloud(
+  data: SchoolPlanData,
+  force = false
+): Promise<{ success: boolean; error?: string }> {
   if (force) {
-    savedConsolidatedFingerprint = null;
-    try {
-      sessionStorage.removeItem(SESSION_FP_ROOT_KEY);
-    } catch {
-      // ignore
-    }
+    clearFirestoreWriteQuotaExhausted();
+  } else if (isFirestoreWriteQuotaExhausted()) {
+    console.warn('[Firestore] Hạn mức ghi Cloud đã hết. Lưu trữ an toàn cục bộ trên trình duyệt đang hoạt động.');
+    return {
+      success: true,
+      error: 'Hạn mức ghi Firebase miễn phí hôm nay đã đạt tối đa; dữ liệu đang được lưu an toàn trên máy.'
+    };
   }
 
   if (isSaveInProgress) {
     // If a save is already running, coalesce into pending request
-    return new Promise<boolean>((resolve) => {
+    return new Promise<{ success: boolean; error?: string }>((resolve) => {
       if (pendingSaveRequest) {
-        pendingSaveRequest.resolve(true); // Superceded by latest state
+        pendingSaveRequest.resolve({ success: true }); // Superceded by latest state
       }
       pendingSaveRequest = { data, resolve };
     });
@@ -623,17 +728,23 @@ export async function saveSchoolPlanToCloud(data: SchoolPlanData, force = false)
   isSaveInProgress = true;
   try {
     const savePromise = executeCloudSave(data, force);
-    const timeoutPromise = new Promise<boolean>((resolve) => {
+    const timeoutPromise = new Promise<{ success: boolean; error?: string }>((resolve) => {
       setTimeout(() => {
-        console.warn('saveSchoolPlanToCloud timeout reached after 12s, unblocking.');
-        resolve(false);
-      }, 12000);
+        console.warn('saveSchoolPlanToCloud timeout reached after 30s, unblocking.');
+        resolve({
+          success: false,
+          error: 'Thời gian kết nối đến Firebase quá 30 giây (timeout). Vui lòng thử lại.'
+        });
+      }, 30000);
     });
     const result = await Promise.race([savePromise, timeoutPromise]);
     return result;
-  } catch (err) {
+  } catch (err: any) {
     console.error('saveSchoolPlanToCloud unhandled error:', err);
-    return false;
+    return {
+      success: false,
+      error: err?.message || 'Lỗi không xác định khi lưu'
+    };
   } finally {
     isSaveInProgress = false;
     // Process next queued save if one was scheduled while saving
@@ -649,9 +760,8 @@ export async function saveSchoolPlanToCloud(data: SchoolPlanData, force = false)
 }
 
 /**
- * Load complete school plan from Firestore once:
- * For version 3 (consolidated), fetches the entire plan in a SINGLE read!
- * For legacy data, gracefully falls back to subcollections.
+ * Load complete school plan from Firestore:
+ * Fetches root configuration, weekly timetables subcollection, and weekly schedules subcollection.
  */
 export async function loadSchoolPlanFromCloud(): Promise<SchoolPlanData | null> {
   const docPath = `${COLLECTION_NAME}/${DOC_ID}`;
@@ -663,31 +773,7 @@ export async function loadSchoolPlanFromCloud(): Promise<SchoolPlanData | null> 
     }
     const rootData = snap.data() as Partial<SchoolPlanData> & { hasSubcollections?: boolean; version?: number };
 
-    // V3 Consolidated Optimization: If the plan already has weeklyTimetables or version >= 3,
-    // all weeks and schedules are already in this single document! Zero extra reads needed.
-    if (rootData.version === 3 || (rootData.weeklyTimetables && Object.keys(rootData.weeklyTimetables).length > 0)) {
-      const expandedTimetables = expandWeeklyTimetables(rootData.weeklyTimetables || {});
-      const primaryTimetable = rootData.timetable || expandedTimetables[1];
-      const result: SchoolPlanData = {
-        config: rootData.config,
-        departments: rootData.departments || [],
-        subjects: rootData.subjects || [],
-        classes: rootData.classes || [],
-        teachers: rootData.teachers || [],
-        assignments: rootData.assignments || [],
-        lockedCells: rootData.lockedCells || [],
-        weeklySchedules: rootData.weeklySchedules || [],
-        timetable: primaryTimetable,
-        weeklyTimetables: expandedTimetables,
-        updatedAt: rootData.updatedAt || Date.now(),
-        lastUpdatedBy: rootData.lastUpdatedBy
-      };
-
-      markDataAsCloudSynced(result);
-      return result;
-    }
-
-    // Legacy Fallback (version 1 & 2): Fetch subcollections once to migrate
+    // Fetch subcollections in parallel
     const [schedsSnap, timetablesSnap] = await Promise.all([
       getDocs(collection(db, COLLECTION_NAME, DOC_ID, 'weekly_schedules')).catch(err => {
         console.warn('Notice loading weekly_schedules subcollection:', err);
@@ -757,16 +843,23 @@ export async function loadSchoolPlanFromCloud(): Promise<SchoolPlanData | null> 
       }
     }
 
-    const result = {
-      ...rootData,
-      weeklySchedules,
-      weeklyTimetables,
-      timetable
-    } as SchoolPlanData;
+    const expandedTimetables = expandWeeklyTimetables(weeklyTimetables);
+    const result: SchoolPlanData = {
+      config: rootData.config,
+      departments: rootData.departments || [],
+      subjects: rootData.subjects || [],
+      classes: rootData.classes || [],
+      teachers: rootData.teachers || [],
+      assignments: rootData.assignments || [],
+      lockedCells: rootData.lockedCells || [],
+      weeklySchedules: weeklySchedules || [],
+      timetable: timetable || expandedTimetables[1],
+      weeklyTimetables: expandedTimetables,
+      updatedAt: rootData.updatedAt || Date.now(),
+      lastUpdatedBy: rootData.lastUpdatedBy
+    };
 
-    // Seed in-memory fingerprints with the newly loaded cloud state
     markDataAsCloudSynced(result);
-
     return result;
   } catch (error) {
     handleFirestoreError(error, OperationType.GET, docPath);
