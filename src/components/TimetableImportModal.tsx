@@ -77,7 +77,6 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
 
   // Target week configuration
   const [targetWeek, setTargetWeek] = useState<number>(currentWeek || 1);
-  const [applyToSubsequentWeeks, setApplyToSubsequentWeeks] = useState(true);
   const [syncWeeklySchedule, setSyncWeeklySchedule] = useState(true);
 
   // Import mode: 'merge' (default, preserves other campuses) vs 'replace' (wipes whole week)
@@ -325,7 +324,7 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
           onImportSuccess(
             parseResults.slots,
             targetWeek,
-            applyToSubsequentWeeks,
+            false,
             syncWeeklySchedule,
             importMode
           );
@@ -392,16 +391,6 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                   ))}
                 </select>
               </div>
-
-              <label className="flex items-center gap-2 text-slate-700 cursor-pointer font-medium hover:text-slate-900">
-                <input
-                  type="checkbox"
-                  checked={applyToSubsequentWeeks}
-                  onChange={(e) => setApplyToSubsequentWeeks(e.target.checked)}
-                  className="w-4 h-4 text-emerald-600 rounded-sm border-slate-300 focus:ring-emerald-500 cursor-pointer"
-                />
-                <span>Áp dụng cho Tuần {targetWeek} và tất cả các tuần tiếp theo</span>
-              </label>
             </div>
 
             <label className="flex items-center gap-2 text-indigo-900 bg-indigo-50/80 px-2.5 py-1.5 rounded-lg border border-indigo-200 cursor-pointer font-bold hover:bg-indigo-100 transition-colors">
@@ -867,7 +856,6 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
                   <CheckCircle2 className="w-4 h-4" />
                   <span>
                     {importMode === 'merge' ? 'Gộp' : 'Thay Thế Bằng'} {parseResults?.successCount || 0} Tiết Vào Tuần {targetWeek}
-                    {applyToSubsequentWeeks ? ` (và các tuần tiếp theo)` : ''}
                   </span>
                 </>
               )}
