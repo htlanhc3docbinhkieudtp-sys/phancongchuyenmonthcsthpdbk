@@ -110,6 +110,7 @@ const THCS_TK_TEACHER_LOOKUP: Record<string, { id: string; name: string; code: s
   'Vi': { id: 'tch-v-tk-vi', name: 'Nguyễn Hiền Vi', code: 'Vi.NH' },
   'Châu': { id: 'tch-ls-3', name: 'Phạm Thị Mỹ Châu', code: 'Châu.PTM' },
   'Diễm': { id: 'tch-khtn-25', name: 'Nguyễn Thị Ngọc Diễm', code: 'Diễm.NTN' },
+  'NDiễm': { id: 'tch-khtn-25', name: 'Nguyễn Thị Ngọc Diễm', code: 'Diễm.NTN' },
   'Phượng': { id: 'tch-khtn-14', name: 'Nguyễn Thị Bích Phượng', code: 'Phượng.NTB' },
   'Sang': { id: 'tch-ls-15', name: 'Nguyễn Thị Kim Sang', code: 'Sang.NTK' },
   'Hậu': { id: 'tch-av-16', name: 'Lê Phước Hậu', code: 'Hậu.LP' },
@@ -226,13 +227,27 @@ export function matchClass(rawClassName: string, classes: ClassGroup[]): ClassGr
 export function matchTeacher(
   rawTeacher: string,
   teachers: Teacher[],
-  targetClass?: ClassGroup
+  targetClass?: ClassGroup,
+  subjectText?: string
 ): { id: string; name: string; code: string } | undefined {
   if (!rawTeacher) return undefined;
   const clean = rawTeacher.trim();
   const upper = clean.toUpperCase();
   const lower = clean.toLowerCase();
   const noAccent = removeVietnameseAccents(clean);
+
+  // Disambiguation for "Văn" at Tân Kiều based on subject:
+  // - Nguyễn Anh Văn (tch-td-12): Thể dục (GDTC), Âm nhạc
+  // - Võ Ngọc Đình Văn (tch-khtn-15): KHTN, Hóa học, Sinh học, Vật lí
+  if (clean === 'Văn' || clean === 'A.Văn' || clean === 'Đ.Văn' || clean === 'Văn(TK)') {
+    const subUpper = (subjectText || '').toUpperCase();
+    if (clean === 'A.Văn' || subUpper.includes('NHẠC') || subUpper.includes('GDTC') || subUpper.includes('THỂ DỤC')) {
+      return { id: 'tch-td-12', name: 'Nguyễn Anh Văn', code: 'Văn.NA' };
+    }
+    if (clean === 'Đ.Văn' || subUpper.includes('KHTN') || subUpper.includes('HÓA') || subUpper.includes('LÍ') || subUpper.includes('SINH')) {
+      return { id: 'tch-khtn-15', name: 'Võ Ngọc Đình Văn', code: 'Văn.VNĐ' };
+    }
+  }
 
   // Special priority for Nguyễn Kim Rạng (avoid any misinterpretation as Nguyễn Kim Rang)
   if (
@@ -360,7 +375,7 @@ export function matchSubject(
     if (isTHCS) {
       return { id: 'sub-hdtn-cd', name: 'HĐTNHN (Chuyên đề)' };
     }
-    return { id: 'sub-hdtn', name: 'HĐTN - HN' };
+    return { id: 'sub-hdtn-cd', name: 'HĐTNHN (Chuyên đề)' };
   }
 
   // 4. Standard Subjects
@@ -374,33 +389,28 @@ export function matchSubject(
     return { id: 'sub-anh', name: 'Tiếng Anh' };
   }
   if (upper === 'VẬT LÍ' || upper === 'VẬT LÝ' || upper === 'LÝ' || upper === 'LI') {
-    if (isTHCS) return { id: 'sub-khtn-cs', name: 'Khoa học tự nhiên' };
     return { id: 'sub-li', name: 'Vật lí' };
   }
   if (upper === 'HÓA HỌC' || upper === 'HOÁ HỌC' || upper === 'HÓA' || upper === 'HOÁ') {
-    if (isTHCS) return { id: 'sub-khtn-cs', name: 'Khoa học tự nhiên' };
     return { id: 'sub-hoa', name: 'Hóa học' };
   }
   if (upper === 'SINH HỌC' || upper === 'SINH') {
-    if (isTHCS) return { id: 'sub-khtn-cs', name: 'Khoa học tự nhiên' };
     return { id: 'sub-sinh', name: 'Sinh học' };
   }
   if (upper === 'KHTN' || upper === 'KHOA HỌC TỰ NHIÊN') {
     return { id: 'sub-khtn-cs', name: 'Khoa học tự nhiên' };
   }
   if (upper === 'LỊCH SỬ' || upper === 'SỬ' || upper === 'SU') {
-    if (isTHCS) return { id: 'sub-lsdl-cs', name: 'Lịch sử và Địa lí' };
     return { id: 'sub-su', name: 'Lịch sử' };
   }
   if (upper === 'ĐỊA LÍ' || upper === 'ĐỊA LÝ' || upper === 'ĐỊA') {
-    if (isTHCS) return { id: 'sub-lsdl-cs', name: 'Lịch sử và Địa lí' };
     return { id: 'sub-dia', name: 'Địa lí' };
   }
   if (upper === 'LỊCH SỬ VÀ ĐỊA LÍ' || upper === 'LỊCH SỬ VÀ ĐỊA LÝ' || upper === 'LS-ĐL' || upper === 'LS&ĐL' || upper === 'S&Đ') {
     return { id: 'sub-lsdl-cs', name: 'Lịch sử và Địa lí' };
   }
   if (upper === 'GD KTPL' || upper === 'GDKT&PL' || upper === 'GDKT & PL' || upper.includes('KINH TẾ')) {
-    return { id: 'sub-gdktpl', name: 'GDKT & Pháp luật' };
+    return { id: 'sub-ktpl', name: 'Giáo dục KT & PL' };
   }
   if (upper === 'GDCD' || upper === 'GIÁO DỤC CÔNG DÂN') {
     return { id: 'sub-gdcd', name: 'Giáo dục công dân' };
@@ -415,7 +425,7 @@ export function matchSubject(
     return { id: 'sub-gdtc', name: 'Giáo dục thể chất' };
   }
   if (upper.startsWith('GD QP') || upper.startsWith('GDQP') || upper === 'QUỐC PHÒNG') {
-    return { id: 'sub-gdqp', name: 'GD Quốc phòng & An ninh' };
+    return { id: 'sub-qpan', name: 'GDQP - AN' };
   }
   if (upper === 'ÂM NHẠC' || upper === 'AN' || upper === 'NHẠC') {
     return { id: 'sub-am-nhac', name: 'Âm nhạc' };
@@ -1439,7 +1449,16 @@ export function parseVietSchoolTimetable(
           }
         }
 
+        const lowerSheetName = sheetName.toLowerCase();
+        let defaultSheetSession: 'SANG' | 'CHIEU' | null = null;
+        if (lowerSheetName.includes('sáng') || lowerSheetName.includes('sang')) {
+          defaultSheetSession = 'SANG';
+        } else if (lowerSheetName.includes('chiều') || lowerSheetName.includes('chieu')) {
+          defaultSheetSession = 'CHIEU';
+        }
+
         let currentDay = 2; // Default Monday (Thứ 2)
+        let currentSession: 'SANG' | 'CHIEU' | null = defaultSheetSession;
         let lastSeenPeriod = -1;
 
         let dataRowIdx = r + 1;
@@ -1464,14 +1483,23 @@ export function parseVietSchoolTimetable(
 
           const entireRowText = dRow.join(' ').toLowerCase();
 
-          // Check if metadata row
+          // Check if metadata banner row (skip only if no classes data in row)
           if (entireRowText.includes('năm học') || entireRowText.includes('nam hoc') ||
               entireRowText.includes('học kỳ') || entireRowText.includes('hoc ky') ||
               entireRowText.includes('thời khóa biểu') || entireRowText.includes('thoi khoa bieu') ||
-              entireRowText.includes('áp dụng') || entireRowText.includes('ap dung') ||
-              (entireRowText.includes('trường') && !entireRowText.includes('lớp') && !entireRowText.includes('toán'))) {
-            dataRowIdx++;
-            continue;
+              entireRowText.includes('áp dụng') || entireRowText.includes('ap dung')) {
+            const hasClassData = Array.from(colClassMap.keys()).some(c => dRow[c] && String(dRow[c]).trim().length > 0);
+            if (!hasClassData) {
+              dataRowIdx++;
+              continue;
+            }
+          }
+
+          // 0. Detect/Maintain Session from row if present
+          if (colSessionIdx >= 0 && dRow[colSessionIdx]) {
+            const sCell = String(dRow[colSessionIdx]).trim().toUpperCase();
+            if (sCell === 'S' || sCell.includes('SÁNG') || sCell === 'S1' || sCell === 'S2') currentSession = 'SANG';
+            else if (sCell === 'C' || sCell.includes('CHIỀU') || sCell === 'C1' || sCell === 'C2') currentSession = 'CHIEU';
           }
 
           // 1. Detect Day (Thứ 2 -> 7)
@@ -1556,22 +1584,10 @@ export function parseVietSchoolTimetable(
             if (!subjectText) return;
 
             // Determine session:
-            // 1. Explicit session check from row or period:
-            let session: 'SANG' | 'CHIEU' | null = null;
-            if (colSessionIdx >= 0) {
-              const sCell = String(dRow[colSessionIdx] || '').trim().toUpperCase();
-              if (sCell === 'S' || sCell.includes('SÁNG') || sCell === 'S1' || sCell === 'S2') session = 'SANG';
-              else if (sCell === 'C' || sCell.includes('CHIỀU') || sCell === 'C1' || sCell === 'C2') session = 'CHIEU';
-            }
-            if (!session && rawPeriod > 5) {
+            let session: 'SANG' | 'CHIEU' = currentSession || defaultSheetSession || 'SANG';
+            if (rawPeriod > 5) {
               session = 'CHIEU';
-            }
-
-            // 2. Default by school shifts if not explicitly indicated in row:
-            // Khối 10, 11, 12 (THPT): Default SÁNG
-            // Khối 8, 9 (THCS): Default SÁNG
-            // Khối 6, 7 (THCS): Default CHIỀU
-            if (!session) {
+            } else if (!currentSession && !defaultSheetSession) {
               const gradeNum = parseInt(targetClass.grade, 10);
               if (targetClass.level === 'THPT' || gradeNum >= 10 || /^(?:10|11|12)CB/i.test(targetClass.name)) {
                 session = 'SANG';
@@ -1579,8 +1595,6 @@ export function parseVietSchoolTimetable(
                 session = 'SANG';
               } else if (gradeNum === 6 || gradeNum === 7 || /^[67]A/i.test(targetClass.name)) {
                 session = 'CHIEU';
-              } else {
-                session = 'SANG';
               }
             }
 
@@ -1592,7 +1606,7 @@ export function parseVietSchoolTimetable(
             if (effectivePeriod < 1 || effectivePeriod > 5) return;
 
             const matchedSubject = matchSubject(subjectText, subjects, targetClass);
-            let matchedTeacher = matchTeacher(teacherText, teachers, targetClass);
+            let matchedTeacher = matchTeacher(teacherText, teachers, targetClass, subjectText);
 
             // Assign homeroom teacher fallback for Chào cờ / SHL
             if (!matchedTeacher && (matchedSubject.id === 'sub-chao-co' || matchedSubject.id === 'sub-shl' || matchedSubject.id === 'sub-hdtn-shl' || matchedSubject.name.includes('Sinh hoạt') || matchedSubject.name.includes('Chào cờ'))) {
@@ -1604,7 +1618,7 @@ export function parseVietSchoolTimetable(
               }
               if (!matchedTeacher && HOMEROOM_FALLBACK_MAP[targetClass.name]) {
                 const fbName = HOMEROOM_FALLBACK_MAP[targetClass.name];
-                matchedTeacher = matchTeacher(fbName, teachers, targetClass);
+                matchedTeacher = matchTeacher(fbName, teachers, targetClass, subjectText);
               }
             }
 

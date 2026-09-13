@@ -6,7 +6,7 @@ import { TimetableSlot, SchoolTimetable } from '../types';
  */
 export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
   {
-    "id": "cls-6a7_w2_2_CHIEU_1",
+    "id": "cls-6a7_2_CHIEU_1",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 2,
@@ -17,11 +17,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_2_CHIEU_1",
+    "id": "cls-6a8_2_CHIEU_1",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 2,
@@ -32,11 +31,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_2_CHIEU_1",
+    "id": "cls-6a9_2_CHIEU_1",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 2,
@@ -47,11 +45,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_2_CHIEU_1",
+    "id": "cls-6a10_2_CHIEU_1",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 2,
@@ -62,11 +59,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_2_CHIEU_2",
+    "id": "cls-6a7_2_CHIEU_2",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 2,
@@ -77,11 +73,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_2_CHIEU_2",
+    "id": "cls-6a8_2_CHIEU_2",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 2,
@@ -92,11 +87,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_2_CHIEU_2",
+    "id": "cls-6a9_2_CHIEU_2",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 2,
@@ -107,11 +101,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_2_CHIEU_2",
+    "id": "cls-6a10_2_CHIEU_2",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 2,
@@ -122,11 +115,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_2_CHIEU_3",
+    "id": "cls-6a7_2_CHIEU_3",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 2,
@@ -137,11 +129,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_2_CHIEU_3",
+    "id": "cls-6a8_2_CHIEU_3",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 2,
@@ -152,11 +143,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_2_CHIEU_3",
+    "id": "cls-6a9_2_CHIEU_3",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 2,
@@ -167,11 +157,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_2_CHIEU_3",
+    "id": "cls-6a10_2_CHIEU_3",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 2,
@@ -182,11 +171,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_2_CHIEU_4",
+    "id": "cls-6a7_2_CHIEU_4",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 2,
@@ -197,11 +185,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_2_CHIEU_4",
+    "id": "cls-6a8_2_CHIEU_4",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 2,
@@ -212,11 +199,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-15",
     "teacherName": "Nguyễn Thị Kim Sang",
     "teacherCode": "Sang.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_2_CHIEU_4",
+    "id": "cls-6a9_2_CHIEU_4",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 2,
@@ -227,11 +213,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_2_CHIEU_4",
+    "id": "cls-6a10_2_CHIEU_4",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 2,
@@ -242,11 +227,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_2_CHIEU_5",
+    "id": "cls-6a7_2_CHIEU_5",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 2,
@@ -257,11 +241,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-15",
     "teacherName": "Nguyễn Thị Kim Sang",
     "teacherCode": "Sang.NTK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_2_CHIEU_5",
+    "id": "cls-6a8_2_CHIEU_5",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 2,
@@ -272,11 +255,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_2_CHIEU_5",
+    "id": "cls-6a9_2_CHIEU_5",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 2,
@@ -287,11 +269,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_2_CHIEU_5",
+    "id": "cls-6a10_2_CHIEU_5",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 2,
@@ -302,11 +283,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_3_CHIEU_1",
+    "id": "cls-6a7_3_CHIEU_1",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 3,
@@ -317,11 +297,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_3_CHIEU_1",
+    "id": "cls-6a8_3_CHIEU_1",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 3,
@@ -332,11 +311,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_3_CHIEU_1",
+    "id": "cls-6a9_3_CHIEU_1",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 3,
@@ -347,11 +325,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_3_CHIEU_1",
+    "id": "cls-6a10_3_CHIEU_1",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 3,
@@ -362,11 +339,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_3_CHIEU_2",
+    "id": "cls-6a7_3_CHIEU_2",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 3,
@@ -377,11 +353,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_3_CHIEU_2",
+    "id": "cls-6a8_3_CHIEU_2",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 3,
@@ -392,11 +367,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_3_CHIEU_2",
+    "id": "cls-6a9_3_CHIEU_2",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 3,
@@ -407,11 +381,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_3_CHIEU_2",
+    "id": "cls-6a10_3_CHIEU_2",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 3,
@@ -422,11 +395,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_3_CHIEU_3",
+    "id": "cls-6a7_3_CHIEU_3",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 3,
@@ -437,11 +409,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_3_CHIEU_3",
+    "id": "cls-6a8_3_CHIEU_3",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 3,
@@ -452,11 +423,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_3_CHIEU_3",
+    "id": "cls-6a9_3_CHIEU_3",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 3,
@@ -467,11 +437,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_3_CHIEU_3",
+    "id": "cls-6a10_3_CHIEU_3",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 3,
@@ -482,11 +451,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_3_CHIEU_4",
+    "id": "cls-6a7_3_CHIEU_4",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 3,
@@ -497,11 +465,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_3_CHIEU_4",
+    "id": "cls-6a8_3_CHIEU_4",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 3,
@@ -512,11 +479,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_3_CHIEU_4",
+    "id": "cls-6a9_3_CHIEU_4",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 3,
@@ -527,11 +493,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_3_CHIEU_4",
+    "id": "cls-6a10_3_CHIEU_4",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 3,
@@ -542,11 +507,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_3_CHIEU_5",
+    "id": "cls-6a7_3_CHIEU_5",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 3,
@@ -557,11 +521,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_3_CHIEU_5",
+    "id": "cls-6a8_3_CHIEU_5",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 3,
@@ -572,11 +535,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_3_CHIEU_5",
+    "id": "cls-6a9_3_CHIEU_5",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 3,
@@ -587,11 +549,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_3_CHIEU_5",
+    "id": "cls-6a10_3_CHIEU_5",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 3,
@@ -602,11 +563,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_4_CHIEU_1",
+    "id": "cls-6a7_4_CHIEU_1",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 4,
@@ -617,11 +577,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_4_CHIEU_1",
+    "id": "cls-6a8_4_CHIEU_1",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 4,
@@ -632,11 +591,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_4_CHIEU_1",
+    "id": "cls-6a9_4_CHIEU_1",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 4,
@@ -647,11 +605,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_4_CHIEU_1",
+    "id": "cls-6a10_4_CHIEU_1",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 4,
@@ -662,11 +619,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_4_CHIEU_2",
+    "id": "cls-6a7_4_CHIEU_2",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 4,
@@ -677,11 +633,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_4_CHIEU_2",
+    "id": "cls-6a8_4_CHIEU_2",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 4,
@@ -692,11 +647,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_4_CHIEU_2",
+    "id": "cls-6a9_4_CHIEU_2",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 4,
@@ -707,11 +661,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_4_CHIEU_2",
+    "id": "cls-6a10_4_CHIEU_2",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 4,
@@ -722,11 +675,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_4_CHIEU_3",
+    "id": "cls-6a7_4_CHIEU_3",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 4,
@@ -737,11 +689,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_4_CHIEU_3",
+    "id": "cls-6a8_4_CHIEU_3",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 4,
@@ -752,11 +703,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_4_CHIEU_3",
+    "id": "cls-6a9_4_CHIEU_3",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 4,
@@ -767,11 +717,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_4_CHIEU_3",
+    "id": "cls-6a10_4_CHIEU_3",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 4,
@@ -782,11 +731,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_4_CHIEU_4",
+    "id": "cls-6a7_4_CHIEU_4",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 4,
@@ -797,11 +745,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_4_CHIEU_4",
+    "id": "cls-6a8_4_CHIEU_4",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 4,
@@ -812,11 +759,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_4_CHIEU_4",
+    "id": "cls-6a9_4_CHIEU_4",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 4,
@@ -827,11 +773,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_4_CHIEU_4",
+    "id": "cls-6a10_4_CHIEU_4",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 4,
@@ -842,11 +787,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_4_CHIEU_5",
+    "id": "cls-6a7_4_CHIEU_5",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 4,
@@ -857,11 +801,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_4_CHIEU_5",
+    "id": "cls-6a8_4_CHIEU_5",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 4,
@@ -872,11 +815,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_4_CHIEU_5",
+    "id": "cls-6a9_4_CHIEU_5",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 4,
@@ -887,11 +829,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_4_CHIEU_5",
+    "id": "cls-6a10_4_CHIEU_5",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 4,
@@ -902,11 +843,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_5_CHIEU_1",
+    "id": "cls-6a7_5_CHIEU_1",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 5,
@@ -917,11 +857,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_5_CHIEU_1",
+    "id": "cls-6a8_5_CHIEU_1",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 5,
@@ -932,11 +871,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_5_CHIEU_1",
+    "id": "cls-6a9_5_CHIEU_1",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 5,
@@ -947,11 +885,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_5_CHIEU_1",
+    "id": "cls-6a10_5_CHIEU_1",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 5,
@@ -962,11 +899,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_5_CHIEU_2",
+    "id": "cls-6a7_5_CHIEU_2",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 5,
@@ -977,11 +913,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_5_CHIEU_2",
+    "id": "cls-6a8_5_CHIEU_2",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 5,
@@ -992,11 +927,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_5_CHIEU_2",
+    "id": "cls-6a9_5_CHIEU_2",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 5,
@@ -1007,11 +941,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_5_CHIEU_2",
+    "id": "cls-6a10_5_CHIEU_2",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 5,
@@ -1022,11 +955,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_6_CHIEU_1",
+    "id": "cls-6a7_6_CHIEU_1",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 6,
@@ -1037,11 +969,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_6_CHIEU_1",
+    "id": "cls-6a8_6_CHIEU_1",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 6,
@@ -1052,11 +983,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_6_CHIEU_1",
+    "id": "cls-6a9_6_CHIEU_1",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 6,
@@ -1067,11 +997,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_6_CHIEU_1",
+    "id": "cls-6a10_6_CHIEU_1",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 6,
@@ -1082,11 +1011,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_6_CHIEU_2",
+    "id": "cls-6a7_6_CHIEU_2",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 6,
@@ -1097,11 +1025,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_6_CHIEU_2",
+    "id": "cls-6a8_6_CHIEU_2",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 6,
@@ -1112,11 +1039,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_6_CHIEU_2",
+    "id": "cls-6a9_6_CHIEU_2",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 6,
@@ -1127,11 +1053,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_6_CHIEU_2",
+    "id": "cls-6a10_6_CHIEU_2",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 6,
@@ -1142,11 +1067,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_6_CHIEU_3",
+    "id": "cls-6a7_6_CHIEU_3",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 6,
@@ -1157,11 +1081,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_6_CHIEU_3",
+    "id": "cls-6a8_6_CHIEU_3",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 6,
@@ -1172,11 +1095,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_6_CHIEU_3",
+    "id": "cls-6a9_6_CHIEU_3",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 6,
@@ -1187,11 +1109,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_6_CHIEU_3",
+    "id": "cls-6a10_6_CHIEU_3",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 6,
@@ -1202,11 +1123,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_6_CHIEU_4",
+    "id": "cls-6a7_6_CHIEU_4",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 6,
@@ -1217,11 +1137,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_6_CHIEU_4",
+    "id": "cls-6a8_6_CHIEU_4",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 6,
@@ -1232,11 +1151,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_6_CHIEU_4",
+    "id": "cls-6a9_6_CHIEU_4",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 6,
@@ -1247,11 +1165,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_6_CHIEU_4",
+    "id": "cls-6a10_6_CHIEU_4",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 6,
@@ -1262,11 +1179,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_6_CHIEU_5",
+    "id": "cls-6a7_6_CHIEU_5",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 6,
@@ -1277,11 +1193,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_6_CHIEU_5",
+    "id": "cls-6a8_6_CHIEU_5",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 6,
@@ -1292,11 +1207,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_6_CHIEU_5",
+    "id": "cls-6a9_6_CHIEU_5",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 6,
@@ -1307,11 +1221,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_6_CHIEU_5",
+    "id": "cls-6a10_6_CHIEU_5",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 6,
@@ -1322,11 +1235,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_7_CHIEU_1",
+    "id": "cls-6a7_7_CHIEU_1",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 7,
@@ -1337,11 +1249,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-15",
     "teacherName": "Nguyễn Thị Kim Sang",
     "teacherCode": "Sang.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_7_CHIEU_1",
+    "id": "cls-6a8_7_CHIEU_1",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 7,
@@ -1352,11 +1263,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_7_CHIEU_1",
+    "id": "cls-6a9_7_CHIEU_1",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 7,
@@ -1367,11 +1277,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_7_CHIEU_1",
+    "id": "cls-6a10_7_CHIEU_1",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 7,
@@ -1382,11 +1291,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_7_CHIEU_2",
+    "id": "cls-6a7_7_CHIEU_2",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 7,
@@ -1397,11 +1305,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_7_CHIEU_2",
+    "id": "cls-6a8_7_CHIEU_2",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 7,
@@ -1412,11 +1319,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_7_CHIEU_2",
+    "id": "cls-6a9_7_CHIEU_2",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 7,
@@ -1427,11 +1333,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_7_CHIEU_2",
+    "id": "cls-6a10_7_CHIEU_2",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 7,
@@ -1442,11 +1347,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_7_CHIEU_3",
+    "id": "cls-6a7_7_CHIEU_3",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 7,
@@ -1457,11 +1361,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_7_CHIEU_3",
+    "id": "cls-6a8_7_CHIEU_3",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 7,
@@ -1472,11 +1375,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_7_CHIEU_3",
+    "id": "cls-6a9_7_CHIEU_3",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 7,
@@ -1487,11 +1389,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_7_CHIEU_3",
+    "id": "cls-6a10_7_CHIEU_3",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 7,
@@ -1502,11 +1403,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-15",
     "teacherName": "Nguyễn Thị Kim Sang",
     "teacherCode": "Sang.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_7_CHIEU_4",
+    "id": "cls-6a7_7_CHIEU_4",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 7,
@@ -1517,11 +1417,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_7_CHIEU_4",
+    "id": "cls-6a8_7_CHIEU_4",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 7,
@@ -1532,11 +1431,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_7_CHIEU_4",
+    "id": "cls-6a9_7_CHIEU_4",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 7,
@@ -1547,11 +1445,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-15",
     "teacherName": "Nguyễn Thị Kim Sang",
     "teacherCode": "Sang.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_7_CHIEU_4",
+    "id": "cls-6a10_7_CHIEU_4",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 7,
@@ -1562,11 +1459,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_7_CHIEU_5",
+    "id": "cls-6a7_7_CHIEU_5",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 7,
@@ -1577,11 +1473,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-15",
     "teacherName": "Nguyễn Thị Kim Sang",
     "teacherCode": "Sang.NTK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_7_CHIEU_5",
+    "id": "cls-6a8_7_CHIEU_5",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 7,
@@ -1592,11 +1487,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_7_CHIEU_5",
+    "id": "cls-6a9_7_CHIEU_5",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 7,
@@ -1607,11 +1501,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_7_CHIEU_5",
+    "id": "cls-6a10_7_CHIEU_5",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 7,
@@ -1622,11 +1515,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_2_CHIEU_1",
+    "id": "cls-7a7_2_CHIEU_1",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 2,
@@ -1637,11 +1529,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_2_CHIEU_1",
+    "id": "cls-7a8_2_CHIEU_1",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 2,
@@ -1652,11 +1543,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_2_CHIEU_1",
+    "id": "cls-7a9_2_CHIEU_1",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 2,
@@ -1667,11 +1557,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_2_CHIEU_2",
+    "id": "cls-7a7_2_CHIEU_2",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 2,
@@ -1682,11 +1571,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_2_CHIEU_2",
+    "id": "cls-7a8_2_CHIEU_2",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 2,
@@ -1697,11 +1585,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_2_CHIEU_2",
+    "id": "cls-7a9_2_CHIEU_2",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 2,
@@ -1712,11 +1599,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_2_CHIEU_3",
+    "id": "cls-7a7_2_CHIEU_3",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 2,
@@ -1727,11 +1613,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_2_CHIEU_3",
+    "id": "cls-7a8_2_CHIEU_3",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 2,
@@ -1742,11 +1627,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_2_CHIEU_3",
+    "id": "cls-7a9_2_CHIEU_3",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 2,
@@ -1757,11 +1641,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_2_CHIEU_4",
+    "id": "cls-7a7_2_CHIEU_4",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 2,
@@ -1772,11 +1655,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_2_CHIEU_4",
+    "id": "cls-7a8_2_CHIEU_4",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 2,
@@ -1787,11 +1669,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_2_CHIEU_4",
+    "id": "cls-7a9_2_CHIEU_4",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 2,
@@ -1802,11 +1683,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_2_CHIEU_5",
+    "id": "cls-7a7_2_CHIEU_5",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 2,
@@ -1817,11 +1697,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_2_CHIEU_5",
+    "id": "cls-7a8_2_CHIEU_5",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 2,
@@ -1832,11 +1711,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_2_CHIEU_5",
+    "id": "cls-7a9_2_CHIEU_5",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 2,
@@ -1847,11 +1725,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_3_CHIEU_1",
+    "id": "cls-7a7_3_CHIEU_1",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 3,
@@ -1862,11 +1739,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_3_CHIEU_1",
+    "id": "cls-7a8_3_CHIEU_1",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 3,
@@ -1877,11 +1753,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_3_CHIEU_1",
+    "id": "cls-7a9_3_CHIEU_1",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 3,
@@ -1892,11 +1767,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_3_CHIEU_2",
+    "id": "cls-7a7_3_CHIEU_2",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 3,
@@ -1907,11 +1781,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_3_CHIEU_2",
+    "id": "cls-7a8_3_CHIEU_2",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 3,
@@ -1922,11 +1795,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_3_CHIEU_2",
+    "id": "cls-7a9_3_CHIEU_2",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 3,
@@ -1937,11 +1809,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_3_CHIEU_3",
+    "id": "cls-7a7_3_CHIEU_3",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 3,
@@ -1952,11 +1823,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_3_CHIEU_3",
+    "id": "cls-7a8_3_CHIEU_3",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 3,
@@ -1967,11 +1837,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_3_CHIEU_3",
+    "id": "cls-7a9_3_CHIEU_3",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 3,
@@ -1982,11 +1851,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_3_CHIEU_4",
+    "id": "cls-7a7_3_CHIEU_4",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 3,
@@ -1997,11 +1865,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_3_CHIEU_4",
+    "id": "cls-7a8_3_CHIEU_4",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 3,
@@ -2012,11 +1879,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_3_CHIEU_4",
+    "id": "cls-7a9_3_CHIEU_4",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 3,
@@ -2027,11 +1893,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_3_CHIEU_5",
+    "id": "cls-7a7_3_CHIEU_5",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 3,
@@ -2042,11 +1907,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_3_CHIEU_5",
+    "id": "cls-7a8_3_CHIEU_5",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 3,
@@ -2057,11 +1921,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_3_CHIEU_5",
+    "id": "cls-7a9_3_CHIEU_5",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 3,
@@ -2072,11 +1935,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_4_CHIEU_1",
+    "id": "cls-7a7_4_CHIEU_1",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 4,
@@ -2087,11 +1949,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_4_CHIEU_1",
+    "id": "cls-7a8_4_CHIEU_1",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 4,
@@ -2102,11 +1963,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_4_CHIEU_1",
+    "id": "cls-7a9_4_CHIEU_1",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 4,
@@ -2117,11 +1977,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-6",
     "teacherName": "Trương Sơn Bền",
     "teacherCode": "Bền.TS",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_4_CHIEU_2",
+    "id": "cls-7a7_4_CHIEU_2",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 4,
@@ -2132,11 +1991,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_4_CHIEU_2",
+    "id": "cls-7a8_4_CHIEU_2",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 4,
@@ -2147,11 +2005,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_4_CHIEU_2",
+    "id": "cls-7a9_4_CHIEU_2",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 4,
@@ -2162,11 +2019,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-6",
     "teacherName": "Trương Sơn Bền",
     "teacherCode": "Bền.TS",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_4_CHIEU_3",
+    "id": "cls-7a7_4_CHIEU_3",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 4,
@@ -2177,11 +2033,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_4_CHIEU_3",
+    "id": "cls-7a8_4_CHIEU_3",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 4,
@@ -2192,11 +2047,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-6",
     "teacherName": "Trương Sơn Bền",
     "teacherCode": "Bền.TS",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_4_CHIEU_3",
+    "id": "cls-7a9_4_CHIEU_3",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 4,
@@ -2207,11 +2061,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_4_CHIEU_4",
+    "id": "cls-7a7_4_CHIEU_4",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 4,
@@ -2222,11 +2075,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_4_CHIEU_4",
+    "id": "cls-7a8_4_CHIEU_4",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 4,
@@ -2237,11 +2089,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_4_CHIEU_4",
+    "id": "cls-7a9_4_CHIEU_4",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 4,
@@ -2252,11 +2103,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_4_CHIEU_5",
+    "id": "cls-7a7_4_CHIEU_5",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 4,
@@ -2267,11 +2117,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-6",
     "teacherName": "Trương Sơn Bền",
     "teacherCode": "Bền.TS",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_4_CHIEU_5",
+    "id": "cls-7a8_4_CHIEU_5",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 4,
@@ -2282,11 +2131,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_4_CHIEU_5",
+    "id": "cls-7a9_4_CHIEU_5",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 4,
@@ -2297,11 +2145,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_5_CHIEU_1",
+    "id": "cls-7a7_5_CHIEU_1",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 5,
@@ -2312,11 +2159,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-6",
     "teacherName": "Trương Sơn Bền",
     "teacherCode": "Bền.TS",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_5_CHIEU_1",
+    "id": "cls-7a8_5_CHIEU_1",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 5,
@@ -2327,11 +2173,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_5_CHIEU_1",
+    "id": "cls-7a9_5_CHIEU_1",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 5,
@@ -2342,11 +2187,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_5_CHIEU_2",
+    "id": "cls-7a7_5_CHIEU_2",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 5,
@@ -2357,11 +2201,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-6",
     "teacherName": "Trương Sơn Bền",
     "teacherCode": "Bền.TS",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_5_CHIEU_2",
+    "id": "cls-7a8_5_CHIEU_2",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 5,
@@ -2372,11 +2215,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_5_CHIEU_2",
+    "id": "cls-7a9_5_CHIEU_2",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 5,
@@ -2387,11 +2229,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_6_CHIEU_1",
+    "id": "cls-7a7_6_CHIEU_1",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 6,
@@ -2402,11 +2243,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_6_CHIEU_1",
+    "id": "cls-7a8_6_CHIEU_1",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 6,
@@ -2417,11 +2257,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-6",
     "teacherName": "Trương Sơn Bền",
     "teacherCode": "Bền.TS",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_6_CHIEU_1",
+    "id": "cls-7a9_6_CHIEU_1",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 6,
@@ -2432,11 +2271,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_6_CHIEU_2",
+    "id": "cls-7a7_6_CHIEU_2",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 6,
@@ -2447,11 +2285,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_6_CHIEU_2",
+    "id": "cls-7a8_6_CHIEU_2",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 6,
@@ -2462,11 +2299,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-6",
     "teacherName": "Trương Sơn Bền",
     "teacherCode": "Bền.TS",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_6_CHIEU_2",
+    "id": "cls-7a9_6_CHIEU_2",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 6,
@@ -2477,11 +2313,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_6_CHIEU_3",
+    "id": "cls-7a7_6_CHIEU_3",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 6,
@@ -2492,11 +2327,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_6_CHIEU_3",
+    "id": "cls-7a8_6_CHIEU_3",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 6,
@@ -2507,11 +2341,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_6_CHIEU_3",
+    "id": "cls-7a9_6_CHIEU_3",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 6,
@@ -2522,11 +2355,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_6_CHIEU_4",
+    "id": "cls-7a7_6_CHIEU_4",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 6,
@@ -2537,11 +2369,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_6_CHIEU_4",
+    "id": "cls-7a8_6_CHIEU_4",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 6,
@@ -2552,11 +2383,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_6_CHIEU_4",
+    "id": "cls-7a9_6_CHIEU_4",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 6,
@@ -2567,11 +2397,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-6",
     "teacherName": "Trương Sơn Bền",
     "teacherCode": "Bền.TS",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_6_CHIEU_5",
+    "id": "cls-7a7_6_CHIEU_5",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 6,
@@ -2582,11 +2411,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_6_CHIEU_5",
+    "id": "cls-7a8_6_CHIEU_5",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 6,
@@ -2597,11 +2425,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_6_CHIEU_5",
+    "id": "cls-7a9_6_CHIEU_5",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 6,
@@ -2612,11 +2439,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_7_CHIEU_1",
+    "id": "cls-7a7_7_CHIEU_1",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 7,
@@ -2627,11 +2453,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_7_CHIEU_1",
+    "id": "cls-7a8_7_CHIEU_1",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 7,
@@ -2642,11 +2467,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_7_CHIEU_1",
+    "id": "cls-7a9_7_CHIEU_1",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 7,
@@ -2657,11 +2481,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_7_CHIEU_2",
+    "id": "cls-7a7_7_CHIEU_2",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 7,
@@ -2672,11 +2495,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_7_CHIEU_2",
+    "id": "cls-7a8_7_CHIEU_2",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 7,
@@ -2687,11 +2509,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_7_CHIEU_2",
+    "id": "cls-7a9_7_CHIEU_2",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 7,
@@ -2702,11 +2523,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_7_CHIEU_3",
+    "id": "cls-7a7_7_CHIEU_3",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 7,
@@ -2717,11 +2537,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_7_CHIEU_3",
+    "id": "cls-7a8_7_CHIEU_3",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 7,
@@ -2732,11 +2551,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_7_CHIEU_3",
+    "id": "cls-7a9_7_CHIEU_3",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 7,
@@ -2747,11 +2565,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_7_CHIEU_4",
+    "id": "cls-7a7_7_CHIEU_4",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 7,
@@ -2762,11 +2579,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_7_CHIEU_4",
+    "id": "cls-7a8_7_CHIEU_4",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 7,
@@ -2777,11 +2593,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-tk-vi",
     "teacherName": "Nguyễn Hiền Vi",
     "teacherCode": "Vi.NH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_7_CHIEU_4",
+    "id": "cls-7a9_7_CHIEU_4",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 7,
@@ -2792,11 +2607,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_7_CHIEU_5",
+    "id": "cls-7a7_7_CHIEU_5",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 7,
@@ -2807,11 +2621,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_7_CHIEU_5",
+    "id": "cls-7a8_7_CHIEU_5",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 7,
@@ -2822,11 +2635,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_7_CHIEU_5",
+    "id": "cls-7a9_7_CHIEU_5",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 7,
@@ -2837,11 +2649,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_2_SANG_1",
+    "id": "cls-8a7_2_SANG_1",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 2,
@@ -2852,11 +2663,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-2",
     "teacherName": "Thái Văn Tiến",
     "teacherCode": "Tiến.TV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_2_SANG_1",
+    "id": "cls-8a8_2_SANG_1",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 2,
@@ -2867,11 +2677,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_2_SANG_1",
+    "id": "cls-8a9_2_SANG_1",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 2,
@@ -2882,11 +2691,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_2_SANG_1",
+    "id": "cls-8a10_2_SANG_1",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 2,
@@ -2897,11 +2705,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_2_SANG_2",
+    "id": "cls-8a7_2_SANG_2",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 2,
@@ -2912,11 +2719,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_2_SANG_2",
+    "id": "cls-8a8_2_SANG_2",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 2,
@@ -2927,11 +2733,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-15",
     "teacherName": "Nguyễn Thị Kim Sang",
     "teacherCode": "Sang.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_2_SANG_2",
+    "id": "cls-8a9_2_SANG_2",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 2,
@@ -2942,11 +2747,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_2_SANG_2",
+    "id": "cls-8a10_2_SANG_2",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 2,
@@ -2957,11 +2761,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_2_SANG_3",
+    "id": "cls-8a7_2_SANG_3",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 2,
@@ -2972,11 +2775,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_2_SANG_3",
+    "id": "cls-8a8_2_SANG_3",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 2,
@@ -2987,11 +2789,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_2_SANG_3",
+    "id": "cls-8a9_2_SANG_3",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 2,
@@ -3002,11 +2803,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_2_SANG_3",
+    "id": "cls-8a10_2_SANG_3",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 2,
@@ -3017,11 +2817,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-15",
     "teacherName": "Nguyễn Thị Kim Sang",
     "teacherCode": "Sang.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_2_SANG_4",
+    "id": "cls-8a7_2_SANG_4",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 2,
@@ -3032,11 +2831,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-15",
     "teacherName": "Nguyễn Thị Kim Sang",
     "teacherCode": "Sang.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_2_SANG_4",
+    "id": "cls-8a8_2_SANG_4",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 2,
@@ -3047,11 +2845,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_2_SANG_4",
+    "id": "cls-8a9_2_SANG_4",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 2,
@@ -3062,11 +2859,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_2_SANG_4",
+    "id": "cls-8a10_2_SANG_4",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 2,
@@ -3077,11 +2873,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_2_SANG_5",
+    "id": "cls-8a7_2_SANG_5",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 2,
@@ -3092,11 +2887,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_2_SANG_5",
+    "id": "cls-8a8_2_SANG_5",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 2,
@@ -3107,11 +2901,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_2_SANG_5",
+    "id": "cls-8a9_2_SANG_5",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 2,
@@ -3122,11 +2915,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-15",
     "teacherName": "Nguyễn Thị Kim Sang",
     "teacherCode": "Sang.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_2_SANG_5",
+    "id": "cls-8a10_2_SANG_5",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 2,
@@ -3137,11 +2929,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_3_SANG_1",
+    "id": "cls-8a7_3_SANG_1",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 3,
@@ -3152,11 +2943,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_3_SANG_1",
+    "id": "cls-8a8_3_SANG_1",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 3,
@@ -3167,11 +2957,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_3_SANG_1",
+    "id": "cls-8a9_3_SANG_1",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 3,
@@ -3182,11 +2971,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_3_SANG_1",
+    "id": "cls-8a10_3_SANG_1",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 3,
@@ -3197,11 +2985,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_3_SANG_2",
+    "id": "cls-8a7_3_SANG_2",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 3,
@@ -3212,11 +2999,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_3_SANG_2",
+    "id": "cls-8a8_3_SANG_2",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 3,
@@ -3227,11 +3013,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_3_SANG_2",
+    "id": "cls-8a9_3_SANG_2",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 3,
@@ -3242,11 +3027,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_3_SANG_2",
+    "id": "cls-8a10_3_SANG_2",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 3,
@@ -3257,11 +3041,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_3_SANG_3",
+    "id": "cls-8a7_3_SANG_3",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 3,
@@ -3272,11 +3055,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_3_SANG_3",
+    "id": "cls-8a8_3_SANG_3",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 3,
@@ -3287,11 +3069,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_3_SANG_3",
+    "id": "cls-8a9_3_SANG_3",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 3,
@@ -3302,11 +3083,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_3_SANG_3",
+    "id": "cls-8a10_3_SANG_3",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 3,
@@ -3317,11 +3097,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_3_SANG_4",
+    "id": "cls-8a7_3_SANG_4",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 3,
@@ -3332,11 +3111,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_3_SANG_4",
+    "id": "cls-8a8_3_SANG_4",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 3,
@@ -3347,11 +3125,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_3_SANG_4",
+    "id": "cls-8a9_3_SANG_4",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 3,
@@ -3362,11 +3139,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_3_SANG_4",
+    "id": "cls-8a10_3_SANG_4",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 3,
@@ -3377,11 +3153,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_3_SANG_5",
+    "id": "cls-8a7_3_SANG_5",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 3,
@@ -3392,11 +3167,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_3_SANG_5",
+    "id": "cls-8a8_3_SANG_5",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 3,
@@ -3407,11 +3181,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_3_SANG_5",
+    "id": "cls-8a9_3_SANG_5",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 3,
@@ -3422,11 +3195,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_3_SANG_5",
+    "id": "cls-8a10_3_SANG_5",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 3,
@@ -3437,11 +3209,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_4_SANG_1",
+    "id": "cls-8a7_4_SANG_1",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 4,
@@ -3452,11 +3223,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_4_SANG_1",
+    "id": "cls-8a8_4_SANG_1",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 4,
@@ -3467,11 +3237,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_4_SANG_1",
+    "id": "cls-8a9_4_SANG_1",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 4,
@@ -3482,11 +3251,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_4_SANG_1",
+    "id": "cls-8a10_4_SANG_1",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 4,
@@ -3497,11 +3265,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_4_SANG_2",
+    "id": "cls-8a7_4_SANG_2",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 4,
@@ -3512,11 +3279,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_4_SANG_2",
+    "id": "cls-8a8_4_SANG_2",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 4,
@@ -3527,11 +3293,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_4_SANG_2",
+    "id": "cls-8a9_4_SANG_2",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 4,
@@ -3542,11 +3307,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_4_SANG_2",
+    "id": "cls-8a10_4_SANG_2",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 4,
@@ -3557,11 +3321,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_4_SANG_3",
+    "id": "cls-8a7_4_SANG_3",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 4,
@@ -3569,14 +3332,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-hoa",
     "subjectName": "Hóa học",
-    "teacherId": "tch-td-12",
-    "teacherName": "Nguyễn Anh Văn",
-    "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-khtn-15",
+    "teacherName": "Võ Ngọc Đình Văn",
+    "teacherCode": "Văn.VNĐ",
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_4_SANG_3",
+    "id": "cls-8a8_4_SANG_3",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 4,
@@ -3587,11 +3349,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_4_SANG_3",
+    "id": "cls-8a9_4_SANG_3",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 4,
@@ -3602,11 +3363,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_4_SANG_3",
+    "id": "cls-8a10_4_SANG_3",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 4,
@@ -3617,11 +3377,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_4_SANG_4",
+    "id": "cls-8a7_4_SANG_4",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 4,
@@ -3632,11 +3391,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_4_SANG_4",
+    "id": "cls-8a8_4_SANG_4",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 4,
@@ -3647,11 +3405,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_4_SANG_4",
+    "id": "cls-8a9_4_SANG_4",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 4,
@@ -3662,11 +3419,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_4_SANG_4",
+    "id": "cls-8a10_4_SANG_4",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 4,
@@ -3677,11 +3433,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_4_SANG_5",
+    "id": "cls-8a7_4_SANG_5",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 4,
@@ -3692,11 +3447,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_4_SANG_5",
+    "id": "cls-8a8_4_SANG_5",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 4,
@@ -3704,14 +3458,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 5,
     "subjectId": "sub-hoa",
     "subjectName": "Hóa học",
-    "teacherId": "tch-td-12",
-    "teacherName": "Nguyễn Anh Văn",
-    "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-khtn-15",
+    "teacherName": "Võ Ngọc Đình Văn",
+    "teacherCode": "Văn.VNĐ",
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_4_SANG_5",
+    "id": "cls-8a9_4_SANG_5",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 4,
@@ -3722,11 +3475,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_4_SANG_5",
+    "id": "cls-8a10_4_SANG_5",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 4,
@@ -3737,11 +3489,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_5_SANG_1",
+    "id": "cls-8a7_5_SANG_1",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 5,
@@ -3752,11 +3503,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_5_SANG_1",
+    "id": "cls-8a8_5_SANG_1",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 5,
@@ -3767,11 +3517,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_5_SANG_1",
+    "id": "cls-8a9_5_SANG_1",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 5,
@@ -3782,11 +3531,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_5_SANG_1",
+    "id": "cls-8a10_5_SANG_1",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 5,
@@ -3797,11 +3545,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_5_SANG_2",
+    "id": "cls-8a7_5_SANG_2",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 5,
@@ -3812,11 +3559,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_5_SANG_2",
+    "id": "cls-8a8_5_SANG_2",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 5,
@@ -3827,11 +3573,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_5_SANG_2",
+    "id": "cls-8a9_5_SANG_2",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 5,
@@ -3842,11 +3587,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_5_SANG_2",
+    "id": "cls-8a10_5_SANG_2",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 5,
@@ -3857,11 +3601,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_5_SANG_3",
+    "id": "cls-8a7_5_SANG_3",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 5,
@@ -3872,11 +3615,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_5_SANG_3",
+    "id": "cls-8a8_5_SANG_3",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 5,
@@ -3887,11 +3629,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_5_SANG_3",
+    "id": "cls-8a9_5_SANG_3",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 5,
@@ -3902,11 +3643,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_5_SANG_3",
+    "id": "cls-8a10_5_SANG_3",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 5,
@@ -3917,11 +3657,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_5_SANG_4",
+    "id": "cls-8a7_5_SANG_4",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 5,
@@ -3932,11 +3671,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_5_SANG_4",
+    "id": "cls-8a8_5_SANG_4",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 5,
@@ -3947,11 +3685,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_5_SANG_4",
+    "id": "cls-8a9_5_SANG_4",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 5,
@@ -3962,11 +3699,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_5_SANG_4",
+    "id": "cls-8a10_5_SANG_4",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 5,
@@ -3977,11 +3713,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_5_SANG_5",
+    "id": "cls-8a7_5_SANG_5",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 5,
@@ -3992,11 +3727,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_5_SANG_5",
+    "id": "cls-8a8_5_SANG_5",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 5,
@@ -4007,11 +3741,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_5_SANG_5",
+    "id": "cls-8a9_5_SANG_5",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 5,
@@ -4022,11 +3755,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_5_SANG_5",
+    "id": "cls-8a10_5_SANG_5",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 5,
@@ -4037,11 +3769,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_6_SANG_1",
+    "id": "cls-8a7_6_SANG_1",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 6,
@@ -4052,11 +3783,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_6_SANG_1",
+    "id": "cls-8a8_6_SANG_1",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 6,
@@ -4067,11 +3797,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_6_SANG_1",
+    "id": "cls-8a9_6_SANG_1",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 6,
@@ -4082,11 +3811,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_6_SANG_1",
+    "id": "cls-8a10_6_SANG_1",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 6,
@@ -4097,11 +3825,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_6_SANG_2",
+    "id": "cls-8a7_6_SANG_2",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 6,
@@ -4112,11 +3839,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-1",
     "teacherName": "Lê Thị Ngọc Tuyền",
     "teacherCode": "Tuyền.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_6_SANG_2",
+    "id": "cls-8a8_6_SANG_2",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 6,
@@ -4127,11 +3853,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_6_SANG_2",
+    "id": "cls-8a9_6_SANG_2",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 6,
@@ -4142,11 +3867,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_6_SANG_2",
+    "id": "cls-8a10_6_SANG_2",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 6,
@@ -4157,11 +3881,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_6_SANG_3",
+    "id": "cls-8a7_6_SANG_3",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 6,
@@ -4172,11 +3895,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_6_SANG_3",
+    "id": "cls-8a8_6_SANG_3",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 6,
@@ -4187,11 +3909,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-14",
     "teacherName": "Huỳnh Thị Huỳnh Nga",
     "teacherCode": "Nga.HTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_6_SANG_3",
+    "id": "cls-8a9_6_SANG_3",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 6,
@@ -4202,11 +3923,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_6_SANG_3",
+    "id": "cls-8a10_6_SANG_3",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 6,
@@ -4214,14 +3934,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-hoa",
     "subjectName": "Hóa học",
-    "teacherId": "tch-td-12",
-    "teacherName": "Nguyễn Anh Văn",
-    "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-khtn-15",
+    "teacherName": "Võ Ngọc Đình Văn",
+    "teacherCode": "Văn.VNĐ",
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_6_SANG_4",
+    "id": "cls-8a7_6_SANG_4",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 6,
@@ -4232,11 +3951,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_6_SANG_4",
+    "id": "cls-8a8_6_SANG_4",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 6,
@@ -4247,11 +3965,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_6_SANG_4",
+    "id": "cls-8a9_6_SANG_4",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 6,
@@ -4262,11 +3979,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_6_SANG_4",
+    "id": "cls-8a10_6_SANG_4",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 6,
@@ -4277,11 +3993,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_6_SANG_5",
+    "id": "cls-8a7_6_SANG_5",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 6,
@@ -4292,11 +4007,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-3",
     "teacherName": "Lê Thị Ngọc Điệp",
     "teacherCode": "Điệp.LTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_6_SANG_5",
+    "id": "cls-8a8_6_SANG_5",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 6,
@@ -4307,11 +4021,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_6_SANG_5",
+    "id": "cls-8a9_6_SANG_5",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 6,
@@ -4319,14 +4032,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 5,
     "subjectId": "sub-hoa",
     "subjectName": "Hóa học",
-    "teacherId": "tch-td-12",
-    "teacherName": "Nguyễn Anh Văn",
-    "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-khtn-15",
+    "teacherName": "Võ Ngọc Đình Văn",
+    "teacherCode": "Văn.VNĐ",
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_6_SANG_5",
+    "id": "cls-8a10_6_SANG_5",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 6,
@@ -4337,11 +4049,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_7_SANG_1",
+    "id": "cls-8a7_7_SANG_1",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 7,
@@ -4352,11 +4063,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_7_SANG_1",
+    "id": "cls-8a8_7_SANG_1",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 7,
@@ -4367,11 +4077,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_7_SANG_1",
+    "id": "cls-8a9_7_SANG_1",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 7,
@@ -4382,11 +4091,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_7_SANG_1",
+    "id": "cls-8a10_7_SANG_1",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 7,
@@ -4397,11 +4105,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_7_SANG_2",
+    "id": "cls-8a7_7_SANG_2",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 7,
@@ -4412,11 +4119,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_7_SANG_2",
+    "id": "cls-8a8_7_SANG_2",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 7,
@@ -4427,11 +4133,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_7_SANG_2",
+    "id": "cls-8a9_7_SANG_2",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 7,
@@ -4442,11 +4147,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_7_SANG_2",
+    "id": "cls-8a10_7_SANG_2",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 7,
@@ -4457,11 +4161,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_7_SANG_3",
+    "id": "cls-8a7_7_SANG_3",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 7,
@@ -4472,11 +4175,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_7_SANG_3",
+    "id": "cls-8a8_7_SANG_3",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 7,
@@ -4487,11 +4189,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_7_SANG_3",
+    "id": "cls-8a9_7_SANG_3",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 7,
@@ -4502,11 +4203,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_7_SANG_3",
+    "id": "cls-8a10_7_SANG_3",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 7,
@@ -4517,11 +4217,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_7_SANG_4",
+    "id": "cls-8a7_7_SANG_4",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 7,
@@ -4532,11 +4231,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_7_SANG_4",
+    "id": "cls-8a8_7_SANG_4",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 7,
@@ -4547,11 +4245,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_7_SANG_4",
+    "id": "cls-8a9_7_SANG_4",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 7,
@@ -4562,11 +4259,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_7_SANG_4",
+    "id": "cls-8a10_7_SANG_4",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 7,
@@ -4577,11 +4273,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a7_w2_7_SANG_5",
+    "id": "cls-8a7_7_SANG_5",
     "classId": "cls-8a7",
     "className": "8A7",
     "dayOfWeek": 7,
@@ -4592,11 +4287,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-2",
     "teacherName": "Thái Văn Tiến",
     "teacherCode": "Tiến.TV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a8_w2_7_SANG_5",
+    "id": "cls-8a8_7_SANG_5",
     "classId": "cls-8a8",
     "className": "8A8",
     "dayOfWeek": 7,
@@ -4607,11 +4301,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a9_w2_7_SANG_5",
+    "id": "cls-8a9_7_SANG_5",
     "classId": "cls-8a9",
     "className": "8A9",
     "dayOfWeek": 7,
@@ -4622,11 +4315,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a10_w2_7_SANG_5",
+    "id": "cls-8a10_7_SANG_5",
     "classId": "cls-8a10",
     "className": "8A10",
     "dayOfWeek": 7,
@@ -4637,11 +4329,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-15",
     "teacherName": "Trần Văn Nhuận",
     "teacherCode": "Nhuận.TV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_2_SANG_1",
+    "id": "cls-9a7_2_SANG_1",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 2,
@@ -4652,11 +4343,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_2_SANG_1",
+    "id": "cls-9a8_2_SANG_1",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 2,
@@ -4667,11 +4357,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-20",
     "teacherName": "Đinh Thị Giàu",
     "teacherCode": "Giàu.ĐT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_2_SANG_1",
+    "id": "cls-9a9_2_SANG_1",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 2,
@@ -4682,11 +4371,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_2_SANG_1",
+    "id": "cls-9a10_2_SANG_1",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 2,
@@ -4697,11 +4385,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_2_SANG_2",
+    "id": "cls-9a7_2_SANG_2",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 2,
@@ -4712,11 +4399,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_2_SANG_2",
+    "id": "cls-9a8_2_SANG_2",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 2,
@@ -4727,11 +4413,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-20",
     "teacherName": "Đinh Thị Giàu",
     "teacherCode": "Giàu.ĐT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_2_SANG_2",
+    "id": "cls-9a9_2_SANG_2",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 2,
@@ -4742,11 +4427,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_2_SANG_2",
+    "id": "cls-9a10_2_SANG_2",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 2,
@@ -4757,11 +4441,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_2_SANG_3",
+    "id": "cls-9a7_2_SANG_3",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 2,
@@ -4772,11 +4455,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_2_SANG_3",
+    "id": "cls-9a8_2_SANG_3",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 2,
@@ -4787,11 +4469,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_2_SANG_3",
+    "id": "cls-9a9_2_SANG_3",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 2,
@@ -4802,11 +4483,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_2_SANG_3",
+    "id": "cls-9a10_2_SANG_3",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 2,
@@ -4817,11 +4497,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_2_SANG_4",
+    "id": "cls-9a7_2_SANG_4",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 2,
@@ -4832,11 +4511,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_2_SANG_4",
+    "id": "cls-9a8_2_SANG_4",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 2,
@@ -4847,11 +4525,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_2_SANG_4",
+    "id": "cls-9a9_2_SANG_4",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 2,
@@ -4862,11 +4539,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_2_SANG_4",
+    "id": "cls-9a10_2_SANG_4",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 2,
@@ -4877,11 +4553,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_2_SANG_5",
+    "id": "cls-9a7_2_SANG_5",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 2,
@@ -4892,11 +4567,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_2_SANG_5",
+    "id": "cls-9a8_2_SANG_5",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 2,
@@ -4907,11 +4581,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_2_SANG_5",
+    "id": "cls-9a9_2_SANG_5",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 2,
@@ -4922,11 +4595,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_2_SANG_5",
+    "id": "cls-9a10_2_SANG_5",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 2,
@@ -4937,11 +4609,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_3_SANG_1",
+    "id": "cls-9a7_3_SANG_1",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 3,
@@ -4952,11 +4623,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_3_SANG_1",
+    "id": "cls-9a8_3_SANG_1",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 3,
@@ -4967,11 +4637,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_3_SANG_1",
+    "id": "cls-9a9_3_SANG_1",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 3,
@@ -4982,11 +4651,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_3_SANG_1",
+    "id": "cls-9a10_3_SANG_1",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 3,
@@ -4997,11 +4665,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_3_SANG_2",
+    "id": "cls-9a7_3_SANG_2",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 3,
@@ -5012,11 +4679,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_3_SANG_2",
+    "id": "cls-9a8_3_SANG_2",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 3,
@@ -5027,11 +4693,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_3_SANG_2",
+    "id": "cls-9a9_3_SANG_2",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 3,
@@ -5042,11 +4707,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_3_SANG_2",
+    "id": "cls-9a10_3_SANG_2",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 3,
@@ -5057,11 +4721,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_3_SANG_3",
+    "id": "cls-9a7_3_SANG_3",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 3,
@@ -5072,11 +4735,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_3_SANG_3",
+    "id": "cls-9a8_3_SANG_3",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 3,
@@ -5087,11 +4749,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_3_SANG_3",
+    "id": "cls-9a9_3_SANG_3",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 3,
@@ -5102,11 +4763,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_3_SANG_3",
+    "id": "cls-9a10_3_SANG_3",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 3,
@@ -5117,11 +4777,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_3_SANG_4",
+    "id": "cls-9a7_3_SANG_4",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 3,
@@ -5132,11 +4791,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-bgh-4",
     "teacherName": "Nguyễn Thanh Tòng",
     "teacherCode": "Tòng.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_3_SANG_4",
+    "id": "cls-9a8_3_SANG_4",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 3,
@@ -5147,11 +4805,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_3_SANG_4",
+    "id": "cls-9a9_3_SANG_4",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 3,
@@ -5162,11 +4819,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_3_SANG_4",
+    "id": "cls-9a10_3_SANG_4",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 3,
@@ -5177,11 +4833,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_3_SANG_5",
+    "id": "cls-9a7_3_SANG_5",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 3,
@@ -5192,11 +4847,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-bgh-4",
     "teacherName": "Nguyễn Thanh Tòng",
     "teacherCode": "Tòng.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_3_SANG_5",
+    "id": "cls-9a8_3_SANG_5",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 3,
@@ -5207,11 +4861,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_3_SANG_5",
+    "id": "cls-9a9_3_SANG_5",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 3,
@@ -5222,11 +4875,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_3_SANG_5",
+    "id": "cls-9a10_3_SANG_5",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 3,
@@ -5237,11 +4889,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_4_SANG_1",
+    "id": "cls-9a7_4_SANG_1",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 4,
@@ -5252,11 +4903,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_4_SANG_1",
+    "id": "cls-9a8_4_SANG_1",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 4,
@@ -5267,11 +4917,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-20",
     "teacherName": "Đinh Thị Giàu",
     "teacherCode": "Giàu.ĐT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_4_SANG_1",
+    "id": "cls-9a9_4_SANG_1",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 4,
@@ -5282,11 +4931,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_4_SANG_1",
+    "id": "cls-9a10_4_SANG_1",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 4,
@@ -5297,11 +4945,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_4_SANG_2",
+    "id": "cls-9a7_4_SANG_2",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 4,
@@ -5312,11 +4959,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_4_SANG_2",
+    "id": "cls-9a8_4_SANG_2",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 4,
@@ -5327,11 +4973,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-20",
     "teacherName": "Đinh Thị Giàu",
     "teacherCode": "Giàu.ĐT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_4_SANG_2",
+    "id": "cls-9a9_4_SANG_2",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 4,
@@ -5342,11 +4987,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_4_SANG_2",
+    "id": "cls-9a10_4_SANG_2",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 4,
@@ -5357,11 +5001,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_4_SANG_3",
+    "id": "cls-9a7_4_SANG_3",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 4,
@@ -5372,11 +5015,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-20",
     "teacherName": "Đinh Thị Giàu",
     "teacherCode": "Giàu.ĐT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_4_SANG_3",
+    "id": "cls-9a8_4_SANG_3",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 4,
@@ -5387,11 +5029,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_4_SANG_3",
+    "id": "cls-9a9_4_SANG_3",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 4,
@@ -5402,11 +5043,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_4_SANG_3",
+    "id": "cls-9a10_4_SANG_3",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 4,
@@ -5417,11 +5057,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_4_SANG_4",
+    "id": "cls-9a7_4_SANG_4",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 4,
@@ -5432,11 +5071,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_4_SANG_4",
+    "id": "cls-9a8_4_SANG_4",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 4,
@@ -5447,11 +5085,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_4_SANG_4",
+    "id": "cls-9a9_4_SANG_4",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 4,
@@ -5462,11 +5099,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-20",
     "teacherName": "Đinh Thị Giàu",
     "teacherCode": "Giàu.ĐT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_4_SANG_4",
+    "id": "cls-9a10_4_SANG_4",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 4,
@@ -5477,11 +5113,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_4_SANG_5",
+    "id": "cls-9a7_4_SANG_5",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 4,
@@ -5492,11 +5127,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_4_SANG_5",
+    "id": "cls-9a8_4_SANG_5",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 4,
@@ -5507,11 +5141,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_4_SANG_5",
+    "id": "cls-9a9_4_SANG_5",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 4,
@@ -5522,11 +5155,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_4_SANG_5",
+    "id": "cls-9a10_4_SANG_5",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 4,
@@ -5537,11 +5169,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_5_SANG_1",
+    "id": "cls-9a7_5_SANG_1",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 5,
@@ -5552,11 +5183,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-20",
     "teacherName": "Đinh Thị Giàu",
     "teacherCode": "Giàu.ĐT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_5_SANG_1",
+    "id": "cls-9a8_5_SANG_1",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 5,
@@ -5567,11 +5197,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_5_SANG_1",
+    "id": "cls-9a9_5_SANG_1",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 5,
@@ -5582,11 +5211,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_5_SANG_1",
+    "id": "cls-9a10_5_SANG_1",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 5,
@@ -5597,11 +5225,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_5_SANG_2",
+    "id": "cls-9a7_5_SANG_2",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 5,
@@ -5612,11 +5239,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_5_SANG_2",
+    "id": "cls-9a8_5_SANG_2",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 5,
@@ -5627,11 +5253,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-3",
     "teacherName": "Phạm Thị Mỹ Châu",
     "teacherCode": "Châu.PTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_5_SANG_2",
+    "id": "cls-9a9_5_SANG_2",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 5,
@@ -5642,11 +5267,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-20",
     "teacherName": "Đinh Thị Giàu",
     "teacherCode": "Giàu.ĐT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_5_SANG_2",
+    "id": "cls-9a10_5_SANG_2",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 5,
@@ -5657,11 +5281,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_5_SANG_3",
+    "id": "cls-9a7_5_SANG_3",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 5,
@@ -5672,11 +5295,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_5_SANG_3",
+    "id": "cls-9a8_5_SANG_3",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 5,
@@ -5687,11 +5309,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_5_SANG_3",
+    "id": "cls-9a9_5_SANG_3",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 5,
@@ -5702,11 +5323,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_5_SANG_3",
+    "id": "cls-9a10_5_SANG_3",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 5,
@@ -5717,11 +5337,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_5_SANG_4",
+    "id": "cls-9a7_5_SANG_4",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 5,
@@ -5732,11 +5351,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_5_SANG_4",
+    "id": "cls-9a8_5_SANG_4",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 5,
@@ -5747,11 +5365,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_5_SANG_4",
+    "id": "cls-9a9_5_SANG_4",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 5,
@@ -5762,11 +5379,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_5_SANG_4",
+    "id": "cls-9a10_5_SANG_4",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 5,
@@ -5777,11 +5393,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-20",
     "teacherName": "Đinh Thị Giàu",
     "teacherCode": "Giàu.ĐT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_6_SANG_1",
+    "id": "cls-9a7_6_SANG_1",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 6,
@@ -5792,11 +5407,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_6_SANG_1",
+    "id": "cls-9a8_6_SANG_1",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 6,
@@ -5807,11 +5421,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_6_SANG_1",
+    "id": "cls-9a9_6_SANG_1",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 6,
@@ -5822,11 +5435,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_6_SANG_1",
+    "id": "cls-9a10_6_SANG_1",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 6,
@@ -5837,11 +5449,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_6_SANG_2",
+    "id": "cls-9a7_6_SANG_2",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 6,
@@ -5852,11 +5463,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_6_SANG_2",
+    "id": "cls-9a8_6_SANG_2",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 6,
@@ -5867,11 +5477,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_6_SANG_2",
+    "id": "cls-9a9_6_SANG_2",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 6,
@@ -5882,11 +5491,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_6_SANG_2",
+    "id": "cls-9a10_6_SANG_2",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 6,
@@ -5897,11 +5505,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_6_SANG_3",
+    "id": "cls-9a7_6_SANG_3",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 6,
@@ -5912,11 +5519,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_6_SANG_3",
+    "id": "cls-9a8_6_SANG_3",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 6,
@@ -5927,11 +5533,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_6_SANG_3",
+    "id": "cls-9a9_6_SANG_3",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 6,
@@ -5942,11 +5547,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_6_SANG_3",
+    "id": "cls-9a10_6_SANG_3",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 6,
@@ -5957,11 +5561,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_6_SANG_4",
+    "id": "cls-9a7_6_SANG_4",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 6,
@@ -5972,11 +5575,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-13",
     "teacherName": "Nguyễn Thị Thảo",
     "teacherCode": "Thảo.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_6_SANG_4",
+    "id": "cls-9a8_6_SANG_4",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 6,
@@ -5987,11 +5589,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_6_SANG_4",
+    "id": "cls-9a9_6_SANG_4",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 6,
@@ -6002,11 +5603,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_6_SANG_4",
+    "id": "cls-9a10_6_SANG_4",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 6,
@@ -6014,14 +5614,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-hoa",
     "subjectName": "Hóa học",
-    "teacherId": "tch-td-12",
-    "teacherName": "Nguyễn Anh Văn",
-    "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-khtn-15",
+    "teacherName": "Võ Ngọc Đình Văn",
+    "teacherCode": "Văn.VNĐ",
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_6_SANG_5",
+    "id": "cls-9a7_6_SANG_5",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 6,
@@ -6032,11 +5631,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-15",
     "teacherName": "Lê Minh Thành",
     "teacherCode": "Thành.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_6_SANG_5",
+    "id": "cls-9a8_6_SANG_5",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 6,
@@ -6047,11 +5645,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_6_SANG_5",
+    "id": "cls-9a9_6_SANG_5",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 6,
@@ -6062,11 +5659,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_6_SANG_5",
+    "id": "cls-9a10_6_SANG_5",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 6,
@@ -6077,11 +5673,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_7_SANG_1",
+    "id": "cls-9a7_7_SANG_1",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 7,
@@ -6092,11 +5687,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_7_SANG_1",
+    "id": "cls-9a8_7_SANG_1",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 7,
@@ -6107,11 +5701,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_7_SANG_1",
+    "id": "cls-9a9_7_SANG_1",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 7,
@@ -6122,11 +5715,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-3",
     "teacherName": "Huỳnh Thị Vân Nhi",
     "teacherCode": "Nhi.HTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_7_SANG_1",
+    "id": "cls-9a10_7_SANG_1",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 7,
@@ -6137,11 +5729,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_7_SANG_2",
+    "id": "cls-9a7_7_SANG_2",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 7,
@@ -6152,11 +5743,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-11",
     "teacherName": "Lê Văn Chính",
     "teacherCode": "Chính.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_7_SANG_2",
+    "id": "cls-9a8_7_SANG_2",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 7,
@@ -6167,11 +5757,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-16",
     "teacherName": "Lê Phước Hậu",
     "teacherCode": "Hậu.LP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_7_SANG_2",
+    "id": "cls-9a9_7_SANG_2",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 7,
@@ -6182,11 +5771,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-14",
     "teacherName": "Châu Thị Kim Hà",
     "teacherCode": "Hà.CTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_7_SANG_2",
+    "id": "cls-9a10_7_SANG_2",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 7,
@@ -6197,11 +5785,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_7_SANG_3",
+    "id": "cls-9a7_7_SANG_3",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 7,
@@ -6212,11 +5799,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_7_SANG_3",
+    "id": "cls-9a8_7_SANG_3",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 7,
@@ -6227,11 +5813,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_7_SANG_3",
+    "id": "cls-9a9_7_SANG_3",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 7,
@@ -6242,11 +5827,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_7_SANG_3",
+    "id": "cls-9a10_7_SANG_3",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 7,
@@ -6257,11 +5841,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_7_SANG_4",
+    "id": "cls-9a7_7_SANG_4",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 7,
@@ -6272,11 +5855,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_7_SANG_4",
+    "id": "cls-9a8_7_SANG_4",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 7,
@@ -6287,11 +5869,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-20",
     "teacherName": "Đinh Thị Giàu",
     "teacherCode": "Giàu.ĐT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_7_SANG_4",
+    "id": "cls-9a9_7_SANG_4",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 7,
@@ -6302,11 +5883,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_7_SANG_4",
+    "id": "cls-9a10_7_SANG_4",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 7,
@@ -6317,11 +5897,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-14",
     "teacherName": "Nguyễn Thị Bích Phượng",
     "teacherCode": "Phượng.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a7_w2_7_SANG_5",
+    "id": "cls-9a7_7_SANG_5",
     "classId": "cls-9a7",
     "className": "9A7",
     "dayOfWeek": 7,
@@ -6332,11 +5911,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-2",
     "teacherName": "Trần Quốc Huy",
     "teacherCode": "Huy.TQ",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a8_w2_7_SANG_5",
+    "id": "cls-9a8_7_SANG_5",
     "classId": "cls-9a8",
     "className": "9A8",
     "dayOfWeek": 7,
@@ -6347,11 +5925,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-20",
     "teacherName": "Đinh Thị Giàu",
     "teacherCode": "Giàu.ĐT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a9_w2_7_SANG_5",
+    "id": "cls-9a9_7_SANG_5",
     "classId": "cls-9a9",
     "className": "9A9",
     "dayOfWeek": 7,
@@ -6362,11 +5939,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-16",
     "teacherName": "Nguyễn Mỹ Ngân",
     "teacherCode": "Ngân.NM",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a10_w2_7_SANG_5",
+    "id": "cls-9a10_7_SANG_5",
     "classId": "cls-9a10",
     "className": "9A10",
     "dayOfWeek": 7,
@@ -6377,11 +5953,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-13",
     "teacherName": "Nguyễn Thành Tín",
     "teacherCode": "Tín.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_2_CHIEU_1",
+    "id": "cls-6a1_2_CHIEU_1",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 2,
@@ -6392,11 +5967,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_2_CHIEU_1",
+    "id": "cls-6a2_2_CHIEU_1",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 2,
@@ -6407,11 +5981,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_2_CHIEU_1",
+    "id": "cls-6a3_2_CHIEU_1",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 2,
@@ -6422,11 +5995,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_2_CHIEU_1",
+    "id": "cls-6a4_2_CHIEU_1",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 2,
@@ -6437,11 +6009,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_2_CHIEU_1",
+    "id": "cls-6a5_2_CHIEU_1",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 2,
@@ -6452,11 +6023,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_2_CHIEU_1",
+    "id": "cls-6a6_2_CHIEU_1",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 2,
@@ -6467,11 +6037,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-18",
     "teacherName": "Hồ Thị Ngọc Tài",
     "teacherCode": "Tài.HTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_2_CHIEU_2",
+    "id": "cls-6a1_2_CHIEU_2",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 2,
@@ -6482,11 +6051,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-18",
     "teacherName": "Hồ Thị Ngọc Tài",
     "teacherCode": "Tài.HTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_2_CHIEU_2",
+    "id": "cls-6a2_2_CHIEU_2",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 2,
@@ -6497,11 +6065,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-1",
     "teacherName": "Lê Hồng Thúy",
     "teacherCode": "Thúy.LH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_2_CHIEU_2",
+    "id": "cls-6a3_2_CHIEU_2",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 2,
@@ -6512,11 +6079,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_2_CHIEU_2",
+    "id": "cls-6a4_2_CHIEU_2",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 2,
@@ -6527,11 +6093,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_2_CHIEU_2",
+    "id": "cls-6a5_2_CHIEU_2",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 2,
@@ -6542,11 +6107,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_2_CHIEU_2",
+    "id": "cls-6a6_2_CHIEU_2",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 2,
@@ -6557,11 +6121,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_2_CHIEU_3",
+    "id": "cls-6a1_2_CHIEU_3",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 2,
@@ -6572,11 +6135,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-18",
     "teacherName": "Hồ Thị Ngọc Tài",
     "teacherCode": "Tài.HTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_2_CHIEU_3",
+    "id": "cls-6a2_2_CHIEU_3",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 2,
@@ -6587,11 +6149,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_2_CHIEU_3",
+    "id": "cls-6a3_2_CHIEU_3",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 2,
@@ -6602,11 +6163,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_2_CHIEU_3",
+    "id": "cls-6a4_2_CHIEU_3",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 2,
@@ -6617,11 +6177,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_2_CHIEU_3",
+    "id": "cls-6a5_2_CHIEU_3",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 2,
@@ -6632,11 +6191,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_2_CHIEU_3",
+    "id": "cls-6a6_2_CHIEU_3",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 2,
@@ -6647,11 +6205,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_2_CHIEU_4",
+    "id": "cls-6a1_2_CHIEU_4",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 2,
@@ -6662,11 +6219,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_2_CHIEU_4",
+    "id": "cls-6a2_2_CHIEU_4",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 2,
@@ -6677,11 +6233,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_2_CHIEU_4",
+    "id": "cls-6a3_2_CHIEU_4",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 2,
@@ -6692,11 +6247,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_2_CHIEU_4",
+    "id": "cls-6a4_2_CHIEU_4",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 2,
@@ -6707,11 +6261,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_2_CHIEU_4",
+    "id": "cls-6a5_2_CHIEU_4",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 2,
@@ -6722,11 +6275,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_2_CHIEU_4",
+    "id": "cls-6a6_2_CHIEU_4",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 2,
@@ -6737,11 +6289,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_2_CHIEU_5",
+    "id": "cls-6a1_2_CHIEU_5",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 2,
@@ -6752,11 +6303,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-18",
     "teacherName": "Hồ Thị Ngọc Tài",
     "teacherCode": "Tài.HTN",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_2_CHIEU_5",
+    "id": "cls-6a2_2_CHIEU_5",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 2,
@@ -6767,11 +6317,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_2_CHIEU_5",
+    "id": "cls-6a3_2_CHIEU_5",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 2,
@@ -6782,11 +6331,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_2_CHIEU_5",
+    "id": "cls-6a4_2_CHIEU_5",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 2,
@@ -6797,11 +6345,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_2_CHIEU_5",
+    "id": "cls-6a5_2_CHIEU_5",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 2,
@@ -6812,11 +6359,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_2_CHIEU_5",
+    "id": "cls-6a6_2_CHIEU_5",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 2,
@@ -6827,11 +6373,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_3_CHIEU_1",
+    "id": "cls-6a1_3_CHIEU_1",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 3,
@@ -6842,11 +6387,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_3_CHIEU_1",
+    "id": "cls-6a2_3_CHIEU_1",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 3,
@@ -6857,11 +6401,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_3_CHIEU_1",
+    "id": "cls-6a3_3_CHIEU_1",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 3,
@@ -6872,11 +6415,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_3_CHIEU_1",
+    "id": "cls-6a4_3_CHIEU_1",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 3,
@@ -6887,11 +6429,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_3_CHIEU_1",
+    "id": "cls-6a5_3_CHIEU_1",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 3,
@@ -6902,11 +6443,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-1",
     "teacherName": "Lê Hồng Thúy",
     "teacherCode": "Thúy.LH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_3_CHIEU_1",
+    "id": "cls-6a6_3_CHIEU_1",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 3,
@@ -6917,11 +6457,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_3_CHIEU_2",
+    "id": "cls-6a1_3_CHIEU_2",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 3,
@@ -6932,11 +6471,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_3_CHIEU_2",
+    "id": "cls-6a2_3_CHIEU_2",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 3,
@@ -6947,11 +6485,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_3_CHIEU_2",
+    "id": "cls-6a3_3_CHIEU_2",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 3,
@@ -6962,11 +6499,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_3_CHIEU_2",
+    "id": "cls-6a4_3_CHIEU_2",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 3,
@@ -6977,11 +6513,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_3_CHIEU_2",
+    "id": "cls-6a5_3_CHIEU_2",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 3,
@@ -6992,11 +6527,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_3_CHIEU_2",
+    "id": "cls-6a6_3_CHIEU_2",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 3,
@@ -7007,11 +6541,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_3_CHIEU_3",
+    "id": "cls-6a1_3_CHIEU_3",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 3,
@@ -7022,11 +6555,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_3_CHIEU_3",
+    "id": "cls-6a2_3_CHIEU_3",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 3,
@@ -7037,11 +6569,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_3_CHIEU_3",
+    "id": "cls-6a3_3_CHIEU_3",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 3,
@@ -7052,11 +6583,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_3_CHIEU_3",
+    "id": "cls-6a4_3_CHIEU_3",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 3,
@@ -7067,11 +6597,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_3_CHIEU_3",
+    "id": "cls-6a5_3_CHIEU_3",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 3,
@@ -7082,11 +6611,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_3_CHIEU_3",
+    "id": "cls-6a6_3_CHIEU_3",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 3,
@@ -7097,11 +6625,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_3_CHIEU_4",
+    "id": "cls-6a1_3_CHIEU_4",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 3,
@@ -7112,11 +6639,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_3_CHIEU_4",
+    "id": "cls-6a2_3_CHIEU_4",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 3,
@@ -7127,11 +6653,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_3_CHIEU_4",
+    "id": "cls-6a3_3_CHIEU_4",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 3,
@@ -7142,11 +6667,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_3_CHIEU_4",
+    "id": "cls-6a4_3_CHIEU_4",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 3,
@@ -7157,11 +6681,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_3_CHIEU_4",
+    "id": "cls-6a5_3_CHIEU_4",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 3,
@@ -7172,11 +6695,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_3_CHIEU_4",
+    "id": "cls-6a6_3_CHIEU_4",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 3,
@@ -7187,11 +6709,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_3_CHIEU_5",
+    "id": "cls-6a1_3_CHIEU_5",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 3,
@@ -7202,11 +6723,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-1",
     "teacherName": "Lê Hồng Thúy",
     "teacherCode": "Thúy.LH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_3_CHIEU_5",
+    "id": "cls-6a2_3_CHIEU_5",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 3,
@@ -7217,11 +6737,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_3_CHIEU_5",
+    "id": "cls-6a3_3_CHIEU_5",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 3,
@@ -7232,11 +6751,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_3_CHIEU_5",
+    "id": "cls-6a4_3_CHIEU_5",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 3,
@@ -7247,11 +6765,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_3_CHIEU_5",
+    "id": "cls-6a5_3_CHIEU_5",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 3,
@@ -7262,11 +6779,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_3_CHIEU_5",
+    "id": "cls-6a6_3_CHIEU_5",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 3,
@@ -7277,11 +6793,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-10",
     "teacherName": "Trần Thị Mỹ Quốc",
     "teacherCode": "Quốc.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_4_CHIEU_1",
+    "id": "cls-6a1_4_CHIEU_1",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 4,
@@ -7292,11 +6807,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_4_CHIEU_1",
+    "id": "cls-6a2_4_CHIEU_1",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 4,
@@ -7307,11 +6821,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_4_CHIEU_1",
+    "id": "cls-6a3_4_CHIEU_1",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 4,
@@ -7322,11 +6835,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_4_CHIEU_1",
+    "id": "cls-6a4_4_CHIEU_1",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 4,
@@ -7337,11 +6849,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_4_CHIEU_1",
+    "id": "cls-6a5_4_CHIEU_1",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 4,
@@ -7352,11 +6863,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_4_CHIEU_1",
+    "id": "cls-6a6_4_CHIEU_1",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 4,
@@ -7367,11 +6877,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-18",
     "teacherName": "Hồ Thị Ngọc Tài",
     "teacherCode": "Tài.HTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_4_CHIEU_2",
+    "id": "cls-6a1_4_CHIEU_2",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 4,
@@ -7382,11 +6891,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_4_CHIEU_2",
+    "id": "cls-6a2_4_CHIEU_2",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 4,
@@ -7397,11 +6905,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_4_CHIEU_2",
+    "id": "cls-6a3_4_CHIEU_2",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 4,
@@ -7412,11 +6919,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_4_CHIEU_2",
+    "id": "cls-6a4_4_CHIEU_2",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 4,
@@ -7427,11 +6933,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-1",
     "teacherName": "Lê Hồng Thúy",
     "teacherCode": "Thúy.LH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_4_CHIEU_2",
+    "id": "cls-6a5_4_CHIEU_2",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 4,
@@ -7442,11 +6947,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_4_CHIEU_2",
+    "id": "cls-6a6_4_CHIEU_2",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 4,
@@ -7457,11 +6961,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-18",
     "teacherName": "Hồ Thị Ngọc Tài",
     "teacherCode": "Tài.HTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_4_CHIEU_3",
+    "id": "cls-6a1_4_CHIEU_3",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 4,
@@ -7472,11 +6975,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_4_CHIEU_3",
+    "id": "cls-6a2_4_CHIEU_3",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 4,
@@ -7487,11 +6989,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_4_CHIEU_3",
+    "id": "cls-6a3_4_CHIEU_3",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 4,
@@ -7502,11 +7003,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_4_CHIEU_3",
+    "id": "cls-6a4_4_CHIEU_3",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 4,
@@ -7517,11 +7017,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_4_CHIEU_3",
+    "id": "cls-6a5_4_CHIEU_3",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 4,
@@ -7532,11 +7031,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_4_CHIEU_3",
+    "id": "cls-6a6_4_CHIEU_3",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 4,
@@ -7547,11 +7045,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_4_CHIEU_4",
+    "id": "cls-6a1_4_CHIEU_4",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 4,
@@ -7562,11 +7059,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_4_CHIEU_4",
+    "id": "cls-6a2_4_CHIEU_4",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 4,
@@ -7577,11 +7073,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_4_CHIEU_4",
+    "id": "cls-6a3_4_CHIEU_4",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 4,
@@ -7592,11 +7087,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_4_CHIEU_4",
+    "id": "cls-6a4_4_CHIEU_4",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 4,
@@ -7607,11 +7101,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_4_CHIEU_4",
+    "id": "cls-6a5_4_CHIEU_4",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 4,
@@ -7622,11 +7115,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_4_CHIEU_4",
+    "id": "cls-6a6_4_CHIEU_4",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 4,
@@ -7637,11 +7129,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_4_CHIEU_5",
+    "id": "cls-6a1_4_CHIEU_5",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 4,
@@ -7652,11 +7143,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_4_CHIEU_5",
+    "id": "cls-6a2_4_CHIEU_5",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 4,
@@ -7667,11 +7157,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_4_CHIEU_5",
+    "id": "cls-6a3_4_CHIEU_5",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 4,
@@ -7682,11 +7171,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_4_CHIEU_5",
+    "id": "cls-6a4_4_CHIEU_5",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 4,
@@ -7697,11 +7185,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_4_CHIEU_5",
+    "id": "cls-6a5_4_CHIEU_5",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 4,
@@ -7712,11 +7199,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_4_CHIEU_5",
+    "id": "cls-6a6_4_CHIEU_5",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 4,
@@ -7727,11 +7213,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-12",
     "teacherName": "Nguyễn Anh Văn",
     "teacherCode": "Văn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_5_CHIEU_1",
+    "id": "cls-6a1_5_CHIEU_1",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 5,
@@ -7742,11 +7227,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_5_CHIEU_1",
+    "id": "cls-6a2_5_CHIEU_1",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 5,
@@ -7757,11 +7241,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_5_CHIEU_1",
+    "id": "cls-6a3_5_CHIEU_1",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 5,
@@ -7772,11 +7255,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_5_CHIEU_1",
+    "id": "cls-6a4_5_CHIEU_1",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 5,
@@ -7787,11 +7269,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_5_CHIEU_1",
+    "id": "cls-6a5_5_CHIEU_1",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 5,
@@ -7802,11 +7283,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_5_CHIEU_1",
+    "id": "cls-6a6_5_CHIEU_1",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 5,
@@ -7817,11 +7297,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-18",
     "teacherName": "Hồ Thị Ngọc Tài",
     "teacherCode": "Tài.HTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_5_CHIEU_2",
+    "id": "cls-6a1_5_CHIEU_2",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 5,
@@ -7832,11 +7311,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-18",
     "teacherName": "Hồ Thị Ngọc Tài",
     "teacherCode": "Tài.HTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_5_CHIEU_2",
+    "id": "cls-6a2_5_CHIEU_2",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 5,
@@ -7847,11 +7325,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_5_CHIEU_2",
+    "id": "cls-6a3_5_CHIEU_2",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 5,
@@ -7862,11 +7339,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_5_CHIEU_2",
+    "id": "cls-6a4_5_CHIEU_2",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 5,
@@ -7877,11 +7353,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_5_CHIEU_2",
+    "id": "cls-6a5_5_CHIEU_2",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 5,
@@ -7892,11 +7367,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_5_CHIEU_2",
+    "id": "cls-6a6_5_CHIEU_2",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 5,
@@ -7907,11 +7381,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_6_CHIEU_1",
+    "id": "cls-6a1_6_CHIEU_1",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 6,
@@ -7922,11 +7395,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_6_CHIEU_1",
+    "id": "cls-6a2_6_CHIEU_1",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 6,
@@ -7937,11 +7409,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_6_CHIEU_1",
+    "id": "cls-6a3_6_CHIEU_1",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 6,
@@ -7952,11 +7423,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-1",
     "teacherName": "Lê Hồng Thúy",
     "teacherCode": "Thúy.LH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_6_CHIEU_1",
+    "id": "cls-6a4_6_CHIEU_1",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 6,
@@ -7967,11 +7437,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_6_CHIEU_1",
+    "id": "cls-6a5_6_CHIEU_1",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 6,
@@ -7982,11 +7451,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_6_CHIEU_1",
+    "id": "cls-6a6_6_CHIEU_1",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 6,
@@ -7997,11 +7465,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_6_CHIEU_2",
+    "id": "cls-6a1_6_CHIEU_2",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 6,
@@ -8012,11 +7479,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_6_CHIEU_2",
+    "id": "cls-6a2_6_CHIEU_2",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 6,
@@ -8027,11 +7493,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_6_CHIEU_2",
+    "id": "cls-6a3_6_CHIEU_2",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 6,
@@ -8042,11 +7507,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_6_CHIEU_2",
+    "id": "cls-6a4_6_CHIEU_2",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 6,
@@ -8057,11 +7521,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_6_CHIEU_2",
+    "id": "cls-6a5_6_CHIEU_2",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 6,
@@ -8072,11 +7535,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_6_CHIEU_2",
+    "id": "cls-6a6_6_CHIEU_2",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 6,
@@ -8087,11 +7549,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_6_CHIEU_3",
+    "id": "cls-6a1_6_CHIEU_3",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 6,
@@ -8102,11 +7563,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_6_CHIEU_3",
+    "id": "cls-6a2_6_CHIEU_3",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 6,
@@ -8117,11 +7577,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_6_CHIEU_3",
+    "id": "cls-6a3_6_CHIEU_3",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 6,
@@ -8132,11 +7591,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_6_CHIEU_3",
+    "id": "cls-6a4_6_CHIEU_3",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 6,
@@ -8147,11 +7605,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_6_CHIEU_3",
+    "id": "cls-6a5_6_CHIEU_3",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 6,
@@ -8162,11 +7619,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_6_CHIEU_3",
+    "id": "cls-6a6_6_CHIEU_3",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 6,
@@ -8177,11 +7633,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-1",
     "teacherName": "Lê Hồng Thúy",
     "teacherCode": "Thúy.LH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_6_CHIEU_4",
+    "id": "cls-6a1_6_CHIEU_4",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 6,
@@ -8192,11 +7647,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_6_CHIEU_4",
+    "id": "cls-6a2_6_CHIEU_4",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 6,
@@ -8207,11 +7661,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_6_CHIEU_4",
+    "id": "cls-6a3_6_CHIEU_4",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 6,
@@ -8222,11 +7675,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_6_CHIEU_4",
+    "id": "cls-6a4_6_CHIEU_4",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 6,
@@ -8237,11 +7689,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_6_CHIEU_4",
+    "id": "cls-6a5_6_CHIEU_4",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 6,
@@ -8252,11 +7703,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_6_CHIEU_4",
+    "id": "cls-6a6_6_CHIEU_4",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 6,
@@ -8267,11 +7717,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-6",
     "teacherName": "Trần Phước Hòa",
     "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_6_CHIEU_5",
+    "id": "cls-6a1_6_CHIEU_5",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 6,
@@ -8282,11 +7731,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_6_CHIEU_5",
+    "id": "cls-6a2_6_CHIEU_5",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 6,
@@ -8297,11 +7745,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_6_CHIEU_5",
+    "id": "cls-6a3_6_CHIEU_5",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 6,
@@ -8312,11 +7759,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_6_CHIEU_5",
+    "id": "cls-6a4_6_CHIEU_5",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 6,
@@ -8327,11 +7773,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_6_CHIEU_5",
+    "id": "cls-6a5_6_CHIEU_5",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 6,
@@ -8342,11 +7787,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-6",
     "teacherName": "Trần Phước Hòa",
     "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_6_CHIEU_5",
+    "id": "cls-6a6_6_CHIEU_5",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 6,
@@ -8357,11 +7801,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_7_CHIEU_1",
+    "id": "cls-6a1_7_CHIEU_1",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 7,
@@ -8372,11 +7815,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_7_CHIEU_1",
+    "id": "cls-6a2_7_CHIEU_1",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 7,
@@ -8387,11 +7829,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_7_CHIEU_1",
+    "id": "cls-6a3_7_CHIEU_1",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 7,
@@ -8402,11 +7843,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_7_CHIEU_1",
+    "id": "cls-6a4_7_CHIEU_1",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 7,
@@ -8417,11 +7857,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_7_CHIEU_1",
+    "id": "cls-6a5_7_CHIEU_1",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 7,
@@ -8432,11 +7871,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_7_CHIEU_1",
+    "id": "cls-6a6_7_CHIEU_1",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 7,
@@ -8447,11 +7885,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_7_CHIEU_2",
+    "id": "cls-6a1_7_CHIEU_2",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 7,
@@ -8462,11 +7899,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_7_CHIEU_2",
+    "id": "cls-6a2_7_CHIEU_2",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 7,
@@ -8477,11 +7913,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_7_CHIEU_2",
+    "id": "cls-6a3_7_CHIEU_2",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 7,
@@ -8492,11 +7927,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_7_CHIEU_2",
+    "id": "cls-6a4_7_CHIEU_2",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 7,
@@ -8507,11 +7941,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_7_CHIEU_2",
+    "id": "cls-6a5_7_CHIEU_2",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 7,
@@ -8522,11 +7955,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_7_CHIEU_2",
+    "id": "cls-6a6_7_CHIEU_2",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 7,
@@ -8537,11 +7969,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_7_CHIEU_3",
+    "id": "cls-6a1_7_CHIEU_3",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 7,
@@ -8552,11 +7983,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_7_CHIEU_3",
+    "id": "cls-6a2_7_CHIEU_3",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 7,
@@ -8567,11 +7997,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_7_CHIEU_3",
+    "id": "cls-6a3_7_CHIEU_3",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 7,
@@ -8582,11 +8011,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_7_CHIEU_3",
+    "id": "cls-6a4_7_CHIEU_3",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 7,
@@ -8597,11 +8025,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_7_CHIEU_3",
+    "id": "cls-6a5_7_CHIEU_3",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 7,
@@ -8612,11 +8039,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_7_CHIEU_3",
+    "id": "cls-6a6_7_CHIEU_3",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 7,
@@ -8627,11 +8053,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_7_CHIEU_4",
+    "id": "cls-6a1_7_CHIEU_4",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 7,
@@ -8642,11 +8067,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-18",
     "teacherName": "Hồ Thị Ngọc Tài",
     "teacherCode": "Tài.HTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_7_CHIEU_4",
+    "id": "cls-6a2_7_CHIEU_4",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 7,
@@ -8657,11 +8081,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_7_CHIEU_4",
+    "id": "cls-6a3_7_CHIEU_4",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 7,
@@ -8672,11 +8095,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_7_CHIEU_4",
+    "id": "cls-6a4_7_CHIEU_4",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 7,
@@ -8687,11 +8109,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_7_CHIEU_4",
+    "id": "cls-6a5_7_CHIEU_4",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 7,
@@ -8702,11 +8123,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_7_CHIEU_4",
+    "id": "cls-6a6_7_CHIEU_4",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 7,
@@ -8717,11 +8137,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_7_CHIEU_5",
+    "id": "cls-6a1_7_CHIEU_5",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 7,
@@ -8732,11 +8151,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-18",
     "teacherName": "Hồ Thị Ngọc Tài",
     "teacherCode": "Tài.HTN",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_7_CHIEU_5",
+    "id": "cls-6a2_7_CHIEU_5",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 7,
@@ -8747,11 +8165,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_7_CHIEU_5",
+    "id": "cls-6a3_7_CHIEU_5",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 7,
@@ -8762,11 +8179,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_7_CHIEU_5",
+    "id": "cls-6a4_7_CHIEU_5",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 7,
@@ -8777,11 +8193,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_7_CHIEU_5",
+    "id": "cls-6a5_7_CHIEU_5",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 7,
@@ -8792,11 +8207,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_7_CHIEU_5",
+    "id": "cls-6a6_7_CHIEU_5",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 7,
@@ -8807,11 +8221,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_2_CHIEU_1",
+    "id": "cls-7a1_2_CHIEU_1",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 2,
@@ -8822,11 +8235,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-1",
     "teacherName": "Lê Hồng Thúy",
     "teacherCode": "Thúy.LH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_2_CHIEU_1",
+    "id": "cls-7a2_2_CHIEU_1",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 2,
@@ -8837,11 +8249,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-11",
     "teacherName": "Nguyễn Thị Kim Đỉnh",
     "teacherCode": "Đỉnh.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_2_CHIEU_1",
+    "id": "cls-7a3_2_CHIEU_1",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 2,
@@ -8852,11 +8263,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_2_CHIEU_1",
+    "id": "cls-7a4_2_CHIEU_1",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 2,
@@ -8867,11 +8277,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_2_CHIEU_1",
+    "id": "cls-7a5_2_CHIEU_1",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 2,
@@ -8882,11 +8291,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_2_CHIEU_1",
+    "id": "cls-7a6_2_CHIEU_1",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 2,
@@ -8897,11 +8305,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-12",
     "teacherName": "Võ Hoàng Toàn",
     "teacherCode": "Toàn.VH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_2_CHIEU_2",
+    "id": "cls-7a1_2_CHIEU_2",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 2,
@@ -8912,11 +8319,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-11",
     "teacherName": "Nguyễn Thị Kim Đỉnh",
     "teacherCode": "Đỉnh.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_2_CHIEU_2",
+    "id": "cls-7a2_2_CHIEU_2",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 2,
@@ -8927,11 +8333,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-1",
     "teacherName": "Nguyễn Văn Tới",
     "teacherCode": "Tới.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_2_CHIEU_2",
+    "id": "cls-7a3_2_CHIEU_2",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 2,
@@ -8942,11 +8347,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_2_CHIEU_2",
+    "id": "cls-7a4_2_CHIEU_2",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 2,
@@ -8957,11 +8361,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_2_CHIEU_2",
+    "id": "cls-7a5_2_CHIEU_2",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 2,
@@ -8972,11 +8375,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-5",
     "teacherName": "Lê Cao Toàn",
     "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_2_CHIEU_2",
+    "id": "cls-7a6_2_CHIEU_2",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 2,
@@ -8987,11 +8389,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-12",
     "teacherName": "Võ Hoàng Toàn",
     "teacherCode": "Toàn.VH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_2_CHIEU_3",
+    "id": "cls-7a1_2_CHIEU_3",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 2,
@@ -9002,11 +8403,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_2_CHIEU_3",
+    "id": "cls-7a2_2_CHIEU_3",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 2,
@@ -9017,11 +8417,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-1",
     "teacherName": "Nguyễn Văn Tới",
     "teacherCode": "Tới.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_2_CHIEU_3",
+    "id": "cls-7a3_2_CHIEU_3",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 2,
@@ -9032,11 +8431,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_2_CHIEU_3",
+    "id": "cls-7a4_2_CHIEU_3",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 2,
@@ -9047,11 +8445,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_2_CHIEU_3",
+    "id": "cls-7a5_2_CHIEU_3",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 2,
@@ -9062,11 +8459,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-5",
     "teacherName": "Lê Cao Toàn",
     "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_2_CHIEU_3",
+    "id": "cls-7a6_2_CHIEU_3",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 2,
@@ -9077,11 +8473,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_2_CHIEU_4",
+    "id": "cls-7a1_2_CHIEU_4",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 2,
@@ -9092,11 +8487,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_2_CHIEU_4",
+    "id": "cls-7a2_2_CHIEU_4",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 2,
@@ -9107,11 +8501,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_2_CHIEU_4",
+    "id": "cls-7a3_2_CHIEU_4",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 2,
@@ -9122,11 +8515,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_2_CHIEU_4",
+    "id": "cls-7a4_2_CHIEU_4",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 2,
@@ -9137,11 +8529,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_2_CHIEU_4",
+    "id": "cls-7a5_2_CHIEU_4",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 2,
@@ -9152,11 +8543,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_2_CHIEU_4",
+    "id": "cls-7a6_2_CHIEU_4",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 2,
@@ -9167,11 +8557,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_2_CHIEU_5",
+    "id": "cls-7a1_2_CHIEU_5",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 2,
@@ -9182,11 +8571,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_2_CHIEU_5",
+    "id": "cls-7a2_2_CHIEU_5",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 2,
@@ -9197,11 +8585,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_2_CHIEU_5",
+    "id": "cls-7a3_2_CHIEU_5",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 2,
@@ -9212,11 +8599,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_2_CHIEU_5",
+    "id": "cls-7a4_2_CHIEU_5",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 2,
@@ -9227,11 +8613,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-6",
     "teacherName": "Lê Ngọc Ẩn",
     "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_2_CHIEU_5",
+    "id": "cls-7a5_2_CHIEU_5",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 2,
@@ -9242,11 +8627,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_2_CHIEU_5",
+    "id": "cls-7a6_2_CHIEU_5",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 2,
@@ -9257,11 +8641,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_3_CHIEU_1",
+    "id": "cls-7a1_3_CHIEU_1",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 3,
@@ -9272,11 +8655,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_3_CHIEU_1",
+    "id": "cls-7a2_3_CHIEU_1",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 3,
@@ -9287,11 +8669,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_3_CHIEU_1",
+    "id": "cls-7a3_3_CHIEU_1",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 3,
@@ -9302,11 +8683,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_3_CHIEU_1",
+    "id": "cls-7a4_3_CHIEU_1",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 3,
@@ -9317,11 +8697,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_3_CHIEU_1",
+    "id": "cls-7a5_3_CHIEU_1",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 3,
@@ -9332,11 +8711,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_3_CHIEU_1",
+    "id": "cls-7a6_3_CHIEU_1",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 3,
@@ -9347,11 +8725,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_3_CHIEU_2",
+    "id": "cls-7a1_3_CHIEU_2",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 3,
@@ -9362,11 +8739,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_3_CHIEU_2",
+    "id": "cls-7a2_3_CHIEU_2",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 3,
@@ -9377,11 +8753,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-1",
     "teacherName": "Lê Hồng Thúy",
     "teacherCode": "Thúy.LH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_3_CHIEU_2",
+    "id": "cls-7a3_3_CHIEU_2",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 3,
@@ -9392,11 +8767,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_3_CHIEU_2",
+    "id": "cls-7a4_3_CHIEU_2",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 3,
@@ -9407,11 +8781,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_3_CHIEU_2",
+    "id": "cls-7a5_3_CHIEU_2",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 3,
@@ -9422,11 +8795,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_3_CHIEU_2",
+    "id": "cls-7a6_3_CHIEU_2",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 3,
@@ -9437,11 +8809,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_3_CHIEU_3",
+    "id": "cls-7a1_3_CHIEU_3",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 3,
@@ -9452,11 +8823,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_3_CHIEU_3",
+    "id": "cls-7a2_3_CHIEU_3",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 3,
@@ -9467,11 +8837,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_3_CHIEU_3",
+    "id": "cls-7a3_3_CHIEU_3",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 3,
@@ -9482,11 +8851,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-1",
     "teacherName": "Lê Hồng Thúy",
     "teacherCode": "Thúy.LH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_3_CHIEU_3",
+    "id": "cls-7a4_3_CHIEU_3",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 3,
@@ -9497,11 +8865,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_3_CHIEU_3",
+    "id": "cls-7a5_3_CHIEU_3",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 3,
@@ -9512,11 +8879,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_3_CHIEU_3",
+    "id": "cls-7a6_3_CHIEU_3",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 3,
@@ -9527,11 +8893,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_3_CHIEU_4",
+    "id": "cls-7a1_3_CHIEU_4",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 3,
@@ -9542,11 +8907,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_3_CHIEU_4",
+    "id": "cls-7a2_3_CHIEU_4",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 3,
@@ -9557,11 +8921,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_3_CHIEU_4",
+    "id": "cls-7a3_3_CHIEU_4",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 3,
@@ -9572,11 +8935,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_3_CHIEU_4",
+    "id": "cls-7a4_3_CHIEU_4",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 3,
@@ -9587,11 +8949,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_3_CHIEU_4",
+    "id": "cls-7a5_3_CHIEU_4",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 3,
@@ -9602,11 +8963,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-1",
     "teacherName": "Lê Văn Nguyên",
     "teacherCode": "Nguyên.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_3_CHIEU_4",
+    "id": "cls-7a6_3_CHIEU_4",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 3,
@@ -9617,11 +8977,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-4",
     "teacherName": "Trần Văn Giang",
     "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_3_CHIEU_5",
+    "id": "cls-7a1_3_CHIEU_5",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 3,
@@ -9632,11 +8991,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_3_CHIEU_5",
+    "id": "cls-7a2_3_CHIEU_5",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 3,
@@ -9647,11 +9005,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_3_CHIEU_5",
+    "id": "cls-7a3_3_CHIEU_5",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 3,
@@ -9662,11 +9019,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_3_CHIEU_5",
+    "id": "cls-7a4_3_CHIEU_5",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 3,
@@ -9677,11 +9033,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_3_CHIEU_5",
+    "id": "cls-7a5_3_CHIEU_5",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 3,
@@ -9692,11 +9047,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-1",
     "teacherName": "Lê Văn Nguyên",
     "teacherCode": "Nguyên.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_3_CHIEU_5",
+    "id": "cls-7a6_3_CHIEU_5",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 3,
@@ -9707,11 +9061,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-4",
     "teacherName": "Trần Văn Giang",
     "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_4_CHIEU_1",
+    "id": "cls-7a1_4_CHIEU_1",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 4,
@@ -9722,11 +9075,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_4_CHIEU_1",
+    "id": "cls-7a2_4_CHIEU_1",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 4,
@@ -9737,11 +9089,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_4_CHIEU_1",
+    "id": "cls-7a3_4_CHIEU_1",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 4,
@@ -9752,11 +9103,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_4_CHIEU_1",
+    "id": "cls-7a4_4_CHIEU_1",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 4,
@@ -9767,11 +9117,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-1",
     "teacherName": "Lê Hồng Thúy",
     "teacherCode": "Thúy.LH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_4_CHIEU_1",
+    "id": "cls-7a5_4_CHIEU_1",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 4,
@@ -9782,11 +9131,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_4_CHIEU_1",
+    "id": "cls-7a6_4_CHIEU_1",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 4,
@@ -9797,11 +9145,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_4_CHIEU_2",
+    "id": "cls-7a1_4_CHIEU_2",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 4,
@@ -9812,11 +9159,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_4_CHIEU_2",
+    "id": "cls-7a2_4_CHIEU_2",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 4,
@@ -9827,11 +9173,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_4_CHIEU_2",
+    "id": "cls-7a3_4_CHIEU_2",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 4,
@@ -9842,11 +9187,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_4_CHIEU_2",
+    "id": "cls-7a4_4_CHIEU_2",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 4,
@@ -9857,11 +9201,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_4_CHIEU_2",
+    "id": "cls-7a5_4_CHIEU_2",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 4,
@@ -9872,11 +9215,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_4_CHIEU_2",
+    "id": "cls-7a6_4_CHIEU_2",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 4,
@@ -9887,11 +9229,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_4_CHIEU_3",
+    "id": "cls-7a1_4_CHIEU_3",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 4,
@@ -9902,11 +9243,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_4_CHIEU_3",
+    "id": "cls-7a2_4_CHIEU_3",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 4,
@@ -9917,11 +9257,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_4_CHIEU_3",
+    "id": "cls-7a3_4_CHIEU_3",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 4,
@@ -9932,11 +9271,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_4_CHIEU_3",
+    "id": "cls-7a4_4_CHIEU_3",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 4,
@@ -9947,11 +9285,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_4_CHIEU_3",
+    "id": "cls-7a5_4_CHIEU_3",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 4,
@@ -9962,11 +9299,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_4_CHIEU_3",
+    "id": "cls-7a6_4_CHIEU_3",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 4,
@@ -9977,11 +9313,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_4_CHIEU_4",
+    "id": "cls-7a1_4_CHIEU_4",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 4,
@@ -9992,11 +9327,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-1",
     "teacherName": "Lê Văn Nguyên",
     "teacherCode": "Nguyên.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_4_CHIEU_4",
+    "id": "cls-7a2_4_CHIEU_4",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 4,
@@ -10007,11 +9341,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_4_CHIEU_4",
+    "id": "cls-7a3_4_CHIEU_4",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 4,
@@ -10022,11 +9355,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_4_CHIEU_4",
+    "id": "cls-7a4_4_CHIEU_4",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 4,
@@ -10037,11 +9369,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_4_CHIEU_4",
+    "id": "cls-7a5_4_CHIEU_4",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 4,
@@ -10052,11 +9383,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-5",
     "teacherName": "Lê Cao Toàn",
     "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_4_CHIEU_4",
+    "id": "cls-7a6_4_CHIEU_4",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 4,
@@ -10067,11 +9397,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_4_CHIEU_5",
+    "id": "cls-7a1_4_CHIEU_5",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 4,
@@ -10082,11 +9411,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-1",
     "teacherName": "Lê Văn Nguyên",
     "teacherCode": "Nguyên.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_4_CHIEU_5",
+    "id": "cls-7a2_4_CHIEU_5",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 4,
@@ -10097,11 +9425,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_4_CHIEU_5",
+    "id": "cls-7a3_4_CHIEU_5",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 4,
@@ -10112,11 +9439,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_4_CHIEU_5",
+    "id": "cls-7a4_4_CHIEU_5",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 4,
@@ -10127,11 +9453,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_4_CHIEU_5",
+    "id": "cls-7a5_4_CHIEU_5",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 4,
@@ -10142,11 +9467,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-5",
     "teacherName": "Lê Cao Toàn",
     "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_4_CHIEU_5",
+    "id": "cls-7a6_4_CHIEU_5",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 4,
@@ -10157,11 +9481,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_5_CHIEU_1",
+    "id": "cls-7a1_5_CHIEU_1",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 5,
@@ -10172,11 +9495,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_5_CHIEU_1",
+    "id": "cls-7a2_5_CHIEU_1",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 5,
@@ -10187,11 +9509,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_5_CHIEU_1",
+    "id": "cls-7a3_5_CHIEU_1",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 5,
@@ -10202,11 +9523,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-11",
     "teacherName": "Nguyễn Thị Kim Đỉnh",
     "teacherCode": "Đỉnh.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_5_CHIEU_1",
+    "id": "cls-7a4_5_CHIEU_1",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 5,
@@ -10217,11 +9537,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_5_CHIEU_1",
+    "id": "cls-7a5_5_CHIEU_1",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 5,
@@ -10232,11 +9551,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_5_CHIEU_1",
+    "id": "cls-7a6_5_CHIEU_1",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 5,
@@ -10247,11 +9565,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_5_CHIEU_2",
+    "id": "cls-7a1_5_CHIEU_2",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 5,
@@ -10262,11 +9579,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_5_CHIEU_2",
+    "id": "cls-7a2_5_CHIEU_2",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 5,
@@ -10277,11 +9593,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_5_CHIEU_2",
+    "id": "cls-7a3_5_CHIEU_2",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 5,
@@ -10292,11 +9607,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_5_CHIEU_2",
+    "id": "cls-7a4_5_CHIEU_2",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 5,
@@ -10307,11 +9621,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-11",
     "teacherName": "Nguyễn Thị Kim Đỉnh",
     "teacherCode": "Đỉnh.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_5_CHIEU_2",
+    "id": "cls-7a5_5_CHIEU_2",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 5,
@@ -10322,11 +9635,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_5_CHIEU_2",
+    "id": "cls-7a6_5_CHIEU_2",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 5,
@@ -10337,11 +9649,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_6_CHIEU_1",
+    "id": "cls-7a1_6_CHIEU_1",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 6,
@@ -10352,11 +9663,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_6_CHIEU_1",
+    "id": "cls-7a2_6_CHIEU_1",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 6,
@@ -10367,11 +9677,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_6_CHIEU_1",
+    "id": "cls-7a3_6_CHIEU_1",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 6,
@@ -10382,11 +9691,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-10",
     "teacherName": "Hứa Thùy Dương",
     "teacherCode": "Dương.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_6_CHIEU_1",
+    "id": "cls-7a4_6_CHIEU_1",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 6,
@@ -10397,11 +9705,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_6_CHIEU_1",
+    "id": "cls-7a5_6_CHIEU_1",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 6,
@@ -10412,11 +9719,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_6_CHIEU_1",
+    "id": "cls-7a6_6_CHIEU_1",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 6,
@@ -10427,11 +9733,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-12",
     "teacherName": "Võ Hoàng Toàn",
     "teacherCode": "Toàn.VH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_6_CHIEU_2",
+    "id": "cls-7a1_6_CHIEU_2",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 6,
@@ -10442,11 +9747,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_6_CHIEU_2",
+    "id": "cls-7a2_6_CHIEU_2",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 6,
@@ -10457,11 +9761,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-1",
     "teacherName": "Lê Văn Nguyên",
     "teacherCode": "Nguyên.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_6_CHIEU_2",
+    "id": "cls-7a3_6_CHIEU_2",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 6,
@@ -10472,11 +9775,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_6_CHIEU_2",
+    "id": "cls-7a4_6_CHIEU_2",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 6,
@@ -10487,11 +9789,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_6_CHIEU_2",
+    "id": "cls-7a5_6_CHIEU_2",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 6,
@@ -10502,11 +9803,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_6_CHIEU_2",
+    "id": "cls-7a6_6_CHIEU_2",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 6,
@@ -10517,11 +9817,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-12",
     "teacherName": "Võ Hoàng Toàn",
     "teacherCode": "Toàn.VH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_6_CHIEU_3",
+    "id": "cls-7a1_6_CHIEU_3",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 6,
@@ -10532,11 +9831,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_6_CHIEU_3",
+    "id": "cls-7a2_6_CHIEU_3",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 6,
@@ -10547,11 +9845,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-1",
     "teacherName": "Lê Văn Nguyên",
     "teacherCode": "Nguyên.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_6_CHIEU_3",
+    "id": "cls-7a3_6_CHIEU_3",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 6,
@@ -10562,11 +9859,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_6_CHIEU_3",
+    "id": "cls-7a4_6_CHIEU_3",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 6,
@@ -10577,11 +9873,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_6_CHIEU_3",
+    "id": "cls-7a5_6_CHIEU_3",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 6,
@@ -10592,11 +9887,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_6_CHIEU_3",
+    "id": "cls-7a6_6_CHIEU_3",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 6,
@@ -10607,11 +9901,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-7",
     "teacherName": "Ngô Anh Tuấn",
     "teacherCode": "Tuấn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_6_CHIEU_4",
+    "id": "cls-7a1_6_CHIEU_4",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 6,
@@ -10622,11 +9915,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_6_CHIEU_4",
+    "id": "cls-7a2_6_CHIEU_4",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 6,
@@ -10637,11 +9929,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-1",
     "teacherName": "Nguyễn Văn Tới",
     "teacherCode": "Tới.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_6_CHIEU_4",
+    "id": "cls-7a3_6_CHIEU_4",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 6,
@@ -10652,11 +9943,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-1",
     "teacherName": "Lê Văn Nguyên",
     "teacherCode": "Nguyên.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_6_CHIEU_4",
+    "id": "cls-7a4_6_CHIEU_4",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 6,
@@ -10667,11 +9957,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_6_CHIEU_4",
+    "id": "cls-7a5_6_CHIEU_4",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 6,
@@ -10682,11 +9971,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_6_CHIEU_4",
+    "id": "cls-7a6_6_CHIEU_4",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 6,
@@ -10697,11 +9985,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-4",
     "teacherName": "Trần Văn Giang",
     "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_6_CHIEU_5",
+    "id": "cls-7a1_6_CHIEU_5",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 6,
@@ -10712,11 +9999,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_6_CHIEU_5",
+    "id": "cls-7a2_6_CHIEU_5",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 6,
@@ -10727,11 +10013,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-1",
     "teacherName": "Nguyễn Văn Tới",
     "teacherCode": "Tới.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_6_CHIEU_5",
+    "id": "cls-7a3_6_CHIEU_5",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 6,
@@ -10742,11 +10027,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-1",
     "teacherName": "Lê Văn Nguyên",
     "teacherCode": "Nguyên.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_6_CHIEU_5",
+    "id": "cls-7a4_6_CHIEU_5",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 6,
@@ -10757,11 +10041,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_6_CHIEU_5",
+    "id": "cls-7a5_6_CHIEU_5",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 6,
@@ -10772,11 +10055,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-7",
     "teacherName": "Ngô Anh Tuấn",
     "teacherCode": "Tuấn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_6_CHIEU_5",
+    "id": "cls-7a6_6_CHIEU_5",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 6,
@@ -10787,11 +10069,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-4",
     "teacherName": "Trần Văn Giang",
     "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_7_CHIEU_1",
+    "id": "cls-7a1_7_CHIEU_1",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 7,
@@ -10802,11 +10083,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_7_CHIEU_1",
+    "id": "cls-7a2_7_CHIEU_1",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 7,
@@ -10817,11 +10097,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_7_CHIEU_1",
+    "id": "cls-7a3_7_CHIEU_1",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 7,
@@ -10832,11 +10111,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_7_CHIEU_1",
+    "id": "cls-7a4_7_CHIEU_1",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 7,
@@ -10847,11 +10125,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_7_CHIEU_1",
+    "id": "cls-7a5_7_CHIEU_1",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 7,
@@ -10862,11 +10139,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_7_CHIEU_1",
+    "id": "cls-7a6_7_CHIEU_1",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 7,
@@ -10877,11 +10153,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_7_CHIEU_2",
+    "id": "cls-7a1_7_CHIEU_2",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 7,
@@ -10892,11 +10167,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_7_CHIEU_2",
+    "id": "cls-7a2_7_CHIEU_2",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 7,
@@ -10907,11 +10181,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_7_CHIEU_2",
+    "id": "cls-7a3_7_CHIEU_2",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 7,
@@ -10922,11 +10195,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_7_CHIEU_2",
+    "id": "cls-7a4_7_CHIEU_2",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 7,
@@ -10937,11 +10209,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-6",
     "teacherName": "Lê Ngọc Ẩn",
     "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_7_CHIEU_2",
+    "id": "cls-7a5_7_CHIEU_2",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 7,
@@ -10952,11 +10223,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_7_CHIEU_2",
+    "id": "cls-7a6_7_CHIEU_2",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 7,
@@ -10967,11 +10237,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_7_CHIEU_3",
+    "id": "cls-7a1_7_CHIEU_3",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 7,
@@ -10982,11 +10251,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_7_CHIEU_3",
+    "id": "cls-7a2_7_CHIEU_3",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 7,
@@ -10997,11 +10265,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_7_CHIEU_3",
+    "id": "cls-7a3_7_CHIEU_3",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 7,
@@ -11012,11 +10279,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_7_CHIEU_3",
+    "id": "cls-7a4_7_CHIEU_3",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 7,
@@ -11027,11 +10293,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-6",
     "teacherName": "Lê Ngọc Ẩn",
     "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_7_CHIEU_3",
+    "id": "cls-7a5_7_CHIEU_3",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 7,
@@ -11042,11 +10307,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_7_CHIEU_3",
+    "id": "cls-7a6_7_CHIEU_3",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 7,
@@ -11057,11 +10321,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_7_CHIEU_4",
+    "id": "cls-7a1_7_CHIEU_4",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 7,
@@ -11072,11 +10335,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_7_CHIEU_4",
+    "id": "cls-7a2_7_CHIEU_4",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 7,
@@ -11087,11 +10349,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_7_CHIEU_4",
+    "id": "cls-7a3_7_CHIEU_4",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 7,
@@ -11102,11 +10363,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_7_CHIEU_4",
+    "id": "cls-7a4_7_CHIEU_4",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 7,
@@ -11117,11 +10377,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_7_CHIEU_4",
+    "id": "cls-7a5_7_CHIEU_4",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 7,
@@ -11132,11 +10391,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_7_CHIEU_4",
+    "id": "cls-7a6_7_CHIEU_4",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 7,
@@ -11147,11 +10405,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_7_CHIEU_5",
+    "id": "cls-7a1_7_CHIEU_5",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 7,
@@ -11162,11 +10419,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_7_CHIEU_5",
+    "id": "cls-7a2_7_CHIEU_5",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 7,
@@ -11177,11 +10433,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_7_CHIEU_5",
+    "id": "cls-7a3_7_CHIEU_5",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 7,
@@ -11192,11 +10447,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_7_CHIEU_5",
+    "id": "cls-7a4_7_CHIEU_5",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 7,
@@ -11207,11 +10461,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-6",
     "teacherName": "Lê Ngọc Ẩn",
     "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_7_CHIEU_5",
+    "id": "cls-7a5_7_CHIEU_5",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 7,
@@ -11222,11 +10475,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_7_CHIEU_5",
+    "id": "cls-7a6_7_CHIEU_5",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 7,
@@ -11237,11 +10489,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_2_SANG_1",
+    "id": "cls-8a1_2_SANG_1",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 2,
@@ -11252,11 +10503,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_2_SANG_1",
+    "id": "cls-8a2_2_SANG_1",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 2,
@@ -11267,11 +10517,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_2_SANG_1",
+    "id": "cls-8a3_2_SANG_1",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 2,
@@ -11282,11 +10531,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_2_SANG_1",
+    "id": "cls-8a4_2_SANG_1",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 2,
@@ -11297,11 +10545,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_2_SANG_1",
+    "id": "cls-8a5_2_SANG_1",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 2,
@@ -11312,11 +10559,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-12",
     "teacherName": "Võ Hoàng Toàn",
     "teacherCode": "Toàn.VH",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_2_SANG_1",
+    "id": "cls-8a6_2_SANG_1",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 2,
@@ -11327,11 +10573,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_2_SANG_2",
+    "id": "cls-8a1_2_SANG_2",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 2,
@@ -11342,11 +10587,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_2_SANG_2",
+    "id": "cls-8a2_2_SANG_2",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 2,
@@ -11357,11 +10601,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-11",
     "teacherName": "Nguyễn Thị Kim Đỉnh",
     "teacherCode": "Đỉnh.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_2_SANG_2",
+    "id": "cls-8a3_2_SANG_2",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 2,
@@ -11372,11 +10615,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_2_SANG_2",
+    "id": "cls-8a4_2_SANG_2",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 2,
@@ -11387,11 +10629,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_2_SANG_2",
+    "id": "cls-8a5_2_SANG_2",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 2,
@@ -11402,11 +10643,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-12",
     "teacherName": "Võ Hoàng Toàn",
     "teacherCode": "Toàn.VH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_2_SANG_2",
+    "id": "cls-8a6_2_SANG_2",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 2,
@@ -11417,11 +10657,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_2_SANG_3",
+    "id": "cls-8a1_2_SANG_3",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 2,
@@ -11432,11 +10671,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_2_SANG_3",
+    "id": "cls-8a2_2_SANG_3",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 2,
@@ -11447,11 +10685,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_2_SANG_3",
+    "id": "cls-8a3_2_SANG_3",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 2,
@@ -11462,11 +10699,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_2_SANG_3",
+    "id": "cls-8a4_2_SANG_3",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 2,
@@ -11477,11 +10713,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-11",
     "teacherName": "Nguyễn Thị Kim Đỉnh",
     "teacherCode": "Đỉnh.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_2_SANG_3",
+    "id": "cls-8a5_2_SANG_3",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 2,
@@ -11492,11 +10727,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_2_SANG_3",
+    "id": "cls-8a6_2_SANG_3",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 2,
@@ -11507,11 +10741,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_2_SANG_4",
+    "id": "cls-8a1_2_SANG_4",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 2,
@@ -11522,11 +10755,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_2_SANG_4",
+    "id": "cls-8a2_2_SANG_4",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 2,
@@ -11537,11 +10769,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_2_SANG_4",
+    "id": "cls-8a3_2_SANG_4",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 2,
@@ -11552,11 +10783,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_2_SANG_4",
+    "id": "cls-8a4_2_SANG_4",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 2,
@@ -11567,11 +10797,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_2_SANG_4",
+    "id": "cls-8a5_2_SANG_4",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 2,
@@ -11582,11 +10811,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_2_SANG_4",
+    "id": "cls-8a6_2_SANG_4",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 2,
@@ -11597,11 +10825,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_2_SANG_5",
+    "id": "cls-8a1_2_SANG_5",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 2,
@@ -11612,11 +10839,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_2_SANG_5",
+    "id": "cls-8a2_2_SANG_5",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 2,
@@ -11627,11 +10853,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_2_SANG_5",
+    "id": "cls-8a3_2_SANG_5",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 2,
@@ -11642,11 +10867,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_2_SANG_5",
+    "id": "cls-8a4_2_SANG_5",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 2,
@@ -11657,11 +10881,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_2_SANG_5",
+    "id": "cls-8a5_2_SANG_5",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 2,
@@ -11672,11 +10895,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_2_SANG_5",
+    "id": "cls-8a6_2_SANG_5",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 2,
@@ -11687,11 +10909,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_3_SANG_1",
+    "id": "cls-8a1_3_SANG_1",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 3,
@@ -11702,11 +10923,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_3_SANG_1",
+    "id": "cls-8a2_3_SANG_1",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 3,
@@ -11717,11 +10937,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-1",
     "teacherName": "Lê Văn Nguyên",
     "teacherCode": "Nguyên.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_3_SANG_1",
+    "id": "cls-8a3_3_SANG_1",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 3,
@@ -11732,11 +10951,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_3_SANG_1",
+    "id": "cls-8a4_3_SANG_1",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 3,
@@ -11747,11 +10965,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_3_SANG_1",
+    "id": "cls-8a5_3_SANG_1",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 3,
@@ -11762,11 +10979,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_3_SANG_1",
+    "id": "cls-8a6_3_SANG_1",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 3,
@@ -11777,11 +10993,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_3_SANG_2",
+    "id": "cls-8a1_3_SANG_2",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 3,
@@ -11792,11 +11007,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_3_SANG_2",
+    "id": "cls-8a2_3_SANG_2",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 3,
@@ -11807,11 +11021,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-1",
     "teacherName": "Lê Văn Nguyên",
     "teacherCode": "Nguyên.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_3_SANG_2",
+    "id": "cls-8a3_3_SANG_2",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 3,
@@ -11822,11 +11035,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_3_SANG_2",
+    "id": "cls-8a4_3_SANG_2",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 3,
@@ -11837,11 +11049,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_3_SANG_2",
+    "id": "cls-8a5_3_SANG_2",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 3,
@@ -11852,11 +11063,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_3_SANG_2",
+    "id": "cls-8a6_3_SANG_2",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 3,
@@ -11867,11 +11077,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_3_SANG_3",
+    "id": "cls-8a1_3_SANG_3",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 3,
@@ -11882,11 +11091,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_3_SANG_3",
+    "id": "cls-8a2_3_SANG_3",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 3,
@@ -11897,11 +11105,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_3_SANG_3",
+    "id": "cls-8a3_3_SANG_3",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 3,
@@ -11912,11 +11119,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_3_SANG_3",
+    "id": "cls-8a4_3_SANG_3",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 3,
@@ -11927,11 +11133,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_3_SANG_3",
+    "id": "cls-8a5_3_SANG_3",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 3,
@@ -11942,11 +11147,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_3_SANG_3",
+    "id": "cls-8a6_3_SANG_3",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 3,
@@ -11957,11 +11161,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_3_SANG_4",
+    "id": "cls-8a1_3_SANG_4",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 3,
@@ -11972,11 +11175,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_3_SANG_4",
+    "id": "cls-8a2_3_SANG_4",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 3,
@@ -11987,11 +11189,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_3_SANG_4",
+    "id": "cls-8a3_3_SANG_4",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 3,
@@ -12002,11 +11203,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_3_SANG_4",
+    "id": "cls-8a4_3_SANG_4",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 3,
@@ -12017,11 +11217,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_3_SANG_4",
+    "id": "cls-8a5_3_SANG_4",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 3,
@@ -12032,11 +11231,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_3_SANG_4",
+    "id": "cls-8a6_3_SANG_4",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 3,
@@ -12047,11 +11245,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_3_SANG_5",
+    "id": "cls-8a1_3_SANG_5",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 3,
@@ -12062,11 +11259,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_3_SANG_5",
+    "id": "cls-8a2_3_SANG_5",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 3,
@@ -12077,11 +11273,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_3_SANG_5",
+    "id": "cls-8a3_3_SANG_5",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 3,
@@ -12092,11 +11287,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_3_SANG_5",
+    "id": "cls-8a4_3_SANG_5",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 3,
@@ -12107,11 +11301,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_3_SANG_5",
+    "id": "cls-8a5_3_SANG_5",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 3,
@@ -12122,11 +11315,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_3_SANG_5",
+    "id": "cls-8a6_3_SANG_5",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 3,
@@ -12137,11 +11329,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_4_SANG_1",
+    "id": "cls-8a1_4_SANG_1",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 4,
@@ -12152,11 +11343,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_4_SANG_1",
+    "id": "cls-8a2_4_SANG_1",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 4,
@@ -12167,11 +11357,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_4_SANG_1",
+    "id": "cls-8a3_4_SANG_1",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 4,
@@ -12182,11 +11371,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_4_SANG_1",
+    "id": "cls-8a4_4_SANG_1",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 4,
@@ -12197,11 +11385,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_4_SANG_1",
+    "id": "cls-8a5_4_SANG_1",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 4,
@@ -12212,11 +11399,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_4_SANG_1",
+    "id": "cls-8a6_4_SANG_1",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 4,
@@ -12227,11 +11413,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_4_SANG_2",
+    "id": "cls-8a1_4_SANG_2",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 4,
@@ -12242,11 +11427,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_4_SANG_2",
+    "id": "cls-8a2_4_SANG_2",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 4,
@@ -12257,11 +11441,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_4_SANG_2",
+    "id": "cls-8a3_4_SANG_2",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 4,
@@ -12272,11 +11455,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-18",
     "teacherName": "Hồ Thị Ngọc Tài",
     "teacherCode": "Tài.HTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_4_SANG_2",
+    "id": "cls-8a4_4_SANG_2",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 4,
@@ -12287,11 +11469,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_4_SANG_2",
+    "id": "cls-8a5_4_SANG_2",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 4,
@@ -12302,11 +11483,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_4_SANG_2",
+    "id": "cls-8a6_4_SANG_2",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 4,
@@ -12317,11 +11497,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_4_SANG_3",
+    "id": "cls-8a1_4_SANG_3",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 4,
@@ -12332,11 +11511,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-1",
     "teacherName": "Lê Văn Nguyên",
     "teacherCode": "Nguyên.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_4_SANG_3",
+    "id": "cls-8a2_4_SANG_3",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 4,
@@ -12347,11 +11525,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_4_SANG_3",
+    "id": "cls-8a3_4_SANG_3",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 4,
@@ -12362,11 +11539,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_4_SANG_3",
+    "id": "cls-8a4_4_SANG_3",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 4,
@@ -12377,11 +11553,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_4_SANG_3",
+    "id": "cls-8a5_4_SANG_3",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 4,
@@ -12392,11 +11567,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_4_SANG_3",
+    "id": "cls-8a6_4_SANG_3",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 4,
@@ -12407,11 +11581,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_4_SANG_4",
+    "id": "cls-8a1_4_SANG_4",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 4,
@@ -12422,11 +11595,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-1",
     "teacherName": "Lê Văn Nguyên",
     "teacherCode": "Nguyên.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_4_SANG_4",
+    "id": "cls-8a2_4_SANG_4",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 4,
@@ -12437,11 +11609,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_4_SANG_4",
+    "id": "cls-8a3_4_SANG_4",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 4,
@@ -12452,11 +11623,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_4_SANG_4",
+    "id": "cls-8a4_4_SANG_4",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 4,
@@ -12467,11 +11637,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_4_SANG_4",
+    "id": "cls-8a5_4_SANG_4",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 4,
@@ -12482,11 +11651,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_4_SANG_4",
+    "id": "cls-8a6_4_SANG_4",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 4,
@@ -12497,11 +11665,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_4_SANG_5",
+    "id": "cls-8a1_4_SANG_5",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 4,
@@ -12512,11 +11679,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_4_SANG_5",
+    "id": "cls-8a2_4_SANG_5",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 4,
@@ -12527,11 +11693,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_4_SANG_5",
+    "id": "cls-8a3_4_SANG_5",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 4,
@@ -12542,11 +11707,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_4_SANG_5",
+    "id": "cls-8a4_4_SANG_5",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 4,
@@ -12557,11 +11721,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_4_SANG_5",
+    "id": "cls-8a5_4_SANG_5",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 4,
@@ -12572,11 +11735,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_4_SANG_5",
+    "id": "cls-8a6_4_SANG_5",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 4,
@@ -12587,11 +11749,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_5_SANG_1",
+    "id": "cls-8a1_5_SANG_1",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 5,
@@ -12602,11 +11763,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_5_SANG_1",
+    "id": "cls-8a2_5_SANG_1",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 5,
@@ -12617,11 +11777,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_5_SANG_1",
+    "id": "cls-8a3_5_SANG_1",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 5,
@@ -12632,11 +11791,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_5_SANG_1",
+    "id": "cls-8a4_5_SANG_1",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 5,
@@ -12647,11 +11805,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_5_SANG_1",
+    "id": "cls-8a5_5_SANG_1",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 5,
@@ -12662,11 +11819,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_5_SANG_1",
+    "id": "cls-8a6_5_SANG_1",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 5,
@@ -12677,11 +11833,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_5_SANG_2",
+    "id": "cls-8a1_5_SANG_2",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 5,
@@ -12692,11 +11847,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_5_SANG_2",
+    "id": "cls-8a2_5_SANG_2",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 5,
@@ -12707,11 +11861,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_5_SANG_2",
+    "id": "cls-8a3_5_SANG_2",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 5,
@@ -12722,11 +11875,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_5_SANG_2",
+    "id": "cls-8a4_5_SANG_2",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 5,
@@ -12737,11 +11889,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_5_SANG_2",
+    "id": "cls-8a5_5_SANG_2",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 5,
@@ -12752,11 +11903,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-11",
     "teacherName": "Nguyễn Thị Kim Đỉnh",
     "teacherCode": "Đỉnh.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_5_SANG_2",
+    "id": "cls-8a6_5_SANG_2",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 5,
@@ -12767,11 +11917,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_5_SANG_3",
+    "id": "cls-8a1_5_SANG_3",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 5,
@@ -12782,11 +11931,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_5_SANG_3",
+    "id": "cls-8a2_5_SANG_3",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 5,
@@ -12797,11 +11945,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_5_SANG_3",
+    "id": "cls-8a3_5_SANG_3",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 5,
@@ -12812,11 +11959,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_5_SANG_3",
+    "id": "cls-8a4_5_SANG_3",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 5,
@@ -12827,11 +11973,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_5_SANG_3",
+    "id": "cls-8a5_5_SANG_3",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 5,
@@ -12842,11 +11987,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_5_SANG_3",
+    "id": "cls-8a6_5_SANG_3",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 5,
@@ -12857,11 +12001,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_5_SANG_4",
+    "id": "cls-8a1_5_SANG_4",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 5,
@@ -12872,11 +12015,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_5_SANG_4",
+    "id": "cls-8a2_5_SANG_4",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 5,
@@ -12887,11 +12029,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_5_SANG_4",
+    "id": "cls-8a3_5_SANG_4",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 5,
@@ -12902,11 +12043,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_5_SANG_4",
+    "id": "cls-8a4_5_SANG_4",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 5,
@@ -12917,11 +12057,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-10",
     "teacherName": "Trần Thanh Hậu",
     "teacherCode": "Hậu.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_5_SANG_4",
+    "id": "cls-8a5_5_SANG_4",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 5,
@@ -12932,11 +12071,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_5_SANG_4",
+    "id": "cls-8a6_5_SANG_4",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 5,
@@ -12947,11 +12085,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_5_SANG_5",
+    "id": "cls-8a1_5_SANG_5",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 5,
@@ -12962,11 +12099,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_5_SANG_5",
+    "id": "cls-8a2_5_SANG_5",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 5,
@@ -12977,11 +12113,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_5_SANG_5",
+    "id": "cls-8a3_5_SANG_5",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 5,
@@ -12992,11 +12127,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_5_SANG_5",
+    "id": "cls-8a4_5_SANG_5",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 5,
@@ -13007,11 +12141,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_5_SANG_5",
+    "id": "cls-8a5_5_SANG_5",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 5,
@@ -13022,11 +12155,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_5_SANG_5",
+    "id": "cls-8a6_5_SANG_5",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 5,
@@ -13037,11 +12169,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_6_SANG_1",
+    "id": "cls-8a1_6_SANG_1",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 6,
@@ -13052,11 +12183,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_6_SANG_1",
+    "id": "cls-8a2_6_SANG_1",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 6,
@@ -13067,11 +12197,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_6_SANG_1",
+    "id": "cls-8a3_6_SANG_1",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 6,
@@ -13082,11 +12211,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_6_SANG_1",
+    "id": "cls-8a4_6_SANG_1",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 6,
@@ -13097,11 +12225,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_6_SANG_1",
+    "id": "cls-8a5_6_SANG_1",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 6,
@@ -13112,11 +12239,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_6_SANG_1",
+    "id": "cls-8a6_6_SANG_1",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 6,
@@ -13127,11 +12253,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-12",
     "teacherName": "Võ Hoàng Toàn",
     "teacherCode": "Toàn.VH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_6_SANG_2",
+    "id": "cls-8a1_6_SANG_2",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 6,
@@ -13142,11 +12267,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_6_SANG_2",
+    "id": "cls-8a2_6_SANG_2",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 6,
@@ -13157,11 +12281,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_6_SANG_2",
+    "id": "cls-8a3_6_SANG_2",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 6,
@@ -13172,11 +12295,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_6_SANG_2",
+    "id": "cls-8a4_6_SANG_2",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 6,
@@ -13187,11 +12309,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_6_SANG_2",
+    "id": "cls-8a5_6_SANG_2",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 6,
@@ -13202,11 +12323,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-12",
     "teacherName": "Nguyễn Thị Thùy Dương",
     "teacherCode": "Dương.NTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_6_SANG_2",
+    "id": "cls-8a6_6_SANG_2",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 6,
@@ -13217,11 +12337,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-10",
     "teacherName": "Nguyễn Quốc Tấn",
     "teacherCode": "Tấn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_6_SANG_3",
+    "id": "cls-8a1_6_SANG_3",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 6,
@@ -13232,11 +12351,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_6_SANG_3",
+    "id": "cls-8a2_6_SANG_3",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 6,
@@ -13247,11 +12365,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_6_SANG_3",
+    "id": "cls-8a3_6_SANG_3",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 6,
@@ -13262,11 +12379,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-11",
     "teacherName": "Nguyễn Thị Kim Đỉnh",
     "teacherCode": "Đỉnh.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_6_SANG_3",
+    "id": "cls-8a4_6_SANG_3",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 6,
@@ -13277,11 +12393,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_6_SANG_3",
+    "id": "cls-8a5_6_SANG_3",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 6,
@@ -13292,11 +12407,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-12",
     "teacherName": "Võ Hoàng Toàn",
     "teacherCode": "Toàn.VH",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_6_SANG_3",
+    "id": "cls-8a6_6_SANG_3",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 6,
@@ -13307,11 +12421,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_6_SANG_4",
+    "id": "cls-8a1_6_SANG_4",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 6,
@@ -13322,11 +12435,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-11",
     "teacherName": "Nguyễn Thị Kim Đỉnh",
     "teacherCode": "Đỉnh.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_6_SANG_4",
+    "id": "cls-8a2_6_SANG_4",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 6,
@@ -13337,11 +12449,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_6_SANG_4",
+    "id": "cls-8a3_6_SANG_4",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 6,
@@ -13352,11 +12463,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_6_SANG_4",
+    "id": "cls-8a4_6_SANG_4",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 6,
@@ -13367,11 +12477,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_6_SANG_4",
+    "id": "cls-8a5_6_SANG_4",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 6,
@@ -13382,11 +12491,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_6_SANG_4",
+    "id": "cls-8a6_6_SANG_4",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 6,
@@ -13397,11 +12505,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_6_SANG_5",
+    "id": "cls-8a1_6_SANG_5",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 6,
@@ -13412,11 +12519,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_6_SANG_5",
+    "id": "cls-8a2_6_SANG_5",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 6,
@@ -13427,11 +12533,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_6_SANG_5",
+    "id": "cls-8a3_6_SANG_5",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 6,
@@ -13442,11 +12547,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_6_SANG_5",
+    "id": "cls-8a4_6_SANG_5",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 6,
@@ -13457,11 +12561,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_6_SANG_5",
+    "id": "cls-8a5_6_SANG_5",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 6,
@@ -13472,11 +12575,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_6_SANG_5",
+    "id": "cls-8a6_6_SANG_5",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 6,
@@ -13487,11 +12589,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-11",
     "teacherName": "Nguyễn Thị Kim Đỉnh",
     "teacherCode": "Đỉnh.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_7_SANG_1",
+    "id": "cls-8a1_7_SANG_1",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 7,
@@ -13502,11 +12603,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_7_SANG_1",
+    "id": "cls-8a2_7_SANG_1",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 7,
@@ -13517,11 +12617,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_7_SANG_1",
+    "id": "cls-8a3_7_SANG_1",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 7,
@@ -13532,11 +12631,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_7_SANG_1",
+    "id": "cls-8a4_7_SANG_1",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 7,
@@ -13547,11 +12645,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_7_SANG_1",
+    "id": "cls-8a5_7_SANG_1",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 7,
@@ -13562,11 +12659,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_7_SANG_1",
+    "id": "cls-8a6_7_SANG_1",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 7,
@@ -13577,11 +12673,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_7_SANG_2",
+    "id": "cls-8a1_7_SANG_2",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 7,
@@ -13592,11 +12687,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_7_SANG_2",
+    "id": "cls-8a2_7_SANG_2",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 7,
@@ -13607,11 +12701,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-11",
     "teacherName": "Lê Thị Hoài An",
     "teacherCode": "An.LTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_7_SANG_2",
+    "id": "cls-8a3_7_SANG_2",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 7,
@@ -13622,11 +12715,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_7_SANG_2",
+    "id": "cls-8a4_7_SANG_2",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 7,
@@ -13637,11 +12729,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_7_SANG_2",
+    "id": "cls-8a5_7_SANG_2",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 7,
@@ -13652,11 +12743,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_7_SANG_2",
+    "id": "cls-8a6_7_SANG_2",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 7,
@@ -13667,11 +12757,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-9",
     "teacherName": "Nguyễn Thị Kim Xoa",
     "teacherCode": "Xoa.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_7_SANG_3",
+    "id": "cls-8a1_7_SANG_3",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 7,
@@ -13682,11 +12771,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_7_SANG_3",
+    "id": "cls-8a2_7_SANG_3",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 7,
@@ -13697,11 +12785,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_7_SANG_3",
+    "id": "cls-8a3_7_SANG_3",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 7,
@@ -13712,11 +12799,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_7_SANG_3",
+    "id": "cls-8a4_7_SANG_3",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 7,
@@ -13727,11 +12813,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_7_SANG_3",
+    "id": "cls-8a5_7_SANG_3",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 7,
@@ -13742,11 +12827,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_7_SANG_3",
+    "id": "cls-8a6_7_SANG_3",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 7,
@@ -13757,11 +12841,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_7_SANG_4",
+    "id": "cls-8a1_7_SANG_4",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 7,
@@ -13772,11 +12855,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_7_SANG_4",
+    "id": "cls-8a2_7_SANG_4",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 7,
@@ -13787,11 +12869,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_7_SANG_4",
+    "id": "cls-8a3_7_SANG_4",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 7,
@@ -13802,11 +12883,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_7_SANG_4",
+    "id": "cls-8a4_7_SANG_4",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 7,
@@ -13817,11 +12897,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_7_SANG_4",
+    "id": "cls-8a5_7_SANG_4",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 7,
@@ -13832,11 +12911,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_7_SANG_4",
+    "id": "cls-8a6_7_SANG_4",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 7,
@@ -13847,11 +12925,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-8a1_w2_7_SANG_5",
+    "id": "cls-8a1_7_SANG_5",
     "classId": "cls-8a1",
     "className": "8A1",
     "dayOfWeek": 7,
@@ -13862,11 +12939,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-9",
     "teacherName": "Nguyễn Thái Hùng",
     "teacherCode": "Hùng.NThái",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a2_w2_7_SANG_5",
+    "id": "cls-8a2_7_SANG_5",
     "classId": "cls-8a2",
     "className": "8A2",
     "dayOfWeek": 7,
@@ -13877,11 +12953,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a3_w2_7_SANG_5",
+    "id": "cls-8a3_7_SANG_5",
     "classId": "cls-8a3",
     "className": "8A3",
     "dayOfWeek": 7,
@@ -13892,11 +12967,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a4_w2_7_SANG_5",
+    "id": "cls-8a4_7_SANG_5",
     "classId": "cls-8a4",
     "className": "8A4",
     "dayOfWeek": 7,
@@ -13907,11 +12981,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-17",
     "teacherName": "Nguyễn Kim Ngân",
     "teacherCode": "Ngân.NK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a5_w2_7_SANG_5",
+    "id": "cls-8a5_7_SANG_5",
     "classId": "cls-8a5",
     "className": "8A5",
     "dayOfWeek": 7,
@@ -13922,11 +12995,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-12",
     "teacherName": "Võ Hoàng Toàn",
     "teacherCode": "Toàn.VH",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-8a6_w2_7_SANG_5",
+    "id": "cls-8a6_7_SANG_5",
     "classId": "cls-8a6",
     "className": "8A6",
     "dayOfWeek": 7,
@@ -13937,11 +13009,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_2_SANG_1",
+    "id": "cls-9a1_2_SANG_1",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 2,
@@ -13952,11 +13023,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_2_SANG_1",
+    "id": "cls-9a2_2_SANG_1",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 2,
@@ -13967,11 +13037,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_2_SANG_1",
+    "id": "cls-9a3_2_SANG_1",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 2,
@@ -13982,11 +13051,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_2_SANG_1",
+    "id": "cls-9a4_2_SANG_1",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 2,
@@ -13997,11 +13065,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_2_SANG_1",
+    "id": "cls-9a5_2_SANG_1",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 2,
@@ -14012,11 +13079,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_2_SANG_1",
+    "id": "cls-9a6_2_SANG_1",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 2,
@@ -14027,11 +13093,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_2_SANG_2",
+    "id": "cls-9a1_2_SANG_2",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 2,
@@ -14042,11 +13107,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_2_SANG_2",
+    "id": "cls-9a2_2_SANG_2",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 2,
@@ -14057,11 +13121,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_2_SANG_2",
+    "id": "cls-9a3_2_SANG_2",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 2,
@@ -14072,11 +13135,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_2_SANG_2",
+    "id": "cls-9a4_2_SANG_2",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 2,
@@ -14087,11 +13149,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_2_SANG_2",
+    "id": "cls-9a5_2_SANG_2",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 2,
@@ -14102,11 +13163,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_2_SANG_2",
+    "id": "cls-9a6_2_SANG_2",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 2,
@@ -14117,11 +13177,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_2_SANG_3",
+    "id": "cls-9a1_2_SANG_3",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 2,
@@ -14132,11 +13191,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_2_SANG_3",
+    "id": "cls-9a2_2_SANG_3",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 2,
@@ -14147,11 +13205,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_2_SANG_3",
+    "id": "cls-9a3_2_SANG_3",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 2,
@@ -14162,11 +13219,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_2_SANG_3",
+    "id": "cls-9a4_2_SANG_3",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 2,
@@ -14177,11 +13233,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_2_SANG_3",
+    "id": "cls-9a5_2_SANG_3",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 2,
@@ -14192,11 +13247,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_2_SANG_3",
+    "id": "cls-9a6_2_SANG_3",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 2,
@@ -14207,11 +13261,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_2_SANG_4",
+    "id": "cls-9a1_2_SANG_4",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 2,
@@ -14222,11 +13275,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_2_SANG_4",
+    "id": "cls-9a2_2_SANG_4",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 2,
@@ -14237,11 +13289,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_2_SANG_4",
+    "id": "cls-9a3_2_SANG_4",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 2,
@@ -14252,11 +13303,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_2_SANG_4",
+    "id": "cls-9a4_2_SANG_4",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 2,
@@ -14267,11 +13317,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_2_SANG_4",
+    "id": "cls-9a5_2_SANG_4",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 2,
@@ -14282,11 +13331,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_2_SANG_4",
+    "id": "cls-9a6_2_SANG_4",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 2,
@@ -14297,11 +13345,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_2_SANG_5",
+    "id": "cls-9a1_2_SANG_5",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 2,
@@ -14312,11 +13359,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_2_SANG_5",
+    "id": "cls-9a2_2_SANG_5",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 2,
@@ -14327,11 +13373,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_2_SANG_5",
+    "id": "cls-9a3_2_SANG_5",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 2,
@@ -14342,11 +13387,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_2_SANG_5",
+    "id": "cls-9a4_2_SANG_5",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 2,
@@ -14357,11 +13401,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_2_SANG_5",
+    "id": "cls-9a5_2_SANG_5",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 2,
@@ -14372,11 +13415,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_2_SANG_5",
+    "id": "cls-9a6_2_SANG_5",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 2,
@@ -14387,11 +13429,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_3_SANG_1",
+    "id": "cls-9a1_3_SANG_1",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 3,
@@ -14402,11 +13443,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-2",
     "teacherName": "Trịnh Văn Sơn",
     "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_3_SANG_1",
+    "id": "cls-9a2_3_SANG_1",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 3,
@@ -14417,11 +13457,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_3_SANG_1",
+    "id": "cls-9a3_3_SANG_1",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 3,
@@ -14432,11 +13471,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_3_SANG_1",
+    "id": "cls-9a4_3_SANG_1",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 3,
@@ -14447,11 +13485,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_3_SANG_1",
+    "id": "cls-9a5_3_SANG_1",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 3,
@@ -14462,11 +13499,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_3_SANG_1",
+    "id": "cls-9a6_3_SANG_1",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 3,
@@ -14477,11 +13513,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_3_SANG_2",
+    "id": "cls-9a1_3_SANG_2",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 3,
@@ -14492,11 +13527,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-2",
     "teacherName": "Trịnh Văn Sơn",
     "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_3_SANG_2",
+    "id": "cls-9a2_3_SANG_2",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 3,
@@ -14507,11 +13541,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-6",
     "teacherName": "Lê Ngọc Ẩn",
     "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_3_SANG_2",
+    "id": "cls-9a3_3_SANG_2",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 3,
@@ -14522,11 +13555,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_3_SANG_2",
+    "id": "cls-9a4_3_SANG_2",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 3,
@@ -14537,11 +13569,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_3_SANG_2",
+    "id": "cls-9a5_3_SANG_2",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 3,
@@ -14552,11 +13583,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_3_SANG_2",
+    "id": "cls-9a6_3_SANG_2",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 3,
@@ -14567,11 +13597,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_3_SANG_3",
+    "id": "cls-9a1_3_SANG_3",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 3,
@@ -14582,11 +13611,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-12",
     "teacherName": "Nguyễn Thị Lý",
     "teacherCode": "Lý.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_3_SANG_3",
+    "id": "cls-9a2_3_SANG_3",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 3,
@@ -14597,11 +13625,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-6",
     "teacherName": "Lê Ngọc Ẩn",
     "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_3_SANG_3",
+    "id": "cls-9a3_3_SANG_3",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 3,
@@ -14612,11 +13639,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_3_SANG_3",
+    "id": "cls-9a4_3_SANG_3",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 3,
@@ -14627,11 +13653,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_3_SANG_3",
+    "id": "cls-9a5_3_SANG_3",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 3,
@@ -14642,11 +13667,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_3_SANG_3",
+    "id": "cls-9a6_3_SANG_3",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 3,
@@ -14657,11 +13681,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_3_SANG_4",
+    "id": "cls-9a1_3_SANG_4",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 3,
@@ -14672,11 +13695,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_3_SANG_4",
+    "id": "cls-9a2_3_SANG_4",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 3,
@@ -14687,11 +13709,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_3_SANG_4",
+    "id": "cls-9a3_3_SANG_4",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 3,
@@ -14702,11 +13723,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_3_SANG_4",
+    "id": "cls-9a4_3_SANG_4",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 3,
@@ -14717,11 +13737,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_3_SANG_4",
+    "id": "cls-9a5_3_SANG_4",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 3,
@@ -14732,11 +13751,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_3_SANG_4",
+    "id": "cls-9a6_3_SANG_4",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 3,
@@ -14747,11 +13765,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_3_SANG_5",
+    "id": "cls-9a1_3_SANG_5",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 3,
@@ -14762,11 +13779,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_3_SANG_5",
+    "id": "cls-9a2_3_SANG_5",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 3,
@@ -14777,11 +13793,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_3_SANG_5",
+    "id": "cls-9a3_3_SANG_5",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 3,
@@ -14792,11 +13807,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-12",
     "teacherName": "Nguyễn Thị Lý",
     "teacherCode": "Lý.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_3_SANG_5",
+    "id": "cls-9a4_3_SANG_5",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 3,
@@ -14807,11 +13821,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_3_SANG_5",
+    "id": "cls-9a5_3_SANG_5",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 3,
@@ -14822,11 +13835,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_3_SANG_5",
+    "id": "cls-9a6_3_SANG_5",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 3,
@@ -14837,11 +13849,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_4_SANG_1",
+    "id": "cls-9a1_4_SANG_1",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 4,
@@ -14852,11 +13863,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_4_SANG_1",
+    "id": "cls-9a2_4_SANG_1",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 4,
@@ -14867,11 +13877,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_4_SANG_1",
+    "id": "cls-9a3_4_SANG_1",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 4,
@@ -14882,11 +13891,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_4_SANG_1",
+    "id": "cls-9a4_4_SANG_1",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 4,
@@ -14897,11 +13905,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_4_SANG_1",
+    "id": "cls-9a5_4_SANG_1",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 4,
@@ -14912,11 +13919,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_4_SANG_1",
+    "id": "cls-9a6_4_SANG_1",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 4,
@@ -14927,11 +13933,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_4_SANG_2",
+    "id": "cls-9a1_4_SANG_2",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 4,
@@ -14942,11 +13947,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_4_SANG_2",
+    "id": "cls-9a2_4_SANG_2",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 4,
@@ -14957,11 +13961,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_4_SANG_2",
+    "id": "cls-9a3_4_SANG_2",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 4,
@@ -14972,11 +13975,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_4_SANG_2",
+    "id": "cls-9a4_4_SANG_2",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 4,
@@ -14987,11 +13989,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_4_SANG_2",
+    "id": "cls-9a5_4_SANG_2",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 4,
@@ -15002,11 +14003,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_4_SANG_2",
+    "id": "cls-9a6_4_SANG_2",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 4,
@@ -15017,11 +14017,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_4_SANG_3",
+    "id": "cls-9a1_4_SANG_3",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 4,
@@ -15032,11 +14031,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_4_SANG_3",
+    "id": "cls-9a2_4_SANG_3",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 4,
@@ -15047,11 +14045,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_4_SANG_3",
+    "id": "cls-9a3_4_SANG_3",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 4,
@@ -15062,11 +14059,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_4_SANG_3",
+    "id": "cls-9a4_4_SANG_3",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 4,
@@ -15077,11 +14073,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_4_SANG_3",
+    "id": "cls-9a5_4_SANG_3",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 4,
@@ -15092,11 +14087,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_4_SANG_3",
+    "id": "cls-9a6_4_SANG_3",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 4,
@@ -15107,11 +14101,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_4_SANG_4",
+    "id": "cls-9a1_4_SANG_4",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 4,
@@ -15122,11 +14115,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_4_SANG_4",
+    "id": "cls-9a2_4_SANG_4",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 4,
@@ -15137,11 +14129,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-12",
     "teacherName": "Nguyễn Thị Lý",
     "teacherCode": "Lý.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_4_SANG_4",
+    "id": "cls-9a3_4_SANG_4",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 4,
@@ -15152,11 +14143,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_4_SANG_4",
+    "id": "cls-9a4_4_SANG_4",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 4,
@@ -15167,11 +14157,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_4_SANG_4",
+    "id": "cls-9a5_4_SANG_4",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 4,
@@ -15182,11 +14171,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_4_SANG_4",
+    "id": "cls-9a6_4_SANG_4",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 4,
@@ -15197,11 +14185,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_4_SANG_5",
+    "id": "cls-9a1_4_SANG_5",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 4,
@@ -15212,11 +14199,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_4_SANG_5",
+    "id": "cls-9a2_4_SANG_5",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 4,
@@ -15227,11 +14213,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_4_SANG_5",
+    "id": "cls-9a3_4_SANG_5",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 4,
@@ -15242,11 +14227,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_4_SANG_5",
+    "id": "cls-9a4_4_SANG_5",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 4,
@@ -15257,11 +14241,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-12",
     "teacherName": "Nguyễn Thị Lý",
     "teacherCode": "Lý.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_4_SANG_5",
+    "id": "cls-9a5_4_SANG_5",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 4,
@@ -15272,11 +14255,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_4_SANG_5",
+    "id": "cls-9a6_4_SANG_5",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 4,
@@ -15287,11 +14269,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_5_SANG_1",
+    "id": "cls-9a1_5_SANG_1",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 5,
@@ -15302,11 +14283,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_5_SANG_1",
+    "id": "cls-9a2_5_SANG_1",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 5,
@@ -15317,11 +14297,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_5_SANG_1",
+    "id": "cls-9a3_5_SANG_1",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 5,
@@ -15332,11 +14311,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_5_SANG_1",
+    "id": "cls-9a4_5_SANG_1",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 5,
@@ -15347,11 +14325,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_5_SANG_1",
+    "id": "cls-9a5_5_SANG_1",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 5,
@@ -15362,11 +14339,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_5_SANG_1",
+    "id": "cls-9a6_5_SANG_1",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 5,
@@ -15377,11 +14353,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-11",
     "teacherName": "Nguyễn Thị Kim Đỉnh",
     "teacherCode": "Đỉnh.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_5_SANG_2",
+    "id": "cls-9a1_5_SANG_2",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 5,
@@ -15392,11 +14367,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_5_SANG_2",
+    "id": "cls-9a2_5_SANG_2",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 5,
@@ -15407,11 +14381,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_5_SANG_2",
+    "id": "cls-9a3_5_SANG_2",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 5,
@@ -15422,11 +14395,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_5_SANG_2",
+    "id": "cls-9a4_5_SANG_2",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 5,
@@ -15437,11 +14409,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_5_SANG_2",
+    "id": "cls-9a5_5_SANG_2",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 5,
@@ -15452,11 +14423,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_5_SANG_2",
+    "id": "cls-9a6_5_SANG_2",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 5,
@@ -15467,11 +14437,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_5_SANG_3",
+    "id": "cls-9a1_5_SANG_3",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 5,
@@ -15482,11 +14451,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_5_SANG_3",
+    "id": "cls-9a2_5_SANG_3",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 5,
@@ -15497,11 +14465,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-2",
     "teacherName": "Trịnh Văn Sơn",
     "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_5_SANG_3",
+    "id": "cls-9a3_5_SANG_3",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 5,
@@ -15512,11 +14479,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_5_SANG_3",
+    "id": "cls-9a4_5_SANG_3",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 5,
@@ -15527,11 +14493,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_5_SANG_3",
+    "id": "cls-9a5_5_SANG_3",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 5,
@@ -15542,11 +14507,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_5_SANG_3",
+    "id": "cls-9a6_5_SANG_3",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 5,
@@ -15557,11 +14521,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_5_SANG_4",
+    "id": "cls-9a1_5_SANG_4",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 5,
@@ -15572,11 +14535,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_5_SANG_4",
+    "id": "cls-9a2_5_SANG_4",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 5,
@@ -15587,11 +14549,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-2",
     "teacherName": "Trịnh Văn Sơn",
     "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_5_SANG_4",
+    "id": "cls-9a3_5_SANG_4",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 5,
@@ -15602,11 +14563,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-22",
     "teacherName": "Trần Phi Hải",
     "teacherCode": "Hải.TP",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_5_SANG_4",
+    "id": "cls-9a4_5_SANG_4",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 5,
@@ -15617,11 +14577,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_5_SANG_4",
+    "id": "cls-9a5_5_SANG_4",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 5,
@@ -15632,11 +14591,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_5_SANG_4",
+    "id": "cls-9a6_5_SANG_4",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 5,
@@ -15647,11 +14605,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-13",
     "teacherName": "Nguyễn Thị Xe",
     "teacherCode": "Xe.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_6_SANG_1",
+    "id": "cls-9a1_6_SANG_1",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 6,
@@ -15662,11 +14619,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_6_SANG_1",
+    "id": "cls-9a2_6_SANG_1",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 6,
@@ -15677,11 +14633,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_6_SANG_1",
+    "id": "cls-9a3_6_SANG_1",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 6,
@@ -15692,11 +14647,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_6_SANG_1",
+    "id": "cls-9a4_6_SANG_1",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 6,
@@ -15707,11 +14661,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_6_SANG_1",
+    "id": "cls-9a5_6_SANG_1",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 6,
@@ -15722,11 +14675,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-11",
     "teacherName": "Nguyễn Thị Kim Đỉnh",
     "teacherCode": "Đỉnh.NTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_6_SANG_1",
+    "id": "cls-9a6_6_SANG_1",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 6,
@@ -15737,11 +14689,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_6_SANG_2",
+    "id": "cls-9a1_6_SANG_2",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 6,
@@ -15752,11 +14703,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_6_SANG_2",
+    "id": "cls-9a2_6_SANG_2",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 6,
@@ -15767,11 +14717,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-8",
     "teacherName": "Phạm Thanh Lâm",
     "teacherCode": "Lâm.PT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_6_SANG_2",
+    "id": "cls-9a3_6_SANG_2",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 6,
@@ -15782,11 +14731,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_6_SANG_2",
+    "id": "cls-9a4_6_SANG_2",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 6,
@@ -15797,11 +14745,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-12",
     "teacherName": "Võ Hoàng Toàn",
     "teacherCode": "Toàn.VH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_6_SANG_2",
+    "id": "cls-9a5_6_SANG_2",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 6,
@@ -15812,11 +14759,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_6_SANG_2",
+    "id": "cls-9a6_6_SANG_2",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 6,
@@ -15827,11 +14773,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_6_SANG_3",
+    "id": "cls-9a1_6_SANG_3",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 6,
@@ -15842,11 +14787,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_6_SANG_3",
+    "id": "cls-9a2_6_SANG_3",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 6,
@@ -15857,11 +14801,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_6_SANG_3",
+    "id": "cls-9a3_6_SANG_3",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 6,
@@ -15872,11 +14815,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-9",
     "teacherName": "Lê Thị Tuyết Xanh",
     "teacherCode": "Xanh.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_6_SANG_3",
+    "id": "cls-9a4_6_SANG_3",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 6,
@@ -15887,11 +14829,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_6_SANG_3",
+    "id": "cls-9a5_6_SANG_3",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 6,
@@ -15902,11 +14843,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_6_SANG_3",
+    "id": "cls-9a6_6_SANG_3",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 6,
@@ -15917,11 +14857,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_6_SANG_4",
+    "id": "cls-9a1_6_SANG_4",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 6,
@@ -15932,11 +14871,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_6_SANG_4",
+    "id": "cls-9a2_6_SANG_4",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 6,
@@ -15947,11 +14885,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_6_SANG_4",
+    "id": "cls-9a3_6_SANG_4",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 6,
@@ -15962,11 +14899,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_6_SANG_4",
+    "id": "cls-9a4_6_SANG_4",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 6,
@@ -15977,11 +14913,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_6_SANG_4",
+    "id": "cls-9a5_6_SANG_4",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 6,
@@ -15992,11 +14927,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_6_SANG_4",
+    "id": "cls-9a6_6_SANG_4",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 6,
@@ -16007,11 +14941,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_6_SANG_5",
+    "id": "cls-9a1_6_SANG_5",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 6,
@@ -16022,11 +14955,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-2",
     "teacherName": "Trương Văn Nghĩa",
     "teacherCode": "Nghĩa.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_6_SANG_5",
+    "id": "cls-9a2_6_SANG_5",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 6,
@@ -16037,11 +14969,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_6_SANG_5",
+    "id": "cls-9a3_6_SANG_5",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 6,
@@ -16052,11 +14983,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_6_SANG_5",
+    "id": "cls-9a4_6_SANG_5",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 6,
@@ -16067,11 +14997,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-3",
     "teacherName": "Nguyễn Thị Mai Khanh",
     "teacherCode": "Khanh.NTM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_6_SANG_5",
+    "id": "cls-9a5_6_SANG_5",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 6,
@@ -16082,11 +15011,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-4",
     "teacherName": "Nguyễn Thị Hiếu",
     "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_6_SANG_5",
+    "id": "cls-9a6_6_SANG_5",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 6,
@@ -16097,11 +15025,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_7_SANG_1",
+    "id": "cls-9a1_7_SANG_1",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 7,
@@ -16112,11 +15039,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-6",
     "teacherName": "Lê Ngọc Ẩn",
     "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_7_SANG_1",
+    "id": "cls-9a2_7_SANG_1",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 7,
@@ -16127,11 +15053,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_7_SANG_1",
+    "id": "cls-9a3_7_SANG_1",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 7,
@@ -16142,11 +15067,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_7_SANG_1",
+    "id": "cls-9a4_7_SANG_1",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 7,
@@ -16157,11 +15081,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_7_SANG_1",
+    "id": "cls-9a5_7_SANG_1",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 7,
@@ -16172,11 +15095,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_7_SANG_1",
+    "id": "cls-9a6_7_SANG_1",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 7,
@@ -16187,11 +15109,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_7_SANG_2",
+    "id": "cls-9a1_7_SANG_2",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 7,
@@ -16202,11 +15123,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-6",
     "teacherName": "Lê Ngọc Ẩn",
     "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_7_SANG_2",
+    "id": "cls-9a2_7_SANG_2",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 7,
@@ -16217,11 +15137,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-5",
     "teacherName": "Lê Minh Đạt",
     "teacherCode": "Đạt.LM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_7_SANG_2",
+    "id": "cls-9a3_7_SANG_2",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 7,
@@ -16232,11 +15151,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-7",
     "teacherName": "Huỳnh Thanh Dân",
     "teacherCode": "Dân.HT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_7_SANG_2",
+    "id": "cls-9a4_7_SANG_2",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 7,
@@ -16247,11 +15165,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_7_SANG_2",
+    "id": "cls-9a5_7_SANG_2",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 7,
@@ -16262,11 +15179,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-9",
     "teacherName": "Lê Thị Kim The",
     "teacherCode": "The.LTK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_7_SANG_2",
+    "id": "cls-9a6_7_SANG_2",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 7,
@@ -16277,11 +15193,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_7_SANG_3",
+    "id": "cls-9a1_7_SANG_3",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 7,
@@ -16292,11 +15207,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_7_SANG_3",
+    "id": "cls-9a2_7_SANG_3",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 7,
@@ -16307,11 +15221,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_7_SANG_3",
+    "id": "cls-9a3_7_SANG_3",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 7,
@@ -16322,11 +15235,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_7_SANG_3",
+    "id": "cls-9a4_7_SANG_3",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 7,
@@ -16337,11 +15249,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_7_SANG_3",
+    "id": "cls-9a5_7_SANG_3",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 7,
@@ -16352,11 +15263,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_7_SANG_3",
+    "id": "cls-9a6_7_SANG_3",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 7,
@@ -16367,11 +15277,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_7_SANG_4",
+    "id": "cls-9a1_7_SANG_4",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 7,
@@ -16382,11 +15291,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_7_SANG_4",
+    "id": "cls-9a2_7_SANG_4",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 7,
@@ -16397,11 +15305,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_7_SANG_4",
+    "id": "cls-9a3_7_SANG_4",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 7,
@@ -16412,11 +15319,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-12",
     "teacherName": "Võ Hoàng Toàn",
     "teacherCode": "Toàn.VH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_7_SANG_4",
+    "id": "cls-9a4_7_SANG_4",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 7,
@@ -16427,11 +15333,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_7_SANG_4",
+    "id": "cls-9a5_7_SANG_4",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 7,
@@ -16442,11 +15347,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_7_SANG_4",
+    "id": "cls-9a6_7_SANG_4",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 7,
@@ -16457,11 +15361,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-9a1_w2_7_SANG_5",
+    "id": "cls-9a1_7_SANG_5",
     "classId": "cls-9a1",
     "className": "9A1",
     "dayOfWeek": 7,
@@ -16472,11 +15375,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a2_w2_7_SANG_5",
+    "id": "cls-9a2_7_SANG_5",
     "classId": "cls-9a2",
     "className": "9A2",
     "dayOfWeek": 7,
@@ -16487,11 +15389,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-10",
     "teacherName": "Trần Thị Hậu",
     "teacherCode": "Hậu.TTH",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a3_w2_7_SANG_5",
+    "id": "cls-9a3_7_SANG_5",
     "classId": "cls-9a3",
     "className": "9A3",
     "dayOfWeek": 7,
@@ -16502,11 +15403,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-3",
     "teacherName": "Nguyễn Thị Bích Lang",
     "teacherCode": "Lang.NTB",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a4_w2_7_SANG_5",
+    "id": "cls-9a4_7_SANG_5",
     "classId": "cls-9a4",
     "className": "9A4",
     "dayOfWeek": 7,
@@ -16517,11 +15417,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-12",
     "teacherName": "Nguyễn Văn Tài",
     "teacherCode": "Tài.NV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a5_w2_7_SANG_5",
+    "id": "cls-9a5_7_SANG_5",
     "classId": "cls-9a5",
     "className": "9A5",
     "dayOfWeek": 7,
@@ -16532,11 +15431,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-11",
     "teacherName": "Hồ Mai Thảo",
     "teacherCode": "Thảo.HM",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-9a6_w2_7_SANG_5",
+    "id": "cls-9a6_7_SANG_5",
     "classId": "cls-9a6",
     "className": "9A6",
     "dayOfWeek": 7,
@@ -16547,11 +15445,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-10cb1_w2_2_SANG_1",
+    "id": "cls-10cb1_2_SANG_1",
     "classId": "cls-10cb1",
     "className": "10CB1",
     "dayOfWeek": 2,
@@ -16561,12 +15458,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Chào cờ",
     "teacherId": "tch-khtn-5",
     "teacherName": "Cao Văn Tùng",
-    "teacherCode": "Tùng.CV",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Tùng.CV (10CB1)",
+    "room": ""
   },
   {
-    "id": "cls-10cb2_w2_2_SANG_1",
+    "id": "cls-10cb2_2_SANG_1",
     "classId": "cls-10cb2",
     "className": "10CB2",
     "dayOfWeek": 2,
@@ -16576,12 +15472,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Chào cờ",
     "teacherId": "tch-khtn-9",
     "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
   },
   {
-    "id": "cls-10cb3_w2_2_SANG_1",
+    "id": "cls-10cb3_2_SANG_1",
     "classId": "cls-10cb3",
     "className": "10CB3",
     "dayOfWeek": 2,
@@ -16591,12 +15486,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Chào cờ",
     "teacherId": "tch-v-5",
     "teacherName": "Lê Thị Mỹ Ny",
-    "teacherCode": "Ny.LTM",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Ny.LTM (10CB3)",
+    "room": ""
   },
   {
-    "id": "cls-10cb4_w2_2_SANG_1",
+    "id": "cls-10cb4_2_SANG_1",
     "classId": "cls-10cb4",
     "className": "10CB4",
     "dayOfWeek": 2,
@@ -16604,14 +15498,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 1,
     "subjectId": "sub-chao-co",
     "subjectName": "Chào cờ",
-    "teacherId": "tch-tin-1",
+    "teacherId": "tch-av-9",
     "teacherName": "Lê Thị Thu Diễm",
-    "teacherCode": "Diễm.LTT",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Diễm.LTT (10CB4)",
+    "room": ""
   },
   {
-    "id": "cls-10cb5_w2_2_SANG_1",
+    "id": "cls-10cb5_2_SANG_1",
     "classId": "cls-10cb5",
     "className": "10CB5",
     "dayOfWeek": 2,
@@ -16621,12 +15514,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Chào cờ",
     "teacherId": "tch-v-4",
     "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
   },
   {
-    "id": "cls-10cb1_w2_2_SANG_2",
+    "id": "cls-10cb1_2_SANG_2",
     "classId": "cls-10cb1",
     "className": "10CB1",
     "dayOfWeek": 2,
@@ -16636,12 +15528,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh học",
     "teacherId": "tch-khtn-5",
     "teacherName": "Cao Văn Tùng",
-    "teacherCode": "Tùng.CV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Tùng.CV (10CB1)",
+    "room": ""
   },
   {
-    "id": "cls-10cb2_w2_2_SANG_2",
+    "id": "cls-10cb2_2_SANG_2",
     "classId": "cls-10cb2",
     "className": "10CB2",
     "dayOfWeek": 2,
@@ -16651,12 +15542,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Hóa học",
     "teacherId": "tch-khtn-9",
     "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
   },
   {
-    "id": "cls-10cb3_w2_2_SANG_2",
+    "id": "cls-10cb3_2_SANG_2",
     "classId": "cls-10cb3",
     "className": "10CB3",
     "dayOfWeek": 2,
@@ -16664,14 +15554,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-tin",
     "subjectName": "Tin học",
-    "teacherId": "tch-tin-1",
+    "teacherId": "tch-av-9",
     "teacherName": "Lê Thị Thu Diễm",
-    "teacherCode": "Diễm.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Diễm.LTT (10CB4)",
+    "room": ""
   },
   {
-    "id": "cls-10cb4_w2_2_SANG_2",
+    "id": "cls-10cb4_2_SANG_2",
     "classId": "cls-10cb4",
     "className": "10CB4",
     "dayOfWeek": 2,
@@ -16681,12 +15570,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-7",
     "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
   },
   {
-    "id": "cls-10cb5_w2_2_SANG_2",
+    "id": "cls-10cb5_2_SANG_2",
     "classId": "cls-10cb5",
     "className": "10CB5",
     "dayOfWeek": 2,
@@ -16694,1814 +15582,1693 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-ktpl",
     "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_2_SANG_3",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-hdtn-cd",
-    "subjectName": "HĐTNHN (Chuyên đề)",
-    "teacherId": "tch-khtn-5",
-    "teacherName": "Cao Văn Tùng",
-    "teacherCode": "Tùng.CV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_2_SANG_3",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-dia",
-    "subjectName": "Địa lí",
-    "teacherId": "tch-ls-6",
-    "teacherName": "Trần Phước Hòa",
-    "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_2_SANG_3",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-hdtn-cd",
-    "subjectName": "HĐTNHN (Chuyên đề)",
-    "teacherId": "tch-khtn-9",
-    "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_2_SANG_3",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-ktpl",
-    "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_2_SANG_3",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-li",
-    "subjectName": "Vật lí",
-    "teacherId": "tch-khtn-6",
-    "teacherName": "Trần Thị Ngọc Hiền",
-    "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_2_SANG_4",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-tin",
-    "subjectName": "Tin học",
-    "teacherId": "tch-tin-1",
-    "teacherName": "Lê Thị Thu Diễm",
-    "teacherCode": "Diễm.LTT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_2_SANG_4",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-van",
-    "subjectName": "Ngữ văn",
-    "teacherId": "tch-v-4",
-    "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_2_SANG_4",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-5",
-    "teacherName": "Lê Cao Toàn",
-    "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_2_SANG_4",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-hdtn-cd",
-    "subjectName": "HĐTNHN (Chuyên đề)",
-    "teacherId": "tch-khtn-9",
-    "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_2_SANG_4",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-dia",
-    "subjectName": "Địa lí",
-    "teacherId": "tch-ls-6",
-    "teacherName": "Trần Phước Hòa",
-    "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_2_SANG_5",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-hoa",
-    "subjectName": "Hóa học",
-    "teacherId": "tch-khtn-9",
-    "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_2_SANG_5",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-van",
-    "subjectName": "Ngữ văn",
-    "teacherId": "tch-v-4",
-    "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_2_SANG_5",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-ktpl",
-    "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_2_SANG_5",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-tin",
-    "subjectName": "Tin học",
-    "teacherId": "tch-tin-1",
-    "teacherName": "Lê Thị Thu Diễm",
-    "teacherCode": "Diễm.LTT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_2_SANG_5",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 2,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-4",
-    "teacherName": "Trần Văn Giang",
-    "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_3_SANG_1",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-hoa",
-    "subjectName": "Hóa học",
-    "teacherId": "tch-khtn-9",
-    "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_3_SANG_1",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-tin",
-    "subjectName": "Tin học",
-    "teacherId": "tch-tin-1",
-    "teacherName": "Lê Thị Thu Diễm",
-    "teacherCode": "Diễm.LTT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_3_SANG_1",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-van",
-    "subjectName": "Ngữ văn",
-    "teacherId": "tch-v-5",
-    "teacherName": "Lê Thị Mỹ Ny",
-    "teacherCode": "Ny.LTM",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_3_SANG_1",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-qpan",
-    "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
-    "teacherName": "Nguyễn Kim Rạng",
-    "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_3_SANG_1",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-av-7",
-    "teacherName": "Nguyễn Thị Vân Anh",
-    "teacherCode": "Anh.NTV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_3_SANG_2",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-van",
-    "subjectName": "Ngữ văn",
-    "teacherId": "tch-v-6",
-    "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_3_SANG_2",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-hoa",
-    "subjectName": "Hóa học",
-    "teacherId": "tch-khtn-9",
-    "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_3_SANG_2",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-van",
-    "subjectName": "Ngữ văn",
-    "teacherId": "tch-v-5",
-    "teacherName": "Lê Thị Mỹ Ny",
-    "teacherCode": "Ny.LTM",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_3_SANG_2",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-tin",
-    "subjectName": "Tin học",
-    "teacherId": "tch-tin-1",
-    "teacherName": "Lê Thị Thu Diễm",
-    "teacherCode": "Diễm.LTT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_3_SANG_2",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-av-7",
-    "teacherName": "Nguyễn Thị Vân Anh",
-    "teacherCode": "Anh.NTV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_3_SANG_3",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-su",
-    "subjectName": "Lịch sử",
-    "teacherId": "tch-ls-4",
-    "teacherName": "Nguyễn Thị Bé Trang",
-    "teacherCode": "Trang.NTB",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_3_SANG_3",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-hdtn-cd",
-    "subjectName": "HĐTNHN (Chuyên đề)",
-    "teacherId": "tch-khtn-9",
-    "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_3_SANG_3",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-5",
-    "teacherName": "Lê Cao Toàn",
-    "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_3_SANG_3",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-van",
-    "subjectName": "Ngữ văn",
-    "teacherId": "tch-v-6",
-    "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_3_SANG_3",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-tin",
-    "subjectName": "Tin học",
     "teacherId": "tch-ls-8",
-    "teacherName": "Nguyễn Trung Hiếu",
-    "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
   },
   {
-    "id": "cls-10cb1_w2_3_SANG_4",
+    "id": "cls-10cb1_2_SANG_3",
     "classId": "cls-10cb1",
     "className": "10CB1",
-    "dayOfWeek": 3,
+    "dayOfWeek": 2,
     "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-av-4",
-    "teacherName": "Võ Thị Hiền Thi",
-    "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
+    "period": 3,
+    "subjectId": "sub-hdtn-cd",
+    "subjectName": "HĐTNHN (Chuyên đề)",
+    "teacherId": "tch-khtn-5",
+    "teacherName": "Cao Văn Tùng",
+    "teacherCode": "Tùng.CV (10CB1)",
+    "room": ""
   },
   {
-    "id": "cls-10cb2_w2_3_SANG_4",
+    "id": "cls-10cb2_2_SANG_3",
     "classId": "cls-10cb2",
     "className": "10CB2",
-    "dayOfWeek": 3,
+    "dayOfWeek": 2,
     "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-li",
-    "subjectName": "Vật lí",
-    "teacherId": "tch-khtn-6",
-    "teacherName": "Trần Thị Ngọc Hiền",
-    "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
+    "period": 3,
+    "subjectId": "sub-dia",
+    "subjectName": "Địa lí",
+    "teacherId": "tch-ls-6",
+    "teacherName": "Trần Phước Hòa",
+    "teacherCode": "Hòa.TP",
+    "room": ""
   },
   {
-    "id": "cls-10cb3_w2_3_SANG_4",
+    "id": "cls-10cb3_2_SANG_3",
     "classId": "cls-10cb3",
     "className": "10CB3",
-    "dayOfWeek": 3,
+    "dayOfWeek": 2,
     "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-5",
-    "teacherName": "Lê Cao Toàn",
-    "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_3_SANG_4",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-su",
-    "subjectName": "Lịch sử",
-    "teacherId": "tch-ls-4",
-    "teacherName": "Nguyễn Thị Bé Trang",
-    "teacherCode": "Trang.NTB",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_3_SANG_4",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-ktpl",
-    "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_3_SANG_5",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-av-4",
-    "teacherName": "Võ Thị Hiền Thi",
-    "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_3_SANG_5",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-5",
-    "teacherName": "Lê Cao Toàn",
-    "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_3_SANG_5",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-li",
-    "subjectName": "Vật lí",
-    "teacherId": "tch-khtn-6",
-    "teacherName": "Trần Thị Ngọc Hiền",
-    "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_3_SANG_5",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-ktpl",
-    "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_3_SANG_5",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 3,
-    "session": "SANG",
-    "period": 5,
+    "period": 3,
     "subjectId": "sub-hdtn-cd",
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-khtn-9",
     "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
   },
   {
-    "id": "cls-10cb1_w2_4_SANG_1",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 4,
+    "id": "cls-10cb4_2_SANG_3",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 2,
     "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-van",
-    "subjectName": "Ngữ văn",
-    "teacherId": "tch-v-6",
-    "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_4_SANG_1",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-dia",
-    "subjectName": "Địa lí",
-    "teacherId": "tch-ls-6",
-    "teacherName": "Trần Phước Hòa",
-    "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_4_SANG_1",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 1,
+    "period": 3,
     "subjectId": "sub-ktpl",
     "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_4_SANG_1",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-av-7",
-    "teacherName": "Nguyễn Thị Vân Anh",
-    "teacherCode": "Anh.NTV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_4_SANG_1",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-li",
-    "subjectName": "Vật lí",
-    "teacherId": "tch-khtn-6",
-    "teacherName": "Trần Thị Ngọc Hiền",
-    "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_4_SANG_2",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-van",
-    "subjectName": "Ngữ văn",
-    "teacherId": "tch-v-6",
-    "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_4_SANG_2",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-gdtc",
-    "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-td-6",
-    "teacherName": "Lê Ngọc Ẩn",
-    "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_4_SANG_2",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-dia",
-    "subjectName": "Địa lí",
-    "teacherId": "tch-ls-6",
-    "teacherName": "Trần Phước Hòa",
-    "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_4_SANG_2",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-av-7",
-    "teacherName": "Nguyễn Thị Vân Anh",
-    "teacherCode": "Anh.NTV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_4_SANG_2",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-4",
-    "teacherName": "Trần Văn Giang",
-    "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_4_SANG_3",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-li",
-    "subjectName": "Vật lí",
-    "teacherId": "tch-khtn-6",
-    "teacherName": "Trần Thị Ngọc Hiền",
-    "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_4_SANG_3",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-gdtc",
-    "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-td-6",
-    "teacherName": "Lê Ngọc Ẩn",
-    "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_4_SANG_3",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-qpan",
-    "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
-    "teacherName": "Nguyễn Kim Rạng",
-    "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_4_SANG_3",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-dia",
-    "subjectName": "Địa lí",
-    "teacherId": "tch-ls-6",
-    "teacherName": "Trần Phước Hòa",
-    "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_4_SANG_3",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-su",
-    "subjectName": "Lịch sử",
-    "teacherId": "tch-ls-4",
-    "teacherName": "Nguyễn Thị Bé Trang",
-    "teacherCode": "Trang.NTB",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_4_SANG_4",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-7",
-    "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_4_SANG_4",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-5",
-    "teacherName": "Lê Cao Toàn",
-    "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_4_SANG_4",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-li",
-    "subjectName": "Vật lí",
-    "teacherId": "tch-khtn-6",
-    "teacherName": "Trần Thị Ngọc Hiền",
-    "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_4_SANG_4",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-tin",
-    "subjectName": "Tin học",
-    "teacherId": "tch-tin-1",
-    "teacherName": "Lê Thị Thu Diễm",
-    "teacherCode": "Diễm.LTT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_4_SANG_4",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-dia",
-    "subjectName": "Địa lí",
-    "teacherId": "tch-ls-6",
-    "teacherName": "Trần Phước Hòa",
-    "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_4_SANG_5",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-7",
-    "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_4_SANG_5",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-5",
-    "teacherName": "Lê Cao Toàn",
-    "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_4_SANG_5",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-tin",
-    "subjectName": "Tin học",
-    "teacherId": "tch-tin-1",
-    "teacherName": "Lê Thị Thu Diễm",
-    "teacherCode": "Diễm.LTT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_4_SANG_5",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-li",
-    "subjectName": "Vật lí",
-    "teacherId": "tch-khtn-6",
-    "teacherName": "Trần Thị Ngọc Hiền",
-    "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_4_SANG_5",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 4,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-av-7",
-    "teacherName": "Nguyễn Thị Vân Anh",
-    "teacherCode": "Anh.NTV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_5_SANG_1",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-hoa",
-    "subjectName": "Hóa học",
-    "teacherId": "tch-khtn-9",
-    "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_5_SANG_1",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-qpan",
-    "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
-    "teacherName": "Nguyễn Kim Rạng",
-    "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_5_SANG_1",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-li",
-    "subjectName": "Vật lí",
-    "teacherId": "tch-khtn-6",
-    "teacherName": "Trần Thị Ngọc Hiền",
-    "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_5_SANG_1",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-7",
-    "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_5_SANG_1",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-van",
-    "subjectName": "Ngữ văn",
-    "teacherId": "tch-v-4",
-    "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_5_SANG_2",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-gdtc",
-    "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-td-6",
-    "teacherName": "Lê Ngọc Ẩn",
-    "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_5_SANG_2",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-hdtn-cd",
-    "subjectName": "HĐTNHN (Chuyên đề)",
-    "teacherId": "tch-khtn-9",
-    "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_5_SANG_2",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-ls-17",
-    "teacherName": "Ngô Bảo Quốc",
-    "teacherCode": "Quốc.NB",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_5_SANG_2",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-li",
-    "subjectName": "Vật lí",
-    "teacherId": "tch-khtn-6",
-    "teacherName": "Trần Thị Ngọc Hiền",
-    "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_5_SANG_2",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-qpan",
-    "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
-    "teacherName": "Nguyễn Kim Rạng",
-    "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_5_SANG_3",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-gdtc",
-    "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-td-6",
-    "teacherName": "Lê Ngọc Ẩn",
-    "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_5_SANG_3",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-hoa",
-    "subjectName": "Hóa học",
-    "teacherId": "tch-khtn-9",
-    "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_5_SANG_3",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-ls-17",
-    "teacherName": "Ngô Bảo Quốc",
-    "teacherCode": "Quốc.NB",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_5_SANG_3",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-av-7",
-    "teacherName": "Nguyễn Thị Vân Anh",
-    "teacherCode": "Anh.NTV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_5_SANG_3",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-tin",
-    "subjectName": "Tin học",
     "teacherId": "tch-ls-8",
-    "teacherName": "Nguyễn Trung Hiếu",
-    "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
   },
   {
-    "id": "cls-10cb3_w2_5_SANG_4",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 5,
+    "id": "cls-10cb5_2_SANG_3",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 2,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-li",
+    "subjectName": "Vật lí",
+    "teacherId": "tch-khtn-6",
+    "teacherName": "Trần Thị Ngọc Hiền",
+    "teacherCode": "Hiền.TTN",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_2_SANG_4",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 2,
     "session": "SANG",
     "period": 4,
-    "subjectId": "sub-gdtc",
-    "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-td-6",
-    "teacherName": "Lê Ngọc Ẩn",
-    "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
+    "subjectId": "sub-tin",
+    "subjectName": "Tin học",
+    "teacherId": "tch-av-9",
+    "teacherName": "Lê Thị Thu Diễm",
+    "teacherCode": "Diễm.LTT (10CB4)",
+    "room": ""
   },
   {
-    "id": "cls-10cb3_w2_5_SANG_5",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 5,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-gdtc",
-    "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-td-6",
-    "teacherName": "Lê Ngọc Ẩn",
-    "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_6_SANG_1",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-qpan",
-    "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
-    "teacherName": "Nguyễn Kim Rạng",
-    "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_6_SANG_1",
+    "id": "cls-10cb2_2_SANG_4",
     "classId": "cls-10cb2",
     "className": "10CB2",
-    "dayOfWeek": 6,
+    "dayOfWeek": 2,
     "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-ls-17",
-    "teacherName": "Ngô Bảo Quốc",
-    "teacherCode": "Quốc.NB",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_6_SANG_1",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-su",
-    "subjectName": "Lịch sử",
-    "teacherId": "tch-ls-2",
-    "teacherName": "Trịnh Văn Sơn",
-    "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_6_SANG_1",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-van",
-    "subjectName": "Ngữ văn",
-    "teacherId": "tch-v-6",
-    "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_6_SANG_1",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 1,
+    "period": 4,
     "subjectId": "sub-van",
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-4",
     "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
   },
   {
-    "id": "cls-10cb1_w2_6_SANG_2",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-sinh",
-    "subjectName": "Sinh học",
-    "teacherId": "tch-khtn-5",
-    "teacherName": "Cao Văn Tùng",
-    "teacherCode": "Tùng.CV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_6_SANG_2",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-li",
-    "subjectName": "Vật lí",
-    "teacherId": "tch-khtn-6",
-    "teacherName": "Trần Thị Ngọc Hiền",
-    "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_6_SANG_2",
+    "id": "cls-10cb3_2_SANG_4",
     "classId": "cls-10cb3",
     "className": "10CB3",
-    "dayOfWeek": 6,
+    "dayOfWeek": 2,
     "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-van",
-    "subjectName": "Ngữ văn",
-    "teacherId": "tch-v-5",
-    "teacherName": "Lê Thị Mỹ Ny",
-    "teacherCode": "Ny.LTM",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_6_SANG_2",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-van",
-    "subjectName": "Ngữ văn",
-    "teacherId": "tch-v-6",
-    "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_6_SANG_2",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-van",
-    "subjectName": "Ngữ văn",
-    "teacherId": "tch-v-4",
-    "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_6_SANG_3",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-li",
-    "subjectName": "Vật lí",
-    "teacherId": "tch-khtn-6",
-    "teacherName": "Trần Thị Ngọc Hiền",
-    "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_6_SANG_3",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-su",
-    "subjectName": "Lịch sử",
-    "teacherId": "tch-ls-2",
-    "teacherName": "Trịnh Văn Sơn",
-    "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_6_SANG_3",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 3,
+    "period": 4,
     "subjectId": "sub-toan",
     "subjectName": "Toán học",
     "teacherId": "tch-t-5",
     "teacherName": "Lê Cao Toàn",
     "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-10cb4_w2_6_SANG_3",
+    "id": "cls-10cb4_2_SANG_4",
     "classId": "cls-10cb4",
     "className": "10CB4",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-dia",
-    "subjectName": "Địa lí",
-    "teacherId": "tch-ls-6",
-    "teacherName": "Trần Phước Hòa",
-    "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_6_SANG_3",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-4",
-    "teacherName": "Trần Văn Giang",
-    "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_6_SANG_4",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-av-4",
-    "teacherName": "Võ Thị Hiền Thi",
-    "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_6_SANG_4",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-tin",
-    "subjectName": "Tin học",
-    "teacherId": "tch-tin-1",
-    "teacherName": "Lê Thị Thu Diễm",
-    "teacherCode": "Diễm.LTT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_6_SANG_4",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 6,
+    "dayOfWeek": 2,
     "session": "SANG",
     "period": 4,
     "subjectId": "sub-hdtn-cd",
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-khtn-9",
     "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
   },
   {
-    "id": "cls-10cb4_w2_6_SANG_4",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 4,
-    "subjectId": "sub-li",
-    "subjectName": "Vật lí",
-    "teacherId": "tch-khtn-6",
-    "teacherName": "Trần Thị Ngọc Hiền",
-    "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_6_SANG_4",
+    "id": "cls-10cb5_2_SANG_4",
     "classId": "cls-10cb5",
     "className": "10CB5",
-    "dayOfWeek": 6,
+    "dayOfWeek": 2,
     "session": "SANG",
     "period": 4,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-4",
-    "teacherName": "Trần Văn Giang",
-    "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_6_SANG_5",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-tin",
-    "subjectName": "Tin học",
-    "teacherId": "tch-tin-1",
-    "teacherName": "Lê Thị Thu Diễm",
-    "teacherCode": "Diễm.LTT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_6_SANG_5",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 5,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-5",
-    "teacherName": "Lê Cao Toàn",
-    "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb3_w2_6_SANG_5",
-    "classId": "cls-10cb3",
-    "className": "10CB3",
-    "dayOfWeek": 6,
-    "session": "SANG",
-    "period": 5,
     "subjectId": "sub-dia",
     "subjectName": "Địa lí",
     "teacherId": "tch-ls-6",
     "teacherName": "Trần Phước Hòa",
     "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-10cb4_w2_6_SANG_5",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 6,
+    "id": "cls-10cb1_2_SANG_5",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 2,
     "session": "SANG",
     "period": 5,
-    "subjectId": "sub-hdtn-cd",
-    "subjectName": "HĐTNHN (Chuyên đề)",
+    "subjectId": "sub-hoa",
+    "subjectName": "Hóa học",
     "teacherId": "tch-khtn-9",
     "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
   },
   {
-    "id": "cls-10cb5_w2_6_SANG_5",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 6,
+    "id": "cls-10cb2_2_SANG_5",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 2,
     "session": "SANG",
     "period": 5,
-    "subjectId": "sub-li",
-    "subjectName": "Vật lí",
-    "teacherId": "tch-khtn-6",
-    "teacherName": "Trần Thị Ngọc Hiền",
-    "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_7_SANG_1",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 7,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-sinh",
-    "subjectName": "Sinh học",
-    "teacherId": "tch-khtn-5",
-    "teacherName": "Cao Văn Tùng",
-    "teacherCode": "Tùng.CV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_7_SANG_1",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 7,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-ls-17",
-    "teacherName": "Ngô Bảo Quốc",
-    "teacherCode": "Quốc.NB",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_7_SANG_1",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 7,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-7",
-    "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_7_SANG_1",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 7,
-    "session": "SANG",
-    "period": 1,
-    "subjectId": "sub-gdtc",
-    "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-5",
-    "teacherName": "Nguyễn Kim Rạng",
-    "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_7_SANG_2",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 7,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-hdtn-cd",
-    "subjectName": "HĐTNHN (Chuyên đề)",
-    "teacherId": "tch-khtn-5",
-    "teacherName": "Cao Văn Tùng",
-    "teacherCode": "Tùng.CV",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_7_SANG_2",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 7,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-anh",
-    "subjectName": "Tiếng Anh",
-    "teacherId": "tch-ls-17",
-    "teacherName": "Ngô Bảo Quốc",
-    "teacherCode": "Quốc.NB",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_7_SANG_2",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 7,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-7",
-    "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_7_SANG_2",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 7,
-    "session": "SANG",
-    "period": 2,
-    "subjectId": "sub-gdtc",
-    "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-5",
-    "teacherName": "Nguyễn Kim Rạng",
-    "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb1_w2_7_SANG_3",
-    "classId": "cls-10cb1",
-    "className": "10CB1",
-    "dayOfWeek": 7,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-toan",
-    "subjectName": "Toán học",
-    "teacherId": "tch-t-7",
-    "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb2_w2_7_SANG_3",
-    "classId": "cls-10cb2",
-    "className": "10CB2",
-    "dayOfWeek": 7,
-    "session": "SANG",
-    "period": 3,
     "subjectId": "sub-van",
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-4",
     "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
   },
   {
-    "id": "cls-10cb3_w2_7_SANG_3",
+    "id": "cls-10cb3_2_SANG_5",
     "classId": "cls-10cb3",
     "className": "10CB3",
-    "dayOfWeek": 7,
+    "dayOfWeek": 2,
     "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-tin",
-    "subjectName": "Tin học",
-    "teacherId": "tch-tin-1",
-    "teacherName": "Lê Thị Thu Diễm",
-    "teacherCode": "Diễm.LTT",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb4_w2_7_SANG_3",
-    "classId": "cls-10cb4",
-    "className": "10CB4",
-    "dayOfWeek": 7,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-gdtc",
-    "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-td-6",
-    "teacherName": "Lê Ngọc Ẩn",
-    "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
-  },
-  {
-    "id": "cls-10cb5_w2_7_SANG_3",
-    "classId": "cls-10cb5",
-    "className": "10CB5",
-    "dayOfWeek": 7,
-    "session": "SANG",
-    "period": 3,
-    "subjectId": "sub-tin",
-    "subjectName": "Tin học",
+    "period": 5,
+    "subjectId": "sub-ktpl",
+    "subjectName": "Giáo dục KT & PL",
     "teacherId": "tch-ls-8",
-    "teacherName": "Nguyễn Trung Hiếu",
-    "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
   },
   {
-    "id": "cls-10cb1_w2_7_SANG_4",
+    "id": "cls-10cb4_2_SANG_5",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 2,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-tin",
+    "subjectName": "Tin học",
+    "teacherId": "tch-av-9",
+    "teacherName": "Lê Thị Thu Diễm",
+    "teacherCode": "Diễm.LTT (10CB4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_2_SANG_5",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 2,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-4",
+    "teacherName": "Trần Văn Giang",
+    "teacherCode": "Giang.TV",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_3_SANG_1",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-hoa",
+    "subjectName": "Hóa học",
+    "teacherId": "tch-khtn-9",
+    "teacherName": "Trần Thị Kiều",
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_3_SANG_1",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-tin",
+    "subjectName": "Tin học",
+    "teacherId": "tch-av-9",
+    "teacherName": "Lê Thị Thu Diễm",
+    "teacherCode": "Diễm.LTT (10CB4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_3_SANG_1",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-van",
+    "subjectName": "Ngữ văn",
+    "teacherId": "tch-v-5",
+    "teacherName": "Lê Thị Mỹ Ny",
+    "teacherCode": "Ny.LTM (10CB3)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_3_SANG_1",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-qpan",
+    "subjectName": "GDQP - AN",
+    "teacherId": "tch-td-2",
+    "teacherName": "Nguyễn Kim Rạng",
+    "teacherCode": "Rạng.NK",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_3_SANG_1",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-7",
+    "teacherName": "Nguyễn Thị Vân Anh",
+    "teacherCode": "Anh.NTV",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_3_SANG_2",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-van",
+    "subjectName": "Ngữ văn",
+    "teacherId": "tch-v-6",
+    "teacherName": "Trương Thị Mỹ Duyên",
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_3_SANG_2",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-hoa",
+    "subjectName": "Hóa học",
+    "teacherId": "tch-khtn-9",
+    "teacherName": "Trần Thị Kiều",
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_3_SANG_2",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-van",
+    "subjectName": "Ngữ văn",
+    "teacherId": "tch-v-5",
+    "teacherName": "Lê Thị Mỹ Ny",
+    "teacherCode": "Ny.LTM (10CB3)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_3_SANG_2",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-tin",
+    "subjectName": "Tin học",
+    "teacherId": "tch-av-9",
+    "teacherName": "Lê Thị Thu Diễm",
+    "teacherCode": "Diễm.LTT (10CB4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_3_SANG_2",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-7",
+    "teacherName": "Nguyễn Thị Vân Anh",
+    "teacherCode": "Anh.NTV",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_3_SANG_3",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-su",
+    "subjectName": "Lịch sử",
+    "teacherId": "tch-ls-4",
+    "teacherName": "Nguyễn Thị Bé Trang",
+    "teacherCode": "Trang.NTB (12CB4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_3_SANG_3",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-hdtn-cd",
+    "subjectName": "HĐTNHN (Chuyên đề)",
+    "teacherId": "tch-khtn-9",
+    "teacherName": "Trần Thị Kiều",
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_3_SANG_3",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-5",
+    "teacherName": "Lê Cao Toàn",
+    "teacherCode": "Toàn.LC",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_3_SANG_3",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-van",
+    "subjectName": "Ngữ văn",
+    "teacherId": "tch-v-6",
+    "teacherName": "Trương Thị Mỹ Duyên",
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_3_SANG_3",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-tin",
+    "subjectName": "Tin học",
+    "teacherId": "tch-av-2",
+    "teacherName": "Nguyễn Trung Hiếu",
+    "teacherCode": "Hiếu.NT (Tin)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_3_SANG_4",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-4",
+    "teacherName": "Võ Thị Hiền Thi",
+    "teacherCode": "Thi.VTH",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_3_SANG_4",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-li",
+    "subjectName": "Vật lí",
+    "teacherId": "tch-khtn-6",
+    "teacherName": "Trần Thị Ngọc Hiền",
+    "teacherCode": "Hiền.TTN",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_3_SANG_4",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-5",
+    "teacherName": "Lê Cao Toàn",
+    "teacherCode": "Toàn.LC",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_3_SANG_4",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-su",
+    "subjectName": "Lịch sử",
+    "teacherId": "tch-ls-4",
+    "teacherName": "Nguyễn Thị Bé Trang",
+    "teacherCode": "Trang.NTB (12CB4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_3_SANG_4",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-ktpl",
+    "subjectName": "Giáo dục KT & PL",
+    "teacherId": "tch-ls-8",
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_3_SANG_5",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-4",
+    "teacherName": "Võ Thị Hiền Thi",
+    "teacherCode": "Thi.VTH",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_3_SANG_5",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-5",
+    "teacherName": "Lê Cao Toàn",
+    "teacherCode": "Toàn.LC",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_3_SANG_5",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-li",
+    "subjectName": "Vật lí",
+    "teacherId": "tch-khtn-6",
+    "teacherName": "Trần Thị Ngọc Hiền",
+    "teacherCode": "Hiền.TTN",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_3_SANG_5",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-ktpl",
+    "subjectName": "Giáo dục KT & PL",
+    "teacherId": "tch-ls-8",
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_3_SANG_5",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 3,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-hdtn-cd",
+    "subjectName": "HĐTNHN (Chuyên đề)",
+    "teacherId": "tch-khtn-9",
+    "teacherName": "Trần Thị Kiều",
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_4_SANG_1",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-van",
+    "subjectName": "Ngữ văn",
+    "teacherId": "tch-v-6",
+    "teacherName": "Trương Thị Mỹ Duyên",
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_4_SANG_1",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-dia",
+    "subjectName": "Địa lí",
+    "teacherId": "tch-ls-6",
+    "teacherName": "Trần Phước Hòa",
+    "teacherCode": "Hòa.TP",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_4_SANG_1",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-ktpl",
+    "subjectName": "Giáo dục KT & PL",
+    "teacherId": "tch-ls-8",
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_4_SANG_1",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-7",
+    "teacherName": "Nguyễn Thị Vân Anh",
+    "teacherCode": "Anh.NTV",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_4_SANG_1",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-li",
+    "subjectName": "Vật lí",
+    "teacherId": "tch-khtn-6",
+    "teacherName": "Trần Thị Ngọc Hiền",
+    "teacherCode": "Hiền.TTN",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_4_SANG_2",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-van",
+    "subjectName": "Ngữ văn",
+    "teacherId": "tch-v-6",
+    "teacherName": "Trương Thị Mỹ Duyên",
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_4_SANG_2",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-gdtc",
+    "subjectName": "Giáo dục thể chất",
+    "teacherId": "tch-td-6",
+    "teacherName": "Lê Ngọc Ẩn",
+    "teacherCode": "Ẩn.LN (7A4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_4_SANG_2",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-dia",
+    "subjectName": "Địa lí",
+    "teacherId": "tch-ls-6",
+    "teacherName": "Trần Phước Hòa",
+    "teacherCode": "Hòa.TP",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_4_SANG_2",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-7",
+    "teacherName": "Nguyễn Thị Vân Anh",
+    "teacherCode": "Anh.NTV",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_4_SANG_2",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-4",
+    "teacherName": "Trần Văn Giang",
+    "teacherCode": "Giang.TV",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_4_SANG_3",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-li",
+    "subjectName": "Vật lí",
+    "teacherId": "tch-khtn-6",
+    "teacherName": "Trần Thị Ngọc Hiền",
+    "teacherCode": "Hiền.TTN",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_4_SANG_3",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-gdtc",
+    "subjectName": "Giáo dục thể chất",
+    "teacherId": "tch-td-6",
+    "teacherName": "Lê Ngọc Ẩn",
+    "teacherCode": "Ẩn.LN (7A4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_4_SANG_3",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-qpan",
+    "subjectName": "GDQP - AN",
+    "teacherId": "tch-td-2",
+    "teacherName": "Nguyễn Kim Rạng",
+    "teacherCode": "Rạng.NK",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_4_SANG_3",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-dia",
+    "subjectName": "Địa lí",
+    "teacherId": "tch-ls-6",
+    "teacherName": "Trần Phước Hòa",
+    "teacherCode": "Hòa.TP",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_4_SANG_3",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-su",
+    "subjectName": "Lịch sử",
+    "teacherId": "tch-ls-4",
+    "teacherName": "Nguyễn Thị Bé Trang",
+    "teacherCode": "Trang.NTB (12CB4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_4_SANG_4",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-7",
+    "teacherName": "Võ Thị Ngọc Hương",
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_4_SANG_4",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-5",
+    "teacherName": "Lê Cao Toàn",
+    "teacherCode": "Toàn.LC",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_4_SANG_4",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-li",
+    "subjectName": "Vật lí",
+    "teacherId": "tch-khtn-6",
+    "teacherName": "Trần Thị Ngọc Hiền",
+    "teacherCode": "Hiền.TTN",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_4_SANG_4",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-tin",
+    "subjectName": "Tin học",
+    "teacherId": "tch-av-9",
+    "teacherName": "Lê Thị Thu Diễm",
+    "teacherCode": "Diễm.LTT (10CB4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_4_SANG_4",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-dia",
+    "subjectName": "Địa lí",
+    "teacherId": "tch-ls-6",
+    "teacherName": "Trần Phước Hòa",
+    "teacherCode": "Hòa.TP",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_4_SANG_5",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-7",
+    "teacherName": "Võ Thị Ngọc Hương",
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_4_SANG_5",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-5",
+    "teacherName": "Lê Cao Toàn",
+    "teacherCode": "Toàn.LC",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_4_SANG_5",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-tin",
+    "subjectName": "Tin học",
+    "teacherId": "tch-av-9",
+    "teacherName": "Lê Thị Thu Diễm",
+    "teacherCode": "Diễm.LTT (10CB4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_4_SANG_5",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-li",
+    "subjectName": "Vật lí",
+    "teacherId": "tch-khtn-6",
+    "teacherName": "Trần Thị Ngọc Hiền",
+    "teacherCode": "Hiền.TTN",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_4_SANG_5",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 4,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-7",
+    "teacherName": "Nguyễn Thị Vân Anh",
+    "teacherCode": "Anh.NTV",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_5_SANG_1",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-hoa",
+    "subjectName": "Hóa học",
+    "teacherId": "tch-khtn-9",
+    "teacherName": "Trần Thị Kiều",
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_5_SANG_1",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-qpan",
+    "subjectName": "GDQP - AN",
+    "teacherId": "tch-td-2",
+    "teacherName": "Nguyễn Kim Rạng",
+    "teacherCode": "Rạng.NK",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_5_SANG_1",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-li",
+    "subjectName": "Vật lí",
+    "teacherId": "tch-khtn-6",
+    "teacherName": "Trần Thị Ngọc Hiền",
+    "teacherCode": "Hiền.TTN",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_5_SANG_1",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-7",
+    "teacherName": "Võ Thị Ngọc Hương",
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_5_SANG_1",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-van",
+    "subjectName": "Ngữ văn",
+    "teacherId": "tch-v-4",
+    "teacherName": "Hồ Văn Nhịnh",
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_5_SANG_2",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-gdtc",
+    "subjectName": "Giáo dục thể chất",
+    "teacherId": "tch-td-6",
+    "teacherName": "Lê Ngọc Ẩn",
+    "teacherCode": "Ẩn.LN (7A4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_5_SANG_2",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-hdtn-cd",
+    "subjectName": "HĐTNHN (Chuyên đề)",
+    "teacherId": "tch-khtn-9",
+    "teacherName": "Trần Thị Kiều",
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_5_SANG_2",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-5",
+    "teacherName": "Ngô Bảo Quốc",
+    "teacherCode": "Quốc.NB",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_5_SANG_2",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-li",
+    "subjectName": "Vật lí",
+    "teacherId": "tch-khtn-6",
+    "teacherName": "Trần Thị Ngọc Hiền",
+    "teacherCode": "Hiền.TTN",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_5_SANG_2",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-qpan",
+    "subjectName": "GDQP - AN",
+    "teacherId": "tch-td-2",
+    "teacherName": "Nguyễn Kim Rạng",
+    "teacherCode": "Rạng.NK",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_5_SANG_3",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-gdtc",
+    "subjectName": "Giáo dục thể chất",
+    "teacherId": "tch-td-6",
+    "teacherName": "Lê Ngọc Ẩn",
+    "teacherCode": "Ẩn.LN (7A4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_5_SANG_3",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-hoa",
+    "subjectName": "Hóa học",
+    "teacherId": "tch-khtn-9",
+    "teacherName": "Trần Thị Kiều",
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_5_SANG_3",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-5",
+    "teacherName": "Ngô Bảo Quốc",
+    "teacherCode": "Quốc.NB",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_5_SANG_3",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-7",
+    "teacherName": "Nguyễn Thị Vân Anh",
+    "teacherCode": "Anh.NTV",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_5_SANG_3",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-tin",
+    "subjectName": "Tin học",
+    "teacherId": "tch-av-2",
+    "teacherName": "Nguyễn Trung Hiếu",
+    "teacherCode": "Hiếu.NT (Tin)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_5_SANG_4",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-gdtc",
+    "subjectName": "Giáo dục thể chất",
+    "teacherId": "tch-td-6",
+    "teacherName": "Lê Ngọc Ẩn",
+    "teacherCode": "Ẩn.LN (7A4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_5_SANG_5",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 5,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-gdtc",
+    "subjectName": "Giáo dục thể chất",
+    "teacherId": "tch-td-6",
+    "teacherName": "Lê Ngọc Ẩn",
+    "teacherCode": "Ẩn.LN (7A4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_6_SANG_1",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-qpan",
+    "subjectName": "GDQP - AN",
+    "teacherId": "tch-td-2",
+    "teacherName": "Nguyễn Kim Rạng",
+    "teacherCode": "Rạng.NK",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_6_SANG_1",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-5",
+    "teacherName": "Ngô Bảo Quốc",
+    "teacherCode": "Quốc.NB",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_6_SANG_1",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-su",
+    "subjectName": "Lịch sử",
+    "teacherId": "tch-ls-2",
+    "teacherName": "Trịnh Văn Sơn",
+    "teacherCode": "Sơn.TV (12CB5)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_6_SANG_1",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-van",
+    "subjectName": "Ngữ văn",
+    "teacherId": "tch-v-6",
+    "teacherName": "Trương Thị Mỹ Duyên",
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_6_SANG_1",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-van",
+    "subjectName": "Ngữ văn",
+    "teacherId": "tch-v-4",
+    "teacherName": "Hồ Văn Nhịnh",
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_6_SANG_2",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-sinh",
+    "subjectName": "Sinh học",
+    "teacherId": "tch-khtn-5",
+    "teacherName": "Cao Văn Tùng",
+    "teacherCode": "Tùng.CV (10CB1)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_6_SANG_2",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-li",
+    "subjectName": "Vật lí",
+    "teacherId": "tch-khtn-6",
+    "teacherName": "Trần Thị Ngọc Hiền",
+    "teacherCode": "Hiền.TTN",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_6_SANG_2",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-van",
+    "subjectName": "Ngữ văn",
+    "teacherId": "tch-v-5",
+    "teacherName": "Lê Thị Mỹ Ny",
+    "teacherCode": "Ny.LTM (10CB3)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_6_SANG_2",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-van",
+    "subjectName": "Ngữ văn",
+    "teacherId": "tch-v-6",
+    "teacherName": "Trương Thị Mỹ Duyên",
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_6_SANG_2",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-van",
+    "subjectName": "Ngữ văn",
+    "teacherId": "tch-v-4",
+    "teacherName": "Hồ Văn Nhịnh",
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_6_SANG_3",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-li",
+    "subjectName": "Vật lí",
+    "teacherId": "tch-khtn-6",
+    "teacherName": "Trần Thị Ngọc Hiền",
+    "teacherCode": "Hiền.TTN",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_6_SANG_3",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-su",
+    "subjectName": "Lịch sử",
+    "teacherId": "tch-ls-2",
+    "teacherName": "Trịnh Văn Sơn",
+    "teacherCode": "Sơn.TV (12CB5)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_6_SANG_3",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-5",
+    "teacherName": "Lê Cao Toàn",
+    "teacherCode": "Toàn.LC",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_6_SANG_3",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-dia",
+    "subjectName": "Địa lí",
+    "teacherId": "tch-ls-6",
+    "teacherName": "Trần Phước Hòa",
+    "teacherCode": "Hòa.TP",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_6_SANG_3",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-4",
+    "teacherName": "Trần Văn Giang",
+    "teacherCode": "Giang.TV",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_6_SANG_4",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-4",
+    "teacherName": "Võ Thị Hiền Thi",
+    "teacherCode": "Thi.VTH",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_6_SANG_4",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-tin",
+    "subjectName": "Tin học",
+    "teacherId": "tch-av-9",
+    "teacherName": "Lê Thị Thu Diễm",
+    "teacherCode": "Diễm.LTT (10CB4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_6_SANG_4",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-hdtn-cd",
+    "subjectName": "HĐTNHN (Chuyên đề)",
+    "teacherId": "tch-khtn-9",
+    "teacherName": "Trần Thị Kiều",
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_6_SANG_4",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-li",
+    "subjectName": "Vật lí",
+    "teacherId": "tch-khtn-6",
+    "teacherName": "Trần Thị Ngọc Hiền",
+    "teacherCode": "Hiền.TTN",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_6_SANG_4",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 4,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-4",
+    "teacherName": "Trần Văn Giang",
+    "teacherCode": "Giang.TV",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_6_SANG_5",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-tin",
+    "subjectName": "Tin học",
+    "teacherId": "tch-av-9",
+    "teacherName": "Lê Thị Thu Diễm",
+    "teacherCode": "Diễm.LTT (10CB4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_6_SANG_5",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-5",
+    "teacherName": "Lê Cao Toàn",
+    "teacherCode": "Toàn.LC",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_6_SANG_5",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-dia",
+    "subjectName": "Địa lí",
+    "teacherId": "tch-ls-6",
+    "teacherName": "Trần Phước Hòa",
+    "teacherCode": "Hòa.TP",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_6_SANG_5",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-hdtn-cd",
+    "subjectName": "HĐTNHN (Chuyên đề)",
+    "teacherId": "tch-khtn-9",
+    "teacherName": "Trần Thị Kiều",
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_6_SANG_5",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 6,
+    "session": "SANG",
+    "period": 5,
+    "subjectId": "sub-li",
+    "subjectName": "Vật lí",
+    "teacherId": "tch-khtn-6",
+    "teacherName": "Trần Thị Ngọc Hiền",
+    "teacherCode": "Hiền.TTN",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_7_SANG_1",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 7,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-sinh",
+    "subjectName": "Sinh học",
+    "teacherId": "tch-khtn-5",
+    "teacherName": "Cao Văn Tùng",
+    "teacherCode": "Tùng.CV (10CB1)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_7_SANG_1",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 7,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-5",
+    "teacherName": "Ngô Bảo Quốc",
+    "teacherCode": "Quốc.NB",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_7_SANG_1",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 7,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-7",
+    "teacherName": "Võ Thị Ngọc Hương",
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_7_SANG_1",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 7,
+    "session": "SANG",
+    "period": 1,
+    "subjectId": "sub-gdtc",
+    "subjectName": "Giáo dục thể chất",
+    "teacherId": "tch-td-2",
+    "teacherName": "Nguyễn Kim Rạng",
+    "teacherCode": "Rạng.NK",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_7_SANG_2",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 7,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-hdtn-cd",
+    "subjectName": "HĐTNHN (Chuyên đề)",
+    "teacherId": "tch-khtn-5",
+    "teacherName": "Cao Văn Tùng",
+    "teacherCode": "Tùng.CV (10CB1)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_7_SANG_2",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 7,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-anh",
+    "subjectName": "Tiếng Anh",
+    "teacherId": "tch-av-5",
+    "teacherName": "Ngô Bảo Quốc",
+    "teacherCode": "Quốc.NB",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_7_SANG_2",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 7,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-7",
+    "teacherName": "Võ Thị Ngọc Hương",
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_7_SANG_2",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 7,
+    "session": "SANG",
+    "period": 2,
+    "subjectId": "sub-gdtc",
+    "subjectName": "Giáo dục thể chất",
+    "teacherId": "tch-td-2",
+    "teacherName": "Nguyễn Kim Rạng",
+    "teacherCode": "Rạng.NK",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_7_SANG_3",
+    "classId": "cls-10cb1",
+    "className": "10CB1",
+    "dayOfWeek": 7,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-toan",
+    "subjectName": "Toán học",
+    "teacherId": "tch-t-7",
+    "teacherName": "Võ Thị Ngọc Hương",
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb2_7_SANG_3",
+    "classId": "cls-10cb2",
+    "className": "10CB2",
+    "dayOfWeek": 7,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-van",
+    "subjectName": "Ngữ văn",
+    "teacherId": "tch-v-4",
+    "teacherName": "Hồ Văn Nhịnh",
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb3_7_SANG_3",
+    "classId": "cls-10cb3",
+    "className": "10CB3",
+    "dayOfWeek": 7,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-tin",
+    "subjectName": "Tin học",
+    "teacherId": "tch-av-9",
+    "teacherName": "Lê Thị Thu Diễm",
+    "teacherCode": "Diễm.LTT (10CB4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb4_7_SANG_3",
+    "classId": "cls-10cb4",
+    "className": "10CB4",
+    "dayOfWeek": 7,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-gdtc",
+    "subjectName": "Giáo dục thể chất",
+    "teacherId": "tch-td-6",
+    "teacherName": "Lê Ngọc Ẩn",
+    "teacherCode": "Ẩn.LN (7A4)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb5_7_SANG_3",
+    "classId": "cls-10cb5",
+    "className": "10CB5",
+    "dayOfWeek": 7,
+    "session": "SANG",
+    "period": 3,
+    "subjectId": "sub-tin",
+    "subjectName": "Tin học",
+    "teacherId": "tch-av-2",
+    "teacherName": "Nguyễn Trung Hiếu",
+    "teacherCode": "Hiếu.NT (Tin)",
+    "room": ""
+  },
+  {
+    "id": "cls-10cb1_7_SANG_4",
     "classId": "cls-10cb1",
     "className": "10CB1",
     "dayOfWeek": 7,
@@ -18511,12 +17278,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-7",
     "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
   },
   {
-    "id": "cls-10cb2_w2_7_SANG_4",
+    "id": "cls-10cb2_7_SANG_4",
     "classId": "cls-10cb2",
     "className": "10CB2",
     "dayOfWeek": 7,
@@ -18524,14 +17290,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-tin",
     "subjectName": "Tin học",
-    "teacherId": "tch-tin-1",
+    "teacherId": "tch-av-9",
     "teacherName": "Lê Thị Thu Diễm",
-    "teacherCode": "Diễm.LTT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Diễm.LTT (10CB4)",
+    "room": ""
   },
   {
-    "id": "cls-10cb3_w2_7_SANG_4",
+    "id": "cls-10cb3_7_SANG_4",
     "classId": "cls-10cb3",
     "className": "10CB3",
     "dayOfWeek": 7,
@@ -18539,14 +17304,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-anh",
     "subjectName": "Tiếng Anh",
-    "teacherId": "tch-ls-17",
+    "teacherId": "tch-av-5",
     "teacherName": "Ngô Bảo Quốc",
     "teacherCode": "Quốc.NB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-10cb4_w2_7_SANG_4",
+    "id": "cls-10cb4_7_SANG_4",
     "classId": "cls-10cb4",
     "className": "10CB4",
     "dayOfWeek": 7,
@@ -18556,12 +17320,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Giáo dục thể chất",
     "teacherId": "tch-td-6",
     "teacherName": "Lê Ngọc Ẩn",
-    "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Ẩn.LN (7A4)",
+    "room": ""
   },
   {
-    "id": "cls-10cb5_w2_7_SANG_4",
+    "id": "cls-10cb5_7_SANG_4",
     "classId": "cls-10cb5",
     "className": "10CB5",
     "dayOfWeek": 7,
@@ -18571,12 +17334,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-khtn-9",
     "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
   },
   {
-    "id": "cls-10cb1_w2_7_SANG_5",
+    "id": "cls-10cb1_7_SANG_5",
     "classId": "cls-10cb1",
     "className": "10CB1",
     "dayOfWeek": 7,
@@ -18586,12 +17348,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh hoạt lớp",
     "teacherId": "tch-khtn-5",
     "teacherName": "Cao Văn Tùng",
-    "teacherCode": "Tùng.CV",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Tùng.CV (10CB1)",
+    "room": ""
   },
   {
-    "id": "cls-10cb2_w2_7_SANG_5",
+    "id": "cls-10cb2_7_SANG_5",
     "classId": "cls-10cb2",
     "className": "10CB2",
     "dayOfWeek": 7,
@@ -18601,12 +17362,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh hoạt lớp",
     "teacherId": "tch-khtn-9",
     "teacherName": "Trần Thị Kiều",
-    "teacherCode": "Kiều.TT",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Kiều.TT (10CB2)",
+    "room": ""
   },
   {
-    "id": "cls-10cb3_w2_7_SANG_5",
+    "id": "cls-10cb3_7_SANG_5",
     "classId": "cls-10cb3",
     "className": "10CB3",
     "dayOfWeek": 7,
@@ -18616,12 +17376,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh hoạt lớp",
     "teacherId": "tch-v-5",
     "teacherName": "Lê Thị Mỹ Ny",
-    "teacherCode": "Ny.LTM",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Ny.LTM (10CB3)",
+    "room": ""
   },
   {
-    "id": "cls-10cb4_w2_7_SANG_5",
+    "id": "cls-10cb4_7_SANG_5",
     "classId": "cls-10cb4",
     "className": "10CB4",
     "dayOfWeek": 7,
@@ -18629,14 +17388,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 5,
     "subjectId": "sub-shl",
     "subjectName": "Sinh hoạt lớp",
-    "teacherId": "tch-tin-1",
+    "teacherId": "tch-av-9",
     "teacherName": "Lê Thị Thu Diễm",
-    "teacherCode": "Diễm.LTT",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Diễm.LTT (10CB4)",
+    "room": ""
   },
   {
-    "id": "cls-10cb5_w2_7_SANG_5",
+    "id": "cls-10cb5_7_SANG_5",
     "classId": "cls-10cb5",
     "className": "10CB5",
     "dayOfWeek": 7,
@@ -18646,12 +17404,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh hoạt lớp",
     "teacherId": "tch-v-4",
     "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_2_SANG_1",
+    "id": "cls-11cb1_2_SANG_1",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 2,
@@ -18661,12 +17418,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Chào cờ",
     "teacherId": "tch-khtn-1",
     "teacherName": "Bùi Kim Huỳnh",
-    "teacherCode": "Huỳnh.BK",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Huỳnh.BK (11CB1)",
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_2_SANG_1",
+    "id": "cls-11cb2_2_SANG_1",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 2,
@@ -18676,12 +17432,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Chào cờ",
     "teacherId": "tch-khtn-8",
     "teacherName": "Phạm Long Phi",
-    "teacherCode": "Phi.PL",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Phi.PL (11CB2)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_2_SANG_1",
+    "id": "cls-11cb3_2_SANG_1",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 2,
@@ -18691,12 +17446,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Chào cờ",
     "teacherId": "tch-ls-5",
     "teacherName": "Trần Văn Rỡ",
-    "teacherCode": "Rỡ.TV",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Rỡ.TV (11CB3)",
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_2_SANG_1",
+    "id": "cls-11cb4_2_SANG_1",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 2,
@@ -18706,12 +17460,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Chào cờ",
     "teacherId": "tch-av-8",
     "teacherName": "Đào Thị Ngọc Liên",
-    "teacherCode": "Liên.ĐTN",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Liên.ĐTN (11CB4)",
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_2_SANG_2",
+    "id": "cls-11cb1_2_SANG_2",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 2,
@@ -18721,12 +17474,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Hóa học",
     "teacherId": "tch-khtn-7",
     "teacherName": "Phan Thị Ngọc Thơ",
-    "teacherCode": "Thơ.PTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Thơ.PTN (12CB1)",
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_2_SANG_2",
+    "id": "cls-11cb2_2_SANG_2",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 2,
@@ -18736,12 +17488,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Hóa học",
     "teacherId": "tch-khtn-8",
     "teacherName": "Phạm Long Phi",
-    "teacherCode": "Phi.PL",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Phi.PL (11CB2)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_2_SANG_2",
+    "id": "cls-11cb3_2_SANG_2",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 2,
@@ -18751,12 +17502,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-4",
     "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_2_SANG_2",
+    "id": "cls-11cb4_2_SANG_2",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 2,
@@ -18767,11 +17517,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_2_SANG_3",
+    "id": "cls-11cb1_2_SANG_3",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 2,
@@ -18781,12 +17530,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh học",
     "teacherId": "tch-khtn-1",
     "teacherName": "Bùi Kim Huỳnh",
-    "teacherCode": "Huỳnh.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Huỳnh.BK (11CB1)",
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_2_SANG_3",
+    "id": "cls-11cb2_2_SANG_3",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 2,
@@ -18796,12 +17544,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Tin học",
     "teacherId": "tch-av-8",
     "teacherName": "Đào Thị Ngọc Liên",
-    "teacherCode": "Liên.ĐTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Liên.ĐTN (11CB4)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_2_SANG_3",
+    "id": "cls-11cb3_2_SANG_3",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 2,
@@ -18811,12 +17558,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-4",
     "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_2_SANG_3",
+    "id": "cls-11cb4_2_SANG_3",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 2,
@@ -18827,11 +17573,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_2_SANG_4",
+    "id": "cls-11cb1_2_SANG_4",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 2,
@@ -18841,12 +17586,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Tin học",
     "teacherId": "tch-av-8",
     "teacherName": "Đào Thị Ngọc Liên",
-    "teacherCode": "Liên.ĐTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Liên.ĐTN (11CB4)",
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_2_SANG_4",
+    "id": "cls-11cb2_2_SANG_4",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 2,
@@ -18857,11 +17601,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-7",
     "teacherName": "Ngô Anh Tuấn",
     "teacherCode": "Tuấn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_2_SANG_4",
+    "id": "cls-11cb3_2_SANG_4",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 2,
@@ -18872,11 +17615,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-6",
     "teacherName": "Trần Thị Ngọc Hiền",
     "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_2_SANG_4",
+    "id": "cls-11cb4_2_SANG_4",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 2,
@@ -18887,11 +17629,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-4",
     "teacherName": "Trần Văn Giang",
     "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_2_SANG_5",
+    "id": "cls-11cb1_2_SANG_5",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 2,
@@ -18902,11 +17643,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-3",
     "teacherName": "Phạm Biên Thùy",
     "teacherCode": "Thùy.PB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_2_SANG_5",
+    "id": "cls-11cb2_2_SANG_5",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 2,
@@ -18917,11 +17657,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-5",
     "teacherName": "Lê Cao Toàn",
     "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_2_SANG_5",
+    "id": "cls-11cb3_2_SANG_5",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 2,
@@ -18932,11 +17671,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-7",
     "teacherName": "Ngô Anh Tuấn",
     "teacherCode": "Tuấn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_2_SANG_5",
+    "id": "cls-11cb4_2_SANG_5",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 2,
@@ -18946,12 +17684,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Tin học",
     "teacherId": "tch-av-8",
     "teacherName": "Đào Thị Ngọc Liên",
-    "teacherCode": "Liên.ĐTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Liên.ĐTN (11CB4)",
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_3_SANG_1",
+    "id": "cls-11cb1_3_SANG_1",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 3,
@@ -18962,11 +17699,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_3_SANG_1",
+    "id": "cls-11cb2_3_SANG_1",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 3,
@@ -18977,11 +17713,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-5",
     "teacherName": "Lê Cao Toàn",
     "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_3_SANG_1",
+    "id": "cls-11cb3_3_SANG_1",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 3,
@@ -18989,14 +17724,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 1,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_3_SANG_1",
+    "id": "cls-11cb4_3_SANG_1",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 3,
@@ -19007,11 +17741,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-3",
     "teacherName": "Phạm Biên Thùy",
     "teacherCode": "Thùy.PB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_3_SANG_2",
+    "id": "cls-11cb1_3_SANG_2",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 3,
@@ -19022,11 +17755,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_3_SANG_2",
+    "id": "cls-11cb2_3_SANG_2",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 3,
@@ -19037,11 +17769,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-3",
     "teacherName": "Phạm Biên Thùy",
     "teacherCode": "Thùy.PB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_3_SANG_2",
+    "id": "cls-11cb3_3_SANG_2",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 3,
@@ -19049,14 +17780,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_3_SANG_2",
+    "id": "cls-11cb4_3_SANG_2",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 3,
@@ -19064,14 +17794,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-ktpl",
     "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-ls-8",
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_3_SANG_3",
+    "id": "cls-11cb1_3_SANG_3",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 3,
@@ -19079,14 +17808,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_3_SANG_3",
+    "id": "cls-11cb2_3_SANG_3",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 3,
@@ -19096,12 +17824,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-khtn-8",
     "teacherName": "Phạm Long Phi",
-    "teacherCode": "Phi.PL",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Phi.PL (11CB2)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_3_SANG_3",
+    "id": "cls-11cb3_3_SANG_3",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 3,
@@ -19112,11 +17839,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-7",
     "teacherName": "Nguyễn Thị Vân Anh",
     "teacherCode": "Anh.NTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_3_SANG_3",
+    "id": "cls-11cb4_3_SANG_3",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 3,
@@ -19127,11 +17853,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_3_SANG_4",
+    "id": "cls-11cb1_3_SANG_4",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 3,
@@ -19139,14 +17864,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_3_SANG_4",
+    "id": "cls-11cb2_3_SANG_4",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 3,
@@ -19157,11 +17881,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-7",
     "teacherName": "Ngô Anh Tuấn",
     "teacherCode": "Tuấn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_3_SANG_4",
+    "id": "cls-11cb3_3_SANG_4",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 3,
@@ -19171,12 +17894,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Tin học",
     "teacherId": "tch-av-8",
     "teacherName": "Đào Thị Ngọc Liên",
-    "teacherCode": "Liên.ĐTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Liên.ĐTN (11CB4)",
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_3_SANG_4",
+    "id": "cls-11cb4_3_SANG_4",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 3,
@@ -19186,12 +17908,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-khtn-8",
     "teacherName": "Phạm Long Phi",
-    "teacherCode": "Phi.PL",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Phi.PL (11CB2)",
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_3_SANG_5",
+    "id": "cls-11cb1_3_SANG_5",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 3,
@@ -19201,12 +17922,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Tin học",
     "teacherId": "tch-av-8",
     "teacherName": "Đào Thị Ngọc Liên",
-    "teacherCode": "Liên.ĐTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Liên.ĐTN (11CB4)",
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_3_SANG_5",
+    "id": "cls-11cb2_3_SANG_5",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 3,
@@ -19216,12 +17936,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-5",
     "teacherName": "Trần Văn Rỡ",
-    "teacherCode": "Rỡ.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Rỡ.TV (11CB3)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_3_SANG_5",
+    "id": "cls-11cb3_3_SANG_5",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 3,
@@ -19231,12 +17950,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-khtn-8",
     "teacherName": "Phạm Long Phi",
-    "teacherCode": "Phi.PL",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Phi.PL (11CB2)",
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_3_SANG_5",
+    "id": "cls-11cb4_3_SANG_5",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 3,
@@ -19247,11 +17965,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-7",
     "teacherName": "Ngô Anh Tuấn",
     "teacherCode": "Tuấn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_4_SANG_1",
+    "id": "cls-11cb1_4_SANG_1",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 4,
@@ -19262,11 +17979,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_4_SANG_1",
+    "id": "cls-11cb2_4_SANG_1",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 4,
@@ -19274,14 +17990,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 1,
     "subjectId": "sub-qpan",
     "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
+    "teacherId": "tch-td-2",
     "teacherName": "Nguyễn Kim Rạng",
     "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_4_SANG_1",
+    "id": "cls-11cb3_4_SANG_1",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 4,
@@ -19291,12 +18006,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-khtn-8",
     "teacherName": "Phạm Long Phi",
-    "teacherCode": "Phi.PL",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Phi.PL (11CB2)",
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_4_SANG_1",
+    "id": "cls-11cb4_4_SANG_1",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 4,
@@ -19304,14 +18018,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 1,
     "subjectId": "sub-anh",
     "subjectName": "Tiếng Anh",
-    "teacherId": "tch-ls-17",
+    "teacherId": "tch-av-5",
     "teacherName": "Ngô Bảo Quốc",
     "teacherCode": "Quốc.NB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_4_SANG_2",
+    "id": "cls-11cb1_4_SANG_2",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 4,
@@ -19322,11 +18035,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_4_SANG_2",
+    "id": "cls-11cb2_4_SANG_2",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 4,
@@ -19336,12 +18048,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Hóa học",
     "teacherId": "tch-khtn-8",
     "teacherName": "Phạm Long Phi",
-    "teacherCode": "Phi.PL",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Phi.PL (11CB2)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_4_SANG_2",
+    "id": "cls-11cb3_4_SANG_2",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 4,
@@ -19352,11 +18063,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-6",
     "teacherName": "Trần Thị Ngọc Hiền",
     "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_4_SANG_2",
+    "id": "cls-11cb4_4_SANG_2",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 4,
@@ -19364,14 +18074,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-anh",
     "subjectName": "Tiếng Anh",
-    "teacherId": "tch-ls-17",
+    "teacherId": "tch-av-5",
     "teacherName": "Ngô Bảo Quốc",
     "teacherCode": "Quốc.NB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_4_SANG_3",
+    "id": "cls-11cb1_4_SANG_3",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 4,
@@ -19382,11 +18091,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-7",
     "teacherName": "Nguyễn Thị Vân Anh",
     "teacherCode": "Anh.NTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_4_SANG_3",
+    "id": "cls-11cb2_4_SANG_3",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 4,
@@ -19394,14 +18102,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_4_SANG_3",
+    "id": "cls-11cb3_4_SANG_3",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 4,
@@ -19412,11 +18119,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-4",
     "teacherName": "Trần Văn Giang",
     "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_4_SANG_3",
+    "id": "cls-11cb4_4_SANG_3",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 4,
@@ -19426,12 +18132,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-5",
     "teacherName": "Trần Văn Rỡ",
-    "teacherCode": "Rỡ.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Rỡ.TV (11CB3)",
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_4_SANG_4",
+    "id": "cls-11cb1_4_SANG_4",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 4,
@@ -19441,12 +18146,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh học",
     "teacherId": "tch-khtn-1",
     "teacherName": "Bùi Kim Huỳnh",
-    "teacherCode": "Huỳnh.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Huỳnh.BK (11CB1)",
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_4_SANG_4",
+    "id": "cls-11cb2_4_SANG_4",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 4,
@@ -19454,14 +18158,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_4_SANG_4",
+    "id": "cls-11cb3_4_SANG_4",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 4,
@@ -19471,12 +18174,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Tin học",
     "teacherId": "tch-av-8",
     "teacherName": "Đào Thị Ngọc Liên",
-    "teacherCode": "Liên.ĐTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Liên.ĐTN (11CB4)",
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_4_SANG_4",
+    "id": "cls-11cb4_4_SANG_4",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 4,
@@ -19487,11 +18189,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-4",
     "teacherName": "Trần Văn Giang",
     "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_4_SANG_5",
+    "id": "cls-11cb1_4_SANG_5",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 4,
@@ -19502,11 +18203,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_4_SANG_5",
+    "id": "cls-11cb2_4_SANG_5",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 4,
@@ -19516,12 +18216,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Tin học",
     "teacherId": "tch-av-8",
     "teacherName": "Đào Thị Ngọc Liên",
-    "teacherCode": "Liên.ĐTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Liên.ĐTN (11CB4)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_4_SANG_5",
+    "id": "cls-11cb3_4_SANG_5",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 4,
@@ -19529,14 +18228,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 5,
     "subjectId": "sub-ktpl",
     "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-ls-8",
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_4_SANG_5",
+    "id": "cls-11cb4_4_SANG_5",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 4,
@@ -19547,11 +18245,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-4",
     "teacherName": "Trần Văn Giang",
     "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_5_SANG_1",
+    "id": "cls-11cb1_5_SANG_1",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 5,
@@ -19561,12 +18258,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Hóa học",
     "teacherId": "tch-khtn-7",
     "teacherName": "Phan Thị Ngọc Thơ",
-    "teacherCode": "Thơ.PTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Thơ.PTN (12CB1)",
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_5_SANG_1",
+    "id": "cls-11cb2_5_SANG_1",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 5,
@@ -19576,12 +18272,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Hóa học",
     "teacherId": "tch-khtn-8",
     "teacherName": "Phạm Long Phi",
-    "teacherCode": "Phi.PL",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Phi.PL (11CB2)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_5_SANG_1",
+    "id": "cls-11cb3_5_SANG_1",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 5,
@@ -19592,11 +18287,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-7",
     "teacherName": "Nguyễn Thị Vân Anh",
     "teacherCode": "Anh.NTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_5_SANG_1",
+    "id": "cls-11cb4_5_SANG_1",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 5,
@@ -19606,12 +18300,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Tin học",
     "teacherId": "tch-av-8",
     "teacherName": "Đào Thị Ngọc Liên",
-    "teacherCode": "Liên.ĐTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Liên.ĐTN (11CB4)",
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_5_SANG_2",
+    "id": "cls-11cb1_5_SANG_2",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 5,
@@ -19621,12 +18314,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-khtn-8",
     "teacherName": "Phạm Long Phi",
-    "teacherCode": "Phi.PL",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Phi.PL (11CB2)",
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_5_SANG_2",
+    "id": "cls-11cb2_5_SANG_2",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 5,
@@ -19636,12 +18328,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Tin học",
     "teacherId": "tch-av-8",
     "teacherName": "Đào Thị Ngọc Liên",
-    "teacherCode": "Liên.ĐTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Liên.ĐTN (11CB4)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_5_SANG_2",
+    "id": "cls-11cb3_5_SANG_2",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 5,
@@ -19652,11 +18343,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-7",
     "teacherName": "Nguyễn Thị Vân Anh",
     "teacherCode": "Anh.NTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_5_SANG_2",
+    "id": "cls-11cb4_5_SANG_2",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 5,
@@ -19667,11 +18357,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-3",
     "teacherName": "Phạm Biên Thùy",
     "teacherCode": "Thùy.PB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_5_SANG_3",
+    "id": "cls-11cb1_5_SANG_3",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 5,
@@ -19681,12 +18370,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh học",
     "teacherId": "tch-khtn-1",
     "teacherName": "Bùi Kim Huỳnh",
-    "teacherCode": "Huỳnh.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Huỳnh.BK (11CB1)",
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_5_SANG_3",
+    "id": "cls-11cb2_5_SANG_3",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 5,
@@ -19696,12 +18384,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-4",
     "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_5_SANG_3",
+    "id": "cls-11cb3_5_SANG_3",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 5,
@@ -19711,12 +18398,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Tin học",
     "teacherId": "tch-av-8",
     "teacherName": "Đào Thị Ngọc Liên",
-    "teacherCode": "Liên.ĐTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Liên.ĐTN (11CB4)",
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_5_SANG_3",
+    "id": "cls-11cb4_5_SANG_3",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 5,
@@ -19727,11 +18413,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-7",
     "teacherName": "Ngô Anh Tuấn",
     "teacherCode": "Tuấn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_6_SANG_1",
+    "id": "cls-11cb1_6_SANG_1",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 6,
@@ -19742,11 +18427,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-7",
     "teacherName": "Nguyễn Thị Vân Anh",
     "teacherCode": "Anh.NTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_6_SANG_1",
+    "id": "cls-11cb2_6_SANG_1",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 6,
@@ -19757,11 +18441,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-5",
     "teacherName": "Lê Cao Toàn",
     "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_6_SANG_1",
+    "id": "cls-11cb3_6_SANG_1",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 6,
@@ -19772,11 +18455,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-6",
     "teacherName": "Trần Thị Ngọc Hiền",
     "teacherCode": "Hiền.TTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_6_SANG_1",
+    "id": "cls-11cb4_6_SANG_1",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 6,
@@ -19787,11 +18469,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-4",
     "teacherName": "Trần Văn Giang",
     "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_6_SANG_2",
+    "id": "cls-11cb1_6_SANG_2",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 6,
@@ -19802,11 +18483,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-7",
     "teacherName": "Nguyễn Thị Vân Anh",
     "teacherCode": "Anh.NTV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_6_SANG_2",
+    "id": "cls-11cb2_6_SANG_2",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 6,
@@ -19817,11 +18497,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-5",
     "teacherName": "Lê Cao Toàn",
     "teacherCode": "Toàn.LC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_6_SANG_2",
+    "id": "cls-11cb3_6_SANG_2",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 6,
@@ -19832,11 +18511,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-4",
     "teacherName": "Trần Văn Giang",
     "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_6_SANG_2",
+    "id": "cls-11cb4_6_SANG_2",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 6,
@@ -19844,14 +18522,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-qpan",
     "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
+    "teacherId": "tch-td-2",
     "teacherName": "Nguyễn Kim Rạng",
     "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_6_SANG_3",
+    "id": "cls-11cb1_6_SANG_3",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 6,
@@ -19862,11 +18539,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_6_SANG_3",
+    "id": "cls-11cb2_6_SANG_3",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 6,
@@ -19877,11 +18553,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-3",
     "teacherName": "Phạm Biên Thùy",
     "teacherCode": "Thùy.PB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_6_SANG_3",
+    "id": "cls-11cb3_6_SANG_3",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 6,
@@ -19889,14 +18564,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-qpan",
     "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
+    "teacherId": "tch-td-2",
     "teacherName": "Nguyễn Kim Rạng",
     "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_6_SANG_3",
+    "id": "cls-11cb4_6_SANG_3",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 6,
@@ -19904,14 +18578,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-anh",
     "subjectName": "Tiếng Anh",
-    "teacherId": "tch-ls-17",
+    "teacherId": "tch-av-5",
     "teacherName": "Ngô Bảo Quốc",
     "teacherCode": "Quốc.NB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_6_SANG_4",
+    "id": "cls-11cb1_6_SANG_4",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 6,
@@ -19922,11 +18595,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_6_SANG_4",
+    "id": "cls-11cb2_6_SANG_4",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 6,
@@ -19934,14 +18606,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-anh",
     "subjectName": "Tiếng Anh",
-    "teacherId": "tch-ls-17",
+    "teacherId": "tch-av-5",
     "teacherName": "Ngô Bảo Quốc",
     "teacherCode": "Quốc.NB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_6_SANG_4",
+    "id": "cls-11cb3_6_SANG_4",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 6,
@@ -19949,14 +18620,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-ktpl",
     "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-ls-8",
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_6_SANG_4",
+    "id": "cls-11cb4_6_SANG_4",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 6,
@@ -19967,11 +18637,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-3",
     "teacherName": "Phạm Biên Thùy",
     "teacherCode": "Thùy.PB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_6_SANG_5",
+    "id": "cls-11cb1_6_SANG_5",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 6,
@@ -19982,11 +18651,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-3",
     "teacherName": "Phạm Biên Thùy",
     "teacherCode": "Thùy.PB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_6_SANG_5",
+    "id": "cls-11cb2_6_SANG_5",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 6,
@@ -19994,14 +18662,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 5,
     "subjectId": "sub-anh",
     "subjectName": "Tiếng Anh",
-    "teacherId": "tch-ls-17",
+    "teacherId": "tch-av-5",
     "teacherName": "Ngô Bảo Quốc",
     "teacherCode": "Quốc.NB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_6_SANG_5",
+    "id": "cls-11cb3_6_SANG_5",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 6,
@@ -20012,11 +18679,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-7",
     "teacherName": "Ngô Anh Tuấn",
     "teacherCode": "Tuấn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_6_SANG_5",
+    "id": "cls-11cb4_6_SANG_5",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 6,
@@ -20024,14 +18690,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 5,
     "subjectId": "sub-ktpl",
     "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-ls-8",
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_7_SANG_1",
+    "id": "cls-11cb1_7_SANG_1",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 7,
@@ -20041,12 +18706,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-khtn-8",
     "teacherName": "Phạm Long Phi",
-    "teacherCode": "Phi.PL",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Phi.PL (11CB2)",
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_7_SANG_1",
+    "id": "cls-11cb2_7_SANG_1",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 7,
@@ -20056,12 +18720,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-4",
     "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_7_SANG_1",
+    "id": "cls-11cb3_7_SANG_1",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 7,
@@ -20072,11 +18735,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-4",
     "teacherName": "Trần Văn Giang",
     "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_7_SANG_1",
+    "id": "cls-11cb4_7_SANG_1",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 7,
@@ -20084,14 +18746,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 1,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_7_SANG_2",
+    "id": "cls-11cb1_7_SANG_2",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 7,
@@ -20101,12 +18762,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-5",
     "teacherName": "Trần Văn Rỡ",
-    "teacherCode": "Rỡ.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Rỡ.TV (11CB3)",
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_7_SANG_2",
+    "id": "cls-11cb2_7_SANG_2",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 7,
@@ -20116,12 +18776,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-4",
     "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_7_SANG_2",
+    "id": "cls-11cb3_7_SANG_2",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 7,
@@ -20132,11 +18791,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-4",
     "teacherName": "Trần Văn Giang",
     "teacherCode": "Giang.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_7_SANG_2",
+    "id": "cls-11cb4_7_SANG_2",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 7,
@@ -20144,14 +18802,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_7_SANG_3",
+    "id": "cls-11cb1_7_SANG_3",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 7,
@@ -20161,12 +18818,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Hóa học",
     "teacherId": "tch-khtn-7",
     "teacherName": "Phan Thị Ngọc Thơ",
-    "teacherCode": "Thơ.PTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Thơ.PTN (12CB1)",
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_7_SANG_3",
+    "id": "cls-11cb2_7_SANG_3",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 7,
@@ -20174,14 +18830,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-anh",
     "subjectName": "Tiếng Anh",
-    "teacherId": "tch-ls-17",
+    "teacherId": "tch-av-5",
     "teacherName": "Ngô Bảo Quốc",
     "teacherCode": "Quốc.NB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_7_SANG_3",
+    "id": "cls-11cb3_7_SANG_3",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 7,
@@ -20191,12 +18846,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-5",
     "teacherName": "Trần Văn Rỡ",
-    "teacherCode": "Rỡ.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Rỡ.TV (11CB3)",
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_7_SANG_3",
+    "id": "cls-11cb4_7_SANG_3",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 7,
@@ -20206,12 +18860,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-khtn-8",
     "teacherName": "Phạm Long Phi",
-    "teacherCode": "Phi.PL",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Phi.PL (11CB2)",
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_7_SANG_4",
+    "id": "cls-11cb1_7_SANG_4",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 7,
@@ -20219,14 +18872,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-qpan",
     "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
+    "teacherId": "tch-td-2",
     "teacherName": "Nguyễn Kim Rạng",
     "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_7_SANG_4",
+    "id": "cls-11cb2_7_SANG_4",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 7,
@@ -20236,12 +18888,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-khtn-8",
     "teacherName": "Phạm Long Phi",
-    "teacherCode": "Phi.PL",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Phi.PL (11CB2)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_7_SANG_4",
+    "id": "cls-11cb3_7_SANG_4",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 7,
@@ -20251,12 +18902,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-4",
     "teacherName": "Hồ Văn Nhịnh",
-    "teacherCode": "Nhịnh.HV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Nhịnh.HV (10CB5)",
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_7_SANG_4",
+    "id": "cls-11cb4_7_SANG_4",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 7,
@@ -20266,12 +18916,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Tin học",
     "teacherId": "tch-av-8",
     "teacherName": "Đào Thị Ngọc Liên",
-    "teacherCode": "Liên.ĐTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Liên.ĐTN (11CB4)",
+    "room": ""
   },
   {
-    "id": "cls-11cb1_w2_7_SANG_5",
+    "id": "cls-11cb1_7_SANG_5",
     "classId": "cls-11cb1",
     "className": "11CB1",
     "dayOfWeek": 7,
@@ -20281,12 +18930,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh hoạt lớp",
     "teacherId": "tch-khtn-1",
     "teacherName": "Bùi Kim Huỳnh",
-    "teacherCode": "Huỳnh.BK",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Huỳnh.BK (11CB1)",
+    "room": ""
   },
   {
-    "id": "cls-11cb2_w2_7_SANG_5",
+    "id": "cls-11cb2_7_SANG_5",
     "classId": "cls-11cb2",
     "className": "11CB2",
     "dayOfWeek": 7,
@@ -20296,12 +18944,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh hoạt lớp",
     "teacherId": "tch-khtn-8",
     "teacherName": "Phạm Long Phi",
-    "teacherCode": "Phi.PL",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Phi.PL (11CB2)",
+    "room": ""
   },
   {
-    "id": "cls-11cb3_w2_7_SANG_5",
+    "id": "cls-11cb3_7_SANG_5",
     "classId": "cls-11cb3",
     "className": "11CB3",
     "dayOfWeek": 7,
@@ -20311,12 +18958,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh hoạt lớp",
     "teacherId": "tch-ls-5",
     "teacherName": "Trần Văn Rỡ",
-    "teacherCode": "Rỡ.TV",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Rỡ.TV (11CB3)",
+    "room": ""
   },
   {
-    "id": "cls-11cb4_w2_7_SANG_5",
+    "id": "cls-11cb4_7_SANG_5",
     "classId": "cls-11cb4",
     "className": "11CB4",
     "dayOfWeek": 7,
@@ -20326,12 +18972,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh hoạt lớp",
     "teacherId": "tch-av-8",
     "teacherName": "Đào Thị Ngọc Liên",
-    "teacherCode": "Liên.ĐTN",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Liên.ĐTN (11CB4)",
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_2_SANG_1",
+    "id": "cls-12cb1_2_SANG_1",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 2,
@@ -20341,12 +18986,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Chào cờ",
     "teacherId": "tch-khtn-7",
     "teacherName": "Phan Thị Ngọc Thơ",
-    "teacherCode": "Thơ.PTN",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Thơ.PTN (12CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_2_SANG_1",
+    "id": "cls-12cb2_2_SANG_1",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 2,
@@ -20356,12 +19000,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Chào cờ",
     "teacherId": "tch-v-6",
     "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_2_SANG_1",
+    "id": "cls-12cb3_2_SANG_1",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 2,
@@ -20371,12 +19014,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Chào cờ",
     "teacherId": "tch-t-7",
     "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_2_SANG_1",
+    "id": "cls-12cb4_2_SANG_1",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 2,
@@ -20386,12 +19028,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Chào cờ",
     "teacherId": "tch-ls-4",
     "teacherName": "Nguyễn Thị Bé Trang",
-    "teacherCode": "Trang.NTB",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Trang.NTB (12CB4)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_2_SANG_1",
+    "id": "cls-12cb5_2_SANG_1",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 2,
@@ -20401,12 +19042,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Chào cờ",
     "teacherId": "tch-ls-2",
     "teacherName": "Trịnh Văn Sơn",
-    "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Sơn.TV (12CB5)",
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_2_SANG_2",
+    "id": "cls-12cb1_2_SANG_2",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 2,
@@ -20416,12 +19056,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-2",
     "teacherName": "Trịnh Văn Sơn",
-    "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Sơn.TV (12CB5)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_2_SANG_2",
+    "id": "cls-12cb2_2_SANG_2",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 2,
@@ -20431,12 +19070,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-v-6",
     "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_2_SANG_2",
+    "id": "cls-12cb3_2_SANG_2",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 2,
@@ -20446,12 +19084,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-5",
     "teacherName": "Trần Văn Rỡ",
-    "teacherCode": "Rỡ.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Rỡ.TV (11CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_2_SANG_2",
+    "id": "cls-12cb4_2_SANG_2",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 2,
@@ -20461,12 +19098,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-5",
     "teacherName": "Lê Thị Mỹ Ny",
-    "teacherCode": "Ny.LTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Ny.LTM (10CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_2_SANG_2",
+    "id": "cls-12cb5_2_SANG_2",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 2,
@@ -20476,12 +19112,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh học",
     "teacherId": "tch-khtn-1",
     "teacherName": "Bùi Kim Huỳnh",
-    "teacherCode": "Huỳnh.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Huỳnh.BK (11CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_2_SANG_3",
+    "id": "cls-12cb1_2_SANG_3",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 2,
@@ -20491,12 +19126,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-khtn-7",
     "teacherName": "Phan Thị Ngọc Thơ",
-    "teacherCode": "Thơ.PTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Thơ.PTN (12CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_2_SANG_3",
+    "id": "cls-12cb2_2_SANG_3",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 2,
@@ -20506,12 +19140,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-4",
     "teacherName": "Nguyễn Thị Bé Trang",
-    "teacherCode": "Trang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Trang.NTB (12CB4)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_2_SANG_3",
+    "id": "cls-12cb3_2_SANG_3",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 2,
@@ -20522,11 +19155,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-3",
     "teacherName": "Phạm Biên Thùy",
     "teacherCode": "Thùy.PB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_2_SANG_3",
+    "id": "cls-12cb4_2_SANG_3",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 2,
@@ -20536,12 +19168,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-1",
     "teacherName": "Nguyễn Văn Tới",
-    "teacherCode": "Tới.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Tới.NV (TT)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_2_SANG_3",
+    "id": "cls-12cb5_2_SANG_3",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 2,
@@ -20552,11 +19183,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-7",
     "teacherName": "Ngô Anh Tuấn",
     "teacherCode": "Tuấn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_2_SANG_4",
+    "id": "cls-12cb1_2_SANG_4",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 2,
@@ -20566,12 +19196,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-1",
     "teacherName": "Nguyễn Văn Tới",
-    "teacherCode": "Tới.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Tới.NV (TT)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_2_SANG_4",
+    "id": "cls-12cb2_2_SANG_4",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 2,
@@ -20582,11 +19211,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-4",
     "teacherName": "Võ Thị Hiền Thi",
     "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_2_SANG_4",
+    "id": "cls-12cb3_2_SANG_4",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 2,
@@ -20597,11 +19225,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_2_SANG_4",
+    "id": "cls-12cb4_2_SANG_4",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 2,
@@ -20609,14 +19236,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-ktpl",
     "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-ls-8",
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_2_SANG_4",
+    "id": "cls-12cb5_2_SANG_4",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 2,
@@ -20627,11 +19253,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_2_SANG_5",
+    "id": "cls-12cb1_2_SANG_5",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 2,
@@ -20641,12 +19266,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-1",
     "teacherName": "Nguyễn Văn Tới",
-    "teacherCode": "Tới.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Tới.NV (TT)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_2_SANG_5",
+    "id": "cls-12cb2_2_SANG_5",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 2,
@@ -20657,11 +19281,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-6",
     "teacherName": "Trần Phước Hòa",
     "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_2_SANG_5",
+    "id": "cls-12cb3_2_SANG_5",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 2,
@@ -20672,11 +19295,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_2_SANG_5",
+    "id": "cls-12cb4_2_SANG_5",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 2,
@@ -20687,11 +19309,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-4",
     "teacherName": "Võ Thị Hiền Thi",
     "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_2_SANG_5",
+    "id": "cls-12cb5_2_SANG_5",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 2,
@@ -20702,11 +19323,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_3_SANG_1",
+    "id": "cls-12cb1_3_SANG_1",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 3,
@@ -20716,12 +19336,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Hóa học",
     "teacherId": "tch-khtn-7",
     "teacherName": "Phan Thị Ngọc Thơ",
-    "teacherCode": "Thơ.PTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Thơ.PTN (12CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_3_SANG_1",
+    "id": "cls-12cb2_3_SANG_1",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 3,
@@ -20731,12 +19350,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-4",
     "teacherName": "Nguyễn Thị Bé Trang",
-    "teacherCode": "Trang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Trang.NTB (12CB4)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_3_SANG_1",
+    "id": "cls-12cb3_3_SANG_1",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 3,
@@ -20744,14 +19362,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 1,
     "subjectId": "sub-ktpl",
     "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-ls-8",
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_3_SANG_1",
+    "id": "cls-12cb4_3_SANG_1",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 3,
@@ -20761,12 +19378,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-1",
     "teacherName": "Nguyễn Văn Tới",
-    "teacherCode": "Tới.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Tới.NV (TT)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_3_SANG_1",
+    "id": "cls-12cb5_3_SANG_1",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 3,
@@ -20777,11 +19393,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-6",
     "teacherName": "Trương Sơn Bền",
     "teacherCode": "Bền.TS",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_3_SANG_2",
+    "id": "cls-12cb1_3_SANG_2",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 3,
@@ -20791,12 +19406,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-1",
     "teacherName": "Nguyễn Văn Tới",
-    "teacherCode": "Tới.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Tới.NV (TT)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_3_SANG_2",
+    "id": "cls-12cb2_3_SANG_2",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 3,
@@ -20806,12 +19420,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Hóa học",
     "teacherId": "tch-khtn-7",
     "teacherName": "Phan Thị Ngọc Thơ",
-    "teacherCode": "Thơ.PTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Thơ.PTN (12CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_3_SANG_2",
+    "id": "cls-12cb3_3_SANG_2",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 3,
@@ -20819,14 +19432,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-qpan",
     "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
+    "teacherId": "tch-td-2",
     "teacherName": "Nguyễn Kim Rạng",
     "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_3_SANG_2",
+    "id": "cls-12cb4_3_SANG_2",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 3,
@@ -20836,12 +19448,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-ls-4",
     "teacherName": "Nguyễn Thị Bé Trang",
-    "teacherCode": "Trang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Trang.NTB (12CB4)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_3_SANG_2",
+    "id": "cls-12cb5_3_SANG_2",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 3,
@@ -20852,11 +19463,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-6",
     "teacherName": "Trương Sơn Bền",
     "teacherCode": "Bền.TS",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_3_SANG_3",
+    "id": "cls-12cb1_3_SANG_3",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 3,
@@ -20866,12 +19476,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-1",
     "teacherName": "Nguyễn Văn Tới",
-    "teacherCode": "Tới.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Tới.NV (TT)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_3_SANG_3",
+    "id": "cls-12cb2_3_SANG_3",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 3,
@@ -20879,14 +19488,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-qpan",
     "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
+    "teacherId": "tch-td-2",
     "teacherName": "Nguyễn Kim Rạng",
     "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_3_SANG_3",
+    "id": "cls-12cb3_3_SANG_3",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 3,
@@ -20897,11 +19505,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-7",
     "teacherName": "Ngô Anh Tuấn",
     "teacherCode": "Tuấn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_3_SANG_3",
+    "id": "cls-12cb4_3_SANG_3",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 3,
@@ -20912,11 +19519,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-3",
     "teacherName": "Phạm Biên Thùy",
     "teacherCode": "Thùy.PB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_3_SANG_3",
+    "id": "cls-12cb5_3_SANG_3",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 3,
@@ -20924,14 +19530,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-ktpl",
     "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-ls-8",
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_3_SANG_4",
+    "id": "cls-12cb1_3_SANG_4",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 3,
@@ -20942,11 +19547,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-3",
     "teacherName": "Phạm Biên Thùy",
     "teacherCode": "Thùy.PB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_3_SANG_4",
+    "id": "cls-12cb2_3_SANG_4",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 3,
@@ -20956,12 +19560,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-6",
     "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_3_SANG_4",
+    "id": "cls-12cb3_3_SANG_4",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 3,
@@ -20971,12 +19574,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-5",
     "teacherName": "Trần Văn Rỡ",
-    "teacherCode": "Rỡ.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Rỡ.TV (11CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_3_SANG_4",
+    "id": "cls-12cb4_3_SANG_4",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 3,
@@ -20984,14 +19586,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-tin",
     "subjectName": "Tin học",
-    "teacherId": "tch-ls-8",
+    "teacherId": "tch-av-2",
     "teacherName": "Nguyễn Trung Hiếu",
-    "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hiếu.NT (Tin)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_3_SANG_4",
+    "id": "cls-12cb5_3_SANG_4",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 3,
@@ -21001,12 +19602,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-2",
     "teacherName": "Trịnh Văn Sơn",
-    "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Sơn.TV (12CB5)",
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_3_SANG_5",
+    "id": "cls-12cb1_3_SANG_5",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 3,
@@ -21016,12 +19616,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-2",
     "teacherName": "Trịnh Văn Sơn",
-    "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Sơn.TV (12CB5)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_3_SANG_5",
+    "id": "cls-12cb2_3_SANG_5",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 3,
@@ -21031,12 +19630,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-6",
     "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_3_SANG_5",
+    "id": "cls-12cb3_3_SANG_5",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 3,
@@ -21047,11 +19645,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-3",
     "teacherName": "Phạm Biên Thùy",
     "teacherCode": "Thùy.PB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_3_SANG_5",
+    "id": "cls-12cb4_3_SANG_5",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 3,
@@ -21061,12 +19658,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-4",
     "teacherName": "Nguyễn Thị Bé Trang",
-    "teacherCode": "Trang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Trang.NTB (12CB4)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_3_SANG_5",
+    "id": "cls-12cb5_3_SANG_5",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 3,
@@ -21076,12 +19672,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-bgh-2",
     "teacherName": "Nguyễn Minh Trí",
-    "teacherCode": "Trí.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Trí.NM (PHT)",
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_4_SANG_1",
+    "id": "cls-12cb1_4_SANG_1",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 4,
@@ -21091,12 +19686,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh học",
     "teacherId": "tch-khtn-1",
     "teacherName": "Bùi Kim Huỳnh",
-    "teacherCode": "Huỳnh.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Huỳnh.BK (11CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_4_SANG_1",
+    "id": "cls-12cb2_4_SANG_1",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 4,
@@ -21104,14 +19698,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 1,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_4_SANG_1",
+    "id": "cls-12cb3_4_SANG_1",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 4,
@@ -21122,11 +19715,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-4",
     "teacherName": "Võ Thị Hiền Thi",
     "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_4_SANG_1",
+    "id": "cls-12cb4_4_SANG_1",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 4,
@@ -21136,12 +19728,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-5",
     "teacherName": "Lê Thị Mỹ Ny",
-    "teacherCode": "Ny.LTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Ny.LTM (10CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_4_SANG_1",
+    "id": "cls-12cb5_4_SANG_1",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 4,
@@ -21152,11 +19743,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-6",
     "teacherName": "Trương Sơn Bền",
     "teacherCode": "Bền.TS",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_4_SANG_2",
+    "id": "cls-12cb1_4_SANG_2",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 4,
@@ -21166,12 +19756,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-5",
     "teacherName": "Lê Thị Mỹ Ny",
-    "teacherCode": "Ny.LTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Ny.LTM (10CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_4_SANG_2",
+    "id": "cls-12cb2_4_SANG_2",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 4,
@@ -21179,14 +19768,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_4_SANG_2",
+    "id": "cls-12cb3_4_SANG_2",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 4,
@@ -21197,11 +19785,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-4",
     "teacherName": "Võ Thị Hiền Thi",
     "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_4_SANG_2",
+    "id": "cls-12cb4_4_SANG_2",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 4,
@@ -21209,14 +19796,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-ktpl",
     "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-ls-8",
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_4_SANG_2",
+    "id": "cls-12cb5_4_SANG_2",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 4,
@@ -21224,14 +19810,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-qpan",
     "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
+    "teacherId": "tch-td-2",
     "teacherName": "Nguyễn Kim Rạng",
     "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_4_SANG_3",
+    "id": "cls-12cb1_4_SANG_3",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 4,
@@ -21241,12 +19826,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-5",
     "teacherName": "Lê Thị Mỹ Ny",
-    "teacherCode": "Ny.LTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Ny.LTM (10CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_4_SANG_3",
+    "id": "cls-12cb2_4_SANG_3",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 4,
@@ -21257,11 +19841,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_4_SANG_3",
+    "id": "cls-12cb3_4_SANG_3",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 4,
@@ -21269,14 +19852,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-ktpl",
     "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-ls-8",
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_4_SANG_3",
+    "id": "cls-12cb4_4_SANG_3",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 4,
@@ -21287,11 +19869,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-4",
     "teacherName": "Võ Thị Hiền Thi",
     "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_4_SANG_3",
+    "id": "cls-12cb5_4_SANG_3",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 4,
@@ -21301,12 +19882,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh học",
     "teacherId": "tch-khtn-1",
     "teacherName": "Bùi Kim Huỳnh",
-    "teacherCode": "Huỳnh.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Huỳnh.BK (11CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_4_SANG_4",
+    "id": "cls-12cb1_4_SANG_4",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 4,
@@ -21314,14 +19894,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-qpan",
     "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
+    "teacherId": "tch-td-2",
     "teacherName": "Nguyễn Kim Rạng",
     "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_4_SANG_4",
+    "id": "cls-12cb2_4_SANG_4",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 4,
@@ -21331,12 +19910,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-4",
     "teacherName": "Nguyễn Thị Bé Trang",
-    "teacherCode": "Trang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Trang.NTB (12CB4)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_4_SANG_4",
+    "id": "cls-12cb3_4_SANG_4",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 4,
@@ -21347,11 +19925,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_4_SANG_4",
+    "id": "cls-12cb4_4_SANG_4",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 4,
@@ -21362,11 +19939,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-4",
     "teacherName": "Võ Thị Hiền Thi",
     "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_4_SANG_4",
+    "id": "cls-12cb5_4_SANG_4",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 4,
@@ -21377,11 +19953,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_4_SANG_5",
+    "id": "cls-12cb1_4_SANG_5",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 4,
@@ -21392,11 +19967,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-4",
     "teacherName": "Võ Thị Hiền Thi",
     "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_4_SANG_5",
+    "id": "cls-12cb2_4_SANG_5",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 4,
@@ -21406,12 +19980,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh học",
     "teacherId": "tch-khtn-1",
     "teacherName": "Bùi Kim Huỳnh",
-    "teacherCode": "Huỳnh.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Huỳnh.BK (11CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_4_SANG_5",
+    "id": "cls-12cb3_4_SANG_5",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 4,
@@ -21421,12 +19994,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-ls-5",
     "teacherName": "Trần Văn Rỡ",
-    "teacherCode": "Rỡ.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Rỡ.TV (11CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_4_SANG_5",
+    "id": "cls-12cb4_4_SANG_5",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 4,
@@ -21437,11 +20009,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-6",
     "teacherName": "Trần Phước Hòa",
     "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_4_SANG_5",
+    "id": "cls-12cb5_4_SANG_5",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 4,
@@ -21452,11 +20023,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_5_SANG_1",
+    "id": "cls-12cb1_5_SANG_1",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 5,
@@ -21467,11 +20037,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-3",
     "teacherName": "Phạm Biên Thùy",
     "teacherCode": "Thùy.PB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_5_SANG_1",
+    "id": "cls-12cb2_5_SANG_1",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 5,
@@ -21481,12 +20050,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh học",
     "teacherId": "tch-khtn-1",
     "teacherName": "Bùi Kim Huỳnh",
-    "teacherCode": "Huỳnh.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Huỳnh.BK (11CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_5_SANG_1",
+    "id": "cls-12cb3_5_SANG_1",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 5,
@@ -21494,14 +20062,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 1,
     "subjectId": "sub-tin",
     "subjectName": "Tin học",
-    "teacherId": "tch-ls-8",
+    "teacherId": "tch-av-2",
     "teacherName": "Nguyễn Trung Hiếu",
-    "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hiếu.NT (Tin)",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_5_SANG_1",
+    "id": "cls-12cb4_5_SANG_1",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 5,
@@ -21511,12 +20078,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-1",
     "teacherName": "Nguyễn Văn Tới",
-    "teacherCode": "Tới.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Tới.NV (TT)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_5_SANG_1",
+    "id": "cls-12cb5_5_SANG_1",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 5,
@@ -21524,14 +20090,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 1,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_5_SANG_2",
+    "id": "cls-12cb1_5_SANG_2",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 5,
@@ -21539,14 +20104,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-tin",
     "subjectName": "Tin học",
-    "teacherId": "tch-ls-8",
+    "teacherId": "tch-av-2",
     "teacherName": "Nguyễn Trung Hiếu",
-    "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hiếu.NT (Tin)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_5_SANG_2",
+    "id": "cls-12cb2_5_SANG_2",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 5,
@@ -21556,12 +20120,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Hóa học",
     "teacherId": "tch-khtn-7",
     "teacherName": "Phan Thị Ngọc Thơ",
-    "teacherCode": "Thơ.PTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Thơ.PTN (12CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_5_SANG_2",
+    "id": "cls-12cb3_5_SANG_2",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 5,
@@ -21571,12 +20134,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-7",
     "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_5_SANG_2",
+    "id": "cls-12cb4_5_SANG_2",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 5,
@@ -21586,12 +20148,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-1",
     "teacherName": "Nguyễn Văn Tới",
-    "teacherCode": "Tới.NV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Tới.NV (TT)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_5_SANG_2",
+    "id": "cls-12cb5_5_SANG_2",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 5,
@@ -21599,14 +20160,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_5_SANG_3",
+    "id": "cls-12cb1_5_SANG_3",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 5,
@@ -21617,11 +20177,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-4",
     "teacherName": "Võ Thị Hiền Thi",
     "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_5_SANG_3",
+    "id": "cls-12cb2_5_SANG_3",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 5,
@@ -21632,11 +20191,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_5_SANG_3",
+    "id": "cls-12cb3_5_SANG_3",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 5,
@@ -21646,12 +20204,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-7",
     "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_5_SANG_3",
+    "id": "cls-12cb4_5_SANG_3",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 5,
@@ -21659,14 +20216,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_5_SANG_3",
+    "id": "cls-12cb5_5_SANG_3",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 5,
@@ -21677,11 +20233,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_5_SANG_4",
+    "id": "cls-12cb1_5_SANG_4",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 5,
@@ -21692,11 +20247,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-4",
     "teacherName": "Võ Thị Hiền Thi",
     "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_5_SANG_4",
+    "id": "cls-12cb2_5_SANG_4",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 5,
@@ -21707,11 +20261,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_5_SANG_4",
+    "id": "cls-12cb3_5_SANG_4",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 5,
@@ -21722,11 +20275,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-7",
     "teacherName": "Ngô Anh Tuấn",
     "teacherCode": "Tuấn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_5_SANG_4",
+    "id": "cls-12cb4_5_SANG_4",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 5,
@@ -21734,14 +20286,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_5_SANG_4",
+    "id": "cls-12cb5_5_SANG_4",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 5,
@@ -21752,11 +20303,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_6_SANG_1",
+    "id": "cls-12cb1_6_SANG_1",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 6,
@@ -21766,12 +20316,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-5",
     "teacherName": "Lê Thị Mỹ Ny",
-    "teacherCode": "Ny.LTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Ny.LTM (10CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_6_SANG_1",
+    "id": "cls-12cb2_6_SANG_1",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 6,
@@ -21779,14 +20328,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 1,
     "subjectId": "sub-tin",
     "subjectName": "Tin học",
-    "teacherId": "tch-ls-8",
+    "teacherId": "tch-av-2",
     "teacherName": "Nguyễn Trung Hiếu",
-    "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hiếu.NT (Tin)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_6_SANG_1",
+    "id": "cls-12cb3_6_SANG_1",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 6,
@@ -21794,14 +20342,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 1,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_6_SANG_1",
+    "id": "cls-12cb4_6_SANG_1",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 6,
@@ -21812,11 +20359,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-6",
     "teacherName": "Trần Phước Hòa",
     "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_6_SANG_1",
+    "id": "cls-12cb5_6_SANG_1",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 6,
@@ -21826,12 +20372,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Công nghệ",
     "teacherId": "tch-khtn-5",
     "teacherName": "Cao Văn Tùng",
-    "teacherCode": "Tùng.CV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Tùng.CV (10CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_6_SANG_2",
+    "id": "cls-12cb1_6_SANG_2",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 6,
@@ -21839,14 +20384,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-tin",
     "subjectName": "Tin học",
-    "teacherId": "tch-ls-8",
+    "teacherId": "tch-av-2",
     "teacherName": "Nguyễn Trung Hiếu",
-    "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hiếu.NT (Tin)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_6_SANG_2",
+    "id": "cls-12cb2_6_SANG_2",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 6,
@@ -21857,11 +20401,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-4",
     "teacherName": "Võ Thị Hiền Thi",
     "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_6_SANG_2",
+    "id": "cls-12cb3_6_SANG_2",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 6,
@@ -21869,14 +20412,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_6_SANG_2",
+    "id": "cls-12cb4_6_SANG_2",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 6,
@@ -21887,11 +20429,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-3",
     "teacherName": "Phạm Biên Thùy",
     "teacherCode": "Thùy.PB",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_6_SANG_2",
+    "id": "cls-12cb5_6_SANG_2",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 6,
@@ -21901,12 +20442,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-2",
     "teacherName": "Trịnh Văn Sơn",
-    "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Sơn.TV (12CB5)",
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_6_SANG_3",
+    "id": "cls-12cb1_6_SANG_3",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 6,
@@ -21914,14 +20454,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_6_SANG_3",
+    "id": "cls-12cb2_6_SANG_3",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 6,
@@ -21932,11 +20471,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-4",
     "teacherName": "Võ Thị Hiền Thi",
     "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_6_SANG_3",
+    "id": "cls-12cb3_6_SANG_3",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 6,
@@ -21946,12 +20484,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-7",
     "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_6_SANG_3",
+    "id": "cls-12cb4_6_SANG_3",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 6,
@@ -21959,14 +20496,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-tin",
     "subjectName": "Tin học",
-    "teacherId": "tch-ls-8",
+    "teacherId": "tch-av-2",
     "teacherName": "Nguyễn Trung Hiếu",
-    "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hiếu.NT (Tin)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_6_SANG_3",
+    "id": "cls-12cb5_6_SANG_3",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 6,
@@ -21974,14 +20510,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-ktpl",
     "subjectName": "Giáo dục KT & PL",
-    "teacherId": "tch-bgh-1",
-    "teacherName": "Trường",
-    "teacherCode": "Trường",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherId": "tch-ls-8",
+    "teacherName": "Phạm Nguyễn Văn Trường",
+    "teacherCode": "Trường.PNV",
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_6_SANG_4",
+    "id": "cls-12cb1_6_SANG_4",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 6,
@@ -21989,14 +20524,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-gdtc",
     "subjectName": "Giáo dục thể chất",
-    "teacherId": "tch-av-9",
+    "teacherId": "tch-td-4",
     "teacherName": "Hồ Hoài Ngân",
     "teacherCode": "Ngân.HH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_6_SANG_4",
+    "id": "cls-12cb2_6_SANG_4",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 6,
@@ -22007,11 +20541,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-6",
     "teacherName": "Trần Phước Hòa",
     "teacherCode": "Hòa.TP",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_6_SANG_4",
+    "id": "cls-12cb3_6_SANG_4",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 6,
@@ -22021,12 +20554,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Toán học",
     "teacherId": "tch-t-7",
     "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_6_SANG_4",
+    "id": "cls-12cb4_6_SANG_4",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 6,
@@ -22036,12 +20568,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-4",
     "teacherName": "Nguyễn Thị Bé Trang",
-    "teacherCode": "Trang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Trang.NTB (12CB4)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_6_SANG_4",
+    "id": "cls-12cb5_6_SANG_4",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 6,
@@ -22052,11 +20583,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-ls-7",
     "teacherName": "Ngô Anh Tuấn",
     "teacherCode": "Tuấn.NA",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_6_SANG_5",
+    "id": "cls-12cb1_6_SANG_5",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 6,
@@ -22066,12 +20596,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-2",
     "teacherName": "Trịnh Văn Sơn",
-    "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Sơn.TV (12CB5)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_6_SANG_5",
+    "id": "cls-12cb2_6_SANG_5",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 6,
@@ -22082,11 +20611,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-6",
     "teacherName": "Lê Văn Toàn",
     "teacherCode": "Toàn.LV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_6_SANG_5",
+    "id": "cls-12cb3_6_SANG_5",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 6,
@@ -22097,11 +20625,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-4",
     "teacherName": "Võ Thị Hiền Thi",
     "teacherCode": "Thi.VTH",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_6_SANG_5",
+    "id": "cls-12cb4_6_SANG_5",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 6,
@@ -22111,12 +20638,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-ls-4",
     "teacherName": "Nguyễn Thị Bé Trang",
-    "teacherCode": "Trang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Trang.NTB (12CB4)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_6_SANG_5",
+    "id": "cls-12cb5_6_SANG_5",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 6,
@@ -22126,12 +20652,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-bgh-2",
     "teacherName": "Nguyễn Minh Trí",
-    "teacherCode": "Trí.NM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Trí.NM (PHT)",
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_7_SANG_1",
+    "id": "cls-12cb1_7_SANG_1",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 7,
@@ -22141,12 +20666,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-khtn-7",
     "teacherName": "Phan Thị Ngọc Thơ",
-    "teacherCode": "Thơ.PTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Thơ.PTN (12CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_7_SANG_1",
+    "id": "cls-12cb2_7_SANG_1",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 7,
@@ -22156,12 +20680,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-6",
     "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_7_SANG_1",
+    "id": "cls-12cb3_7_SANG_1",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 7,
@@ -22171,12 +20694,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-ls-5",
     "teacherName": "Trần Văn Rỡ",
-    "teacherCode": "Rỡ.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Rỡ.TV (11CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_7_SANG_1",
+    "id": "cls-12cb4_7_SANG_1",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 7,
@@ -22186,12 +20708,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-5",
     "teacherName": "Lê Thị Mỹ Ny",
-    "teacherCode": "Ny.LTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Ny.LTM (10CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_7_SANG_1",
+    "id": "cls-12cb5_7_SANG_1",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 7,
@@ -22202,11 +20723,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_7_SANG_2",
+    "id": "cls-12cb1_7_SANG_2",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 7,
@@ -22216,12 +20736,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Hóa học",
     "teacherId": "tch-khtn-7",
     "teacherName": "Phan Thị Ngọc Thơ",
-    "teacherCode": "Thơ.PTN",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Thơ.PTN (12CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_7_SANG_2",
+    "id": "cls-12cb2_7_SANG_2",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 7,
@@ -22231,12 +20750,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-6",
     "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_7_SANG_2",
+    "id": "cls-12cb3_7_SANG_2",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 7,
@@ -22244,14 +20762,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 2,
     "subjectId": "sub-tin",
     "subjectName": "Tin học",
-    "teacherId": "tch-ls-8",
+    "teacherId": "tch-av-2",
     "teacherName": "Nguyễn Trung Hiếu",
-    "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hiếu.NT (Tin)",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_7_SANG_2",
+    "id": "cls-12cb4_7_SANG_2",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 7,
@@ -22261,12 +20778,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-5",
     "teacherName": "Lê Thị Mỹ Ny",
-    "teacherCode": "Ny.LTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Ny.LTM (10CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_7_SANG_2",
+    "id": "cls-12cb5_7_SANG_2",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 7,
@@ -22277,11 +20793,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_7_SANG_3",
+    "id": "cls-12cb1_7_SANG_3",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 7,
@@ -22291,12 +20806,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "teacherId": "tch-v-5",
     "teacherName": "Lê Thị Mỹ Ny",
-    "teacherCode": "Ny.LTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Ny.LTM (10CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_7_SANG_3",
+    "id": "cls-12cb2_7_SANG_3",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 7,
@@ -22306,12 +20820,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "HĐTNHN (Chuyên đề)",
     "teacherId": "tch-v-6",
     "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_7_SANG_3",
+    "id": "cls-12cb3_7_SANG_3",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 7,
@@ -22322,11 +20835,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-v-1",
     "teacherName": "Tô Thị Lắm",
     "teacherCode": "Lắm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_7_SANG_3",
+    "id": "cls-12cb4_7_SANG_3",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 7,
@@ -22334,14 +20846,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 3,
     "subjectId": "sub-qpan",
     "subjectName": "GDQP - AN",
-    "teacherId": "tch-av-5",
+    "teacherId": "tch-td-2",
     "teacherName": "Nguyễn Kim Rạng",
     "teacherCode": "Rạng.NK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_7_SANG_3",
+    "id": "cls-12cb5_7_SANG_3",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 7,
@@ -22351,12 +20862,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Công nghệ",
     "teacherId": "tch-khtn-5",
     "teacherName": "Cao Văn Tùng",
-    "teacherCode": "Tùng.CV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Tùng.CV (10CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_7_SANG_4",
+    "id": "cls-12cb1_7_SANG_4",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 7,
@@ -22366,12 +20876,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh học",
     "teacherId": "tch-khtn-1",
     "teacherName": "Bùi Kim Huỳnh",
-    "teacherCode": "Huỳnh.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Huỳnh.BK (11CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_7_SANG_4",
+    "id": "cls-12cb2_7_SANG_4",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 7,
@@ -22379,14 +20888,13 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "period": 4,
     "subjectId": "sub-tin",
     "subjectName": "Tin học",
-    "teacherId": "tch-ls-8",
+    "teacherId": "tch-av-2",
     "teacherName": "Nguyễn Trung Hiếu",
-    "teacherCode": "Hiếu.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Hiếu.NT (Tin)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_7_SANG_4",
+    "id": "cls-12cb3_7_SANG_4",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 7,
@@ -22396,12 +20904,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-5",
     "teacherName": "Trần Văn Rỡ",
-    "teacherCode": "Rỡ.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Rỡ.TV (11CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_7_SANG_4",
+    "id": "cls-12cb4_7_SANG_4",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 7,
@@ -22411,12 +20918,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-4",
     "teacherName": "Nguyễn Thị Bé Trang",
-    "teacherCode": "Trang.NTB",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Trang.NTB (12CB4)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_7_SANG_4",
+    "id": "cls-12cb5_7_SANG_4",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 7,
@@ -22426,12 +20932,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Lịch sử",
     "teacherId": "tch-ls-2",
     "teacherName": "Trịnh Văn Sơn",
-    "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": false
+    "teacherCode": "Sơn.TV (12CB5)",
+    "room": ""
   },
   {
-    "id": "cls-12cb1_w2_7_SANG_5",
+    "id": "cls-12cb1_7_SANG_5",
     "classId": "cls-12cb1",
     "className": "12CB1",
     "dayOfWeek": 7,
@@ -22441,12 +20946,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh hoạt lớp",
     "teacherId": "tch-khtn-7",
     "teacherName": "Phan Thị Ngọc Thơ",
-    "teacherCode": "Thơ.PTN",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Thơ.PTN (12CB1)",
+    "room": ""
   },
   {
-    "id": "cls-12cb2_w2_7_SANG_5",
+    "id": "cls-12cb2_7_SANG_5",
     "classId": "cls-12cb2",
     "className": "12CB2",
     "dayOfWeek": 7,
@@ -22456,12 +20960,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh hoạt lớp",
     "teacherId": "tch-v-6",
     "teacherName": "Trương Thị Mỹ Duyên",
-    "teacherCode": "Duyên.TTM",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Duyên.TTM (12CB2)",
+    "room": ""
   },
   {
-    "id": "cls-12cb3_w2_7_SANG_5",
+    "id": "cls-12cb3_7_SANG_5",
     "classId": "cls-12cb3",
     "className": "12CB3",
     "dayOfWeek": 7,
@@ -22471,12 +20974,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh hoạt lớp",
     "teacherId": "tch-t-7",
     "teacherName": "Võ Thị Ngọc Hương",
-    "teacherCode": "Hương.VTN",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Hương.VTN (12CB3)",
+    "room": ""
   },
   {
-    "id": "cls-12cb4_w2_7_SANG_5",
+    "id": "cls-12cb4_7_SANG_5",
     "classId": "cls-12cb4",
     "className": "12CB4",
     "dayOfWeek": 7,
@@ -22486,12 +20988,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh hoạt lớp",
     "teacherId": "tch-ls-4",
     "teacherName": "Nguyễn Thị Bé Trang",
-    "teacherCode": "Trang.NTB",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Trang.NTB (12CB4)",
+    "room": ""
   },
   {
-    "id": "cls-12cb5_w2_7_SANG_5",
+    "id": "cls-12cb5_7_SANG_5",
     "classId": "cls-12cb5",
     "className": "12CB5",
     "dayOfWeek": 7,
@@ -22501,12 +21002,11 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "subjectName": "Sinh hoạt lớp",
     "teacherId": "tch-ls-2",
     "teacherName": "Trịnh Văn Sơn",
-    "teacherCode": "Sơn.TV",
-    "room": "",
-    "isSpecialActivity": true
+    "teacherCode": "Sơn.TV (12CB5)",
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_2_SANG_1",
+    "id": "cls-6a7_2_SANG_1",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 2,
@@ -22517,11 +21017,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a7_w2_2_SANG_2",
+    "id": "cls-6a7_2_SANG_2",
     "classId": "cls-6a7",
     "className": "6A7",
     "dayOfWeek": 2,
@@ -22532,11 +21031,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_3_SANG_1",
+    "id": "cls-6a8_3_SANG_1",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 3,
@@ -22547,11 +21045,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_3_SANG_1",
+    "id": "cls-6a10_3_SANG_1",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 3,
@@ -22562,11 +21059,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a8_w2_3_SANG_2",
+    "id": "cls-6a8_3_SANG_2",
     "classId": "cls-6a8",
     "className": "6A8",
     "dayOfWeek": 3,
@@ -22577,11 +21073,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a10_w2_3_SANG_2",
+    "id": "cls-6a10_3_SANG_2",
     "classId": "cls-6a10",
     "className": "6A10",
     "dayOfWeek": 3,
@@ -22592,11 +21087,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-21",
     "teacherName": "Nguyễn Thị Lụa",
     "teacherCode": "Lụa.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_4_SANG_1",
+    "id": "cls-6a9_4_SANG_1",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 4,
@@ -22607,11 +21101,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a9_w2_4_SANG_2",
+    "id": "cls-6a9_4_SANG_2",
     "classId": "cls-6a9",
     "className": "6A9",
     "dayOfWeek": 4,
@@ -22622,11 +21115,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-25",
     "teacherName": "Nguyễn Thị Ngọc Diễm",
     "teacherCode": "Diễm.NTN",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_2_SANG_1",
+    "id": "cls-7a7_2_SANG_1",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 2,
@@ -22637,11 +21129,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_2_SANG_1",
+    "id": "cls-7a9_2_SANG_1",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 2,
@@ -22652,11 +21143,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a7_w2_2_SANG_2",
+    "id": "cls-7a7_2_SANG_2",
     "classId": "cls-7a7",
     "className": "7A7",
     "dayOfWeek": 2,
@@ -22667,11 +21157,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-19",
     "teacherName": "Trần Kim Phương",
     "teacherCode": "Phương.TK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a9_w2_2_SANG_2",
+    "id": "cls-7a9_2_SANG_2",
     "classId": "cls-7a9",
     "className": "7A9",
     "dayOfWeek": 2,
@@ -22682,11 +21171,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_5_SANG_1",
+    "id": "cls-7a8_5_SANG_1",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 5,
@@ -22697,11 +21185,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a8_w2_5_SANG_2",
+    "id": "cls-7a8_5_SANG_2",
     "classId": "cls-7a8",
     "className": "7A8",
     "dayOfWeek": 5,
@@ -22712,11 +21199,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-26",
     "teacherName": "Phan Văn Tặt",
     "teacherCode": "Tặt.PV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_2_SANG_1",
+    "id": "cls-6a3_2_SANG_1",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 2,
@@ -22727,11 +21213,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_2_SANG_1",
+    "id": "cls-6a4_2_SANG_1",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 2,
@@ -22742,11 +21227,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_2_SANG_1",
+    "id": "cls-6a5_2_SANG_1",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 2,
@@ -22757,11 +21241,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a3_w2_2_SANG_2",
+    "id": "cls-6a3_2_SANG_2",
     "classId": "cls-6a3",
     "className": "6A3",
     "dayOfWeek": 2,
@@ -22772,11 +21255,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a4_w2_2_SANG_2",
+    "id": "cls-6a4_2_SANG_2",
     "classId": "cls-6a4",
     "className": "6A4",
     "dayOfWeek": 2,
@@ -22787,11 +21269,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-8",
     "teacherName": "Nguyễn Thanh Hùng",
     "teacherCode": "Hùng.NThanh",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a5_w2_2_SANG_2",
+    "id": "cls-6a5_2_SANG_2",
     "classId": "cls-6a5",
     "className": "6A5",
     "dayOfWeek": 2,
@@ -22802,11 +21283,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_3_SANG_1",
+    "id": "cls-6a2_3_SANG_1",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 3,
@@ -22817,11 +21297,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a2_w2_3_SANG_2",
+    "id": "cls-6a2_3_SANG_2",
     "classId": "cls-6a2",
     "className": "6A2",
     "dayOfWeek": 3,
@@ -22832,11 +21311,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-13",
     "teacherName": "Nguyễn Thị Thắm",
     "teacherCode": "Thắm.NT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_4_SANG_1",
+    "id": "cls-6a1_4_SANG_1",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 4,
@@ -22847,11 +21325,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-18",
     "teacherName": "Hồ Thị Ngọc Tài",
     "teacherCode": "Tài.HTN",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_4_SANG_1",
+    "id": "cls-6a6_4_SANG_1",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 4,
@@ -22862,11 +21339,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-8",
     "teacherName": "Lê Thị Bình",
     "teacherCode": "Bình.LT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-6a1_w2_4_SANG_2",
+    "id": "cls-6a1_4_SANG_2",
     "classId": "cls-6a1",
     "className": "6A1",
     "dayOfWeek": 4,
@@ -22877,11 +21353,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-16",
     "teacherName": "Nguyễn Thị Cẩm Nhung",
     "teacherCode": "Nhung.NTC",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-6a6_w2_4_SANG_2",
+    "id": "cls-6a6_4_SANG_2",
     "classId": "cls-6a6",
     "className": "6A6",
     "dayOfWeek": 4,
@@ -22892,11 +21367,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-24",
     "teacherName": "Lê Kim Ngân",
     "teacherCode": "Ngân.LK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_2_SANG_1",
+    "id": "cls-7a1_2_SANG_1",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 2,
@@ -22907,11 +21381,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-10",
     "teacherName": "Nguyễn Văn Ngoan",
     "teacherCode": "Ngoan.NV",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_2_SANG_1",
+    "id": "cls-7a3_2_SANG_1",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 2,
@@ -22922,11 +21395,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-t-11",
     "teacherName": "Nguyễn Quốc Nguyễn",
     "teacherCode": "Nguyễn.NQ",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_2_SANG_1",
+    "id": "cls-7a5_2_SANG_1",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 2,
@@ -22937,11 +21409,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a1_w2_2_SANG_2",
+    "id": "cls-7a1_2_SANG_2",
     "classId": "cls-7a1",
     "className": "7A1",
     "dayOfWeek": 2,
@@ -22952,11 +21423,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-14",
     "teacherName": "Bùi Kim Phướng",
     "teacherCode": "Phướng.BK",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a3_w2_2_SANG_2",
+    "id": "cls-7a3_2_SANG_2",
     "classId": "cls-7a3",
     "className": "7A3",
     "dayOfWeek": 2,
@@ -22967,11 +21437,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a5_w2_2_SANG_2",
+    "id": "cls-7a5_2_SANG_2",
     "classId": "cls-7a5",
     "className": "7A5",
     "dayOfWeek": 2,
@@ -22982,11 +21451,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-11",
     "teacherName": "Lê Thái Phương",
     "teacherCode": "Phương.LT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_3_SANG_1",
+    "id": "cls-7a2_3_SANG_1",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 3,
@@ -22997,11 +21465,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_3_SANG_1",
+    "id": "cls-7a4_3_SANG_1",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 3,
@@ -23012,11 +21479,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-6",
     "teacherName": "Lê Ngọc Ẩn",
     "teacherCode": "Ẩn.LN",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a2_w2_3_SANG_2",
+    "id": "cls-7a2_3_SANG_2",
     "classId": "cls-7a2",
     "className": "7A2",
     "dayOfWeek": 3,
@@ -23027,11 +21493,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-av-13",
     "teacherName": "Mai Phước Lộc",
     "teacherCode": "Lộc.MP",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a4_w2_3_SANG_2",
+    "id": "cls-7a4_3_SANG_2",
     "classId": "cls-7a4",
     "className": "7A4",
     "dayOfWeek": 3,
@@ -23042,11 +21507,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_6_SANG_1",
+    "id": "cls-7a6_6_SANG_1",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 6,
@@ -23057,11 +21521,10 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": true
+    "room": ""
   },
   {
-    "id": "cls-7a6_w2_6_SANG_2",
+    "id": "cls-7a6_6_SANG_2",
     "classId": "cls-7a6",
     "className": "7A6",
     "dayOfWeek": 6,
@@ -23072,8 +21535,7 @@ export const OFFICIAL_WEEK_2_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-khtn-23",
     "teacherName": "Trần Thị Cẩm",
     "teacherCode": "Cẩm.TT",
-    "room": "",
-    "isSpecialActivity": false
+    "room": ""
   }
 ];
 
