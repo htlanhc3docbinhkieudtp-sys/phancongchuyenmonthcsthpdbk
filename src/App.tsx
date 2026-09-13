@@ -37,6 +37,7 @@ import {
 } from './utils/weeklyScheduleHelper';
 import {
   generateInitialTimetable,
+  buildOfficialWeek2Timetable,
   ensureTHPTOfficialSlots,
   cloneTimetableForWeek,
   createEmptyTimetableForWeek,
@@ -262,6 +263,12 @@ export default function App() {
               parsed[wk].slots = normalizeTimetableSlots(parsed[wk].slots);
             }
           });
+
+          // Ensure Week 2 is officially populated if missing or incomplete
+          if (!parsed[2] || !parsed[2].slots || parsed[2].slots.length < 1000) {
+            parsed[2] = buildOfficialWeek2Timetable(initialSchoolConfig.academicYear);
+          }
+
           return parsed;
         }
       } catch (e) {
@@ -274,13 +281,18 @@ export default function App() {
       try {
         const pW1 = JSON.parse(emergencyW1);
         if (pW1 && pW1.slots && pW1.slots.length > 0) {
-          return { 1: pW1 };
+          return {
+            1: pW1,
+            2: buildOfficialWeek2Timetable(initialSchoolConfig.academicYear)
+          };
         }
       } catch { /* ignore */ }
     }
     const week1Tkb = generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
+    const week2Tkb = buildOfficialWeek2Timetable(initialSchoolConfig.academicYear);
     return {
-      1: week1Tkb
+      1: week1Tkb,
+      2: week2Tkb
     };
   });
 
@@ -334,7 +346,10 @@ export default function App() {
     if (currentWeek === 1) {
       return generateInitialTimetable(classes, subjects, teachers, assignments, config);
     }
-    // Weeks 2 to 35: Empty by default as requested by user
+    if (currentWeek === 2) {
+      return buildOfficialWeek2Timetable(config.academicYear);
+    }
+    // Weeks 3 to 35: Empty by default as requested by user
     return createEmptyTimetableForWeek(currentWeek, config.academicYear);
   }, [weeklyTimetables, currentWeek, config.academicYear, classes, subjects, teachers, assignments, config]);
 
