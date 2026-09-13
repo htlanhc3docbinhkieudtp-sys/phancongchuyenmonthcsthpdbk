@@ -55,6 +55,13 @@ import {
   propagateTeacherToWeeklySchedules,
   buildWeeklyScheduleFromTimetableSlots
 } from './utils/timetableSyncHelper';
+import {
+  persistWeekTimetable,
+  persistAllWeeklyTimetables,
+  getSynchronousWeek2Backup,
+  WEEK2_EXACT_BACKUP_KEY,
+  loadAllTimetablesFromIndexedDB
+} from './utils/persistentStorage';
 
 import { Header } from './components/Header';
 import { ViewTabs, ActiveTabType } from './components/ViewTabs';
@@ -268,8 +275,11 @@ export default function App() {
             }
           });
 
-          // Ensure Week 2 is officially populated if missing or incomplete
-          if (!parsed[2] || !parsed[2].slots || parsed[2].slots.length < 1000) {
+          // Check if there is a dedicated exact Week 2 backup first!
+          const exactW2Backup = getSynchronousWeek2Backup();
+          if (exactW2Backup && exactW2Backup.slots && exactW2Backup.slots.length > 0) {
+            parsed[2] = exactW2Backup;
+          } else if (!parsed[2] || !parsed[2].slots || parsed[2].slots.length === 0) {
             parsed[2] = buildOfficialWeek2Timetable(initialSchoolConfig.academicYear);
           }
 
@@ -281,19 +291,23 @@ export default function App() {
     }
     // Emergency W1 check before initial generation
     const emergencyW1 = localStorage.getItem('docbinhkieu_emergency_w1_timetable_backup');
+    const exactW2Backup = getSynchronousWeek2Backup();
+    const week2Tkb = (exactW2Backup && exactW2Backup.slots && exactW2Backup.slots.length > 0)
+      ? exactW2Backup
+      : buildOfficialWeek2Timetable(initialSchoolConfig.academicYear);
+
     if (emergencyW1) {
       try {
         const pW1 = JSON.parse(emergencyW1);
         if (pW1 && pW1.slots && pW1.slots.length > 0) {
           return {
             1: pW1,
-            2: buildOfficialWeek2Timetable(initialSchoolConfig.academicYear)
+            2: week2Tkb
           };
         }
       } catch { /* ignore */ }
     }
     const week1Tkb = generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
-    const week2Tkb = buildOfficialWeek2Timetable(initialSchoolConfig.academicYear);
     return {
       1: week1Tkb,
       2: week2Tkb
@@ -536,14 +550,35 @@ export default function App() {
           }
 
           if (cloudTimetablesToApply) {
-            setWeeklyTimetables(cloudTimetablesToApply);
-            // Save immediately to emergency backups so user edits are persistent
-            try {
-              localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(cloudTimetablesToApply));
-              if (cloudTimetablesToApply[1]) {
-                localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(cloudTimetablesToApply[1]));
+            setWeeklyTimetables(prev => {
+              const combined = { ...prev };
+              // Apply cloud timetables, but DO NOT overwrite local Week 2 if cloud has no slots or fewer slots
+              Object.keys(cloudTimetablesToApply!).forEach(wStr => {
+                const w = Number(wStr);
+                const cloudTbl = cloudTimetablesToApply![w];
+                if (w === 2 && prev[2]?.slots?.length && (!cloudTbl?.slots || cloudTbl.slots.length < prev[2].slots.length)) {
+                  // Keep local week 2
+                } else if (cloudTbl?.slots?.length) {
+                  combined[w] = cloudTbl;
+                }
+              });
+              // Guarantee Week 2 backup is preserved
+              const w2Bak = getSynchronousWeek2Backup();
+              if (w2Bak && w2Bak.slots && w2Bak.slots.length > 0 && (!combined[2] || !combined[2].slots || combined[2].slots.length < w2Bak.slots.length)) {
+                combined[2] = w2Bak;
               }
-            } catch { /* storage full */ }
+              try {
+                localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(combined));
+                if (combined[1]) {
+                  localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(combined[1]));
+                }
+                if (combined[2]) {
+                  localStorage.setItem(WEEK2_EXACT_BACKUP_KEY, JSON.stringify(combined[2]));
+                }
+              } catch { /* storage full */ }
+              persistAllWeeklyTimetables(combined);
+              return combined;
+            });
           }
 
           // Mark memory and session fingerprints as in-sync with current loaded state to prevent immediate false auto-save
@@ -584,6 +619,24 @@ export default function App() {
 
     initCloudData();
 
+    // Async IndexedDB restore fallback (in case browser cleared localStorage or on initial launch)
+    loadAllTimetablesFromIndexedDB().then(idbTimetables => {
+      if (idbTimetables && Object.keys(idbTimetables).length > 0 && isMounted) {
+        setWeeklyTimetables(prev => {
+          let hasChange = false;
+          const updated = { ...prev };
+          Object.keys(idbTimetables).forEach(wStr => {
+            const w = Number(wStr);
+            if ((!updated[w] || !updated[w].slots || updated[w].slots.length === 0) && idbTimetables[w]?.slots?.length) {
+              updated[w] = idbTimetables[w];
+              hasChange = true;
+            }
+          });
+          return hasChange ? updated : prev;
+        });
+      }
+    });
+
     return () => {
       isMounted = false;
     };
@@ -611,32 +664,24 @@ export default function App() {
     safeLocalStorageSet(`${STORAGE_KEY}_locked_cells`, JSON.stringify(lockedCells));
     safeLocalStorageSet(`${STORAGE_KEY}_weekly_schedules`, JSON.stringify(weeklySchedules));
 
-    // Smart pruning for weeklyTimetables in localStorage:
-    // Week 1 is the master timetable. Weeks 2..18 that have identical slots do not need
-    // redundant duplication in localStorage, staying safely within the 5MB browser limit.
-    const prunedWeeklyTimetables: Record<number, SchoolTimetable> = {
-      1: weeklyTimetables[1] || timetable
-    };
-    const masterSlotCount = prunedWeeklyTimetables[1]?.slots?.length || 0;
-    Object.keys(weeklyTimetables).forEach(wStr => {
-      const w = Number(wStr);
-      if (w !== 1 && weeklyTimetables[w]) {
-        if (w === currentWeek || (weeklyTimetables[w].slots && weeklyTimetables[w].slots.length !== masterSlotCount)) {
-          prunedWeeklyTimetables[w] = weeklyTimetables[w];
-        }
-      }
-    });
-
-    safeLocalStorageSet(`${STORAGE_KEY}_weekly_timetables`, JSON.stringify(prunedWeeklyTimetables));
+    // Safe persistence for weeklyTimetables without dangerous pruning:
+    // Every week with slots is preserved across all navigation and reloads.
+    safeLocalStorageSet(`${STORAGE_KEY}_weekly_timetables`, JSON.stringify(weeklyTimetables));
     safeLocalStorageSet(`${STORAGE_KEY}_timetable`, JSON.stringify(timetable));
 
-    // Also persist directly into unversioned emergency localStorage
+    // Also persist directly into unversioned emergency localStorage and IndexedDB
     try {
-      localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(prunedWeeklyTimetables));
-      if (prunedWeeklyTimetables[1]) {
-        localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(prunedWeeklyTimetables[1]));
+      localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(weeklyTimetables));
+      if (weeklyTimetables[1]) {
+        localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(weeklyTimetables[1]));
+      }
+      if (weeklyTimetables[2]) {
+        localStorage.setItem(WEEK2_EXACT_BACKUP_KEY, JSON.stringify(weeklyTimetables[2]));
       }
     } catch { /* storage full */ }
+
+    // Mirror to IndexedDB (virtually unlimited browser storage)
+    persistAllWeeklyTimetables(weeklyTimetables);
 
     if (!isInitialCloudLoadRef.current) {
       setCloudSyncStatus('offline');
@@ -1054,11 +1099,17 @@ export default function App() {
           if (parsed.weeklySchedules) setWeeklySchedules(parsed.weeklySchedules);
           if (parsed.weeklyTimetables && Object.keys(parsed.weeklyTimetables).length > 0) {
             setWeeklyTimetables(parsed.weeklyTimetables);
+            persistAllWeeklyTimetables(parsed.weeklyTimetables);
+            if (parsed.weeklyTimetables[2]) {
+              persistWeekTimetable(2, parsed.weeklyTimetables[2]);
+            }
           } else if (parsed.timetable) {
-            setWeeklyTimetables({ 1: parsed.timetable });
+            const single = { 1: parsed.timetable };
+            setWeeklyTimetables(single);
+            persistAllWeeklyTimetables(single);
           }
           setCloudSyncStatus('offline');
-          alert('Đã khôi phục dữ liệu từ file sao lưu JSON trên máy. Bấm Lưu Cloud nếu muốn đồng bộ lên Firebase.');
+          alert('Đã khôi phục dữ liệu từ file sao lưu JSON thành công! Toàn bộ Thời khóa biểu đã được lưu an toàn vào bộ nhớ máy.');
         }
       } catch (err) {
         alert('File sao lưu không hợp lệ hoặc bị lỗi định dạng!');
@@ -1086,7 +1137,12 @@ export default function App() {
         if (weekNum === 1) {
           localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(updatedWithWeek));
         }
+        if (weekNum === 2) {
+          localStorage.setItem(WEEK2_EXACT_BACKUP_KEY, JSON.stringify(updatedWithWeek));
+        }
       } catch { /* storage full */ }
+      persistWeekTimetable(weekNum, updatedWithWeek);
+      persistAllWeeklyTimetables(next);
       return next;
     });
 
@@ -1209,7 +1265,7 @@ export default function App() {
           }
           totalFinalSlots = finalSlots.length;
 
-          next[w] = {
+          const updatedWeekTkb: SchoolTimetable = {
             id: `tkb-week-${w}`,
             academicYear: config.academicYear,
             semester: currentSemester,
@@ -1217,7 +1273,12 @@ export default function App() {
             slots: finalSlots,
             updatedAt: Date.now()
           };
+          next[w] = updatedWeekTkb;
+          if (w === 2) {
+            persistWeekTimetable(2, updatedWeekTkb);
+          }
         });
+        persistAllWeeklyTimetables(next);
         return next;
       });
 

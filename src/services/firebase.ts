@@ -336,22 +336,9 @@ export function expandWeeklyTimetables(
   compacted: Record<number, SchoolTimetable>,
   totalWeeks = 37
 ): Record<number, SchoolTimetable> {
-  const week1 = compacted[1];
-  if (!week1 || !week1.slots || week1.slots.length === 0) {
-    return compacted;
-  }
-
-  const expanded: Record<number, SchoolTimetable> = { ...compacted };
-  for (let w = 1; w <= totalWeeks; w++) {
-    if (!expanded[w] || !expanded[w].slots || expanded[w].slots.length === 0) {
-      expanded[w] = {
-        ...week1,
-        weekNumber: w,
-        slots: [...week1.slots]
-      };
-    }
-  }
-  return expanded;
+  // Return compacted timetables as-is to prevent corrupting custom weeks (such as Week 2)
+  // Weeks without explicit data will be cleanly handled by the application UI/defaults
+  return { ...compacted };
 }
 
 /**
@@ -589,8 +576,8 @@ async function executeCloudSave(
         // - Its slots changed since last save (thisFp !== prevSavedFp), OR
         // - It's Week 1 and changed/not saved, OR
         // - It's Week 2..37 that differs from Week 1 and changed/not saved
-        const isCustomized = wkNum === 1 || thisFp !== week1Fp;
-        const needsWrite = isCustomized && (thisFp !== prevSavedFp || (force && !prevSavedFp));
+        const isCustomized = wkNum === 1 || thisFp !== week1Fp || wkNum === 2;
+        const needsWrite = force || (isCustomized && thisFp !== prevSavedFp);
 
         if (needsWrite) {
           const weekDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${wkNum}`);
@@ -631,9 +618,8 @@ async function executeCloudSave(
         const schedFp = computeScheduleFingerprint(ws);
         const prevSavedSchedFp = savedScheduleFingerprints.get(wkNum);
 
-        if (schedFp !== prevSavedSchedFp || (force && !prevSavedSchedFp)) {
-          // Only save if it's week 1 or differs from master assignments
-          if (wkNum === 1 || JSON.stringify(ws.assignments) !== masterFp) {
+        const needsWrite = force || (schedFp !== prevSavedSchedFp && (wkNum === 1 || JSON.stringify(ws.assignments) !== masterFp));
+        if (needsWrite) {
             const schedDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_schedules', `week_${wkNum}`);
             await setDoc(schedDocRef, sanitizeForFirestore({
               weekNumber: wkNum,
@@ -649,7 +635,6 @@ async function executeCloudSave(
           }
         }
       }
-    }
 
     if (writesCount > 0) {
       incrementDailyFirestoreWriteCount(writesCount);
