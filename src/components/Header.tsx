@@ -283,28 +283,33 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="text-[11px]">Làm mới Cloud</span>
             </button>
 
-            {/* Hidden File Input for JSON restore */}
-            {isAdmin && (
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileInputChange}
-                accept=".json"
-                className="hidden"
-              />
-            )}
+            {/* File Input for JSON restore */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileInputChange}
+              accept=".json"
+              className="hidden"
+            />
 
-            {/* Backup Button (Admin only) */}
-            {isAdmin && (
-              <button
-                onClick={onExportJsonBackup}
-                className="hidden md:flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-indigo-200 hover:text-white bg-indigo-800/80 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
-                title="Tải file bản sao lưu toàn bộ dữ liệu (.json) về máy tính"
-              >
-                <Download className="w-3 h-3 text-indigo-300" />
-                <span className="text-[11px]">Sao lưu</span>
-              </button>
-            )}
+            {/* Backup & Restore Buttons */}
+            <button
+              onClick={onExportJsonBackup}
+              className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-indigo-200 hover:text-white bg-indigo-800/80 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
+              title="Tải file bản sao lưu toàn bộ dữ liệu (.json) về máy tính"
+            >
+              <Download className="w-3 h-3 text-indigo-300" />
+              <span className="text-[11px]">Sao lưu</span>
+            </button>
+
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-indigo-200 hover:text-white bg-indigo-800/80 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
+              title="Khôi phục dữ liệu từ file sao lưu JSON (khớp 100% dữ liệu máy thật)"
+            >
+              <Upload className="w-3 h-3 text-emerald-300" />
+              <span className="text-[11px]">Khôi phục JSON</span>
+            </button>
           </div>
 
           {/* Admin vs Read-Only Controls */}
@@ -351,70 +356,24 @@ export const Header: React.FC<HeaderProps> = ({
             </>
           ) : null}
 
-          {/* Role Badges & Login / Logout Actions */}
-          {isAdmin ? (
-            <div className="flex items-center gap-1.5 pl-1">
-              <div
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-xs font-bold"
-                title="Đang đăng nhập với quyền Quản trị viên (Được phép chỉnh sửa & cấu hình)"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="hidden sm:inline">Quản Trị</span>
-              </div>
-              <button
-                onClick={onLogoutAdmin}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-800 hover:bg-rose-900/80 border border-indigo-700 hover:border-rose-500/50 text-indigo-200 hover:text-rose-200 text-xs font-semibold transition-all cursor-pointer"
-                title="Đăng xuất quyền Quản trị (Về chế độ xem tự do)"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Thoát</span>
-              </button>
+          {/* Admin Status & Logout Action */}
+          <div className="flex items-center gap-2 pl-2 border-l border-indigo-700/60">
+            <div
+              className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-xs font-bold"
+              title="Đang đăng nhập với quyền Quản trị viên (Toàn quyền)"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden sm:inline">Quản Trị Viên</span>
             </div>
-          ) : userRole === 'teacher' ? (
-            <div className="flex items-center gap-1.5 pl-1">
-              <div
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-500/20 border border-sky-400/50 text-sky-300 text-xs font-bold"
-                title="Đang đăng nhập với quyền Giáo viên (Xem toàn bộ nội dung, không chỉnh sửa)"
-              >
-                <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
-                <span className="hidden sm:inline">Giáo Viên (Chỉ Xem)</span>
-              </div>
-              <button
-                onClick={onOpenAdminLogin}
-                className="flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-300 text-xs font-bold transition-all cursor-pointer"
-                title="Nâng quyền lên Quản trị viên để chỉnh sửa"
-              >
-                <Lock className="w-3 h-3 text-amber-400" />
-                <span className="hidden md:inline">Quản trị</span>
-              </button>
-              <button
-                onClick={onLogoutAdmin}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-800 hover:bg-rose-900/80 border border-indigo-700 hover:border-rose-500/50 text-indigo-200 hover:text-rose-200 text-xs font-semibold transition-all cursor-pointer"
-                title="Đăng xuất về chế độ xem tự do"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Thoát</span>
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-1.5 pl-1">
-              <div
-                className="hidden lg:flex items-center gap-1 px-2 py-1 rounded-lg bg-indigo-950 border border-indigo-800 text-indigo-300 text-[11px] font-medium"
-                title="Chế độ xem tự do: Được xem Thời khóa biểu toàn trường"
-              >
-                <Eye className="w-3 h-3 text-indigo-400" />
-                <span>Xem Tự Do (TKB)</span>
-              </div>
-              <button
-                onClick={onOpenAdminLogin}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer"
-                title="Đăng nhập Giáo viên hoặc Quản trị viên"
-              >
-                <KeyRound className="w-3.5 h-3.5" />
-                <span>Đăng Nhập</span>
-              </button>
-            </div>
-          )}
+            <button
+              onClick={onLogoutAdmin}
+              className="flex items-center gap-1 px-3 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 border border-rose-700/60 hover:border-rose-500 text-rose-200 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-xs active:scale-95"
+              title="Đăng xuất và khóa hệ thống"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Đăng xuất</span>
+            </button>
+          </div>
         </div>
       </div>
 

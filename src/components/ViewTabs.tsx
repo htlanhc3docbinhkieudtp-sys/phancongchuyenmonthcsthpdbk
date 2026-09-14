@@ -11,7 +11,6 @@ import {
   TrendingUp,
   ChevronLeft,
   ChevronRight,
-  Lock,
 } from 'lucide-react';
 
 export type ActiveTabType =
@@ -37,12 +36,10 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
   activeTab,
   onTabChange,
   unassignedCount,
-  userRole = 'guest',
 }) => {
   const navRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
-  const isGuest = userRole === 'guest';
 
   const tabs = [
     {
@@ -56,7 +53,6 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
       label: 'Thời Khóa Biểu Toàn Trường',
       shortLabel: 'Thời Khóa Biểu',
       icon: CalendarRange,
-      isPublic: true,
     },
     {
       id: 'weekly_schedule' as ActiveTabType,
@@ -155,56 +151,23 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
           {tabs.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
-            const isLocked = isGuest && !tab.isPublic;
 
             return (
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                title={
-                  isLocked
-                    ? `${tab.label} (Yêu cầu mật khẩu Giáo viên: giaovien@123 hoặc Quản trị)`
-                    : tab.isPublic && isGuest
-                    ? `${tab.label} (Xem tự do)`
-                    : tab.label
-                }
+                title={tab.label}
                 className={`flex items-center gap-1.5 h-9 px-3 text-xs font-bold transition-all whitespace-nowrap rounded-lg cursor-pointer shrink-0 ${
                   isActive
                     ? 'bg-indigo-600 text-white shadow-xs font-extrabold'
-                    : isLocked
-                    ? 'text-slate-500 hover:text-slate-800 hover:bg-slate-100/80 bg-slate-50/50'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                {isLocked ? (
-                  <Lock className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-amber-500'}`} />
-                ) : (
-                  <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                )}
+                <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                 <span className="hidden lg:inline">{tab.label}</span>
                 <span className="lg:hidden">{tab.shortLabel}</span>
 
-                {isLocked && (
-                  <span
-                    className={`ml-1 text-[9px] font-bold px-1.5 py-0.2 rounded-full ${
-                      isActive ? 'bg-amber-400 text-slate-900' : 'bg-amber-100 text-amber-800 border border-amber-200'
-                    }`}
-                  >
-                    Khóa
-                  </span>
-                )}
-
-                {tab.isPublic && isGuest && (
-                  <span
-                    className={`ml-1 text-[9px] font-bold px-1.5 py-0.2 rounded-full ${
-                      isActive ? 'bg-white text-emerald-700' : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                    }`}
-                  >
-                    Tự do
-                  </span>
-                )}
-
-                {tab.badge && !isLocked && (
+                {tab.badge && (
                   <span className={`ml-1 text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
                     isActive ? 'bg-white text-indigo-700' : 'bg-rose-100 text-rose-700'
                   }`}>
