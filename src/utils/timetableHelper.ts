@@ -328,19 +328,52 @@ export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[]
       subjectId = 'sub-hdtn';
     }
 
-    // Teacher name correction: Nguyễn Kim Rạng
+    // Normalize subject ID for KTPL
+    if (subjectName?.includes('KT & PL') || subjectName?.includes('KTPL') || subjectId === 'sub-ktpl') {
+      subjectId = 'sub-gdktpl';
+      subjectName = 'Giáo dục KT & PL';
+    }
+
+    // Teacher name & ID reconciliation:
     let teacherId = s.teacherId;
     let teacherName = s.teacherName;
     let teacherCode = s.teacherCode;
-    const tNameLower = (teacherName || '').toLowerCase();
+    const tNameLower = (teacherName || '').toLowerCase().trim();
+    const tCodeLower = (teacherCode || '').toLowerCase().trim();
+    const subLower = (subjectName || '').toLowerCase();
+
+    // 1. Thầy Phạm Nguyễn Văn Trường (GD KT&PL, tch-ls-8) vs Thầy Hiệu trưởng Lê Thanh Cường (tch-bgh-1)
+    // Thầy Hiệu trưởng không giảng dạy văn hóa. Các tiết KT&PL trong file JSON xuất ngoài thường bị gán nhầm sang tch-bgh-1.
     if (
+      subjectId === 'sub-gdktpl' ||
+      subjectId === 'sub-ktpl' ||
+      subLower.includes('kt & pl') ||
+      subLower.includes('ktpl') ||
+      subLower.includes('kinh tế') ||
+      tNameLower === 'trường' ||
+      tNameLower === 'truong' ||
+      tNameLower === 'phạm nguyễn văn trường' ||
+      tNameLower === 'pham nguyen van truong' ||
+      tCodeLower === 'trường' ||
+      tCodeLower === 'trường.pnv' ||
+      (teacherId === 'tch-bgh-1' && (tNameLower.includes('trường') || subLower.includes('kt')))
+    ) {
+      teacherId = 'tch-ls-8';
+      teacherName = 'Phạm Nguyễn Văn Trường';
+      teacherCode = 'Trường.PNV';
+      subjectId = 'sub-gdktpl';
+      subjectName = 'Giáo dục KT & PL';
+    } else if (
       teacherId === 'tch-td-2' ||
       tNameLower === 'nguyễn kim rang' ||
       tNameLower === 'nguyen kim rang' ||
+      tNameLower === 'nguyễn kim rạng' ||
       tNameLower === 'đặng văn rạng' ||
       tNameLower === 'dang van rang' ||
       tNameLower === 'rang' ||
-      (teacherCode && teacherCode.toLowerCase() === 'rang.nk')
+      tNameLower === 'rạng' ||
+      tCodeLower === 'rang.nk' ||
+      tCodeLower === 'rạng.nk'
     ) {
       teacherId = 'tch-td-2';
       teacherName = 'Nguyễn Kim Rạng';
@@ -349,7 +382,9 @@ export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[]
       teacherId === 'tch-ls-1' ||
       tNameLower === 'lê hồng thủy' ||
       tNameLower === 'le hong thuy' ||
-      (teacherCode && teacherCode.toLowerCase() === 'thủy.lh')
+      tNameLower === 'lê hồng thúy' ||
+      tCodeLower === 'thủy.lh' ||
+      tCodeLower === 'thúy.lh'
     ) {
       teacherId = 'tch-ls-1';
       teacherName = 'Lê Hồng Thúy';
@@ -357,46 +392,77 @@ export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[]
     } else if (
       teacherId === 'tch-td-1' ||
       tNameLower === 'lê văn nguyện' ||
-      (teacherCode && teacherCode.toLowerCase() === 'nguyện.lv')
+      tNameLower === 'le van nguyen' ||
+      tNameLower === 'lê văn nguyên' ||
+      tCodeLower === 'nguyện.lv' ||
+      tCodeLower === 'nguyên.lv'
     ) {
       teacherId = 'tch-td-1';
       teacherName = 'Lê Văn Nguyên';
       teacherCode = 'Nguyên.LV';
     } else if (
+      teacherId === 'tch-td-12' ||
+      tNameLower === 'nguyễn anh văn' ||
+      tNameLower === 'nguyen anh van' ||
+      tCodeLower === 'văn.na' ||
+      tCodeLower === 'văn(tk)' ||
+      tCodeLower === 'a.văn' ||
+      (tNameLower === 'văn' && (subLower.includes('nhạc') || subLower.includes('thể dục') || subLower.includes('gdtc')))
+    ) {
+      teacherId = 'tch-td-12';
+      teacherName = 'Nguyễn Anh Văn';
+      teacherCode = 'Văn.NA';
+    } else if (
       teacherId === 'tch-khtn-15' ||
       tNameLower === 'võ ngọc đỉnh văn' ||
-      tNameLower === 'vo ngoc dinh van'
+      tNameLower === 'vo ngoc dinh van' ||
+      tCodeLower === 'văn.vnđ' ||
+      tCodeLower === 'đ.văn' ||
+      (tNameLower === 'văn' && (subLower.includes('khtn') || subLower.includes('hóa') || subLower.includes('lí') || subLower.includes('sinh')))
     ) {
       teacherId = 'tch-khtn-15';
       teacherName = 'Võ Ngọc Đình Văn';
       teacherCode = 'Văn.VNĐ';
+    } else if (
+      teacherId === 'tch-bgh-1' ||
+      tNameLower === 'lê thanh cường' ||
+      tNameLower === 'le thanh cuong' ||
+      tCodeLower.includes('cường.lt')
+    ) {
+      teacherId = 'tch-bgh-1';
+      teacherName = 'Lê Thanh Cường';
+      teacherCode = 'Cường.LT (HT)';
     }
 
     // Normalize period and session:
     // If period is > 5 (e.g. VietSchool period 6-10), it represents the afternoon session (Tiết 1-5 Chiều)
-    let session = s.session;
-    let period = s.period;
+    let session = (s.session || '').toUpperCase() as 'SANG' | 'CHIEU';
+    let period = Number(s.period) || 1;
 
     if (period > 5) {
       session = 'CHIEU';
       period = period - 5;
     }
 
-    // Respect existing explicit session if already set ('SANG' or 'CHIEU').
-    // Classes may have off-session subjects (học trái buổi):
-    // e.g. Khối 6, 7 can have HĐTNHN, Thể dục, GDĐP in the morning (Sáng).
-    // Khối 8, 9 or THPT can have Thể dục or GDQP in the afternoon (Chiều).
-    // ONLY fallback to grade default if session is missing or invalid!
-    if (!session || (session !== 'SANG' && session !== 'CHIEU')) {
-      const cName = (s.className || '').toUpperCase();
-      const cId = (s.classId || '').toLowerCase();
-      const isGrade67 = /^[67]A/i.test(cName) || cId.includes('-6') || cId.includes('-7');
+    const cNameUpper = (s.className || '').toUpperCase().trim();
+    const cIdLower = (s.classId || '').toLowerCase().trim();
+    const isGrade67 = /^[67]A/i.test(cNameUpper) || cIdLower.includes('-6') || cIdLower.includes('-7');
+    const isGrade89101112 = /^(8|9|10|11|12)(A|CB)/i.test(cNameUpper) || /-(8|9|10|11|12)/i.test(cIdLower);
 
+    // Regular academic subjects (Âm nhạc, Mỹ thuật, Văn, Toán, KHTN, v.v.) are strictly tied to the class's main session:
+    // Khối 6, 7 học chính khóa buổi CHIỀU.
+    // Khối 8, 9, 10, 11, 12 học chính khóa buổi SÁNG.
+    const isOffSessionCandidate = subLower.includes('thể dục') || subLower.includes('gdtc') || subLower.includes('gdqp') || subLower.includes('quốc phòng');
+    if (!isOffSessionCandidate) {
       if (isGrade67) {
         session = 'CHIEU';
-      } else {
+      } else if (isGrade89101112) {
         session = 'SANG';
       }
+    }
+
+    if (!session || (session !== 'SANG' && session !== 'CHIEU')) {
+      session = isGrade67 ? 'CHIEU' : 'SANG';
     }
 
     const newId = `${s.classId}_${s.dayOfWeek}_${session}_${period}`;

@@ -42,6 +42,7 @@ interface HeaderProps {
   onOpenAdminLogin: () => void;
   onLogoutAdmin: () => void;
   onSaveToCloud: () => void;
+  onForceSyncFromCloud?: () => void;
   onExportJsonBackup: () => void;
   onImportJsonBackup: (file: File) => void;
   onOpenImportModal: () => void;
@@ -65,6 +66,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAdminLogin,
   onLogoutAdmin,
   onSaveToCloud,
+  onForceSyncFromCloud,
   onExportJsonBackup,
   onImportJsonBackup,
   onOpenImportModal,
@@ -229,44 +231,56 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </button>
 
-          {/* Cloud Auto-Sync Indicator & Manual Save */}
-          <div className="flex items-center gap-1">
+          {/* Cloud Auto-Sync Indicator & Manual Save / Refresh */}
+          <div className="flex items-center gap-1.5">
             <FirestoreWriteQuotaBadge />
+
+            {/* If Admin: Save to Cloud button */}
+            {isAdmin && (
+              <button
+                onClick={onSaveToCloud}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer shadow-2xs ${
+                  cloudSyncStatus === 'saving'
+                    ? 'bg-amber-500/20 border-amber-400/50 text-amber-200'
+                    : cloudSyncStatus === 'synced'
+                    ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-200 hover:bg-emerald-500/30'
+                    : 'bg-rose-500/20 border-rose-400/50 text-rose-200'
+                }`}
+                title={
+                  cloudSyncStatus === 'saving'
+                    ? 'Đang tự động lưu lên đám mây Firebase...'
+                    : cloudSyncStatus === 'offline'
+                    ? 'Dữ liệu chưa lưu lên Cloud. Bấm để lưu lên Firebase cho tất cả các máy.'
+                    : lastSyncedAt
+                    ? `Đã lưu đám mây lúc ${new Date(lastSyncedAt).toLocaleTimeString('vi-VN')}. Bấm để lưu lại.`
+                    : 'Bấm để lưu toàn bộ TKB và Phân công lên Firebase Cloud'
+                }
+              >
+                {cloudSyncStatus === 'saving' ? (
+                  <RefreshCw className="w-3.5 h-3.5 text-amber-300 animate-spin" />
+                ) : cloudSyncStatus === 'synced' ? (
+                  <CloudCheck className="w-3.5 h-3.5 text-emerald-300" />
+                ) : (
+                  <Cloud className="w-3.5 h-3.5 text-rose-300" />
+                )}
+                <span className="hidden xl:inline text-[11px]">
+                  {cloudSyncStatus === 'saving'
+                    ? 'Đang lưu Cloud...'
+                    : cloudSyncStatus === 'offline'
+                    ? 'Lưu Cloud ngay'
+                    : 'Lưu Cloud'}
+                </span>
+              </button>
+            )}
+
+            {/* Refresh / Sync from Cloud for ALL devices (Admin & Teachers/Colleagues) */}
             <button
-              onClick={isAdmin ? onSaveToCloud : undefined}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all ${
-                isAdmin ? 'cursor-pointer' : 'cursor-default'
-              } ${
-                cloudSyncStatus === 'saving'
-                  ? 'bg-amber-500/20 border-amber-400/50 text-amber-200'
-                  : cloudSyncStatus === 'synced'
-                  ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-200 hover:bg-emerald-500/30'
-                  : 'bg-rose-500/20 border-rose-400/50 text-rose-200'
-              }`}
-              title={
-                cloudSyncStatus === 'saving'
-                  ? 'Đang tự động lưu lên đám mây Firebase...'
-                  : cloudSyncStatus === 'offline'
-                  ? 'Dữ liệu đã lưu trên máy nhưng chưa ghi lên Firebase. Bấm nút này để lưu Cloud.'
-                  : lastSyncedAt
-                  ? `Đã lưu đám mây lúc ${new Date(lastSyncedAt).toLocaleTimeString('vi-VN')}`
-                  : 'Đã kết nối Đám mây Firebase'
-              }
+              onClick={onForceSyncFromCloud}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border border-indigo-400/40 bg-indigo-500/20 text-indigo-100 hover:bg-indigo-500/30 transition-all cursor-pointer shadow-2xs"
+              title="Đồng bộ từ Cloud: Tải thời khóa biểu mới nhất từ Đám mây Firebase để đảm bảo đồng nhất với các máy khác"
             >
-              {cloudSyncStatus === 'saving' ? (
-                <RefreshCw className="w-3.5 h-3.5 text-amber-300 animate-spin" />
-              ) : cloudSyncStatus === 'synced' ? (
-                <CloudCheck className="w-3.5 h-3.5 text-emerald-300" />
-              ) : (
-                <Cloud className="w-3.5 h-3.5 text-rose-300" />
-              )}
-              <span className="hidden xl:inline text-[11px]">
-                {cloudSyncStatus === 'saving'
-                  ? 'Đang lưu Cloud...'
-                  : cloudSyncStatus === 'offline'
-                  ? 'Chưa lưu Cloud'
-                  : 'Cloud Firebase'}
-              </span>
+              <RefreshCw className={`w-3.5 h-3.5 ${cloudSyncStatus === 'saving' ? 'animate-spin' : ''}`} />
+              <span className="text-[11px]">Làm mới Cloud</span>
             </button>
 
             {/* Hidden File Input for JSON restore */}
