@@ -516,16 +516,6 @@ async function executeCloudSave(
 ): Promise<{ success: boolean; error?: string }> {
   const docPath = `${COLLECTION_NAME}/${DOC_ID}`;
 
-  if (force) {
-    clearFirestoreWriteQuotaExhausted();
-  } else if (isFirestoreWriteQuotaExhausted()) {
-    console.warn('[Firestore Quota Guard] Bỏ qua ghi Cloud: Đã đạt hạn mức miễn phí trong ngày. Dữ liệu được bảo vệ an toàn trên máy.');
-    return {
-      success: true,
-      error: 'Hạn mức ghi Cloud hôm nay đã hết. Dữ liệu đang được bảo vệ an toàn trên máy.'
-    };
-  }
-
   try {
     const planRef = doc(db, COLLECTION_NAME, DOC_ID);
     let writesCount = 0;
@@ -636,10 +626,6 @@ async function executeCloudSave(
         }
       }
 
-    if (writesCount > 0) {
-      incrementDailyFirestoreWriteCount(writesCount);
-    }
-
     // If manual force save, also save snapshot to local storage (0 Cloud writes!)
     const primaryTimetable = data.timetable || data.weeklyTimetables?.[1];
     if (force && primaryTimetable && primaryTimetable.slots) {
@@ -690,16 +676,6 @@ export async function saveSchoolPlanToCloud(
   data: SchoolPlanData,
   force = false
 ): Promise<{ success: boolean; error?: string }> {
-  if (force) {
-    clearFirestoreWriteQuotaExhausted();
-  } else if (isFirestoreWriteQuotaExhausted()) {
-    console.warn('[Firestore] Hạn mức ghi Cloud đã hết. Lưu trữ an toàn cục bộ trên trình duyệt đang hoạt động.');
-    return {
-      success: true,
-      error: 'Hạn mức ghi Firebase miễn phí hôm nay đã đạt tối đa; dữ liệu đang được lưu an toàn trên máy.'
-    };
-  }
-
   if (isSaveInProgress) {
     // If a save is already running, coalesce into pending request
     return new Promise<{ success: boolean; error?: string }>((resolve) => {

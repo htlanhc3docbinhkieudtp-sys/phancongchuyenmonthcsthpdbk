@@ -86,10 +86,9 @@ import {
   subscribeToSchoolPlan,
   exportDataAsJsonFile,
   markDataAsCloudSynced,
-  isFirestoreWriteQuotaExhausted,
   SchoolPlanData
 } from './services/firebase';
-import { Lock } from 'lucide-react';
+import { Lock, RefreshCw } from 'lucide-react';
 
 const STORAGE_KEY = 'docbinhkieu_phancong_data_v9';
 
@@ -370,12 +369,14 @@ export default function App() {
   };
 
   // Cloud Sync state
+  const [isInitialLoadingCloud, setIsInitialLoadingCloud] = useState(true);
   const [cloudSyncStatus, setCloudSyncStatus] = useState<'synced' | 'saving' | 'error' | 'offline'>('synced');
   const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_last_cloud_sync`);
     return saved ? Number(saved) : null;
   });
   const isInitialCloudLoadRef = React.useRef(true);
+  const isApplyingCloudDataRef = React.useRef(false);
 
   // Modals state
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -471,18 +472,16 @@ export default function App() {
 
     if (cloudTimetablesToApply) {
       setWeeklyTimetables(prev => {
-        const combined = { ...prev };
-        Object.keys(cloudTimetablesToApply!).forEach(wStr => {
-          const w = Number(wStr);
-          const cloudTbl = cloudTimetablesToApply![w];
-          if (force) {
-            combined[w] = cloudTbl;
-          } else if (w === 2 && prev[2]?.slots?.length && (!cloudTbl?.slots || cloudTbl.slots.length < prev[2].slots.length)) {
-            // keep local week 2 if local has more slots
-          } else if (cloudTbl?.slots?.length) {
-            combined[w] = cloudTbl;
-          }
-        });
+        const combined = force ? { ...cloudTimetablesToApply } : { ...prev };
+        if (!force) {
+          Object.keys(cloudTimetablesToApply!).forEach(wStr => {
+            const w = Number(wStr);
+            const cloudTbl = cloudTimetablesToApply![w];
+            if (cloudTbl?.slots?.length) {
+              combined[w] = cloudTbl;
+            }
+          });
+        }
         try {
           localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(combined));
           if (combined[1]) {
@@ -512,6 +511,9 @@ export default function App() {
 
     if (cloudData.updatedAt) setLastSyncedAt(cloudData.updatedAt);
     setCloudSyncStatus('synced');
+    setTimeout(() => {
+      isApplyingCloudDataRef.current = false;
+    }, 250);
     return true;
   };
 
@@ -521,11 +523,14 @@ export default function App() {
     const initCloudData = async () => {
       try {
         setCloudSyncStatus('saving');
-        const cloudData = await loadSchoolPlanFromCloud();
+        const cloudPromise = loadSchoolPlanFromCloud();
+        const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 3500));
+        const cloudData = await Promise.race([cloudPromise, timeoutPromise]);
         if (cloudData && isMounted) {
-          applyCloudData(cloudData, false);
+          isApplyingCloudDataRef.current = true;
+          applyCloudData(cloudData, true);
         } else if (isMounted) {
-          console.warn('[Cloud] Cloud data was null. Retaining local state without pushing initial defaults.');
+          console.warn('[Cloud] Cloud data was null or timed out. Retaining local state.');
           setCloudSyncStatus('synced');
         }
       } catch (err) {
@@ -533,11 +538,12 @@ export default function App() {
         if (isMounted) setCloudSyncStatus('synced');
       } finally {
         if (isMounted) {
+          setIsInitialLoadingCloud(false);
           setTimeout(() => {
             if (isMounted) {
               isInitialCloudLoadRef.current = false;
             }
-          }, 2000);
+          }, 800);
         }
       }
     };
@@ -549,7 +555,8 @@ export default function App() {
     try {
       unsubscribe = subscribeToSchoolPlan((incomingData) => {
         if (!isMounted || !incomingData) return;
-        applyCloudData(incomingData, false);
+        isApplyingCloudDataRef.current = true;
+        applyCloudData(incomingData, true);
       });
     } catch (e) {
       console.warn('Real-time subscription notice:', e);
@@ -578,25 +585,6 @@ export default function App() {
       if (unsubscribe) unsubscribe();
     };
   }, []);
-
-  // Force sync from Cloud (available to all users to purge any stale local state and match Cloud 100%)
-  const handleForceSyncFromCloud = async () => {
-    setCloudSyncStatus('saving');
-    showToast('Đang tải dữ liệu thời khóa biểu mới nhất từ Cloud...');
-    try {
-      const cloudData = await loadSchoolPlanFromCloud();
-      if (cloudData) {
-        applyCloudData(cloudData, true);
-        showToast('Đã đồng bộ thành công dữ liệu mới nhất từ Cloud!');
-      } else {
-        showToast('Không tìm thấy dữ liệu trên Cloud hoặc mạng gián đoạn.');
-        setCloudSyncStatus('synced');
-      }
-    } catch (e: any) {
-      showToast('Lỗi khi tải từ Cloud: ' + (e?.message || 'Vui lòng thử lại'));
-      setCloudSyncStatus('error');
-    }
-  };
 
   // Save isAdmin state
   useEffect(() => {
@@ -643,7 +631,7 @@ export default function App() {
     // Mirror to IndexedDB (virtually unlimited browser storage)
     persistAllWeeklyTimetables(weeklyTimetables);
 
-    if (!isInitialCloudLoadRef.current) {
+    if (!isInitialCloudLoadRef.current && !isApplyingCloudDataRef.current) {
       setCloudSyncStatus('offline');
     }
 
@@ -1011,17 +999,17 @@ export default function App() {
     };
     const result = await saveSchoolPlanToCloud(payload, isForced);
     if (result.success) {
+      isApplyingCloudDataRef.current = true;
       setCloudSyncStatus('synced');
+      setTimeout(() => {
+        isApplyingCloudDataRef.current = false;
+      }, 300);
       setLastSyncedAt(Date.now());
       safeLocalStorageSet(`${STORAGE_KEY}_last_cloud_sync`, String(Date.now()));
-      if (isFirestoreWriteQuotaExhausted()) {
-        showToast('Đã lưu an toàn toàn bộ dữ liệu vào bộ nhớ máy! (Cloud Firebase đạt giới hạn miễn phí hôm nay, sẽ tự động đồng bộ khi Cloud làm mới).');
-      } else {
-        showToast('Đã lưu toàn bộ Thời khóa biểu & Dữ liệu lên Đám mây Firebase và tạo bản sao lưu an toàn!');
-      }
+      showToast('Đã lưu toàn bộ Thời khóa biểu & Dữ liệu lên Cloud Firebase thành công!');
     } else {
       setCloudSyncStatus('error');
-      showToast(`Không thể lưu lên Đám mây: ${result.error || 'Vui lòng kiểm tra kết nối mạng hoặc hạn mức.'}`);
+      showToast(`Không thể lưu lên Cloud: ${result.error || 'Vui lòng kiểm tra kết nối mạng.'}`);
     }
   };
 
@@ -1523,6 +1511,30 @@ export default function App() {
     }
   };
 
+  if (isInitialLoadingCloud) {
+    return (
+      <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-4 select-none">
+        <div className="flex flex-col items-center max-w-sm text-center">
+          <div className="w-16 h-16 rounded-2xl bg-indigo-600/30 border border-indigo-400/40 flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/20 animate-pulse">
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="w-12 h-12 object-contain rounded-full"
+              onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
+            />
+          </div>
+          <div className="flex items-center gap-2 mb-2 text-indigo-200 font-bold text-sm">
+            <RefreshCw className="w-4 h-4 animate-spin text-indigo-400" />
+            <span>Đang tải giao diện & dữ liệu mới nhất từ Cloud...</span>
+          </div>
+          <p className="text-xs text-slate-400">
+            Trường THCS & THPT Đốc Binh Kiều
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   if (!isAdmin) {
     return (
       <AdminLoginModal
@@ -1554,7 +1566,6 @@ export default function App() {
         onOpenAdminLogin={() => {}}
         onLogoutAdmin={handleLogout}
         onSaveToCloud={handleSaveToCloud}
-        onForceSyncFromCloud={handleForceSyncFromCloud}
         onExportJsonBackup={handleExportJsonBackup}
         onImportJsonBackup={handleImportJsonBackup}
         onOpenImportModal={() => setIsImportModalOpen(true)}

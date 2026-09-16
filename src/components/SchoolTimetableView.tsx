@@ -661,22 +661,6 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                     <Copy className="w-3.5 h-3.5" />
                     <span>Sao Chép TKB Sang Tuần Khác...</span>
                   </button>
-
-                  {onRestoreWeek1Official && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (window.confirm('Khôi phục lại dữ liệu Thời khóa biểu Tuần 1 chuẩn chính thức cho cả 3 điểm trường (14 lớp Điểm chính + 24 lớp Điểm Đốc Binh Kiều + 15 lớp Điểm Tân Kiều từ ma trận và file phân công)?')) {
-                          onRestoreWeek1Official();
-                        }
-                      }}
-                      className="px-3 py-2 bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 border border-slate-200 hover:border-rose-200 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
-                      title="Nạp lại dữ liệu TKB Tuần 1 chuẩn chính thức của 3 điểm trường (Điểm chính, Điểm Đốc Binh Kiều, Điểm Tân Kiều)"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5 text-rose-600" />
-                      <span>Khôi Phục TKB Tuần 1 Chuẩn (3 Điểm Trường)</span>
-                    </button>
-                  )}
                 </>
               ) : (
                 <button

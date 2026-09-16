@@ -13,6 +13,7 @@ import {
   RotateCcw,
   Cloud,
   CloudCheck,
+  UploadCloud,
   RefreshCw,
   Download,
   Database,
@@ -26,7 +27,6 @@ import {
 } from 'lucide-react';
 import { SchoolConfig, ConflictIssue } from '../types';
 import { setBrowserFavicon } from '../utils/faviconHelper';
-import { FirestoreWriteQuotaBadge } from './FirestoreWriteQuotaBadge';
 
 interface HeaderProps {
   config: SchoolConfig;
@@ -42,7 +42,6 @@ interface HeaderProps {
   onOpenAdminLogin: () => void;
   onLogoutAdmin: () => void;
   onSaveToCloud: () => void;
-  onForceSyncFromCloud?: () => void;
   onExportJsonBackup: () => void;
   onImportJsonBackup: (file: File) => void;
   onOpenImportModal: () => void;
@@ -66,7 +65,6 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAdminLogin,
   onLogoutAdmin,
   onSaveToCloud,
-  onForceSyncFromCloud,
   onExportJsonBackup,
   onImportJsonBackup,
   onOpenImportModal,
@@ -231,57 +229,40 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </button>
 
-          {/* Cloud Auto-Sync Indicator & Manual Save / Refresh */}
+          {/* Cloud Auto-Sync Indicator & Manual Save */}
           <div className="flex items-center gap-1.5">
-            <FirestoreWriteQuotaBadge />
-
-            {/* If Admin: Save to Cloud button */}
-            {isAdmin && (
+            {/* Show Save to Cloud button ONLY when there are unsaved local changes (cloudSyncStatus !== 'synced') */}
+            {cloudSyncStatus !== 'synced' && (
               <button
+                type="button"
                 onClick={onSaveToCloud}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer shadow-2xs ${
-                  cloudSyncStatus === 'saving'
-                    ? 'bg-amber-500/20 border-amber-400/50 text-amber-200'
-                    : cloudSyncStatus === 'synced'
-                    ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-200 hover:bg-emerald-500/30'
-                    : 'bg-rose-500/20 border-rose-400/50 text-rose-200'
-                }`}
+                disabled={cloudSyncStatus === 'saving'}
+                className="relative group overflow-hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white shadow-lg cursor-pointer transition-all active:scale-95 animate-rainbow-pulse bg-gradient-to-r from-amber-500 via-rose-500 via-purple-600 to-indigo-600 border border-white/40 hover:brightness-110"
                 title={
                   cloudSyncStatus === 'saving'
-                    ? 'Đang tự động lưu lên đám mây Firebase...'
-                    : cloudSyncStatus === 'offline'
-                    ? 'Dữ liệu chưa lưu lên Cloud. Bấm để lưu lên Firebase cho tất cả các máy.'
-                    : lastSyncedAt
-                    ? `Đã lưu đám mây lúc ${new Date(lastSyncedAt).toLocaleTimeString('vi-VN')}. Bấm để lưu lại.`
-                    : 'Bấm để lưu toàn bộ TKB và Phân công lên Firebase Cloud'
+                    ? 'Đang đẩy dữ liệu lên đám mây Firebase...'
+                    : 'Dữ liệu trên máy vừa có thay đổi và chưa lưu lên Cloud! Bấm để đẩy lên Firestore cho toàn trường.'
                 }
               >
                 {cloudSyncStatus === 'saving' ? (
-                  <RefreshCw className="w-3.5 h-3.5 text-amber-300 animate-spin" />
-                ) : cloudSyncStatus === 'synced' ? (
-                  <CloudCheck className="w-3.5 h-3.5 text-emerald-300" />
+                  <>
+                    <RefreshCw className="w-4 h-4 text-white animate-spin" />
+                    <span className="text-[11px] font-extrabold tracking-wide">Đang lưu Cloud...</span>
+                  </>
                 ) : (
-                  <Cloud className="w-3.5 h-3.5 text-rose-300" />
+                  <>
+                    <span className="relative flex h-2 w-2 mr-0.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-300 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-400"></span>
+                    </span>
+                    <UploadCloud className="w-4 h-4 text-white animate-bounce" />
+                    <span className="text-[11px] font-black tracking-wide drop-shadow-md">
+                      Lưu Cloud ngay
+                    </span>
+                  </>
                 )}
-                <span className="hidden xl:inline text-[11px]">
-                  {cloudSyncStatus === 'saving'
-                    ? 'Đang lưu Cloud...'
-                    : cloudSyncStatus === 'offline'
-                    ? 'Lưu Cloud ngay'
-                    : 'Lưu Cloud'}
-                </span>
               </button>
             )}
-
-            {/* Refresh / Sync from Cloud for ALL devices (Admin & Teachers/Colleagues) */}
-            <button
-              onClick={onForceSyncFromCloud}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border border-indigo-400/40 bg-indigo-500/20 text-indigo-100 hover:bg-indigo-500/30 transition-all cursor-pointer shadow-2xs"
-              title="Đồng bộ từ Cloud: Tải thời khóa biểu mới nhất từ Đám mây Firebase để đảm bảo đồng nhất với các máy khác"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${cloudSyncStatus === 'saving' ? 'animate-spin' : ''}`} />
-              <span className="text-[11px]">Làm mới Cloud</span>
-            </button>
 
             {/* File Input for JSON restore */}
             <input
