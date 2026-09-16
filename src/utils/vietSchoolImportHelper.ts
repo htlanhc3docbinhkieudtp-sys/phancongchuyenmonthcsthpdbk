@@ -1394,7 +1394,7 @@ export function parseVietSchoolTimetable(
 
           if (headerText.includes('thứ') || headerText.includes('ngày') || headerText.includes('thu') || headerText.includes('ngay') || headerText.includes('day')) {
             colDayIdx = c;
-          } else if (headerText.includes('buổi') || headerText.includes('buoi') || headerText.includes('session') || headerText.includes('ca')) {
+          } else if (headerText.includes('buổi') || headerText.includes('buoi') || headerText.includes('session') || headerText.includes('ca') || headerText.includes('s/c') || headerText === 'b') {
             colSessionIdx = c;
           } else if (headerText.includes('tiết') || headerText.includes('tiet') || headerText.includes('period')) {
             colPeriodIdx = c;
@@ -1402,7 +1402,7 @@ export function parseVietSchoolTimetable(
         }
 
         // Score columns based on first 30 data rows
-        if (colDayIdx === -1 || colPeriodIdx === -1) {
+        if (colDayIdx === -1 || colPeriodIdx === -1 || colSessionIdx === -1) {
           const dayScores = new Array(firstClassCol).fill(0);
           const periodScores = new Array(firstClassCol).fill(0);
           const sessionScores = new Array(firstClassCol).fill(0);
@@ -1441,11 +1441,19 @@ export function parseVietSchoolTimetable(
         if (colPeriodIdx === -1) {
           if (firstClassCol >= 3) {
             colPeriodIdx = (colDayIdx === 0) ? 2 : 1;
-            colSessionIdx = 1;
+            colSessionIdx = (colDayIdx === 0) ? 1 : 0;
           } else if (firstClassCol >= 2) {
             colPeriodIdx = (colDayIdx === 0) ? 1 : 0;
           } else {
             colPeriodIdx = 0;
+          }
+        }
+        if (colSessionIdx === -1 && firstClassCol >= 3) {
+          for (let c = 0; c < firstClassCol; c++) {
+            if (c !== colDayIdx && c !== colPeriodIdx) {
+              colSessionIdx = c;
+              break;
+            }
           }
         }
 
@@ -1496,10 +1504,29 @@ export function parseVietSchoolTimetable(
           }
 
           // 0. Detect/Maintain Session from row if present
+          let detectedRowSession: 'SANG' | 'CHIEU' | null = null;
           if (colSessionIdx >= 0 && dRow[colSessionIdx]) {
             const sCell = String(dRow[colSessionIdx]).trim().toUpperCase();
-            if (sCell === 'S' || sCell.includes('SÁNG') || sCell === 'S1' || sCell === 'S2') currentSession = 'SANG';
-            else if (sCell === 'C' || sCell.includes('CHIỀU') || sCell === 'C1' || sCell === 'C2') currentSession = 'CHIEU';
+            if (sCell === 'S' || sCell.includes('SÁNG') || sCell === 'SANG' || sCell === 'S1' || sCell === 'S2' || sCell.startsWith('S')) detectedRowSession = 'SANG';
+            else if (sCell === 'C' || sCell.includes('CHIỀU') || sCell === 'CHIEU' || sCell === 'C1' || sCell === 'C2' || sCell.startsWith('C')) detectedRowSession = 'CHIEU';
+          }
+          if (!detectedRowSession) {
+            for (let c = 0; c < firstClassCol; c++) {
+              if (c === colPeriodIdx || c === colDayIdx) continue;
+              const cellStr = String(dRow[c] || '').trim().toUpperCase();
+              if (cellStr === 'S' || cellStr === 'SÁNG' || cellStr === 'SANG' || cellStr === 'S1' || cellStr === 'S2') {
+                detectedRowSession = 'SANG';
+                if (colSessionIdx === -1) colSessionIdx = c;
+                break;
+              } else if (cellStr === 'C' || cellStr === 'CHIỀU' || cellStr === 'CHIEU' || cellStr === 'C1' || cellStr === 'C2') {
+                detectedRowSession = 'CHIEU';
+                if (colSessionIdx === -1) colSessionIdx = c;
+                break;
+              }
+            }
+          }
+          if (detectedRowSession) {
+            currentSession = detectedRowSession;
           }
 
           // 1. Detect Day (Thứ 2 -> 7)

@@ -449,18 +449,9 @@ export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[]
     const isGrade67 = /^[67]A/i.test(cNameUpper) || cIdLower.includes('-6') || cIdLower.includes('-7');
     const isGrade89101112 = /^(8|9|10|11|12)(A|CB)/i.test(cNameUpper) || /-(8|9|10|11|12)/i.test(cIdLower);
 
-    // Regular academic subjects (Âm nhạc, Mỹ thuật, Văn, Toán, KHTN, v.v.) are strictly tied to the class's main session:
-    // Khối 6, 7 học chính khóa buổi CHIỀU.
-    // Khối 8, 9, 10, 11, 12 học chính khóa buổi SÁNG.
-    const isOffSessionCandidate = subLower.includes('thể dục') || subLower.includes('gdtc') || subLower.includes('gdqp') || subLower.includes('quốc phòng');
-    if (!isOffSessionCandidate) {
-      if (isGrade67) {
-        session = 'CHIEU';
-      } else if (isGrade89101112) {
-        session = 'SANG';
-      }
-    }
-
+    // Only infer session if not already explicitly provided ('SANG' or 'CHIEU'):
+    // This allows both regular main sessions and 'trái buổi' (extra/off-session) periods
+    // (e.g. Khối 6, 7 học trái buổi buổi Sáng; Khối 8, 9, 10, 11, 12 học trái buổi buổi Chiều)
     if (!session || (session !== 'SANG' && session !== 'CHIEU')) {
       session = isGrade67 ? 'CHIEU' : 'SANG';
     }

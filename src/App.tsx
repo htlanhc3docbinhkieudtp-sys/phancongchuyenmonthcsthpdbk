@@ -1242,7 +1242,7 @@ export default function App() {
         targetWeeks.forEach(w => {
           let finalSlots = normalizedSlots;
           if (importMode === 'merge') {
-            const existingWeekSlots = next[w]?.slots || next[1]?.slots || [];
+            const existingWeekSlots = next[w]?.slots || (w === 2 ? OFFICIAL_WEEK_2_SLOTS : next[1]?.slots) || [];
             const slotMap = new Map<string, TimetableSlot>();
             // Keep all existing slots from other classes/campuses
             existingWeekSlots.forEach(s => {
