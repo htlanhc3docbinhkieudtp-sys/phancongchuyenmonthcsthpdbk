@@ -46,7 +46,8 @@ import {
   Lock,
   Eye,
   ShieldCheck,
-  ArrowRightLeft
+  ArrowRightLeft,
+  Trash2
 } from 'lucide-react';
 import { TimetableImportModal } from './TimetableImportModal';
 import { AutoScheduleModal } from './AutoScheduleModal';
@@ -81,6 +82,7 @@ interface SchoolTimetableViewProps {
     importMode?: 'merge' | 'replace'
   ) => void;
   onResetTimetable?: () => void;
+  onDeleteWeekTimetable?: (weekNumber: number, deleteAllSubsequent: boolean) => void;
   onShowToast?: (msg: string) => void;
   onNavigateToWeeklySchedule?: (week: number) => void;
 }
@@ -102,6 +104,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   onUpdateTimetable,
   onImportTimetableBatch,
   onResetTimetable,
+  onDeleteWeekTimetable,
   onShowToast,
   onNavigateToWeeklySchedule
 }) => {
@@ -117,6 +120,8 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   const [isCollisionModalOpen, setIsCollisionModalOpen] = useState(false);
   const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
   const [filterOnlyConflicts, setFilterOnlyConflicts] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteAllSubsequentWeeks, setDeleteAllSubsequentWeeks] = useState(false);
 
 
   // Selected single class for focused view in BY_CLASS
@@ -661,6 +666,22 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                     <Copy className="w-3.5 h-3.5" />
                     <span>Sao Chép TKB Sang Tuần Khác...</span>
                   </button>
+
+                  {/* Delete Week Timetable Button */}
+                  {onDeleteWeekTimetable && (activeSlots.length > 0 || (weeklyTimetables && weeklyTimetables[currentWeek]?.slots && weeklyTimetables[currentWeek].slots.length > 0)) && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDeleteAllSubsequentWeeks(false);
+                        setIsDeleteModalOpen(true);
+                      }}
+                      className="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 hover:text-rose-800 border border-rose-200 active:scale-95 text-xs font-bold rounded-xl shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer"
+                      title={`Xóa dữ liệu Thời khóa biểu của Tuần ${currentWeek}`}
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                      <span>Xóa TKB Tuần {currentWeek}</span>
+                    </button>
+                  )}
                 </>
               ) : (
                 <button
@@ -1061,8 +1082,8 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                   </span>
                 </div>
                 <p className="text-xs text-amber-800/90 mt-1 leading-relaxed">
-                  Theo thiết lập của trường, thời khóa biểu từ Tuần 2 trở đi để trống để Quản trị viên chủ động theo dõi. 
-                  Khi hết Tuần 1 hoặc khi không cần thay đổi lịch học, Quản trị viên có thể bấm sao chép từ Tuần 1 sang.
+                  Thực tế thời khóa biểu mỗi tuần mỗi thay đổi. Tuần {currentWeek} hiện chưa có dữ liệu TKB. 
+                  Quản trị viên có thể đẩy file VietSchool của tuần này lên hoặc sao chép từ tuần khác khi cần.
                 </p>
               </div>
             </div>
@@ -1071,23 +1092,19 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
               <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto shrink-0">
                 <button
                   type="button"
-                  onClick={() => {
-                    if (onCopyTimetableToWeek) {
-                      onCopyTimetableToWeek(1, [currentWeek], true);
-                      alert(`Đã sao chép thành công Thời khóa biểu từ Tuần 1 sang Tuần ${currentWeek}!`);
-                    }
-                  }}
-                  className="w-full sm:w-auto px-4 py-2.5 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  onClick={() => setIsImportModalOpen(true)}
+                  className="w-full sm:w-auto px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <Copy className="w-4 h-4" />
-                  <span>Sao chép TKB Tuần 1 sang Tuần {currentWeek}</span>
+                  <Upload className="w-4 h-4" />
+                  <span>Đẩy TKB VietSchool vào Tuần {currentWeek}</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsCopyModalOpen(true)}
                   className="w-full sm:w-auto px-3.5 py-2.5 bg-white hover:bg-amber-100/50 text-amber-900 border border-amber-300 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <span>Tùy chọn khác...</span>
+                  <Copy className="w-4 h-4" />
+                  <span>Sao chép từ tuần khác...</span>
                 </button>
               </div>
             ) : (
@@ -1950,6 +1967,100 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         isAdmin={isAdmin}
         onShowToast={onShowToast}
       />
+
+      {/* 10. Delete Week Timetable Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-150">
+          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-rose-700 via-rose-800 to-red-900 text-white p-4 sm:p-5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-white/20 text-white rounded-xl border border-white/20">
+                  <Trash2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base tracking-tight">
+                    Xóa Thời Khóa Biểu Tuần {currentWeek}
+                  </h3>
+                  <p className="text-xs text-rose-100">
+                    Xác nhận dọn sạch dữ liệu TKB trên máy và Cloud
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="p-1.5 text-rose-200 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5 space-y-4">
+              <div className="flex items-start gap-3 p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-950">
+                <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="font-bold text-rose-900">
+                    Bạn có chắc chắn muốn xóa TKB Tuần {currentWeek}?
+                  </p>
+                  <p className="text-rose-800/90 leading-relaxed">
+                    Tuần {currentWeek} hiện đang có <strong>{activeSlots.length} tiết học</strong>. Khi xóa, tuần này sẽ được chuyển về trạng thái để trống.
+                  </p>
+                </div>
+              </div>
+
+              {/* Checkbox to also delete subsequent weeks */}
+              {currentWeek >= 2 && currentWeek < (config.semester === 'HK2' ? 35 : 18) && (
+                <div className="p-3.5 bg-amber-50/90 border border-amber-200 rounded-xl space-y-2">
+                  <label className="flex items-start gap-2.5 cursor-pointer text-xs font-bold text-amber-950">
+                    <input
+                      type="checkbox"
+                      checked={deleteAllSubsequentWeeks}
+                      onChange={(e) => setDeleteAllSubsequentWeeks(e.target.checked)}
+                      className="w-4 h-4 mt-0.5 rounded text-rose-600 border-amber-300 focus:ring-rose-500 cursor-pointer"
+                    />
+                    <span>
+                      Đồng thời xóa TKB từ Tuần {currentWeek + 1} đến Tuần {config.semester === 'HK2' ? 35 : 18}
+                    </span>
+                  </label>
+                  <p className="text-[11px] text-amber-800/90 pl-6.5 font-normal leading-relaxed">
+                    Chọn mục này để dọn sạch toàn bộ các tuần bị sao chép thừa từ tuần 3 đến 18, giúp danh sách gọn gàng và không bị rối mắt.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 hover:bg-slate-200/60 rounded-xl transition-all cursor-pointer"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (onDeleteWeekTimetable) {
+                    onDeleteWeekTimetable(currentWeek, deleteAllSubsequentWeeks);
+                  }
+                  setIsDeleteModalOpen(false);
+                }}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>
+                  {deleteAllSubsequentWeeks
+                    ? `Xác nhận xóa từ Tuần ${currentWeek} đến ${config.semester === 'HK2' ? 35 : 18}`
+                    : `Xác nhận xóa TKB Tuần ${currentWeek}`}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

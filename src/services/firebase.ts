@@ -6,6 +6,7 @@ import {
   setDoc,
   getDoc,
   getDocs,
+  deleteDoc,
   collection,
   writeBatch,
   onSnapshot,
@@ -518,7 +519,7 @@ async function executeCloudSave(
 
   try {
     const planRef = doc(db, COLLECTION_NAME, DOC_ID);
-    let writesCount = 0;
+    const writePromises: Promise<any>[] = [];
 
     // 1. Root Document Check & Save
     // Contains config, departments, subjects, classes, teachers, assignments, lockedCells
@@ -540,8 +541,7 @@ async function executeCloudSave(
         hasSubcollections: true,
         version: 2
       };
-      await setDoc(planRef, sanitizeForFirestore(rootPayload));
-      writesCount++;
+      writePromises.push(setDoc(planRef, sanitizeForFirestore(rootPayload)));
       savedRootFingerprint = currentRootFp;
       try {
         sessionStorage.setItem(SESSION_FP_ROOT_KEY, currentRootFp);
@@ -550,36 +550,58 @@ async function executeCloudSave(
 
     // 2. Weekly Timetables Check & Save
     // Each week's timetable is stored in its own subdocument: weekly_timetables/week_{wkNum}
-    // Only modified or customized weeks are written!
-    if (data.weeklyTimetables && Object.keys(data.weeklyTimetables).length > 0) {
-      const week1Slots = data.weeklyTimetables[1]?.slots || data.timetable?.slots || [];
-      const week1Fp = computeTimetableSlotsFingerprint(week1Slots);
+    // Parallelized for ultra-fast response (<1-2s).
+    if (data.weeklyTimetables) {
+      const currentActiveWeekKeys = new Set<number>();
 
       for (const [wKey, tt] of Object.entries(data.weeklyTimetables)) {
         const wkNum = Number(wKey);
-        if (!tt || !tt.slots || tt.slots.length === 0) continue;
+        if (!wkNum) continue;
 
+        if (!tt || !tt.slots || tt.slots.length === 0) {
+          // If explicitly set to empty slots, ensure it's deleted from Cloud if it existed before
+          if (savedTimetableFingerprints.has(wkNum)) {
+            const weekDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${wkNum}`);
+            writePromises.push(deleteDoc(weekDocRef));
+            savedTimetableFingerprints.delete(wkNum);
+            try {
+              sessionStorage.removeItem(`docbinhkieu_fp_tt_${wkNum}`);
+            } catch { /* ignore */ }
+          }
+          continue;
+        }
+
+        currentActiveWeekKeys.add(wkNum);
         const thisFp = computeTimetableSlotsFingerprint(tt.slots);
         const prevSavedFp = savedTimetableFingerprints.get(wkNum);
 
-        // A week is saved if:
-        // - Its slots changed since last save (thisFp !== prevSavedFp), OR
-        // - It's Week 1 and changed/not saved, OR
-        // - It's Week 2..37 that differs from Week 1 and changed/not saved
-        const isCustomized = wkNum === 1 || thisFp !== week1Fp || wkNum === 2;
-        const needsWrite = force || (isCustomized && thisFp !== prevSavedFp);
+        // Always save if force || changed from previous save
+        const needsWrite = force || thisFp !== prevSavedFp;
 
         if (needsWrite) {
           const weekDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${wkNum}`);
-          await setDoc(weekDocRef, sanitizeForFirestore({
-            weekNumber: wkNum,
-            timetable: tt,
-            updatedAt: Date.now()
-          }));
-          writesCount++;
+          writePromises.push(
+            setDoc(weekDocRef, sanitizeForFirestore({
+              weekNumber: wkNum,
+              timetable: tt,
+              updatedAt: Date.now()
+            }))
+          );
           savedTimetableFingerprints.set(wkNum, thisFp);
           try {
             sessionStorage.setItem(`docbinhkieu_fp_tt_${wkNum}`, thisFp);
+          } catch { /* ignore */ }
+        }
+      }
+
+      // Check if any previously saved weeks were deleted from data.weeklyTimetables
+      for (const savedWk of Array.from(savedTimetableFingerprints.keys())) {
+        if (!currentActiveWeekKeys.has(savedWk)) {
+          const weekDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${savedWk}`);
+          writePromises.push(deleteDoc(weekDocRef));
+          savedTimetableFingerprints.delete(savedWk);
+          try {
+            sessionStorage.removeItem(`docbinhkieu_fp_tt_${savedWk}`);
           } catch { /* ignore */ }
         }
       }
@@ -588,12 +610,13 @@ async function executeCloudSave(
       const ttFp = computeTimetableSlotsFingerprint(data.timetable.slots);
       if (force || ttFp !== savedTimetableFingerprints.get(1)) {
         const weekDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', 'week_1');
-        await setDoc(weekDocRef, sanitizeForFirestore({
-          weekNumber: 1,
-          timetable: data.timetable,
-          updatedAt: Date.now()
-        }));
-        writesCount++;
+        writePromises.push(
+          setDoc(weekDocRef, sanitizeForFirestore({
+            weekNumber: 1,
+            timetable: data.timetable,
+            updatedAt: Date.now()
+          }))
+        );
         savedTimetableFingerprints.set(1, ttFp);
       }
     }
@@ -608,23 +631,31 @@ async function executeCloudSave(
         const schedFp = computeScheduleFingerprint(ws);
         const prevSavedSchedFp = savedScheduleFingerprints.get(wkNum);
 
-        const needsWrite = force || (schedFp !== prevSavedSchedFp && (wkNum === 1 || JSON.stringify(ws.assignments) !== masterFp));
+        const isCustomized = wkNum === 1 || JSON.stringify(ws.assignments) !== masterFp;
+        const needsWrite = isCustomized && (force || schedFp !== prevSavedSchedFp);
+
         if (needsWrite) {
-            const schedDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_schedules', `week_${wkNum}`);
-            await setDoc(schedDocRef, sanitizeForFirestore({
+          const schedDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_schedules', `week_${wkNum}`);
+          writePromises.push(
+            setDoc(schedDocRef, sanitizeForFirestore({
               weekNumber: wkNum,
               semester: ws.semester || 'HK1',
               assignments: ws.assignments,
               updatedAt: Date.now()
-            }));
-            writesCount++;
-            savedScheduleFingerprints.set(wkNum, schedFp);
-            try {
-              sessionStorage.setItem(`docbinhkieu_fp_sched_${wkNum}`, schedFp);
-            } catch { /* ignore */ }
-          }
+            }))
+          );
+          savedScheduleFingerprints.set(wkNum, schedFp);
+          try {
+            sessionStorage.setItem(`docbinhkieu_fp_sched_${wkNum}`, schedFp);
+          } catch { /* ignore */ }
         }
       }
+    }
+
+    // Execute all write operations in parallel for lightning-fast save (< 1-2s)
+    if (writePromises.length > 0) {
+      await Promise.all(writePromises);
+    }
 
     // If manual force save, also save snapshot to local storage (0 Cloud writes!)
     const primaryTimetable = data.timetable || data.weeklyTimetables?.[1];
@@ -691,12 +722,12 @@ export async function saveSchoolPlanToCloud(
     const savePromise = executeCloudSave(data, force);
     const timeoutPromise = new Promise<{ success: boolean; error?: string }>((resolve) => {
       setTimeout(() => {
-        console.warn('saveSchoolPlanToCloud timeout reached after 30s, unblocking.');
+        console.warn('saveSchoolPlanToCloud timeout reached after 60s, unblocking.');
         resolve({
           success: false,
-          error: 'Thời gian kết nối đến Firebase quá 30 giây (timeout). Vui lòng thử lại.'
+          error: 'Thời gian kết nối đến Firebase quá 60 giây (timeout). Vui lòng kiểm tra lại kết nối mạng và thử lại.'
         });
-      }, 30000);
+      }, 60000);
     });
     const result = await Promise.race([savePromise, timeoutPromise]);
     return result;
@@ -893,3 +924,45 @@ export function exportDataAsJsonFile(data: SchoolPlanData, filename?: string) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+/**
+ * Delete a specific week's timetable document from Firestore Cloud subcollection
+ */
+export async function deleteWeekTimetableFromCloud(weekNumber: number): Promise<boolean> {
+  try {
+    const weekDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${weekNumber}`);
+    await deleteDoc(weekDocRef);
+    savedTimetableFingerprints.delete(weekNumber);
+    try {
+      sessionStorage.removeItem(`docbinhkieu_fp_tt_${weekNumber}`);
+    } catch { /* ignore */ }
+    return true;
+  } catch (err) {
+    console.error(`Error deleting week_${weekNumber} from cloud:`, err);
+    return false;
+  }
+}
+
+/**
+ * Delete a batch of weeks from Firestore Cloud subcollection
+ */
+export async function deleteBatchWeekTimetablesFromCloud(weekNumbers: number[]): Promise<boolean> {
+  try {
+    const deletePromises = weekNumbers.map(async w => {
+      const weekDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${w}`);
+      savedTimetableFingerprints.delete(w);
+      try {
+        sessionStorage.removeItem(`docbinhkieu_fp_tt_${w}`);
+      } catch { /* ignore */ }
+      return deleteDoc(weekDocRef).catch(e => {
+        console.warn(`Notice deleting week_${w} from cloud:`, e);
+      });
+    });
+    await Promise.all(deletePromises);
+    return true;
+  } catch (err) {
+    console.error(`Error batch deleting weeks from cloud:`, err);
+    return false;
+  }
+}
+

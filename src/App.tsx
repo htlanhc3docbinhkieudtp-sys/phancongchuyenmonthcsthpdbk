@@ -86,6 +86,7 @@ import {
   subscribeToSchoolPlan,
   exportDataAsJsonFile,
   markDataAsCloudSynced,
+  deleteBatchWeekTimetablesFromCloud,
   SchoolPlanData
 } from './services/firebase';
 import { Lock, RefreshCw } from 'lucide-react';
@@ -524,7 +525,7 @@ export default function App() {
       try {
         setCloudSyncStatus('saving');
         const cloudPromise = loadSchoolPlanFromCloud();
-        const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 3500));
+        const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 7500));
         const cloudData = await Promise.race([cloudPromise, timeoutPromise]);
         if (cloudData && isMounted) {
           isApplyingCloudDataRef.current = true;
@@ -1230,7 +1231,8 @@ export default function App() {
         targetWeeks.forEach(w => {
           let finalSlots = normalizedSlots;
           if (importMode === 'merge') {
-            const existingWeekSlots = next[w]?.slots || (w === 2 ? OFFICIAL_WEEK_2_SLOTS : next[1]?.slots) || [];
+            // Only merge with existing slots if the week already has slots
+            const existingWeekSlots = next[w]?.slots || [];
             const slotMap = new Map<string, TimetableSlot>();
             // Keep all existing slots from other classes/campuses
             existingWeekSlots.forEach(s => {
@@ -1331,11 +1333,61 @@ export default function App() {
       setCurrentWeek(targetWeek);
       showToast(
         importMode === 'merge'
-          ? `Đã gộp thành công ${normalizedSlots.length} tiết vào TKB (Tổng cộng: ${totalFinalSlots || normalizedSlots.length} tiết)!`
-          : `Đã thay thế toàn bộ bằng ${normalizedSlots.length} tiết TKB mới!`
+          ? `Đã gộp thành công ${normalizedSlots.length} tiết vào TKB (Tổng cộng: ${totalFinalSlots || normalizedSlots.length} tiết)! Đang tự động lưu lên Cloud...`
+          : `Đã thay thế toàn bộ bằng ${normalizedSlots.length} tiết TKB mới! Đang tự động lưu lên Cloud...`
       );
+
+      // Auto-save to Cloud Firebase immediately
+      setTimeout(() => {
+        handleSaveToCloud(true);
+      }, 100);
     } catch (err) {
       console.error('[Import] Error applying timetable batch:', err);
+    }
+  };
+
+  const handleDeleteWeekTimetable = async (targetWeek: number, deleteAllSubsequent = false) => {
+    const currentSemester = config.semester || 'HK1';
+    const maxWeek = currentSemester === 'HK1' ? 18 : 35;
+    const weeksToDelete: number[] = [targetWeek];
+    if (deleteAllSubsequent) {
+      for (let w = targetWeek + 1; w <= maxWeek; w++) {
+        weeksToDelete.push(w);
+      }
+    }
+
+    setCloudSyncStatus('saving');
+
+    // 1. Update React weeklyTimetables state
+    setWeeklyTimetables(prev => {
+      const next = { ...prev };
+      weeksToDelete.forEach(w => {
+        delete next[w];
+      });
+      persistAllWeeklyTimetables(next);
+      return next;
+    });
+
+    if (weeksToDelete.includes(2)) {
+      try {
+        localStorage.removeItem(WEEK2_EXACT_BACKUP_KEY);
+      } catch { /* ignore */ }
+    }
+
+    // 2. Delete from Cloud subcollection asynchronously
+    try {
+      await deleteBatchWeekTimetablesFromCloud(weeksToDelete);
+      setCloudSyncStatus('synced');
+      setLastSyncedAt(Date.now());
+      showToast(
+        deleteAllSubsequent
+          ? `Đã dọn sạch Thời khóa biểu từ Tuần ${targetWeek} đến Tuần ${maxWeek} trên cả máy và Cloud!`
+          : `Đã xóa Thời khóa biểu của Tuần ${targetWeek} thành công trên cả máy và Cloud!`
+      );
+    } catch (e) {
+      console.error('Lỗi khi xóa TKB trên Cloud:', e);
+      setCloudSyncStatus('offline');
+      showToast(`Đã xóa trên máy. Lỗi khi xóa trên Cloud: ${e}`);
     }
   };
 
@@ -1620,6 +1672,7 @@ export default function App() {
             onPromptAdminLogin={() => {}}
             onUpdateTimetable={handleUpdateTimetable}
             onImportTimetableBatch={handleImportTimetableBatch}
+            onDeleteWeekTimetable={handleDeleteWeekTimetable}
             onShowToast={showToast}
             onNavigateToWeeklySchedule={(targetWeek) => {
               setCurrentWeek(targetWeek);
@@ -1638,7 +1691,7 @@ export default function App() {
             teachers={teachers}
             baseAssignments={assignments}
             weeklySchedules={effectiveWeeklySchedules}
-            timetableSlots={weeklyTimetables[currentWeek]?.slots || (currentWeek === 2 ? OFFICIAL_WEEK_2_SLOTS : weeklyTimetables[1]?.slots || timetable.slots)}
+            timetableSlots={timetable.slots || []}
             weeklyTimetables={weeklyTimetables}
             currentWeek={currentWeek}
             initialReconcileOpen={openReconcileOnLoad}
