@@ -65,15 +65,11 @@ import {
 
 import { Header } from './components/Header';
 import { ViewTabs, ActiveTabType } from './components/ViewTabs';
-import { UnifiedOfficialTableView } from './components/UnifiedOfficialTableView';
 import { SchoolTimetableView } from './components/SchoolTimetableView';
 import { WeeklyScheduleManagerView } from './components/WeeklyScheduleManagerView';
 import { WeeklyTeachingLogView } from './components/WeeklyTeachingLogView';
-import { ClassMatrixView } from './components/ClassMatrixView';
-import { TeacherWorkbenchView } from './components/TeacherWorkbenchView';
 import { ComprehensiveTableView } from './components/ComprehensiveTableView';
 import { HomeroomView } from './components/HomeroomView';
-import { TeacherManagementView } from './components/TeacherManagementView';
 import { CurriculumView } from './components/CurriculumView';
 import { ExcelImportExportModal } from './components/ExcelImportExportModal';
 import { AutoAssignModal } from './components/AutoAssignModal';
@@ -89,7 +85,6 @@ import {
   deleteBatchWeekTimetablesFromCloud,
   SchoolPlanData
 } from './services/firebase';
-import { Lock, RefreshCw } from 'lucide-react';
 
 const STORAGE_KEY = 'docbinhkieu_phancong_data_v9';
 
@@ -350,7 +345,18 @@ export default function App() {
   // Active tab state
   const [activeTab, setActiveTab] = useState<ActiveTabType>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_active_tab`) as ActiveTabType | null;
-    return saved || 'timetable';
+    const allowedTabs: ActiveTabType[] = [
+      'timetable',
+      'weekly_schedule',
+      'weekly_log',
+      'summary',
+      'homeroom',
+      'curriculum'
+    ];
+    if (saved && allowedTabs.includes(saved)) {
+      return saved;
+    }
+    return 'timetable';
   });
 
   const [openReconcileOnLoad, setOpenReconcileOnLoad] = useState<boolean>(false);
@@ -370,7 +376,6 @@ export default function App() {
   };
 
   // Cloud Sync state
-  const [isInitialLoadingCloud, setIsInitialLoadingCloud] = useState(true);
   const [cloudSyncStatus, setCloudSyncStatus] = useState<'synced' | 'saving' | 'error' | 'offline'>('synced');
   const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_last_cloud_sync`);
@@ -539,7 +544,6 @@ export default function App() {
         if (isMounted) setCloudSyncStatus('synced');
       } finally {
         if (isMounted) {
-          setIsInitialLoadingCloud(false);
           setTimeout(() => {
             if (isMounted) {
               isInitialCloudLoadRef.current = false;
@@ -1563,30 +1567,6 @@ export default function App() {
     }
   };
 
-  if (isInitialLoadingCloud) {
-    return (
-      <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-4 select-none">
-        <div className="flex flex-col items-center max-w-sm text-center">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-600/30 border border-indigo-400/40 flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/20 animate-pulse">
-            <img
-              src="/logo.png"
-              alt="Logo"
-              className="w-12 h-12 object-contain rounded-full"
-              onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
-            />
-          </div>
-          <div className="flex items-center gap-2 mb-2 text-indigo-200 font-bold text-sm">
-            <RefreshCw className="w-4 h-4 animate-spin text-indigo-400" />
-            <span>Đang tải giao diện & dữ liệu mới nhất từ Cloud...</span>
-          </div>
-          <p className="text-xs text-slate-400">
-            Trường THCS & THPT Đốc Binh Kiều
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   if (!isAdmin) {
     return (
       <AdminLoginModal
@@ -1636,25 +1616,7 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 pb-16">
-        {/* Tab 1: Phân Công Chính Thức */}
-        {activeTab === 'official' && (
-          <UnifiedOfficialTableView
-            config={config}
-            classes={classes}
-            subjects={subjects}
-            teachers={teachers}
-            assignments={assignments}
-            workloads={workloads}
-            isAdmin={isAdmin}
-            onPromptAdminLogin={() => {}}
-            onAssignTeacher={handleAssignTeacher}
-            onAssignHomeroom={handleAssignHomeroom}
-            onUpdateClassSpecialTopic={handleUpdateClassSpecialTopic}
-            onExportExcel={handleExportExcel}
-          />
-        )}
-
-        {/* Tab 2: Thời Khóa Biểu Toàn Trường */}
+        {/* Tab: Thời Khóa Biểu Toàn Trường */}
         {activeTab === 'timetable' && (
           <SchoolTimetableView
             config={config}
@@ -1682,7 +1644,7 @@ export default function App() {
           />
         )}
 
-        {/* Tab 3: Phân Công Tuần */}
+        {/* Tab: Phân Công Tuần */}
         {activeTab === 'weekly_schedule' && (
           <WeeklyScheduleManagerView
             config={config}
@@ -1706,7 +1668,7 @@ export default function App() {
           />
         )}
 
-        {/* Tab 4: Sổ Thực Dạy */}
+        {/* Tab: Sổ Thực Dạy */}
         {activeTab === 'weekly_log' && (
           <WeeklyTeachingLogView
             config={config}
@@ -1721,44 +1683,7 @@ export default function App() {
           />
         )}
 
-        {/* Tab 5: Ma Trận */}
-        {activeTab === 'matrix' && (
-          <ClassMatrixView
-            classes={classes}
-            subjects={subjects}
-            teachers={teachers}
-            departments={departments}
-            assignments={assignments}
-            workloads={workloads}
-            lockedCells={lockedCells}
-            isAdmin={isAdmin}
-            onPromptAdminLogin={() => {}}
-            onAssignTeacher={handleAssignTeacher}
-            onRemoveAssignment={handleRemoveAssignment}
-            onToggleLockCell={handleToggleLockCell}
-            onBatchLockSubject={handleBatchLockSubject}
-            onBatchLockEmptyElectives={handleBatchLockEmptyElectives}
-            onUnlockAll={handleUnlockAll}
-          />
-        )}
-
-        {/* Tab 6: Bàn Làm Việc */}
-        {activeTab === 'workbench' && (
-          <TeacherWorkbenchView
-            teachers={teachers}
-            departments={departments}
-            subjects={subjects}
-            classes={classes}
-            assignments={assignments}
-            workloads={workloads}
-            isAdmin={isAdmin}
-            onPromptAdminLogin={() => {}}
-            onAssignTeacher={handleAssignTeacher}
-            onRemoveAssignment={handleRemoveAssignment}
-          />
-        )}
-
-        {/* Tab 7: Tổng Hợp Trường */}
+        {/* Tab: Tổng Hợp Trường */}
         {activeTab === 'summary' && (
           <ComprehensiveTableView
             config={config}
@@ -1776,7 +1701,7 @@ export default function App() {
           />
         )}
 
-        {/* Tab 8: Chủ Nhiệm */}
+        {/* Tab: Chủ Nhiệm */}
         {activeTab === 'homeroom' && (
           <HomeroomView
             classes={classes}
@@ -1789,22 +1714,7 @@ export default function App() {
           />
         )}
 
-        {/* Tab 9: Hồ Sơ Giáo Viên */}
-        {activeTab === 'teachers' && (
-          <TeacherManagementView
-            teachers={teachers}
-            departments={departments}
-            subjects={subjects}
-            workloads={workloads}
-            isAdmin={isAdmin}
-            onPromptAdminLogin={() => {}}
-            onAddTeacher={handleAddTeacher}
-            onUpdateTeacher={handleUpdateTeacher}
-            onDeleteTeacher={handleDeleteTeacher}
-          />
-        )}
-
-        {/* Tab 10: Khung Tiết GDPT */}
+        {/* Tab: Khung Tiết GDPT */}
         {activeTab === 'curriculum' && (
           <CurriculumView
             subjects={subjects}

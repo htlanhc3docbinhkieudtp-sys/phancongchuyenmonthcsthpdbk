@@ -1,12 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import {
-  Grid3X3,
-  Users2,
   TableProperties,
   UserCheck,
-  Briefcase,
   BookOpenCheck,
-  FileCheck2,
   CalendarRange,
   TrendingUp,
   ChevronLeft,
@@ -14,91 +10,67 @@ import {
 } from 'lucide-react';
 
 export type ActiveTabType =
-  | 'official'
   | 'timetable'
   | 'weekly_schedule'
   | 'weekly_log'
-  | 'matrix'
-  | 'workbench'
   | 'summary'
   | 'homeroom'
-  | 'teachers'
   | 'curriculum';
 
 interface ViewTabsProps {
   activeTab: ActiveTabType;
   onTabChange: (tab: ActiveTabType) => void;
-  unassignedCount: number;
+  unassignedCount?: number;
   userRole?: 'guest' | 'teacher' | 'admin';
 }
 
 export const ViewTabs: React.FC<ViewTabsProps> = ({
   activeTab,
   onTabChange,
-  unassignedCount,
 }) => {
   const navRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
-  const tabs = [
+  const tabs: Array<{
+    id: ActiveTabType;
+    label: string;
+    shortLabel: string;
+    icon: React.ComponentType<{ className?: string }>;
+    badge?: string;
+  }> = [
     {
-      id: 'official' as ActiveTabType,
-      label: 'Phân Công Chính Thức (3 Điểm Trường)',
-      shortLabel: 'Phân Công Chính Thức',
-      icon: FileCheck2,
-    },
-    {
-      id: 'timetable' as ActiveTabType,
+      id: 'timetable',
       label: 'Thời Khóa Biểu Toàn Trường',
       shortLabel: 'Thời Khóa Biểu',
       icon: CalendarRange,
     },
     {
-      id: 'weekly_schedule' as ActiveTabType,
+      id: 'weekly_schedule',
       label: 'Phân Công Tuần (TKB)',
       shortLabel: 'Phân Công Tuần',
       icon: CalendarRange,
     },
     {
-      id: 'weekly_log' as ActiveTabType,
+      id: 'weekly_log',
       label: 'Sổ Tiết Thực Dạy',
       shortLabel: 'Sổ Tiết Thực Dạy',
       icon: TrendingUp,
     },
     {
-      id: 'matrix' as ActiveTabType,
-      label: 'Ma Trận Kéo Thả (Lớp - Môn)',
-      shortLabel: 'Kéo Thả Lớp - Môn',
-      icon: Grid3X3,
-      badge: unassignedCount > 0 ? `${unassignedCount} chưa gán` : undefined,
-    },
-    {
-      id: 'workbench' as ActiveTabType,
-      label: 'Bàn Làm Việc Giáo Viên',
-      shortLabel: 'Theo Giáo Viên',
-      icon: Users2,
-    },
-    {
-      id: 'summary' as ActiveTabType,
+      id: 'summary',
       label: 'Bảng Tổng Hợp Toàn Trường',
       shortLabel: 'Tổng Hợp Trường',
       icon: TableProperties,
     },
     {
-      id: 'homeroom' as ActiveTabType,
+      id: 'homeroom',
       label: 'Phân Công Chủ Nhiệm',
       shortLabel: 'GV Chủ Nhiệm',
       icon: UserCheck,
     },
     {
-      id: 'teachers' as ActiveTabType,
-      label: 'Giáo Viên & Định Mức',
-      shortLabel: 'Hồ Sơ GV',
-      icon: Briefcase,
-    },
-    {
-      id: 'curriculum' as ActiveTabType,
+      id: 'curriculum',
       label: 'Khung Tiết GDPT 2018',
       shortLabel: 'Khung Tiết',
       icon: BookOpenCheck,
