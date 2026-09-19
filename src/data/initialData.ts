@@ -236,7 +236,7 @@ export const initialSubjects: Subject[] = [
     name: 'Giáo dục địa phương',
     shortName: 'GD Địa phương',
     departmentId: 'dept-khxh',
-    defaultPeriods: { '10': 3, '11': 3, '12': 3, '6': 3, '7': 3, '8': 3, '9': 3 },
+    defaultPeriods: { '10': 1, '11': 1, '12': 1, '6': 1, '7': 1, '8': 1, '9': 1 },
     color: '#06b6d4',
   },
   {
