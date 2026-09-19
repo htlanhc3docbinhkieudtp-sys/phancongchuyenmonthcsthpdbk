@@ -26,9 +26,18 @@ export const officialStaffList: Teacher[] = [
     departmentId: 'dept-bgh',
     primarySubjectId: 'sub-anh',
     role: 'Khac',
-    customReductionPeriods: 15,
-    baseStandardPeriods: 17,
-    notes: 'Hiệu trưởng (THPTDBK) - Môn dạy: Tiếng Anh (2t/tuần)',
+    customReductionPeriods: 0,
+    baseStandardPeriods: 2,
+    duties: [
+      {
+        id: 'duty-bgh1-ht',
+        type: 'Khac',
+        name: 'Hiệu trưởng',
+        reductionPeriods: 0,
+        notes: 'Hiệu trưởng (Định mức 2 tiết/tuần theo quy định)'
+      }
+    ],
+    notes: 'Hiệu trưởng (THPTDBK) - Môn dạy: Tiếng Anh (Định mức 2t/tuần)',
   },
   {
     id: 'tch-bgh-2',
@@ -40,9 +49,18 @@ export const officialStaffList: Teacher[] = [
     departmentId: 'dept-bgh',
     primarySubjectId: 'sub-li',
     role: 'Khac',
-    customReductionPeriods: 13,
-    baseStandardPeriods: 17,
-    notes: 'Phó Hiệu trưởng (THPTDBK) - Môn dạy: Vật Lý (4t/tuần)',
+    customReductionPeriods: 0,
+    baseStandardPeriods: 4,
+    duties: [
+      {
+        id: 'duty-bgh2-pht',
+        type: 'Khac',
+        name: 'Phó Hiệu trưởng',
+        reductionPeriods: 0,
+        notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
+      }
+    ],
+    notes: 'Phó Hiệu trưởng (THPTDBK) - Môn dạy: Vật Lý (Định mức 4t/tuần)',
   },
   {
     id: 'tch-bgh-3',
@@ -54,9 +72,18 @@ export const officialStaffList: Teacher[] = [
     departmentId: 'dept-bgh',
     primarySubjectId: 'sub-su',
     role: 'Khac',
-    customReductionPeriods: 15,
-    baseStandardPeriods: 19,
-    notes: 'Phó Hiệu trưởng (THCSDBK) - Môn dạy: Lịch sử (4t/tuần)',
+    customReductionPeriods: 0,
+    baseStandardPeriods: 4,
+    duties: [
+      {
+        id: 'duty-bgh3-pht',
+        type: 'Khac',
+        name: 'Phó Hiệu trưởng',
+        reductionPeriods: 0,
+        notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
+      }
+    ],
+    notes: 'Phó Hiệu trưởng (THCSDBK) - Môn dạy: Lịch sử (Định mức 4t/tuần)',
   },
   {
     id: 'tch-bgh-4',
@@ -68,9 +95,18 @@ export const officialStaffList: Teacher[] = [
     departmentId: 'dept-bgh',
     primarySubjectId: 'sub-khtn-cs',
     role: 'Khac',
-    customReductionPeriods: 15,
-    baseStandardPeriods: 19,
-    notes: 'Phó Hiệu trưởng (THCSTK) - Môn dạy: KHTN (4t/tuần)',
+    customReductionPeriods: 0,
+    baseStandardPeriods: 4,
+    duties: [
+      {
+        id: 'duty-bgh4-pht',
+        type: 'Khac',
+        name: 'Phó Hiệu trưởng',
+        reductionPeriods: 0,
+        notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
+      }
+    ],
+    notes: 'Phó Hiệu trưởng (THCSTK) - Môn dạy: KHTN (Định mức 4t/tuần)',
   },
 
   // ==========================================
@@ -127,15 +163,24 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-t-4',
     name: 'Trần Văn Giang',
-    code: 'Giang.TV',
+    code: 'Giang.TV (TP)',
     gender: 'Nam',
     birthDate: '1/1/1977',
     campus: 'THPTDBK',
     departmentId: 'dept-toan',
     primarySubjectId: 'sub-toan',
-    role: 'GVBM',
+    role: 'ToPho',
+    duties: [
+      {
+        id: 'duty-t4-topho',
+        type: 'ToPho',
+        name: 'Tổ phó',
+        reductionPeriods: 1,
+        notes: 'Tổ phó chuyên môn Tổ Toán'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Môn Toán (Khối 10-12)',
+    notes: 'Tổ phó Tổ Toán (THPTDBK) - Môn Toán (Khối 10-12)',
   },
   {
     id: 'tch-t-5',
@@ -293,9 +338,18 @@ export const officialStaffList: Teacher[] = [
     campus: 'THPTDBK',
     departmentId: 'dept-ngu-van',
     primarySubjectId: 'sub-van',
-    role: 'GVBM',
+    role: 'ToTruong',
+    duties: [
+      {
+        id: 'duty-v1-totruong',
+        type: 'ToTruong',
+        name: 'Tổ trưởng chuyên môn',
+        reductionPeriods: 3,
+        notes: 'Tổ trưởng Tổ Ngữ Văn'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Ngữ văn (Khối 10-12)',
+    notes: 'THPTDBK - Tổ trưởng Tổ Ngữ văn (Khối 10-12)',
   },
   {
     id: 'tch-v-2',
@@ -326,15 +380,24 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-v-4',
     name: 'Hồ Văn Nhịnh',
-    code: 'Nhịnh.HV (10CB5)',
+    code: 'Nhịnh.HV (TP-10CB5)',
     gender: 'Nam',
     birthDate: '4/22/1976',
     campus: 'THPTDBK',
     departmentId: 'dept-ngu-van',
     primarySubjectId: 'sub-van',
-    role: 'GVBM',
+    role: 'ToPho',
+    duties: [
+      {
+        id: 'duty-v4-topho',
+        type: 'ToPho',
+        name: 'Tổ phó',
+        reductionPeriods: 1,
+        notes: 'Tổ phó chuyên môn Tổ Ngữ văn'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Ngữ văn (Khối 10-12) - GVCN 10CB5',
+    notes: 'THPTDBK - Tổ phó Tổ Ngữ văn (Khối 10-12) - GVCN 10CB5',
   },
   {
     id: 'tch-v-5',
@@ -460,15 +523,24 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-ls-2',
     name: 'Trịnh Văn Sơn',
-    code: 'Sơn.TV (12CB5)',
+    code: 'Sơn.TV (TT-12CB5)',
     gender: 'Nam',
     birthDate: '5/25/1979',
     campus: 'THPTDBK',
     departmentId: 'dept-khxh',
     primarySubjectId: 'sub-su',
-    role: 'GVBM',
+    role: 'ToTruong',
+    duties: [
+      {
+        id: 'duty-s2-totruong',
+        type: 'ToTruong',
+        name: 'Tổ trưởng',
+        reductionPeriods: 3,
+        notes: 'Tổ trưởng Tổ Lịch sử - Địa lý - GDCD'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Sử (Khối 10-12) - GVCN 12CB5',
+    notes: 'Tổ trưởng Tổ KHXH (THPTDBK) - Sử (Khối 10-12) - GVCN 12CB5',
   },
   {
     id: 'tch-ls-3',
@@ -512,28 +584,46 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-ls-6',
     name: 'Trần Phước Hòa',
-    code: 'Hòa.TP',
+    code: 'Hòa.TP (TP)',
     gender: 'Nam',
     birthDate: '11/2/1982',
     campus: 'THPTDBK',
     departmentId: 'dept-khxh',
     primarySubjectId: 'sub-dia',
-    role: 'GVBM',
+    role: 'ToPho',
+    duties: [
+      {
+        id: 'duty-s6-topho',
+        type: 'ToPho',
+        name: 'Tổ phó',
+        reductionPeriods: 1,
+        notes: 'Tổ phó Tổ Lịch sử - Địa lý - GDCD'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Địa (Khối 10-12)',
+    notes: 'Tổ phó Tổ KHXH (THPTDBK) - Địa (Khối 10-12)',
   },
   {
     id: 'tch-ls-7',
     name: 'Ngô Anh Tuấn',
-    code: 'Tuấn.NA',
+    code: 'Tuấn.NA (Phổ cập)',
     gender: 'Nam',
     birthDate: '11/22/1986',
     campus: 'THPTDBK',
     departmentId: 'dept-khxh',
     primarySubjectId: 'sub-dia',
-    role: 'GVBM',
+    role: 'PhoCap',
+    duties: [
+      {
+        id: 'duty-s7-phocap',
+        type: 'PhoCap',
+        name: 'Phổ cập',
+        reductionPeriods: 4,
+        notes: 'Phổ cập giáo dục (-4t)'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Địa (Khối 10-12)',
+    notes: 'THPTDBK - Địa (Khối 10-12) - Kiêm Phổ cập giáo dục',
   },
   {
     id: 'tch-ls-8',
@@ -659,15 +749,24 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-khtn-1',
     name: 'Bùi Kim Huỳnh',
-    code: 'Huỳnh.BK (11CB1)',
+    code: 'Huỳnh.BK (PBT-11CB1)',
     gender: 'Nữ',
     birthDate: '4/19/1986',
     campus: 'THPTDBK',
     departmentId: 'dept-khtn',
     primarySubjectId: 'sub-sinh',
-    role: 'GVBM',
+    role: 'PhoBiThuDoan',
+    duties: [
+      {
+        id: 'duty-k1-pbt',
+        type: 'PhoBiThuDoan',
+        name: 'Phó Bí thư đoàn',
+        reductionPeriods: 6,
+        notes: 'Phó Bí thư Đoàn trường (-6t)'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Sinh học (Khối 10-12) - GVCN 11CB1',
+    notes: 'THPTDBK - Sinh học (Khối 10-12) - GVCN 11CB1 - Phó Bí thư Đoàn',
   },
   {
     id: 'tch-khtn-2',
@@ -685,15 +784,24 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-khtn-3',
     name: 'Phạm Biên Thùy',
-    code: 'Thùy.PB',
+    code: 'Thùy.PB (TT)',
     gender: 'Nam',
     birthDate: '1/1/1980',
     campus: 'THPTDBK',
     departmentId: 'dept-khtn',
     primarySubjectId: 'sub-li',
-    role: 'GVBM',
+    role: 'ToTruong',
+    duties: [
+      {
+        id: 'duty-k3-totruong',
+        type: 'ToTruong',
+        name: 'Tổ trưởng',
+        reductionPeriods: 3,
+        notes: 'Tổ trưởng Tổ KHTN'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Vật Lý (Khối 10-12)',
+    notes: 'Tổ trưởng Tổ KHTN (THPTDBK) - Vật Lý (Khối 10-12)',
   },
   {
     id: 'tch-khtn-4',
@@ -737,15 +845,24 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-khtn-7',
     name: 'Phan Thị Ngọc Thơ',
-    code: 'Thơ.PTN (12CB1)',
+    code: 'Thơ.PTN (TP-12CB1)',
     gender: 'Nữ',
     birthDate: '8/6/1988',
     campus: 'THPTDBK',
     departmentId: 'dept-khtn',
     primarySubjectId: 'sub-hoa',
-    role: 'GVBM',
+    role: 'ToPho',
+    duties: [
+      {
+        id: 'duty-k7-topho',
+        type: 'ToPho',
+        name: 'Tổ phó',
+        reductionPeriods: 1,
+        notes: 'Tổ phó Tổ KHTN'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Hóa (Khối 10-12) - GVCN 12CB1',
+    notes: 'THPTDBK - Tổ phó Tổ KHTN - Hóa (Khối 10-12) - GVCN 12CB1',
   },
   {
     id: 'tch-khtn-8',
@@ -763,15 +880,24 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-khtn-9',
     name: 'Trần Thị Kiều',
-    code: 'Kiều.TT (10CB2)',
+    code: 'Kiều.TT (Con nhỏ-10CB2)',
     gender: 'Nữ',
     birthDate: '11/18/1980',
     campus: 'THPTDBK',
     departmentId: 'dept-khtn',
     primarySubjectId: 'sub-hoa',
-    role: 'GVBM',
+    role: 'ConNho',
+    duties: [
+      {
+        id: 'duty-k9-connho',
+        type: 'ConNho',
+        name: 'Con nhỏ',
+        reductionPeriods: 3,
+        notes: 'Nuôi con nhỏ dưới 36 tháng tuổi (-3t)'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Hóa (Khối 10-12) - GVCN 10CB2',
+    notes: 'THPTDBK - Hóa (Khối 10-12) - GVCN 10CB2 - Nuôi con nhỏ',
   },
   {
     id: 'tch-khtn-10',
@@ -1014,15 +1140,24 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-av-2',
     name: 'Nguyễn Trung Hiếu',
-    code: 'Hiếu.NT (Tin)',
+    code: 'Hiếu.NT (TP-Tin)',
     gender: 'Nam',
     birthDate: '1/1/1984',
     campus: 'THPTDBK',
     departmentId: 'dept-tieng-anh-tin',
     primarySubjectId: 'sub-tin',
-    role: 'GVBM',
+    role: 'ToPho',
+    duties: [
+      {
+        id: 'duty-av2-topho',
+        type: 'ToPho',
+        name: 'Tổ phó',
+        reductionPeriods: 1,
+        notes: 'Tổ phó Tổ Tiếng Anh - Tin học'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Tin học (Khối 10-12)',
+    notes: 'THPTDBK - Tổ phó Tổ Tiếng Anh - Tin học (Khối 10-12)',
   },
   {
     id: 'tch-av-3',
@@ -1040,15 +1175,24 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-av-4',
     name: 'Võ Thị Hiền Thi',
-    code: 'Thi.VTH',
+    code: 'Thi.VTH (TT)',
     gender: 'Nữ',
     birthDate: '4/25/1985',
     campus: 'THPTDBK',
     departmentId: 'dept-tieng-anh-tin',
     primarySubjectId: 'sub-anh',
-    role: 'GVBM',
+    role: 'ToTruong',
+    duties: [
+      {
+        id: 'duty-av4-totruong',
+        type: 'ToTruong',
+        name: 'Tổ trưởng',
+        reductionPeriods: 3,
+        notes: 'Tổ trưởng Tổ Tiếng Anh - Tin học'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Tiếng Anh (Khối 10-12)',
+    notes: 'Tổ trưởng Tổ Tiếng Anh - Tin học (THPTDBK) - Môn Tiếng Anh (Khối 10-12)',
   },
   {
     id: 'tch-av-5',
@@ -1226,15 +1370,24 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-td-2',
     name: 'Nguyễn Kim Rạng',
-    code: 'Rạng.NK',
+    code: 'Rạng.NK (TT)',
     gender: 'Nữ',
     birthDate: '3/26/1986',
     campus: 'THPTDBK',
     departmentId: 'dept-gdtc-qpan-nt',
     primarySubjectId: 'sub-gdqp',
-    role: 'GVBM',
+    role: 'ToTruong',
+    duties: [
+      {
+        id: 'duty-td2-totruong',
+        type: 'ToTruong',
+        name: 'Tổ trưởng',
+        reductionPeriods: 3,
+        notes: 'Tổ trưởng Tổ GDTC - QPAN - Nghệ thuật'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - GDQPAN (Khối 10-12)',
+    notes: 'Tổ trưởng Tổ GDTC-QPAN (THPTDBK) - GDQPAN (Khối 10-12)',
   },
   {
     id: 'tch-td-3',
@@ -1252,28 +1405,46 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-td-4',
     name: 'Hồ Hoài Ngân',
-    code: 'Ngân.HH',
+    code: 'Ngân.HH (TP)',
     gender: 'Nam',
     birthDate: '7/6/1989',
     campus: 'THPTDBK',
     departmentId: 'dept-gdtc-qpan-nt',
     primarySubjectId: 'sub-gdtc',
-    role: 'GVBM',
+    role: 'ToPho',
+    duties: [
+      {
+        id: 'duty-td4-topho',
+        type: 'ToPho',
+        name: 'Tổ phó',
+        reductionPeriods: 1,
+        notes: 'Tổ phó Tổ GDTC - QPAN - Nghệ thuật'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Thể dục / GDTC (Khối 10-12)',
+    notes: 'Tổ phó Tổ GDTC-QPAN (THPTDBK) - Thể dục / GDTC (Khối 10-12)',
   },
   {
     id: 'tch-td-5',
     name: 'Lê Minh Đạt',
-    code: 'Đạt.LM',
+    code: 'Đạt.LM (TPT Đội)',
     gender: 'Nam',
     birthDate: '10/10/1969',
     campus: 'THCSDBK',
     departmentId: 'dept-gdtc-qpan-nt',
     primarySubjectId: 'sub-my-thuat',
-    role: 'GVBM',
-    baseStandardPeriods: 19,
-    notes: 'THCSDBK - Mỹ thuật (Khối 6-9)',
+    role: 'TongPhuTrachDoi',
+    duties: [
+      {
+        id: 'duty-td5-tpt',
+        type: 'TongPhuTrachDoi',
+        name: 'Tổng phụ trách Đội',
+        reductionPeriods: 13,
+        notes: 'Tổng phụ trách Đội (Định mức 6 tiết/tuần)'
+      }
+    ],
+    baseStandardPeriods: 6,
+    notes: 'THCSDBK - Tổng phụ trách Đội (Định mức 6t/tuần)',
   },
   {
     id: 'tch-td-6',

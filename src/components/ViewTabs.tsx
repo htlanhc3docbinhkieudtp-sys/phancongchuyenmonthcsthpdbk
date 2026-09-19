@@ -11,7 +11,6 @@ import {
 
 export type ActiveTabType =
   | 'timetable'
-  | 'weekly_schedule'
   | 'weekly_log'
   | 'summary'
   | 'homeroom'
@@ -46,15 +45,9 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
       icon: CalendarRange,
     },
     {
-      id: 'weekly_schedule',
-      label: 'Phân Công Tuần (TKB)',
-      shortLabel: 'Phân Công Tuần',
-      icon: CalendarRange,
-    },
-    {
       id: 'weekly_log',
-      label: 'Sổ Tiết Thực Dạy',
-      shortLabel: 'Sổ Tiết Thực Dạy',
+      label: 'Số Tiết Thực Dạy',
+      shortLabel: 'Số Tiết Thực Dạy',
       icon: TrendingUp,
     },
     {

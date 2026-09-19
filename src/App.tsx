@@ -1685,6 +1685,9 @@ export default function App() {
             subjects={subjects}
             weeklySchedules={effectiveWeeklySchedules}
             baseWorkloads={workloads}
+            weeklyTimetables={weeklyTimetables}
+            currentWeek={currentWeek}
+            timetable={timetable}
             isAdmin={isAdmin}
             onOpenWeeklyScheduleManager={() => setActiveTab('weekly_schedule')}
           />
