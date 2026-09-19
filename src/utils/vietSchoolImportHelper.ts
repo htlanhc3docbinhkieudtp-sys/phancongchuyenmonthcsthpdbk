@@ -1182,11 +1182,17 @@ export function parseVietSchoolTimetable(
       const uint8 = new Uint8Array(fileData);
       const isZip = uint8[0] === 0x50 && uint8[1] === 0x4B; // .xlsx (PK)
       const isOldXls = uint8[0] === 0xD0 && uint8[1] === 0xCF; // .xls (CFBF)
-      if (!isZip && !isOldXls) {
-        // Plain text, CSV or TSV file
-        textContent = new TextDecoder('utf-8').decode(uint8);
-      } else {
-        workbook = XLSX.read(fileData, { type: 'buffer', codepage: 65001 });
+      
+      // Attempt binary Excel reading first (works for .xlsx, .xls, and HTML tables)
+      try {
+        workbook = XLSX.read(uint8, { type: 'array', codepage: 65001 });
+      } catch (readErr1) {
+        try {
+          workbook = XLSX.read(uint8, { type: 'binary', codepage: 65001 });
+        } catch (readErr2) {
+          // If binary parsing fails, treat as plain text (CSV/TSV/Markdown/HTML)
+          textContent = new TextDecoder('utf-8').decode(uint8);
+        }
       }
     }
 

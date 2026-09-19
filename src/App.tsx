@@ -383,6 +383,10 @@ export default function App() {
   });
   const isInitialCloudLoadRef = React.useRef(true);
   const isApplyingCloudDataRef = React.useRef(false);
+  const weeklyTimetablesRef = React.useRef<Record<number, SchoolTimetable>>(weeklyTimetables);
+  useEffect(() => {
+    weeklyTimetablesRef.current = weeklyTimetables;
+  }, [weeklyTimetables]);
 
   // Modals state
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -478,16 +482,15 @@ export default function App() {
 
     if (cloudTimetablesToApply) {
       setWeeklyTimetables(prev => {
-        const combined = force ? { ...cloudTimetablesToApply } : { ...prev };
-        if (!force) {
-          Object.keys(cloudTimetablesToApply!).forEach(wStr => {
-            const w = Number(wStr);
-            const cloudTbl = cloudTimetablesToApply![w];
-            if (cloudTbl?.slots?.length) {
-              combined[w] = cloudTbl;
-            }
-          });
-        }
+        const combined: Record<number, SchoolTimetable> = { ...prev };
+        Object.keys(cloudTimetablesToApply!).forEach(wStr => {
+          const w = Number(wStr);
+          const cloudTbl = cloudTimetablesToApply![w];
+          if (cloudTbl && cloudTbl.slots && cloudTbl.slots.length > 0) {
+            combined[w] = cloudTbl;
+          }
+        });
+        weeklyTimetablesRef.current = combined;
         try {
           localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(combined));
           if (combined[1]) {
@@ -560,8 +563,8 @@ export default function App() {
     try {
       unsubscribe = subscribeToSchoolPlan((incomingData) => {
         if (!isMounted || !incomingData) return;
-        isApplyingCloudDataRef.current = true;
-        applyCloudData(incomingData, true);
+        if (isApplyingCloudDataRef.current) return;
+        applyCloudData(incomingData, false);
       });
     } catch (e) {
       console.warn('Real-time subscription notice:', e);
@@ -987,28 +990,30 @@ export default function App() {
     }
   };
 
-  const handleSaveToCloud = async (isForced = true) => {
+  const handleSaveToCloud = async (isForced = true, overrideData?: Partial<SchoolPlanData>) => {
     setCloudSyncStatus('saving');
+    isApplyingCloudDataRef.current = true;
+    const effectiveWeeklyTimetables = overrideData?.weeklyTimetables || weeklyTimetablesRef.current;
+    const effectiveWeeklySchedules = overrideData?.weeklySchedules || weeklySchedules;
+    const effectiveAssignments = overrideData?.assignments || assignments;
+    const effectiveTimetable = effectiveWeeklyTimetables[currentWeek] || timetable;
+
     const payload: SchoolPlanData = {
-      config,
-      departments,
-      subjects,
-      classes,
-      teachers,
-      assignments,
-      lockedCells,
-      weeklySchedules,
-      timetable,
-      weeklyTimetables,
+      config: overrideData?.config || config,
+      departments: overrideData?.departments || departments,
+      subjects: overrideData?.subjects || subjects,
+      classes: overrideData?.classes || classes,
+      teachers: overrideData?.teachers || teachers,
+      assignments: effectiveAssignments,
+      lockedCells: overrideData?.lockedCells || lockedCells,
+      weeklySchedules: effectiveWeeklySchedules,
+      timetable: effectiveTimetable,
+      weeklyTimetables: effectiveWeeklyTimetables,
       updatedAt: Date.now()
     };
     const result = await saveSchoolPlanToCloud(payload, isForced);
     if (result.success) {
-      isApplyingCloudDataRef.current = true;
       setCloudSyncStatus('synced');
-      setTimeout(() => {
-        isApplyingCloudDataRef.current = false;
-      }, 300);
       setLastSyncedAt(Date.now());
       safeLocalStorageSet(`${STORAGE_KEY}_last_cloud_sync`, String(Date.now()));
       showToast('Đã lưu toàn bộ Thời khóa biểu & Dữ liệu lên Cloud Firebase thành công!');
@@ -1016,6 +1021,9 @@ export default function App() {
       setCloudSyncStatus('error');
       showToast(`Không thể lưu lên Cloud: ${result.error || 'Vui lòng kiểm tra kết nối mạng.'}`);
     }
+    setTimeout(() => {
+      isApplyingCloudDataRef.current = false;
+    }, 1500);
   };
 
   const handleExportJsonBackup = () => {
@@ -1207,7 +1215,7 @@ export default function App() {
     showToast(`Đã đồng bộ thành công ${synced.length} phân công chuyên môn từ Thời khóa biểu sang tất cả các tab!`);
   };
 
-  const handleImportTimetableBatch = (
+  const handleImportTimetableBatch = async (
     importedSlots: TimetableSlot[],
     targetWeek: number,
     applyToSubsequentWeeks: boolean,
@@ -1215,6 +1223,11 @@ export default function App() {
     importMode: 'merge' | 'replace' = 'merge'
   ) => {
     try {
+      if (!importedSlots || importedSlots.length === 0) {
+        showToast('Không có tiết học nào được nhận diện từ tệp để áp dụng!');
+        return;
+      }
+
       const currentSemester = config.semester || 'HK1';
       const maxWeek = currentSemester === 'HK1' ? 18 : 35;
       const targetWeeks: number[] = [targetWeek];
@@ -1226,62 +1239,56 @@ export default function App() {
 
       // 1. Normalize newly imported slots
       const normalizedSlots = normalizeTimetableSlots(importedSlots);
-
       let totalFinalSlots = 0;
 
-      // 2. Update weeklyTimetables for all target weeks
-      setWeeklyTimetables(prev => {
-        const next = { ...prev };
-        targetWeeks.forEach(w => {
-          let finalSlots = normalizedSlots;
-          if (importMode === 'merge') {
-            // Only merge with existing slots if the week already has slots
-            const existingWeekSlots = next[w]?.slots || [];
-            const slotMap = new Map<string, TimetableSlot>();
-            // Keep all existing slots from other classes/campuses
-            existingWeekSlots.forEach(s => {
-              const k = `${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`;
-              slotMap.set(k, s);
-            });
-            // Overwrite/insert newly imported slots
-            normalizedSlots.forEach(s => {
-              const k = `${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`;
-              slotMap.set(k, s);
-            });
-            finalSlots = normalizeTimetableSlots(Array.from(slotMap.values()));
-          }
-          totalFinalSlots = finalSlots.length;
+      // 2. Prepare next weekly timetables
+      const nextWeekly: Record<number, SchoolTimetable> = { ...weeklyTimetablesRef.current };
+      targetWeeks.forEach(w => {
+        let finalSlots = normalizedSlots;
+        if (importMode === 'merge') {
+          // Only merge with existing slots if the week already has slots
+          const existingWeekSlots = nextWeekly[w]?.slots || [];
+          const slotMap = new Map<string, TimetableSlot>();
+          // Keep all existing slots from other classes/campuses
+          existingWeekSlots.forEach(s => {
+            const k = `${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`;
+            slotMap.set(k, s);
+          });
+          // Overwrite/insert newly imported slots
+          normalizedSlots.forEach(s => {
+            const k = `${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`;
+            slotMap.set(k, s);
+          });
+          finalSlots = normalizeTimetableSlots(Array.from(slotMap.values()));
+        }
+        totalFinalSlots = finalSlots.length;
 
-          const updatedWeekTkb: SchoolTimetable = {
-            id: `tkb-week-${w}`,
-            academicYear: config.academicYear,
-            semester: currentSemester,
-            weekNumber: w,
-            slots: finalSlots,
-            updatedAt: Date.now()
-          };
-          next[w] = updatedWeekTkb;
-          if (w === 2) {
-            persistWeekTimetable(2, updatedWeekTkb);
-          }
-        });
-        persistAllWeeklyTimetables(next);
-        return next;
+        const updatedWeekTkb: SchoolTimetable = {
+          id: `tkb-week-${w}`,
+          academicYear: config.academicYear,
+          semester: currentSemester,
+          weekNumber: w,
+          slots: finalSlots,
+          updatedAt: Date.now()
+        };
+        nextWeekly[w] = updatedWeekTkb;
+        persistWeekTimetable(w, updatedWeekTkb);
       });
 
-      // 3. If syncWeeklySchedule is true, update weeklySchedules and base assignments
-      if (syncWeeklySchedule) {
-        // Effective slots for assignment extraction
-        const effectiveSlots = importMode === 'merge'
-          ? (() => {
-              const existingW1 = weeklyTimetables[1]?.slots || timetable?.slots || [];
-              const slotMap = new Map<string, TimetableSlot>();
-              existingW1.forEach(s => slotMap.set(`${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`, s));
-              normalizedSlots.forEach(s => slotMap.set(`${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`, s));
-              return Array.from(slotMap.values());
-            })()
-          : normalizedSlots;
+      // Update ref and state
+      weeklyTimetablesRef.current = nextWeekly;
+      setWeeklyTimetables(nextWeekly);
+      persistAllWeeklyTimetables(nextWeekly);
+      safeLocalStorageSet(`${STORAGE_KEY}_weekly_timetables`, JSON.stringify(nextWeekly));
+      try {
+        localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(nextWeekly));
+      } catch { /* storage full */ }
 
+      // 3. If syncWeeklySchedule is true, update weeklySchedules and base assignments
+      let nextSchedules = weeklySchedules;
+      let nextAssignments = assignments;
+      if (syncWeeklySchedule) {
+        const effectiveSlots = nextWeekly[targetWeek]?.slots || normalizedSlots;
         const { weeklyAssignments, baseAssignments: extractedBase } = extractAssignmentsFromTimetableSlots(
           effectiveSlots,
           classes,
@@ -1289,64 +1296,64 @@ export default function App() {
           teachers
         );
 
-        // Update weekly schedules for each target week
-        setWeeklySchedules(prev => {
-          const next = [...prev];
-          targetWeeks.forEach(w => {
-            const idx = next.findIndex(ws => ws.weekNumber === w && ws.semester === currentSemester);
-            let finalAssignments = weeklyAssignments;
-            if (importMode === 'merge' && idx >= 0) {
-              const asMap = new Map<string, WeeklyAssignmentItem>();
-              (next[idx].assignments || []).forEach(a => asMap.set(`${a.classId}_${a.subjectId}`, a));
-              weeklyAssignments.forEach(a => asMap.set(`${a.classId}_${a.subjectId}`, a));
-              finalAssignments = Array.from(asMap.values());
-            }
+        nextSchedules = [...weeklySchedules];
+        targetWeeks.forEach(w => {
+          const idx = nextSchedules.findIndex(ws => ws.weekNumber === w && ws.semester === currentSemester);
+          let finalAssignments = weeklyAssignments;
+          if (importMode === 'merge' && idx >= 0) {
+            const asMap = new Map<string, WeeklyAssignmentItem>();
+            (nextSchedules[idx].assignments || []).forEach(a => asMap.set(`${a.classId}_${a.subjectId}`, a));
+            weeklyAssignments.forEach(a => asMap.set(`${a.classId}_${a.subjectId}`, a));
+            finalAssignments = Array.from(asMap.values());
+          }
 
-            const updatedWeekSchedule: WeeklySchedule = {
-              weekNumber: w,
-              semester: currentSemester,
-              title: `Tuần ${w}`,
-              assignments: finalAssignments.map(a => ({ ...a })),
-              updatedAt: Date.now()
-            };
-            if (idx >= 0) {
-              next[idx] = updatedWeekSchedule;
-            } else {
-              next.push(updatedWeekSchedule);
-            }
-          });
-          return next;
+          const updatedWeekSchedule: WeeklySchedule = {
+            weekNumber: w,
+            semester: currentSemester,
+            title: `Tuần ${w}`,
+            assignments: finalAssignments.map(a => ({ ...a })),
+            updatedAt: Date.now()
+          };
+          if (idx >= 0) {
+            nextSchedules[idx] = updatedWeekSchedule;
+          } else {
+            nextSchedules.push(updatedWeekSchedule);
+          }
         });
+        setWeeklySchedules(nextSchedules);
 
-        // Also update base assignments if Week 1 is included
         if (targetWeeks.includes(1)) {
-          setAssignments(prev => {
-            const map = new Map<string, Assignment>();
-            if (importMode === 'merge') {
-              prev.forEach(a => map.set(`${a.classId}_${a.subjectId}`, a));
-            }
-            extractedBase.forEach(eb => {
-              map.set(`${eb.classId}_${eb.subjectId}`, eb);
-            });
-            return Array.from(map.values());
+          const map = new Map<string, Assignment>();
+          if (importMode === 'merge') {
+            assignments.forEach(a => map.set(`${a.classId}_${a.subjectId}`, a));
+          }
+          extractedBase.forEach(eb => {
+            map.set(`${eb.classId}_${eb.subjectId}`, eb);
           });
+          nextAssignments = Array.from(map.values());
+          setAssignments(nextAssignments);
         }
       }
 
-      // Switch to target week
+      // Switch view directly to target week
       setCurrentWeek(targetWeek);
+      safeLocalStorageSet(`${STORAGE_KEY}_current_week`, String(targetWeek));
+
       showToast(
         importMode === 'merge'
-          ? `Đã gộp thành công ${normalizedSlots.length} tiết vào TKB (Tổng cộng: ${totalFinalSlots || normalizedSlots.length} tiết)! Đang tự động lưu lên Cloud...`
-          : `Đã thay thế toàn bộ bằng ${normalizedSlots.length} tiết TKB mới! Đang tự động lưu lên Cloud...`
+          ? `Đã gộp thành công ${normalizedSlots.length} tiết vào TKB Tuần ${targetWeek} (Tổng: ${totalFinalSlots || normalizedSlots.length} tiết)! Đang tự động lưu lên Cloud...`
+          : `Đã thay thế toàn bộ bằng ${normalizedSlots.length} tiết TKB mới Tuần ${targetWeek}! Đang tự động lưu lên Cloud...`
       );
 
-      // Auto-save to Cloud Firebase immediately
-      setTimeout(() => {
-        handleSaveToCloud(true);
-      }, 100);
+      // Auto-save directly to Cloud Firebase with fresh payload
+      await handleSaveToCloud(true, {
+        weeklyTimetables: nextWeekly,
+        weeklySchedules: nextSchedules,
+        assignments: nextAssignments
+      });
     } catch (err) {
       console.error('[Import] Error applying timetable batch:', err);
+      showToast('Có lỗi xảy ra khi áp dụng thời khóa biểu.');
     }
   };
 

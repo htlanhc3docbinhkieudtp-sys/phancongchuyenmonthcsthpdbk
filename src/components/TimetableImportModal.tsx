@@ -91,13 +91,14 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
   const currentSemester = config.semester || 'HK1';
   const totalWeeks = currentSemester === 'HK1' ? 18 : 35;
 
-  // Reset loading and applying states when modal opens
+  // Reset loading, applying states and sync target week when modal opens
   useEffect(() => {
     if (isOpen) {
       setIsApplying(false);
       setIsLoading(false);
+      setTargetWeek(currentWeek || 1);
     }
-  }, [isOpen]);
+  }, [isOpen, currentWeek]);
 
   // Combined parse results across all loaded files or pasted text
   const parseResults: VietSchoolParseResult | null = useMemo(() => {
