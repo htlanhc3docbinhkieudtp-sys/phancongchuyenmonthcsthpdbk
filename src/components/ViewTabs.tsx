@@ -11,6 +11,7 @@ import {
 
 export type ActiveTabType =
   | 'timetable'
+  | 'weekly_schedule'
   | 'weekly_log'
   | 'summary'
   | 'homeroom'

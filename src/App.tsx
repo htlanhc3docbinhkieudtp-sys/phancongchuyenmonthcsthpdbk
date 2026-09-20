@@ -22,6 +22,7 @@ import {
   initialAssignments,
   initialLockedCells
 } from './data/initialData';
+import { officialStaffList } from './data/schoolStaffData';
 import {
   calculateTeacherWorkloads,
   auditAssignmentConflicts
@@ -169,6 +170,7 @@ export default function App() {
   });
 
   const sanitizeTeachersList = (list: Teacher[]): Teacher[] => {
+    const officialMap = new Map((officialStaffList || []).map((t) => [t.id, t]));
     return (list || [])
       .filter(t => 
         t.departmentId !== 'dept-van-phong' && 
@@ -176,19 +178,36 @@ export default function App() {
         t.primarySubjectId !== 'sub-nv'
       )
       .map(t => {
+        let updated = { ...t };
+        const official = officialMap.get(t.id);
+        if (official) {
+          if (official.duties && official.duties.length > 0) {
+            updated.duties = official.duties;
+          }
+          if (official.role && official.role !== 'GVBM') {
+            updated.role = official.role;
+          }
+          if (official.baseStandardPeriods !== undefined) {
+            updated.baseStandardPeriods = official.baseStandardPeriods;
+          }
+          if (official.code && (!updated.code || !updated.code.includes('('))) {
+            updated.code = official.code;
+          }
+        }
+
         if (t.id === 'tch-td-2' || t.name === 'Nguyễn Kim Rang' || t.name === 'Đặng Văn Rạng') {
-          return { ...t, name: 'Nguyễn Kim Rạng', code: 'Rạng.NK' };
+          return { ...updated, name: 'Nguyễn Kim Rạng', code: 'Rạng.NK (TT)' };
         }
         if (t.id === 'tch-ls-1' || t.name === 'Lê Hồng Thủy') {
-          return { ...t, name: 'Lê Hồng Thúy', code: 'Thúy.LH' };
+          return { ...updated, name: 'Lê Hồng Thúy', code: 'Thúy.LH' };
         }
         if (t.id === 'tch-td-1' || t.name === 'Lê Văn Nguyện') {
-          return { ...t, name: 'Lê Văn Nguyên', code: 'Nguyên.LV' };
+          return { ...updated, name: 'Lê Văn Nguyên', code: 'Nguyên.LV' };
         }
         if (t.id === 'tch-khtn-15' || t.name === 'Võ Ngọc Đỉnh Văn') {
-          return { ...t, name: 'Võ Ngọc Đình Văn', code: 'Văn.VNĐ' };
+          return { ...updated, name: 'Võ Ngọc Đình Văn', code: 'Văn.VNĐ' };
         }
-        return t;
+        return updated;
       });
   };
 
