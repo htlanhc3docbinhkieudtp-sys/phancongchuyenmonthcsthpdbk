@@ -43,7 +43,19 @@ function openDB(): Promise<IDBDatabase | null> {
  * Save an individual week's timetable to IndexedDB and LocalStorage
  */
 export async function persistWeekTimetable(weekNumber: number, timetable: SchoolTimetable): Promise<void> {
-  if (!timetable || !timetable.slots) return;
+  if (!timetable || !timetable.slots || timetable.slots.length === 0) {
+    // If empty or null, remove backups and delete from IndexedDB
+    try {
+      if (weekNumber === 2) {
+        localStorage.removeItem(WEEK2_EXACT_BACKUP_KEY);
+      }
+      if (weekNumber === 1) {
+        localStorage.removeItem('docbinhkieu_emergency_w1_timetable_backup');
+      }
+    } catch { /* ignore */ }
+    await deleteWeekTimetableFromIndexedDB(weekNumber);
+    return;
+  }
 
   // 1. Save to dedicated LocalStorage key for critical weeks (Week 1 and Week 2)
   try {
@@ -75,6 +87,39 @@ export async function persistWeekTimetable(weekNumber: number, timetable: School
 }
 
 /**
+ * Delete an individual week from IndexedDB
+ */
+export async function deleteWeekTimetableFromIndexedDB(weekNumber: number): Promise<void> {
+  try {
+    const db = await openDB();
+    if (!db) return;
+    const tx = db.transaction(TIMETABLES_STORE, 'readwrite');
+    const store = tx.objectStore(TIMETABLES_STORE);
+    store.delete(weekNumber);
+  } catch (e) {
+    console.warn(`IndexedDB delete error for week ${weekNumber}:`, e);
+  }
+}
+
+/**
+ * Delete a batch of weeks from IndexedDB
+ */
+export async function deleteBatchWeekTimetablesFromIndexedDB(weekNumbers: number[]): Promise<void> {
+  if (!weekNumbers || weekNumbers.length === 0) return;
+  try {
+    const db = await openDB();
+    if (!db) return;
+    const tx = db.transaction(TIMETABLES_STORE, 'readwrite');
+    const store = tx.objectStore(TIMETABLES_STORE);
+    weekNumbers.forEach(w => {
+      store.delete(w);
+    });
+  } catch (e) {
+    console.warn('IndexedDB batch delete error:', e);
+  }
+}
+
+/**
  * Load Week 2 exact backup from LocalStorage or IndexedDB
  */
 export function getSynchronousWeek2Backup(): SchoolTimetable | null {
@@ -98,10 +143,25 @@ export function getSynchronousWeek2Backup(): SchoolTimetable | null {
 export async function persistAllWeeklyTimetables(timetables: Record<number, SchoolTimetable>): Promise<void> {
   if (!timetables || typeof timetables !== 'object') return;
 
-  // Always keep Week 2 in dedicated backup if present
+  // Always keep Week 2 in dedicated backup if present, remove if empty
   if (timetables[2] && timetables[2].slots && timetables[2].slots.length > 0) {
     try {
       localStorage.setItem(WEEK2_EXACT_BACKUP_KEY, JSON.stringify(timetables[2]));
+    } catch { /* ignore */ }
+  } else if (timetables[2] && (!timetables[2].slots || timetables[2].slots.length === 0)) {
+    try {
+      localStorage.removeItem(WEEK2_EXACT_BACKUP_KEY);
+    } catch { /* ignore */ }
+  }
+
+  // Keep or remove Week 1 emergency backup
+  if (timetables[1] && timetables[1].slots && timetables[1].slots.length > 0) {
+    try {
+      localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(timetables[1]));
+    } catch { /* ignore */ }
+  } else if (timetables[1] && (!timetables[1].slots || timetables[1].slots.length === 0)) {
+    try {
+      localStorage.removeItem('docbinhkieu_emergency_w1_timetable_backup');
     } catch { /* ignore */ }
   }
 
@@ -112,12 +172,15 @@ export async function persistAllWeeklyTimetables(timetables: Record<number, Scho
     const store = tx.objectStore(TIMETABLES_STORE);
     for (const [wKey, tt] of Object.entries(timetables)) {
       const weekNumber = Number(wKey);
-      if (tt && tt.slots) {
+      if (tt && tt.slots && tt.slots.length > 0) {
         store.put({
           weekNumber,
           timetable: tt,
           savedAt: Date.now()
         });
+      } else {
+        // If week is empty or cleared, remove from IndexedDB store so it is not resurrected
+        store.delete(weekNumber);
       }
     }
   } catch (e) {

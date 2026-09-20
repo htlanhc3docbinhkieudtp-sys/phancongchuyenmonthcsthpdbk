@@ -43,6 +43,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Copy,
+  RefreshCw,
   Lock,
   Eye,
   ShieldCheck,
@@ -595,11 +596,9 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                     : 'bg-amber-400'
                 }`}></span>
                 <span className="font-bold">
-                  {currentWeek === 1
-                    ? 'Tuần 1: TKB Chuẩn Chính Thức (38 lớp: 14 THPT + 24 THCS ĐBK)'
-                    : weeklyTimetables && weeklyTimetables[currentWeek] && weeklyTimetables[currentWeek].slots && weeklyTimetables[currentWeek].slots.length > 0
-                    ? `Tuần ${currentWeek}: Đã có TKB (${weeklyTimetables[currentWeek].slots.length} tiết)`
-                    : `Tuần ${currentWeek}: Để trống (Chờ sao chép)`}
+                  {activeSlots.length > 0
+                    ? `Tuần ${currentWeek}: Đã có TKB (${activeSlots.length} tiết)`
+                    : `Tuần ${currentWeek}: Để trống (Chưa có dữ liệu TKB)`}
                 </span>
               </div>
             </div>
@@ -620,7 +619,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
 
               {isAdmin ? (
                 <>
-                  {currentWeek === 1 && (!weeklyTimetables[2] || !weeklyTimetables[2].slots || weeklyTimetables[2].slots.length === 0) && (
+                  {currentWeek === 1 && activeSlots.length > 0 && (!weeklyTimetables[2] || !weeklyTimetables[2].slots || weeklyTimetables[2].slots.length === 0) && (
                     <button
                       type="button"
                       onClick={() => {
@@ -634,6 +633,18 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                     >
                       <Copy className="w-3.5 h-3.5" />
                       <span>Sao Chép Sang Tuần 2</span>
+                    </button>
+                  )}
+
+                  {currentWeek === 1 && activeSlots.length === 0 && onRestoreWeek1Official && (
+                    <button
+                      type="button"
+                      onClick={onRestoreWeek1Official}
+                      className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
+                      title="Khôi phục Thời khóa biểu Tuần 1 mặc định ban đầu nếu cần"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      <span>Khôi Phục TKB Tuần 1 Gốc</span>
                     </button>
                   )}
 
@@ -702,7 +713,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
             <span className="text-[11px] font-bold text-slate-400 shrink-0 mr-1">Chuyển nhanh:</span>
             {Array.from({ length: 18 }, (_, i) => i + 1).map(w => {
               const isSelected = currentWeek === w;
-              const hasCustom = (w === 1) || (weeklyTimetables && weeklyTimetables[w] && weeklyTimetables[w].slots && weeklyTimetables[w].slots.length > 0);
+              const hasCustom = Boolean(weeklyTimetables && weeklyTimetables[w] && weeklyTimetables[w].slots && weeklyTimetables[w].slots.length > 0);
               return (
                 <button
                   key={w}
@@ -717,7 +728,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                   }`}
                   title={`Tuần ${w} ${hasCustom ? '(Đã có TKB)' : '(Để trống)'}`}
                 >
-                  T{w}{hasCustom && w !== 1 ? '•' : ''}
+                  T{w}{hasCustom ? '•' : ''}
                 </button>
               );
             })}

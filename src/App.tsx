@@ -61,7 +61,8 @@ import {
   persistAllWeeklyTimetables,
   getSynchronousWeek2Backup,
   WEEK2_EXACT_BACKUP_KEY,
-  loadAllTimetablesFromIndexedDB
+  loadAllTimetablesFromIndexedDB,
+  deleteBatchWeekTimetablesFromIndexedDB
 } from './utils/persistentStorage';
 
 import { Header } from './components/Header';
@@ -241,9 +242,12 @@ export default function App() {
       try {
         const parsed = JSON.parse(saved);
         if (parsed && typeof parsed === 'object') {
+          const isW1Cleared = localStorage.getItem('docbinhkieu_w1_is_cleared') === 'true';
           // Check Week 1 slots
           if (parsed[1] && parsed[1].slots && parsed[1].slots.length > 0) {
             parsed[1].slots = normalizeTimetableSlots(parsed[1].slots);
+          } else if (isW1Cleared) {
+            parsed[1] = createEmptyTimetableForWeek(1, initialSchoolConfig.academicYear);
           } else {
             const emergencyW1 = localStorage.getItem('docbinhkieu_emergency_w1_timetable_backup');
             if (emergencyW1) {
@@ -280,7 +284,8 @@ export default function App() {
       }
     }
     // Emergency W1 check before initial generation
-    const emergencyW1 = localStorage.getItem('docbinhkieu_emergency_w1_timetable_backup');
+    const isW1Cleared = localStorage.getItem('docbinhkieu_w1_is_cleared') === 'true';
+    const emergencyW1 = !isW1Cleared ? localStorage.getItem('docbinhkieu_emergency_w1_timetable_backup') : null;
     const exactW2Backup = getSynchronousWeek2Backup();
     const week2Tkb = (exactW2Backup && exactW2Backup.slots && exactW2Backup.slots.length > 0)
       ? exactW2Backup
@@ -297,7 +302,9 @@ export default function App() {
         }
       } catch { /* ignore */ }
     }
-    const week1Tkb = generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
+    const week1Tkb = isW1Cleared
+      ? createEmptyTimetableForWeek(1, initialSchoolConfig.academicYear)
+      : generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
     return {
       1: week1Tkb,
       2: week2Tkb
@@ -352,6 +359,9 @@ export default function App() {
       return weeklyTimetables[currentWeek];
     }
     if (currentWeek === 1) {
+      if (localStorage.getItem('docbinhkieu_w1_is_cleared') === 'true') {
+        return createEmptyTimetableForWeek(1, config.academicYear);
+      }
       return generateInitialTimetable(classes, subjects, teachers, assignments, config);
     }
     if (currentWeek === 2) {
@@ -595,8 +605,10 @@ export default function App() {
         setWeeklyTimetables(prev => {
           let hasChange = false;
           const updated = { ...prev };
+          const isW1Cleared = localStorage.getItem('docbinhkieu_w1_is_cleared') === 'true';
           Object.keys(idbTimetables).forEach(wStr => {
             const w = Number(wStr);
+            if (w === 1 && isW1Cleared) return;
             if ((!updated[w] || !updated[w].slots || updated[w].slots.length === 0) && idbTimetables[w]?.slots?.length) {
               updated[w] = idbTimetables[w];
               hasChange = true;
@@ -1148,7 +1160,13 @@ export default function App() {
       try {
         localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(next));
         if (weekNum === 1) {
-          localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(updatedWithWeek));
+          if (updatedWithWeek.slots && updatedWithWeek.slots.length > 0) {
+            localStorage.removeItem('docbinhkieu_w1_is_cleared');
+            localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(updatedWithWeek));
+          } else {
+            localStorage.setItem('docbinhkieu_w1_is_cleared', 'true');
+            localStorage.removeItem('docbinhkieu_emergency_w1_timetable_backup');
+          }
         }
         if (weekNum === 2) {
           localStorage.setItem(WEEK2_EXACT_BACKUP_KEY, JSON.stringify(updatedWithWeek));
@@ -1203,12 +1221,21 @@ export default function App() {
   };
 
   const handleRestoreWeek1Official = () => {
+    localStorage.removeItem('docbinhkieu_w1_is_cleared');
     const officialTkb = generateInitialTimetable(classes, subjects, teachers, assignments, config);
     officialTkb.slots = normalizeTimetableSlots(officialTkb.slots);
-    setWeeklyTimetables(prev => ({
-      ...prev,
-      1: officialTkb
-    }));
+    try {
+      localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(officialTkb));
+    } catch { /* storage full */ }
+    setWeeklyTimetables(prev => {
+      const next = {
+        ...prev,
+        1: officialTkb
+      };
+      persistWeekTimetable(1, officialTkb);
+      persistAllWeeklyTimetables(next);
+      return next;
+    });
 
     // Sync assignments and weekly schedule directly from master Week 1 timetable
     const synced = extractAssignmentsFromTimetable(officialTkb.slots, classes, subjects, teachers, assignments);
@@ -1301,6 +1328,10 @@ export default function App() {
       safeLocalStorageSet(`${STORAGE_KEY}_weekly_timetables`, JSON.stringify(nextWeekly));
       try {
         localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(nextWeekly));
+        if (targetWeeks.includes(1) && totalFinalSlots > 0) {
+          localStorage.removeItem('docbinhkieu_w1_is_cleared');
+          localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(nextWeekly[1]));
+        }
       } catch { /* storage full */ }
 
       // 3. If syncWeeklySchedule is true, update weeklySchedules and base assignments
@@ -1388,15 +1419,32 @@ export default function App() {
 
     setCloudSyncStatus('saving');
 
-    // 1. Update React weeklyTimetables state
-    setWeeklyTimetables(prev => {
-      const next = { ...prev };
-      weeksToDelete.forEach(w => {
-        delete next[w];
-      });
-      persistAllWeeklyTimetables(next);
-      return next;
+    // 1. Explicitly clear in React state with empty slot arrays
+    const nextWeekly: Record<number, SchoolTimetable> = { ...weeklyTimetablesRef.current };
+    weeksToDelete.forEach(w => {
+      nextWeekly[w] = {
+        id: `tkb-week-${w}`,
+        academicYear: config.academicYear,
+        semester: currentSemester,
+        weekNumber: w,
+        slots: [],
+        updatedAt: Date.now()
+      };
     });
+
+    weeklyTimetablesRef.current = nextWeekly;
+    setWeeklyTimetables(nextWeekly);
+    safeLocalStorageSet(`${STORAGE_KEY}_weekly_timetables`, JSON.stringify(nextWeekly));
+    try {
+      localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(nextWeekly));
+    } catch { /* storage full */ }
+
+    if (weeksToDelete.includes(1)) {
+      localStorage.setItem('docbinhkieu_w1_is_cleared', 'true');
+      try {
+        localStorage.removeItem('docbinhkieu_emergency_w1_timetable_backup');
+      } catch { /* ignore */ }
+    }
 
     if (weeksToDelete.includes(2)) {
       try {
@@ -1404,15 +1452,24 @@ export default function App() {
       } catch { /* ignore */ }
     }
 
-    // 2. Delete from Cloud subcollection asynchronously
+    // Persist empty weeks to IndexedDB and purge records
+    await persistAllWeeklyTimetables(nextWeekly);
+    try {
+      await deleteBatchWeekTimetablesFromIndexedDB(weeksToDelete);
+    } catch (e) {
+      console.warn('IndexedDB delete notice:', e);
+    }
+
+    // 2. Delete from Cloud subcollection & root plan
     try {
       await deleteBatchWeekTimetablesFromCloud(weeksToDelete);
+      await handleSaveToCloud(true, { weeklyTimetables: nextWeekly });
       setCloudSyncStatus('synced');
       setLastSyncedAt(Date.now());
       showToast(
         deleteAllSubsequent
           ? `Đã dọn sạch Thời khóa biểu từ Tuần ${targetWeek} đến Tuần ${maxWeek} trên cả máy và Cloud!`
-          : `Đã xóa Thời khóa biểu của Tuần ${targetWeek} thành công trên cả máy và Cloud!`
+          : `Đã xóa Thời khóa biểu Tuần ${targetWeek} thành công trên cả máy và Cloud! Bạn có thể tải file TKB mới lên ngay.`
       );
     } catch (e) {
       console.error('Lỗi khi xóa TKB trên Cloud:', e);

@@ -603,11 +603,11 @@ async function executeCloudSave(
         if (!wkNum) continue;
 
         if (!tt || !tt.slots || tt.slots.length === 0) {
-          // If explicitly empty, delete from cloud if it was previously tracked
-          if (savedTimetableFingerprints.has(wkNum)) {
-            const weekDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${wkNum}`);
-            batchOps.push({ type: 'delete', ref: weekDocRef });
-          }
+          // If explicitly empty, delete subdocument from cloud
+          const weekDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${wkNum}`);
+          batchOps.push({ type: 'delete', ref: weekDocRef });
+          savedTimetableFingerprints.delete(wkNum);
+          removePersistedFingerprint(`docbinhkieu_fp_tt_${wkNum}`);
           continue;
         }
 
@@ -637,22 +637,9 @@ async function executeCloudSave(
         if (!currentActiveWeekKeys.has(savedWk)) {
           const weekDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', `week_${savedWk}`);
           batchOps.push({ type: 'delete', ref: weekDocRef });
+          savedTimetableFingerprints.delete(savedWk);
+          removePersistedFingerprint(`docbinhkieu_fp_tt_${savedWk}`);
         }
-      }
-    } else if (data.timetable && data.timetable.slots && data.timetable.slots.length > 0) {
-      // Fallback: save master timetable to week_1 if changed
-      const ttFp = computeTimetableSlotsFingerprint(data.timetable.slots);
-      if (ttFp !== savedTimetableFingerprints.get(1)) {
-        const weekDocRef = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', 'week_1');
-        batchOps.push({
-          type: 'set',
-          ref: weekDocRef,
-          data: sanitizeForFirestore({
-            weekNumber: 1,
-            timetable: data.timetable,
-            updatedAt: Date.now()
-          })
-        });
       }
     }
 
@@ -880,45 +867,22 @@ export async function loadSchoolPlanFromCloud(): Promise<SchoolPlanData | null> 
       }
     }
 
-    let weeklyTimetables = rootData.weeklyTimetables || {};
-    let timetable = rootData.timetable;
+    let weeklyTimetables: Record<number, SchoolTimetable> = {};
     if (timetablesSnap && !timetablesSnap.empty) {
-      const loadedTimetables: Record<number, SchoolTimetable> = { ...weeklyTimetables };
       timetablesSnap.forEach(d => {
         const dData = d.data();
         const wkNum = Number(dData.weekNumber || d.id.replace('week_', ''));
         if (dData && dData.timetable) {
-          loadedTimetables[wkNum] = dData.timetable;
+          weeklyTimetables[wkNum] = dData.timetable;
         } else if (dData && dData.slots) {
-          loadedTimetables[wkNum] = dData as SchoolTimetable;
+          weeklyTimetables[wkNum] = dData as SchoolTimetable;
         }
       });
-      if (Object.keys(loadedTimetables).length > 0) {
-        weeklyTimetables = loadedTimetables;
-        if (loadedTimetables[1]) {
-          timetable = loadedTimetables[1];
-        }
-      }
+    } else if (rootData.weeklyTimetables) {
+      weeklyTimetables = { ...rootData.weeklyTimetables };
     }
 
-    // Direct fallback for week_1 if subcollection listing returned empty
-    if (!weeklyTimetables[1] && (!timetablesSnap || timetablesSnap.empty)) {
-      try {
-        const w1Ref = doc(db, COLLECTION_NAME, DOC_ID, 'weekly_timetables', 'week_1');
-        const w1Snap = await getDoc(w1Ref);
-        if (w1Snap.exists()) {
-          const w1Data = w1Snap.data();
-          const loadedTkb = (w1Data.timetable || w1Data) as SchoolTimetable;
-          if (loadedTkb && loadedTkb.slots && loadedTkb.slots.length > 0) {
-            weeklyTimetables[1] = loadedTkb;
-            timetable = loadedTkb;
-          }
-        }
-      } catch (e) {
-        console.warn('Fallback direct week_1 fetch notice:', e);
-      }
-    }
-
+    const timetable = weeklyTimetables[1] || null;
     const expandedTimetables = expandWeeklyTimetables(weeklyTimetables);
     const result: SchoolPlanData = {
       config: rootData.config,
@@ -1038,6 +1002,11 @@ export async function deleteBatchWeekTimetablesFromCloud(weekNumbers: number[]):
       savedTimetableFingerprints.delete(w);
       removePersistedFingerprint(`docbinhkieu_fp_tt_${w}`);
     });
+    // Ensure root document does not retain old master timetable if week 1 was deleted
+    if (weekNumbers.includes(1)) {
+      const planRef = doc(db, COLLECTION_NAME, DOC_ID);
+      batch.set(planRef, { timetable: null, updatedAt: Date.now() }, { merge: true });
+    }
     await batch.commit();
     return true;
   } catch (err) {
