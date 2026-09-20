@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ShieldCheck, Lock, Eye, EyeOff, AlertCircle, KeyRound, School } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, EyeOff, AlertCircle, KeyRound, School, X } from 'lucide-react';
 
 export interface AdminLoginModalProps {
   isOpen?: boolean;
@@ -62,6 +62,16 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
     <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200/80 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
       {/* Header */}
       <div className="bg-gradient-to-br from-indigo-950 via-indigo-900 to-slate-900 px-7 py-6 text-white text-center relative overflow-hidden">
+        {!isFullScreen && onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute top-4 right-4 p-1.5 rounded-full text-indigo-200 hover:text-white hover:bg-white/10 transition-all cursor-pointer z-10"
+            title="Đóng cửa sổ"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
         <div className="absolute -top-12 -right-12 w-36 h-36 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute -bottom-12 -left-12 w-36 h-36 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
 
@@ -97,7 +107,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
           <div>
             <h4 className="font-bold text-slate-800 text-xs">Yêu cầu quyền Quản trị viên</h4>
             <p className="text-slate-500 text-[11px] leading-relaxed mt-0.5">
-              Hệ thống đã khóa truy cập tự do. Chỉ Quản trị viên có mật khẩu mới có quyền truy cập, xem và quản lý dữ liệu.
+              Chế độ xem tự do đang tạm khóa hoặc bạn đang vào khu vực quản trị. Vui lòng nhập mật khẩu Quản trị viên để truy cập.
             </p>
           </div>
         </div>

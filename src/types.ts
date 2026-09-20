@@ -126,6 +126,7 @@ export interface SchoolConfig {
   standardThcsPeriods: number; // 19
   homeroomReduction: number; // 3
   logoUrl?: string; // Data URL or path to official school logo
+  allowPublicTimetable?: boolean; // Cho phép xem Thời khóa biểu tự do (chỉ xem TKB) mà không cần đăng nhập Admin
 }
 
 export interface WorkloadStats {

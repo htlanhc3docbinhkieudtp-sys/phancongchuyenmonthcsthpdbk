@@ -49,6 +49,7 @@ interface HeaderProps {
   onOpenAutoAssign: () => void;
   onOpenConflictDrawer: () => void;
   onResetData: () => void;
+  onTogglePublicTimetable?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -72,6 +73,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAutoAssign,
   onOpenConflictDrawer,
   onResetData,
+  onTogglePublicTimetable,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const logoFileInputRef = useRef<HTMLInputElement>(null);
@@ -264,38 +266,76 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
-            {/* File Input for JSON restore */}
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileInputChange}
-              accept=".json"
-              className="hidden"
-            />
+            {/* Backup & Restore Buttons (Admin Only) */}
+            {isAdmin && (
+              <>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileInputChange}
+                  accept=".json"
+                  className="hidden"
+                />
+                <button
+                  onClick={onExportJsonBackup}
+                  className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-indigo-200 hover:text-white bg-indigo-800/80 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
+                  title="Tải file bản sao lưu toàn bộ dữ liệu (.json) về máy tính"
+                >
+                  <Download className="w-3 h-3 text-indigo-300" />
+                  <span className="text-[11px]">Sao lưu</span>
+                </button>
 
-            {/* Backup & Restore Buttons */}
-            <button
-              onClick={onExportJsonBackup}
-              className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-indigo-200 hover:text-white bg-indigo-800/80 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
-              title="Tải file bản sao lưu toàn bộ dữ liệu (.json) về máy tính"
-            >
-              <Download className="w-3 h-3 text-indigo-300" />
-              <span className="text-[11px]">Sao lưu</span>
-            </button>
-
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-indigo-200 hover:text-white bg-indigo-800/80 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
-              title="Khôi phục dữ liệu từ file sao lưu JSON (khớp 100% dữ liệu máy thật)"
-            >
-              <Upload className="w-3 h-3 text-emerald-300" />
-              <span className="text-[11px]">Khôi phục JSON</span>
-            </button>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-indigo-200 hover:text-white bg-indigo-800/80 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
+                  title="Khôi phục dữ liệu từ file sao lưu JSON (khớp 100% dữ liệu máy thật)"
+                >
+                  <Upload className="w-3 h-3 text-emerald-300" />
+                  <span className="text-[11px]">Khôi phục JSON</span>
+                </button>
+              </>
+            )}
           </div>
 
           {/* Admin vs Read-Only Controls */}
           {isAdmin ? (
             <>
+              {/* Public Timetable View Mode Quick Toggle */}
+              {onTogglePublicTimetable && (
+                <button
+                  type="button"
+                  onClick={onTogglePublicTimetable}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95 border ${
+                    config.allowPublicTimetable
+                      ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-emerald-400 ring-2 ring-emerald-400/30'
+                      : 'bg-amber-500/25 hover:bg-amber-500/40 text-amber-200 border-amber-400/50'
+                  }`}
+                  title={
+                    config.allowPublicTimetable
+                      ? 'Chế độ xem tự do đang BẬT: Toàn trường và khách có thể xem Thời khóa biểu mà không cần mật khẩu. Bấm vào đây để KHÓA lại khi bạn cần cập nhật/chỉnh sửa.'
+                      : 'Chế độ xem tự do đang KHÓA: Hệ thống chỉ cho phép Quản trị viên truy cập. Bấm vào đây để MỞ KHÓA cho giáo viên & học sinh xem TKB.'
+                  }
+                >
+                  {config.allowPublicTimetable ? (
+                    <>
+                      <Unlock className="w-3.5 h-3.5 text-white" />
+                      <span className="hidden md:inline">Xem Tự Do:</span>
+                      <span className="bg-white/25 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider font-extrabold">
+                        Đang Mở
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-3.5 h-3.5 text-amber-300" />
+                      <span className="hidden md:inline">Xem Tự Do:</span>
+                      <span className="bg-amber-400/30 text-amber-200 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider font-extrabold">
+                        Đang Khóa
+                      </span>
+                    </>
+                  )}
+                </button>
+              )}
+
               {/* AI Auto Assign button */}
               <button
                 onClick={onOpenAutoAssign}
@@ -338,23 +378,44 @@ export const Header: React.FC<HeaderProps> = ({
           ) : null}
 
           {/* Admin Status & Logout Action */}
-          <div className="flex items-center gap-2 pl-2 border-l border-indigo-700/60">
-            <div
-              className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-xs font-bold"
-              title="Đang đăng nhập với quyền Quản trị viên (Toàn quyền)"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="hidden sm:inline">Quản Trị Viên</span>
+          {isAdmin ? (
+            <div className="flex items-center gap-2 pl-2 border-l border-indigo-700/60">
+              <div
+                className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-xs font-bold"
+                title="Đang đăng nhập với quyền Quản trị viên (Toàn quyền)"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="hidden sm:inline">Quản Trị Viên</span>
+              </div>
+              <button
+                onClick={onLogoutAdmin}
+                className="flex items-center gap-1 px-3 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 border border-rose-700/60 hover:border-rose-500 text-rose-200 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-xs active:scale-95"
+                title="Đăng xuất và khóa hệ thống"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Đăng xuất</span>
+              </button>
             </div>
-            <button
-              onClick={onLogoutAdmin}
-              className="flex items-center gap-1 px-3 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 border border-rose-700/60 hover:border-rose-500 text-rose-200 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-xs active:scale-95"
-              title="Đăng xuất và khóa hệ thống"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              <span>Đăng xuất</span>
-            </button>
-          </div>
+          ) : (
+            <div className="flex items-center gap-2 pl-2 border-l border-indigo-700/60">
+              <div
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-800/90 border border-indigo-700 text-indigo-200 text-xs font-semibold"
+                title="Bạn đang ở chế độ xem Thời khóa biểu (Chỉ xem)"
+              >
+                <Eye className="w-3.5 h-3.5 text-indigo-300" />
+                <span className="hidden sm:inline">Chỉ xem TKB</span>
+              </div>
+              <button
+                type="button"
+                onClick={onOpenAdminLogin}
+                className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-bold transition-all cursor-pointer shadow-sm active:scale-95"
+                title="Đăng nhập tài khoản Quản trị viên để chỉnh sửa và quản lý"
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                <span>Đăng nhập Quản trị</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

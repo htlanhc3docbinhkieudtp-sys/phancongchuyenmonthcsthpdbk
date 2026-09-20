@@ -7,6 +7,7 @@ import {
   TrendingUp,
   ChevronLeft,
   ChevronRight,
+  Lock,
 } from 'lucide-react';
 
 export type ActiveTabType =
@@ -22,11 +23,15 @@ interface ViewTabsProps {
   onTabChange: (tab: ActiveTabType) => void;
   unassignedCount?: number;
   userRole?: 'guest' | 'teacher' | 'admin';
+  isAdmin?: boolean;
+  onPromptAdminLogin?: () => void;
 }
 
 export const ViewTabs: React.FC<ViewTabsProps> = ({
   activeTab,
   onTabChange,
+  isAdmin = true,
+  onPromptAdminLogin,
 }) => {
   const navRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -117,23 +122,50 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
           {tabs.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
+            const isLockedForGuest = !isAdmin && tab.id !== 'timetable';
+
+            const handleClick = () => {
+              if (isLockedForGuest) {
+                if (onPromptAdminLogin) {
+                  onPromptAdminLogin();
+                }
+                return;
+              }
+              onTabChange(tab.id);
+            };
 
             return (
               <button
                 key={tab.id}
-                onClick={() => onTabChange(tab.id)}
-                title={tab.label}
+                onClick={handleClick}
+                title={
+                  isLockedForGuest
+                    ? `${tab.label} (Dành riêng cho Quản trị viên - Bấm để đăng nhập)`
+                    : tab.label
+                }
                 className={`flex items-center gap-1.5 h-9 px-3 text-xs font-bold transition-all whitespace-nowrap rounded-lg cursor-pointer shrink-0 ${
                   isActive
                     ? 'bg-indigo-600 text-white shadow-xs font-extrabold'
+                    : isLockedForGuest
+                    ? 'text-slate-400 hover:text-slate-700 hover:bg-slate-100/70 border border-dashed border-slate-200'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                {isLockedForGuest ? (
+                  <Lock className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                ) : (
+                  <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                )}
                 <span className="hidden lg:inline">{tab.label}</span>
                 <span className="lg:hidden">{tab.shortLabel}</span>
 
-                {tab.badge && (
+                {isLockedForGuest && (
+                  <span className="text-[10px] font-semibold text-slate-400 bg-slate-100 px-1 py-0.2 rounded">
+                    Khóa
+                  </span>
+                )}
+
+                {tab.badge && !isLockedForGuest && (
                   <span className={`ml-1 text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
                     isActive ? 'bg-white text-indigo-700' : 'bg-rose-100 text-rose-700'
                   }`}>

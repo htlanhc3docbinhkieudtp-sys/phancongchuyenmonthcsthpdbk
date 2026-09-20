@@ -123,6 +123,8 @@ export default function App() {
     return legacyAdmin === 'true' || savedRole === 'admin';
   });
 
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
   // Load saved state or default
   const [config, setConfig] = useState<SchoolConfig>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_config`);
@@ -133,11 +135,13 @@ export default function App() {
         ...parsed,
         academicYear: (!parsed.academicYear || parsed.academicYear.includes('2024')) ? '2026 - 2027' : parsed.academicYear,
         vicePrincipalName: (parsed.vicePrincipalName && parsed.vicePrincipalName.includes('-')) ? 'Nguyễn Minh Trí' : (parsed.vicePrincipalName || 'Nguyễn Minh Trí'),
-        logoUrl: parsed.logoUrl || savedLogo || '/logo.png'
+        logoUrl: parsed.logoUrl || savedLogo || '/logo.png',
+        homeroomReduction: 4
       };
     }
     return {
       ...initialSchoolConfig,
+      homeroomReduction: 4,
       logoUrl: savedLogo || '/logo.png'
     };
   });
@@ -182,28 +186,30 @@ export default function App() {
         let updated = { ...t };
         const official = officialMap.get(t.id);
         if (official) {
-          if (official.duties && official.duties.length > 0) {
-            updated.duties = official.duties;
-          }
-          if (official.role && official.role !== 'GVBM') {
-            updated.role = official.role;
-          }
+          updated.duties = official.duties || [];
+          updated.role = official.role || 'GVBM';
           if (official.baseStandardPeriods !== undefined) {
             updated.baseStandardPeriods = official.baseStandardPeriods;
           }
-          if (official.code && (!updated.code || !updated.code.includes('('))) {
+          if (official.code) {
             updated.code = official.code;
+          }
+          if (official.campus) {
+            updated.campus = official.campus;
+          }
+          if (official.notes) {
+            updated.notes = official.notes;
           }
         }
 
         if (t.id === 'tch-td-2' || t.name === 'Nguyễn Kim Rang' || t.name === 'Đặng Văn Rạng') {
-          return { ...updated, name: 'Nguyễn Kim Rạng', code: 'Rạng.NK (TT)' };
+          return { ...updated, name: 'Nguyễn Kim Rạng', code: 'Rạng.NK (TP)', role: 'ToPho', campus: 'THPTDBK' };
         }
         if (t.id === 'tch-ls-1' || t.name === 'Lê Hồng Thủy') {
-          return { ...updated, name: 'Lê Hồng Thúy', code: 'Thúy.LH' };
+          return { ...updated, name: 'Lê Hồng Thúy', code: 'Thúy.LH (TT)', role: 'ToTruong', campus: 'THCSDBK' };
         }
         if (t.id === 'tch-td-1' || t.name === 'Lê Văn Nguyện') {
-          return { ...updated, name: 'Lê Văn Nguyên', code: 'Nguyên.LV' };
+          return { ...updated, name: 'Lê Văn Nguyên', code: 'Nguyên.LV (TT)', role: 'ToTruong', campus: 'THCSDBK' };
         }
         if (t.id === 'tch-khtn-15' || t.name === 'Võ Ngọc Đỉnh Văn') {
           return { ...updated, name: 'Võ Ngọc Đình Văn', code: 'Văn.VNĐ' };
@@ -1057,6 +1063,26 @@ export default function App() {
     }, 1500);
   };
 
+  const handleTogglePublicTimetable = async () => {
+    if (!isAdmin) return;
+    const newAllowPublic = !config.allowPublicTimetable;
+    const updatedConfig: SchoolConfig = {
+      ...config,
+      allowPublicTimetable: newAllowPublic,
+    };
+    setConfig(updatedConfig);
+    safeLocalStorageSet(`${STORAGE_KEY}_config`, JSON.stringify(updatedConfig));
+
+    // Persist immediately to Cloud so all devices/viewers get the status change in real time
+    await handleSaveToCloud(true, { config: updatedConfig });
+
+    if (newAllowPublic) {
+      showToast('Đã MỞ KHÓA xem tự do! Giáo viên và học sinh toàn trường có thể tra cứu Thời khóa biểu.');
+    } else {
+      showToast('Đã KHÓA xem tự do! Hiện chỉ tài khoản Quản trị viên mới có thể truy cập hệ thống.');
+    }
+  };
+
   const handleExportJsonBackup = () => {
     const payload: SchoolPlanData = {
       config,
@@ -1650,7 +1676,14 @@ export default function App() {
     }
   };
 
-  if (!isAdmin) {
+  // Keep visitors on the timetable tab if public view is on
+  useEffect(() => {
+    if (!isAdmin && config.allowPublicTimetable && activeTab !== 'timetable') {
+      setActiveTab('timetable');
+    }
+  }, [isAdmin, config.allowPublicTimetable, activeTab]);
+
+  if (!isAdmin && !config.allowPublicTimetable) {
     return (
       <AdminLoginModal
         isOpen={true}
@@ -1659,8 +1692,9 @@ export default function App() {
           setIsAdmin(true);
           localStorage.setItem(`${STORAGE_KEY}_is_admin`, 'true');
           localStorage.setItem(`${STORAGE_KEY}_user_role`, 'admin');
+          showToast('Đăng nhập Quản trị viên thành công!');
         }}
-        promptReason="Hệ thống đã khóa tính năng xem tự do. Vui lòng đăng nhập mật khẩu Quản trị viên để truy cập thời khóa biểu và dữ liệu phân công."
+        promptReason="Hệ thống đang khóa tính năng xem tự do. Vui lòng đăng nhập tài khoản Quản trị viên để truy cập thời khóa biểu và dữ liệu phân công."
       />
     );
   }
@@ -1678,7 +1712,7 @@ export default function App() {
         cloudSyncStatus={cloudSyncStatus}
         lastSyncedAt={lastSyncedAt}
         isAdmin={isAdmin}
-        onOpenAdminLogin={() => {}}
+        onOpenAdminLogin={() => setIsLoginModalOpen(true)}
         onLogoutAdmin={handleLogout}
         onSaveToCloud={handleSaveToCloud}
         onExportJsonBackup={handleExportJsonBackup}
@@ -1688,6 +1722,7 @@ export default function App() {
         onOpenAutoAssign={() => setIsAutoAssignOpen(true)}
         onOpenConflictDrawer={() => setIsConflictDrawerOpen(true)}
         onResetData={handleResetData}
+        onTogglePublicTimetable={handleTogglePublicTimetable}
       />
 
       {/* Primary Navigation Tabs */}
@@ -1695,6 +1730,8 @@ export default function App() {
         activeTab={activeTab}
         onTabChange={handleTabChange}
         unassignedCount={unassignedCount}
+        isAdmin={isAdmin}
+        onPromptAdminLogin={() => setIsLoginModalOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -1714,11 +1751,12 @@ export default function App() {
             onCopyTimetableToWeek={handleCopyTimetableToWeeks}
             onRestoreWeek1Official={handleRestoreWeek1Official}
             isAdmin={isAdmin}
-            onPromptAdminLogin={() => {}}
+            onPromptAdminLogin={() => setIsLoginModalOpen(true)}
             onUpdateTimetable={handleUpdateTimetable}
             onImportTimetableBatch={handleImportTimetableBatch}
             onDeleteWeekTimetable={handleDeleteWeekTimetable}
             onShowToast={showToast}
+            onTogglePublicTimetable={handleTogglePublicTimetable}
             onNavigateToWeeklySchedule={(targetWeek) => {
               setCurrentWeek(targetWeek);
               setActiveTab('weekly_schedule');
@@ -1842,6 +1880,20 @@ export default function App() {
         onClose={() => setIsConflictDrawerOpen(false)}
         conflicts={conflicts}
         onLockCell={handleToggleLockCell}
+      />
+
+      {/* Admin Login Modal (for popup login while viewing public timetable) */}
+      <AdminLoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onLoginSuccess={() => {
+          setIsAdmin(true);
+          setIsLoginModalOpen(false);
+          localStorage.setItem(`${STORAGE_KEY}_is_admin`, 'true');
+          localStorage.setItem(`${STORAGE_KEY}_user_role`, 'admin');
+          showToast('Đăng nhập Quản trị viên thành công! Bạn hiện có toàn quyền chỉnh sửa.');
+        }}
+        promptReason="Đăng nhập tài khoản Quản trị viên để chỉnh sửa phân công và mở/khóa chế độ xem TKB."
       />
 
       {/* Global In-App Toast Notification */}

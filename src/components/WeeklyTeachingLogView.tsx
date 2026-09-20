@@ -519,7 +519,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
           {/* Info pill */}
           <div className="flex items-center justify-end text-[11px] text-slate-500 font-medium pr-1">
             <span>
-              Định mức THPT: <strong>{config.standardThptPeriods || 17}t/tuần</strong> (GVCN -4t, Tổ trưởng -3t)
+              Định mức: THPT <strong>{config.standardThptPeriods || 17}t</strong>, THCS <strong>{config.standardThcsPeriods || 19}t</strong> (GVCN -4t, Tổ trưởng -3t, Tổ phó -1t, Phổ cập -4t, Con nhỏ -3t)
             </span>
           </div>
         </div>

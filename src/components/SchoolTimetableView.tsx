@@ -45,6 +45,7 @@ import {
   Copy,
   RefreshCw,
   Lock,
+  Unlock,
   Eye,
   ShieldCheck,
   ArrowRightLeft,
@@ -86,6 +87,7 @@ interface SchoolTimetableViewProps {
   onDeleteWeekTimetable?: (weekNumber: number, deleteAllSubsequent: boolean) => void;
   onShowToast?: (msg: string) => void;
   onNavigateToWeeklySchedule?: (week: number) => void;
+  onTogglePublicTimetable?: () => void;
 }
 
 export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
@@ -107,7 +109,8 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   onResetTimetable,
   onDeleteWeekTimetable,
   onShowToast,
-  onNavigateToWeeklySchedule
+  onNavigateToWeeklySchedule,
+  onTogglePublicTimetable,
 }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('BY_CLASS');
   const [selectedCampus, setSelectedCampus] = useState<CampusFilter>('ALL');
@@ -519,6 +522,94 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Public Timetable Status Banner */}
+      {isAdmin ? (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 print:hidden">
+          <div className={`rounded-2xl p-3 sm:p-4 border shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+            config.allowPublicTimetable
+              ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950'
+              : 'bg-amber-50/90 border-amber-300 text-amber-950'
+          }`}>
+            <div className="flex items-start sm:items-center gap-3">
+              <div className={`p-2.5 rounded-xl shrink-0 ${
+                config.allowPublicTimetable ? 'bg-emerald-600 text-white shadow-xs' : 'bg-amber-500 text-slate-950 shadow-xs'
+              }`}>
+                {config.allowPublicTimetable ? <Unlock className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-extrabold text-xs sm:text-sm uppercase tracking-tight">
+                    Chế độ cho xem tự do:
+                  </span>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider ${
+                    config.allowPublicTimetable
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-amber-500 text-slate-950'
+                  }`}>
+                    {config.allowPublicTimetable ? 'Đang Mở Khóa' : 'Đang Khóa (Chỉ Quản Trị)'}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                  {config.allowPublicTimetable
+                    ? 'Giáo viên và học sinh toàn trường hiện có thể vào xem Thời khóa biểu (chỉ xem TKB). Khi cần điều chỉnh, bạn bấm "Khóa Xem Tự Do" để tạm ẩn.'
+                    : 'Thời khóa biểu hiện đang khóa xem tự do để bạn an tâm cập nhật, đối soát TKB. Khi kiểm tra thấy đầy đủ rồi, bạn bấm "Mở Khóa Cho Xem Tự Do".'}
+                </p>
+              </div>
+            </div>
+            {onTogglePublicTimetable && (
+              <button
+                type="button"
+                onClick={onTogglePublicTimetable}
+                className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap shrink-0 flex items-center justify-center gap-1.5 ${
+                  config.allowPublicTimetable
+                    ? 'bg-slate-800 hover:bg-slate-900 text-white'
+                    : 'bg-emerald-600 hover:bg-emerald-700 text-white ring-2 ring-emerald-400/40'
+                }`}
+              >
+                {config.allowPublicTimetable ? (
+                  <>
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>Khóa Xem Tự Do</span>
+                  </>
+                ) : (
+                  <>
+                    <Unlock className="w-3.5 h-3.5" />
+                    <span>Mở Khóa Cho Xem Tự Do</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 print:hidden">
+          <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-3 sm:p-4 text-indigo-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-indigo-600 text-white rounded-xl shrink-0">
+                <Eye className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-xs sm:text-sm text-indigo-950 uppercase tracking-tight">
+                  Chế độ tra cứu Thời khóa biểu trực tuyến (Chỉ xem)
+                </h4>
+                <p className="text-xs text-indigo-700 mt-0.5">
+                  Thời khóa biểu đã được Ban Giám Hiệu mở khóa công khai. Vui lòng chọn Tuần và lọc theo Lớp học hoặc Giáo viên bên dưới để tra cứu.
+                </p>
+              </div>
+            </div>
+            {onPromptAdminLogin && (
+              <button
+                type="button"
+                onClick={onPromptAdminLogin}
+                className="px-3.5 py-2 rounded-xl bg-white hover:bg-indigo-100 border border-indigo-300 text-indigo-900 text-xs font-bold transition-all cursor-pointer shadow-2xs whitespace-nowrap shrink-0"
+              >
+                Đăng nhập Quản trị
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* 2. Week Selection Toolbar & Primary Controls */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 print:hidden space-y-3">

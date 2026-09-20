@@ -289,96 +289,68 @@ export function calculateTeacherSingleWeek(
     dutyList.push('TPT Đội');
   }
 
-  // 2. Tổ trưởng (+3 tiết)
-  const isToTruong =
-    teacher.role === 'ToTruong' ||
-    teacher.code?.includes('(TT') ||
-    teacher.notes?.toLowerCase().includes('tổ trưởng') ||
-    teacher.duties?.some((d) => d.type === 'ToTruong' || d.name?.includes('Tổ trưởng'));
-  if (isToTruong) {
-    if (!dutyList.includes('Tổ trưởng')) dutyList.push('Tổ trưởng');
-    reductionPeriods += 3;
+  // 2. Kiểm tra danh sách kiêm nhiệm chính thức (teacher.duties)
+  if (teacher.duties && teacher.duties.length > 0) {
+    teacher.duties.forEach((d) => {
+      let red = d.reductionPeriods;
+      if (red === undefined || red === null) {
+        if (d.type === 'ToTruong') red = 3;
+        else if (d.type === 'ToPho') red = 1;
+        else if (d.type === 'PhoCap') red = 4;
+        else if (d.type === 'ConNho') red = 3;
+        else if (d.type === 'PhoBiThuDoan') red = 6;
+        else if (d.type === 'BiThuDoan') red = 12;
+        else red = 0;
+      }
+      reductionPeriods += red;
+      const label = d.type === 'ToTruong' ? 'Tổ trưởng' :
+                    d.type === 'ToPho' ? 'Tổ phó' :
+                    d.type === 'PhoCap' ? 'Phổ cập' :
+                    d.type === 'ConNho' ? 'Con nhỏ' :
+                    d.type === 'PhoBiThuDoan' ? 'Phó Bí thư đoàn' :
+                    d.type === 'BiThuDoan' ? 'Bí thư đoàn' : d.name;
+      if (!dutyList.includes(label)) {
+        dutyList.push(label);
+      }
+    });
+  } else {
+    // Dự phòng khi chưa có mảng duties
+    if (teacher.role === 'ToTruong' || teacher.code?.includes('(TT')) {
+      if (!dutyList.includes('Tổ trưởng')) dutyList.push('Tổ trưởng');
+      reductionPeriods += 3;
+    } else if (teacher.role === 'ToPho' || teacher.code?.includes('(TP')) {
+      if (!dutyList.includes('Tổ phó')) dutyList.push('Tổ phó');
+      reductionPeriods += 1;
+    }
+
+    if (teacher.role === 'PhoBiThuDoan' || teacher.code?.includes('(PBT')) {
+      if (!dutyList.includes('Phó Bí thư đoàn')) dutyList.push('Phó Bí thư đoàn');
+      reductionPeriods += 6;
+    } else if (teacher.role === 'BiThuDoan' || teacher.code?.includes('(BT')) {
+      if (!dutyList.includes('Bí thư đoàn')) dutyList.push('Bí thư đoàn');
+      reductionPeriods += 12;
+    }
+
+    if (teacher.role === 'PhoCap' || teacher.code?.includes('PC-') || teacher.code?.toLowerCase().includes('phổ cập')) {
+      if (!dutyList.includes('Phổ cập')) dutyList.push('Phổ cập');
+      reductionPeriods += 4;
+    }
+
+    if (teacher.role === 'ConNho' || teacher.code?.toLowerCase().includes('con nhỏ')) {
+      if (!dutyList.includes('Con nhỏ')) dutyList.push('Con nhỏ');
+      reductionPeriods += 3;
+    }
   }
 
-  // 3. Tổ phó (+1 tiết)
-  const isToPho =
-    teacher.role === 'ToPho' ||
-    teacher.code?.includes('(TP') ||
-    teacher.notes?.toLowerCase().includes('tổ phó') ||
-    teacher.duties?.some((d) => d.type === 'ToPho' || d.name?.includes('Tổ phó'));
-  if (isToPho && !isToTruong) {
-    if (!dutyList.includes('Tổ phó')) dutyList.push('Tổ phó');
-    reductionPeriods += 1;
+  // 3. Giảm trừ tùy biến khác (nếu có)
+  if (teacher.customReductionPeriods) {
+    reductionPeriods += teacher.customReductionPeriods;
   }
 
-  // 4. Phó Bí thư đoàn trường (+6 tiết)
-  const isPBTDoan =
-    teacher.role === 'PhoBiThuDoan' ||
-    teacher.code?.includes('(PBT') ||
-    teacher.notes?.toLowerCase().includes('phó bí thư') ||
-    teacher.duties?.some((d) => d.type === 'PhoBiThuDoan' || d.name?.includes('Phó Bí thư'));
-  if (isPBTDoan) {
-    if (!dutyList.includes('Phó Bí thư đoàn')) dutyList.push('Phó Bí thư đoàn');
-    reductionPeriods += 6;
-  }
-
-  // 5. Bí thư đoàn trường (+12 tiết)
-  const isBTDoan =
-    teacher.role === 'BiThuDoan' ||
-    teacher.code?.includes('(BT') ||
-    teacher.notes?.toLowerCase().includes('bí thư đoàn') ||
-    teacher.duties?.some((d) => d.type === 'BiThuDoan' || d.name?.includes('Bí thư đoàn'));
-  if (isBTDoan && !isPBTDoan) {
-    if (!dutyList.includes('Bí thư đoàn')) dutyList.push('Bí thư đoàn');
-    reductionPeriods += 12;
-  }
-
-  // 6. Phổ cập giáo dục (+4 tiết)
-  const isPhoCap =
-    teacher.role === 'PhoCap' ||
-    teacher.code?.toLowerCase().includes('phổ cập') ||
-    teacher.notes?.toLowerCase().includes('phổ cập') ||
-    teacher.duties?.some((d) => d.type === 'PhoCap' || d.name?.toLowerCase().includes('phổ cập'));
-  if (isPhoCap) {
-    if (!dutyList.includes('Phổ cập')) dutyList.push('Phổ cập');
-    reductionPeriods += 4;
-  }
-
-  // 7. Nuôi con nhỏ dưới 36 tháng (+3 tiết)
-  const isConNho =
-    teacher.role === 'ConNho' ||
-    teacher.code?.toLowerCase().includes('con nhỏ') ||
-    teacher.notes?.toLowerCase().includes('con nhỏ') ||
-    teacher.duties?.some((d) => d.type === 'ConNho' || d.name?.toLowerCase().includes('con nhỏ'));
-  if (isConNho) {
-    if (!dutyList.includes('Con nhỏ')) dutyList.push('Con nhỏ');
-    reductionPeriods += 3;
-  }
-
-  // 8. Giáo viên chủ nhiệm (GVCN: +4 tiết/tuần)
+  // 4. Giáo viên chủ nhiệm (GVCN: +4 tiết/tuần không phân biệt cấp THPT hay THCS)
   if (isHomeroom) {
     if (!dutyList.includes('GVCN')) dutyList.push('GVCN');
     reductionPeriods += 4;
-  }
-
-  // 9. Các nhiệm vụ bổ sung khác trong danh sách duties
-  if (teacher.duties) {
-    teacher.duties.forEach((d) => {
-      const standardTypes = [
-        'ToTruong',
-        'ToPho',
-        'PhoBiThuDoan',
-        'BiThuDoan',
-        'PhoCap',
-        'ConNho',
-        'TongPhuTrachDoi',
-        'Khac'
-      ];
-      if (!standardTypes.includes(d.type) && !dutyList.includes(d.name)) {
-        dutyList.push(d.name);
-        reductionPeriods += d.reductionPeriods || 0;
-      }
-    });
   }
 
   // Convert groups into rows

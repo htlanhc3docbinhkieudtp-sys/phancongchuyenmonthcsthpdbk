@@ -201,7 +201,7 @@ export function calculateTeacherWorkloads(
   classes: ClassGroup[],
   departments: Department[],
   subjects: Subject[],
-  homeroomReduction: number = 3
+  homeroomReduction: number = 4
 ): WorkloadStats[] {
   const deptMap = new Map(departments.map(d => [d.id, d.name]));
   const classMap = new Map(classes.map(c => [c.id, c.name]));

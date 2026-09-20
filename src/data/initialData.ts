@@ -19,8 +19,9 @@ export const initialSchoolConfig: SchoolConfig = {
   vicePrincipalName: 'Nguyễn Minh Trí',
   standardThptPeriods: 17,
   standardThcsPeriods: 19,
-  homeroomReduction: 3,
+  homeroomReduction: 4,
   logoUrl: '/logo.png',
+  allowPublicTimetable: false,
 };
 
 export const initialDepartments: Department[] = [
