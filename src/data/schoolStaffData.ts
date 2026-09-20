@@ -25,13 +25,13 @@ export const officialStaffList: Teacher[] = [
     campus: 'THPTDBK',
     departmentId: 'dept-bgh',
     primarySubjectId: 'sub-anh',
-    role: 'Khac',
+    role: 'HieuTruong',
     customReductionPeriods: 0,
     baseStandardPeriods: 2,
     duties: [
       {
         id: 'duty-bgh1-ht',
-        type: 'Khac',
+        type: 'HieuTruong',
         name: 'Hiệu trưởng',
         reductionPeriods: 0,
         notes: 'Hiệu trưởng (Định mức 2 tiết/tuần theo quy định)'
@@ -48,13 +48,13 @@ export const officialStaffList: Teacher[] = [
     campus: 'THPTDBK',
     departmentId: 'dept-bgh',
     primarySubjectId: 'sub-li',
-    role: 'Khac',
+    role: 'PhoHieuTruong',
     customReductionPeriods: 0,
     baseStandardPeriods: 4,
     duties: [
       {
         id: 'duty-bgh2-pht',
-        type: 'Khac',
+        type: 'PhoHieuTruong',
         name: 'Phó Hiệu trưởng',
         reductionPeriods: 0,
         notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
@@ -71,13 +71,13 @@ export const officialStaffList: Teacher[] = [
     campus: 'THCSDBK',
     departmentId: 'dept-bgh',
     primarySubjectId: 'sub-su',
-    role: 'Khac',
+    role: 'PhoHieuTruong',
     customReductionPeriods: 0,
     baseStandardPeriods: 4,
     duties: [
       {
         id: 'duty-bgh3-pht',
-        type: 'Khac',
+        type: 'PhoHieuTruong',
         name: 'Phó Hiệu trưởng',
         reductionPeriods: 0,
         notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
@@ -94,13 +94,13 @@ export const officialStaffList: Teacher[] = [
     campus: 'THCSTK',
     departmentId: 'dept-bgh',
     primarySubjectId: 'sub-khtn-cs',
-    role: 'Khac',
+    role: 'PhoHieuTruong',
     customReductionPeriods: 0,
     baseStandardPeriods: 4,
     duties: [
       {
         id: 'duty-bgh4-pht',
-        type: 'Khac',
+        type: 'PhoHieuTruong',
         name: 'Phó Hiệu trưởng',
         reductionPeriods: 0,
         notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'

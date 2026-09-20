@@ -23,6 +23,24 @@ export interface DutyPreset {
 
 export const STANDARD_DUTIES_PRESETS: DutyPreset[] = [
   {
+    type: 'HieuTruong',
+    name: 'Hiệu trưởng',
+    defaultReduction: 0,
+    shortLabel: 'Hiệu trưởng',
+    badgeBg: 'bg-amber-50 border-amber-200',
+    badgeColor: 'text-amber-900',
+    description: 'Định mức 2 tiết/tuần theo TT 28/2009 & TT 15/2017'
+  },
+  {
+    type: 'PhoHieuTruong',
+    name: 'Phó Hiệu trưởng',
+    defaultReduction: 0,
+    shortLabel: 'Phó Hiệu trưởng',
+    badgeBg: 'bg-amber-50 border-amber-200',
+    badgeColor: 'text-amber-900',
+    description: 'Định mức 4 tiết/tuần theo TT 28/2009 & TT 15/2017'
+  },
+  {
     type: 'ToTruong',
     name: 'Tổ trưởng chuyên môn',
     defaultReduction: 3,
@@ -227,7 +245,32 @@ export function calculateTeacherWorkloads(
     const teacherAssignments = assignments.filter(a => a.teacherId === teacher.id);
     const assignedPeriods = teacherAssignments.reduce((sum, a) => sum + (a.periodsPerWeek || 0), 0);
 
-    const targetPeriods = Math.max(0, teacher.baseStandardPeriods - totalReduction);
+    let baseStandard = teacher.baseStandardPeriods;
+    const isHT =
+      teacher.id === 'tch-bgh-1' ||
+      teacher.role === 'HieuTruong' ||
+      teacher.code?.includes('(HT)') ||
+      teacher.name === 'Lê Thanh Cường';
+    const isPHT =
+      !isHT &&
+      (teacher.id === 'tch-bgh-2' ||
+        teacher.id === 'tch-bgh-3' ||
+        teacher.id === 'tch-bgh-4' ||
+        teacher.id.startsWith('tch-bgh') ||
+        teacher.departmentId === 'dept-bgh' ||
+        teacher.role === 'PhoHieuTruong' ||
+        teacher.code?.includes('(PHT)') ||
+        ['Nguyễn Minh Trí', 'Phan Thanh Thảo', 'Nguyễn Thanh Tòng'].includes(teacher.name));
+
+    if (isHT) {
+      baseStandard = 2;
+    } else if (isPHT) {
+      baseStandard = 4;
+    } else if (!baseStandard) {
+      baseStandard = teacher.campus === 'THCSDBK' || teacher.campus === 'THCSTK' ? 19 : 17;
+    }
+
+    const targetPeriods = Math.max(0, baseStandard - totalReduction);
     const balance = assignedPeriods - targetPeriods;
 
     const assignedClasses = teacherAssignments.map(a => ({

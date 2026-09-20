@@ -47,6 +47,7 @@ export interface TeacherActualWorkload {
   // Multi-week breakdown
   weeklyTotals: Record<number, number>;
   weeklyTeaching: Record<number, number>;
+  weeklyBalances: Record<number, number>;
   semesterTotalTeaching: number;
   semesterTotalPeriods: number;
   semesterRequiredPeriods: number;
@@ -142,17 +143,34 @@ export function calculateTeacherSingleWeek(
   // - Giáo viên THPT: 17 tiết/tuần
   // - Giáo viên THCS: 19 tiết/tuần
   const isHT =
+    teacher.id === 'tch-bgh-1' ||
+    teacher.role === 'HieuTruong' ||
     teacher.code?.includes('(HT)') ||
-    teacher.notes?.toLowerCase().includes('hiệu trưởng (thpt') ||
+    teacher.code?.toLowerCase().includes('.lt') ||
+    teacher.name === 'Lê Thanh Cường' ||
+    (teacher.notes?.toLowerCase().includes('hiệu trưởng') && !teacher.notes?.toLowerCase().includes('phó')) ||
+    teacher.duties?.some(d => d.type === 'HieuTruong' || (d.name?.toLowerCase().includes('hiệu trưởng') && !d.name?.toLowerCase().includes('phó'))) ||
     teacher.baseStandardPeriods === 2;
+
   const isPHT =
-    teacher.code?.includes('(PHT)') ||
-    teacher.notes?.toLowerCase().includes('phó hiệu trưởng') ||
-    teacher.baseStandardPeriods === 4;
+    !isHT &&
+    (teacher.id === 'tch-bgh-2' ||
+      teacher.id === 'tch-bgh-3' ||
+      teacher.id === 'tch-bgh-4' ||
+      teacher.id?.startsWith('tch-bgh') ||
+      teacher.departmentId === 'dept-bgh' ||
+      teacher.role === 'PhoHieuTruong' ||
+      teacher.code?.includes('(PHT)') ||
+      ['Nguyễn Minh Trí', 'Phan Thanh Thảo', 'Nguyễn Thanh Tòng'].some(n => teacher.name?.includes(n)) ||
+      teacher.notes?.toLowerCase().includes('phó hiệu trưởng') ||
+      teacher.duties?.some(d => d.type === 'PhoHieuTruong' || d.name?.toLowerCase().includes('phó hiệu trưởng')) ||
+      teacher.baseStandardPeriods === 4);
+
   const isTPT =
     teacher.role === 'TongPhuTrachDoi' ||
     teacher.code?.includes('(TPT') ||
     teacher.notes?.toLowerCase().includes('tổng phụ trách') ||
+    teacher.duties?.some(d => d.type === 'TongPhuTrachDoi') ||
     teacher.baseStandardPeriods === 6;
 
   let standardPeriods = isTHPT
@@ -415,8 +433,13 @@ export function calculateAllActualWorkloads(
   weeklyTimetables?: Record<number, SchoolTimetable>,
   fallbackTimetable?: SchoolTimetable,
   totalWeeksInSemester: number = 18,
-  manualAdjustments: Record<string, number> = {}
+  manualAdjustments: Record<string, number> = {},
+  startWeek: number = 1,
+  endWeek?: number
 ): TeacherActualWorkload[] {
+  const effectiveEndWeek = endWeek || (startWeek === 19 ? 35 : startWeek + totalWeeksInSemester - 1);
+  const totalWeeksInThisSemester = effectiveEndWeek - startWeek + 1;
+
   const classMap = new Map(classes.map((c) => [c.id, c]));
   const homeroomMap = new Map<string, ClassGroup>();
   classes.forEach((c) => {
@@ -429,10 +452,17 @@ export function calculateAllActualWorkloads(
 
   // Cache slots per week to avoid redundant queries
   const weekSlotsCache = new Map<number, TimetableSlot[]>();
-  for (let w = 1; w <= totalWeeksInSemester; w++) {
+  for (let w = startWeek; w <= effectiveEndWeek; w++) {
     weekSlotsCache.set(
       w,
       getSlotsForWeek(w, weeklyTimetables, fallbackTimetable)
+    );
+  }
+  // Also ensure selectedWeek is cached if outside the range
+  if (!weekSlotsCache.has(selectedWeek)) {
+    weekSlotsCache.set(
+      selectedWeek,
+      getSlotsForWeek(selectedWeek, weeklyTimetables, fallbackTimetable)
     );
   }
 
@@ -455,14 +485,15 @@ export function calculateAllActualWorkloads(
       homeroomMap
     );
 
-    // Calculate multi-week statistics
+    // Calculate multi-week statistics across the semester weeks
     const weeklyTotals: Record<number, number> = {};
     const weeklyTeaching: Record<number, number> = {};
+    const weeklyBalances: Record<number, number> = {};
     let semesterTotalTeaching = 0;
     let semesterTotalPeriods = 0;
     let cumulativeBalanceToSelectedWeek = 0;
 
-    for (let w = 1; w <= totalWeeksInSemester; w++) {
+    for (let w = startWeek; w <= effectiveEndWeek; w++) {
       const wSlots = weekSlotsCache.get(w) || [];
       const wData = calculateTeacherSingleWeek(
         teacher,
@@ -476,6 +507,7 @@ export function calculateAllActualWorkloads(
       );
       weeklyTotals[w] = wData.totalPeriods;
       weeklyTeaching[w] = wData.teachingPeriods;
+      weeklyBalances[w] = wData.weeklyBalance;
       semesterTotalTeaching += wData.teachingPeriods;
       semesterTotalPeriods += wData.totalPeriods;
 
@@ -489,8 +521,9 @@ export function calculateAllActualWorkloads(
     cumulativeBalanceToSelectedWeek += extraAdjustment;
 
     const semesterRequiredPeriods =
-      weekData.standardPeriods * totalWeeksInSemester;
-    const semesterBalance = semesterTotalPeriods - semesterRequiredPeriods;
+      weekData.standardPeriods * totalWeeksInThisSemester;
+    const semesterBalance =
+      semesterTotalPeriods - semesterRequiredPeriods + extraAdjustment;
 
     results.push({
       teacherId: teacher.id,
@@ -513,6 +546,7 @@ export function calculateAllActualWorkloads(
       cumulativeBalance: cumulativeBalanceToSelectedWeek,
       weeklyTotals,
       weeklyTeaching,
+      weeklyBalances,
       semesterTotalTeaching,
       semesterTotalPeriods,
       semesterRequiredPeriods,
@@ -678,20 +712,29 @@ export function exportActualWeeklyExcel(
 }
 
 /**
- * Export Multi-Week Summary Matrix to Excel
+ * Export Multi-Week Summary Matrix to Excel (Showing Weekly Balances & Semester Totals)
  */
 export function exportActualMultiWeekExcel(
   workloads: TeacherActualWorkload[],
   totalWeeks: number,
-  config: SchoolConfig
+  config: SchoolConfig,
+  startWeek: number = 1,
+  endWeek?: number,
+  semesterName: string = 'Học kỳ 1'
 ) {
+  const effectiveEndWeek = endWeek || (startWeek === 19 ? 35 : startWeek + totalWeeks - 1);
+  const weekCount = effectiveEndWeek - startWeek + 1;
+
   import('xlsx').then((XLSX) => {
     const wb = XLSX.utils.book_new();
     const rows: (string | number)[][] = [];
 
     rows.push([config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU']);
     rows.push([
-      `BẢNG TỔNG HỢP TIẾT THỰC DẠY CẢ KỲ (${config.semester || 'HK1'} - ${totalWeeks} TUẦN) - CẤP THPT`,
+      `BẢNG TỔNG HỢP THỪA/THIẾU TIẾT DẠY HÀNG TUẦN VÀ CẢ KỲ (${semesterName.toUpperCase()} - ${weekCount} TUẦN: T${startWeek} ĐẾN T${effectiveEndWeek})`,
+    ]);
+    rows.push([
+      `Năm học: ${config.academicYear} • Ghi chú: Cột T1..T${effectiveEndWeek} thể hiện số tiết thừa(+) hoặc thiếu(-) của từng tuần`,
     ]);
     rows.push([]);
 
@@ -702,15 +745,15 @@ export function exportActualMultiWeekExcel(
       'Kiêm nhiệm',
       'Định mức/T',
     ];
-    for (let w = 1; w <= totalWeeks; w++) {
+    for (let w = startWeek; w <= effectiveEndWeek; w++) {
       header.push(`T${w}`);
     }
     header.push(
-      'Tổng Thực Dạy',
-      'Tổng Kiêm Nhiệm',
+      'Tổng Dạy',
+      'Tổng KN',
       'Tổng Quy Đổi',
-      'Định Mức Kì',
-      'Thừa/Thiếu Kì'
+      'Định Mức Kỳ',
+      'TỔNG THỪA/THIẾU KỲ'
     );
     rows.push(header);
 
@@ -722,15 +765,16 @@ export function exportActualMultiWeekExcel(
         w.duties,
         w.standardPeriods,
       ];
-      for (let wk = 1; wk <= totalWeeks; wk++) {
-        row.push(w.weeklyTotals[wk] ?? 0);
+      for (let wk = startWeek; wk <= effectiveEndWeek; wk++) {
+        const bal = w.weeklyBalances?.[wk] ?? ((w.weeklyTotals[wk] ?? 0) - w.standardPeriods);
+        row.push(bal > 0 ? `+${bal}` : `${bal}`);
       }
       row.push(
         w.semesterTotalTeaching,
-        w.reductionPeriods * totalWeeks,
+        w.reductionPeriods * weekCount,
         w.semesterTotalPeriods,
         w.semesterRequiredPeriods,
-        w.semesterBalance > 0 ? `+${w.semesterBalance}` : w.semesterBalance
+        w.semesterBalance > 0 ? `+${w.semesterBalance}` : `${w.semesterBalance}`
       );
       rows.push(row);
     });
@@ -742,18 +786,19 @@ export function exportActualMultiWeekExcel(
       { wch: 24 },
       { wch: 18 },
       { wch: 12 },
-      ...Array(totalWeeks).fill({ wch: 6 }),
+      ...Array(weekCount).fill({ wch: 7 }),
+      { wch: 12 },
+      { wch: 12 },
       { wch: 14 },
-      { wch: 16 },
       { wch: 14 },
-      { wch: 14 },
-      { wch: 14 },
+      { wch: 18 },
     ];
 
-    XLSX.utils.book_append_sheet(wb, ws, 'Tong_Hop_Cac_Tuan');
+    const safeSemName = semesterName.replace(/\s+/g, '_');
+    XLSX.utils.book_append_sheet(wb, ws, `Thua_Thieu_${safeSemName}`);
     XLSX.writeFile(
       wb,
-      `Tong_Hop_Tiet_Thuc_Day_THPT_${config.semester || 'HK1'}_${config.academicYear.replace(/\s+/g, '_')}.xlsx`
+      `Bang_Tong_Hop_Thua_Thieu_Tiet_Day_${safeSemName}_${config.academicYear.replace(/\s+/g, '_')}.xlsx`
     );
   });
 }

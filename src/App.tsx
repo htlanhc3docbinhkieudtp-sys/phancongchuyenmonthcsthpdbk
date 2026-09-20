@@ -214,6 +214,82 @@ export default function App() {
         if (t.id === 'tch-khtn-15' || t.name === 'Võ Ngọc Đỉnh Văn') {
           return { ...updated, name: 'Võ Ngọc Đình Văn', code: 'Văn.VNĐ' };
         }
+
+        // BGH Leadership standard teaching quota enforcement:
+        // Hiệu trưởng: 2 tiết/tuần
+        if (t.id === 'tch-bgh-1' || t.name === 'Lê Thanh Cường') {
+          return {
+            ...updated,
+            name: 'Lê Thanh Cường',
+            code: 'Cường.LT (HT)',
+            role: 'HieuTruong',
+            baseStandardPeriods: 2,
+            duties: [
+              {
+                id: 'duty-bgh1-ht',
+                type: 'HieuTruong',
+                name: 'Hiệu trưởng',
+                reductionPeriods: 0,
+                notes: 'Hiệu trưởng (Định mức 2 tiết/tuần theo quy định)'
+              }
+            ]
+          };
+        }
+        // Phó Hiệu trưởng: 4 tiết/tuần
+        if (t.id === 'tch-bgh-2' || t.name === 'Nguyễn Minh Trí') {
+          return {
+            ...updated,
+            name: 'Nguyễn Minh Trí',
+            code: 'Trí.NM (PHT)',
+            role: 'PhoHieuTruong',
+            baseStandardPeriods: 4,
+            duties: [
+              {
+                id: 'duty-bgh2-pht',
+                type: 'PhoHieuTruong',
+                name: 'Phó Hiệu trưởng',
+                reductionPeriods: 0,
+                notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
+              }
+            ]
+          };
+        }
+        if (t.id === 'tch-bgh-3' || t.name === 'Phan Thanh Thảo') {
+          return {
+            ...updated,
+            name: 'Phan Thanh Thảo',
+            code: 'Thảo.PT (PHT)',
+            role: 'PhoHieuTruong',
+            baseStandardPeriods: 4,
+            duties: [
+              {
+                id: 'duty-bgh3-pht',
+                type: 'PhoHieuTruong',
+                name: 'Phó Hiệu trưởng',
+                reductionPeriods: 0,
+                notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
+              }
+            ]
+          };
+        }
+        if (t.id === 'tch-bgh-4' || t.name === 'Nguyễn Thanh Tòng') {
+          return {
+            ...updated,
+            name: 'Nguyễn Thanh Tòng',
+            code: 'Tòng.NT (PHT)',
+            role: 'PhoHieuTruong',
+            baseStandardPeriods: 4,
+            duties: [
+              {
+                id: 'duty-bgh4-pht',
+                type: 'PhoHieuTruong',
+                name: 'Phó Hiệu trưởng',
+                reductionPeriods: 0,
+                notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
+              }
+            ]
+          };
+        }
         return updated;
       });
   };

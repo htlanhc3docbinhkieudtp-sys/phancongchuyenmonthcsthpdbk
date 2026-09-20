@@ -40,6 +40,8 @@ export interface ClassGroup {
 }
 
 export type DutyType = 
+  | 'HieuTruong'        // Hiệu trưởng (Định mức 2 tiết/tuần)
+  | 'PhoHieuTruong'     // Phó Hiệu trưởng (Định mức 4 tiết/tuần)
   | 'ToTruong'          // Tổ trưởng chuyên môn (-3t)
   | 'ToPho'             // Tổ phó chuyên môn (-1t)
   | 'GiaoVu'            // Giáo vụ (-4t)
@@ -63,6 +65,8 @@ export interface ConcurrentDuty {
 
 export type TeacherRole = 
   | 'GVBM' // Giáo viên bộ môn
+  | 'HieuTruong' // Hiệu trưởng (Định mức 2 tiết/tuần)
+  | 'PhoHieuTruong' // Phó Hiệu trưởng (Định mức 4 tiết/tuần)
   | 'ToTruong' // Tổ trưởng (-3 tiết)
   | 'ToPho' // Tổ phó (-1 tiết)
   | 'BiThuDoan' // Bí thư đoàn trường (-12 tiết)

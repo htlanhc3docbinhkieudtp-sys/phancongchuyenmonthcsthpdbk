@@ -69,33 +69,50 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   isAdmin = false,
   onOpenWeeklyScheduleManager,
 }) => {
-  // Semester weeks
-  const isHK1 = (config.semester || 'HK1') === 'HK1';
-  const totalWeeks = isHK1 ? 18 : 17;
-  const weekList = useMemo(() => {
+  // Selected period in week selector: 'HK1' | 'HK2' | '1'..'35'
+  const [selectedPeriod, setSelectedPeriod] = useState<string>('HK1');
+  const isSemesterView = selectedPeriod === 'HK1' || selectedPeriod === 'HK2';
+  const activeSemester: 'HK1' | 'HK2' =
+    selectedPeriod === 'HK2'
+      ? 'HK2'
+      : selectedPeriod === 'HK1'
+      ? 'HK1'
+      : Number(selectedPeriod) > 18
+      ? 'HK2'
+      : 'HK1';
+
+  const startWeek = activeSemester === 'HK2' ? 19 : 1;
+  const endWeek = activeSemester === 'HK2' ? 35 : 18;
+  const totalWeeks = endWeek - startWeek + 1;
+  const semesterName = activeSemester === 'HK1' ? 'Học kỳ 1' : 'Học kỳ 2';
+
+  const semesterWeeks = useMemo(() => {
     const list: number[] = [];
-    const start = isHK1 ? 1 : 19;
-    const end = isHK1 ? 18 : 35;
-    for (let w = start; w <= end; w++) {
+    for (let w = startWeek; w <= endWeek; w++) {
       list.push(w);
     }
     return list;
-  }, [isHK1]);
+  }, [startWeek, endWeek]);
 
-  // Selected week (default to currentWeek or 1)
-  const [selectedWeek, setSelectedWeek] = useState<number>(() => {
-    return currentWeek >= 1 && currentWeek <= (isHK1 ? 18 : 35)
-      ? currentWeek
-      : isHK1
-      ? 1
-      : 19;
-  });
+  // Selected week number for single-week calculations
+  const selectedWeekNum = useMemo(() => {
+    if (isSemesterView) {
+      return currentWeek >= startWeek && currentWeek <= endWeek
+        ? currentWeek
+        : startWeek;
+    }
+    const num = Number(selectedPeriod);
+    return isNaN(num) || num < 1 || num > 35 ? 1 : num;
+  }, [isSemesterView, selectedPeriod, currentWeek, startWeek, endWeek]);
 
   // Level scope - defaults to 'THPT' as explicitly instructed by user
   const [levelScope, setLevelScope] = useState<LevelScope>('THPT');
 
   // View mode: Weekly Detail (Excel Template) vs Multi-week Overview
-  const [viewMode, setViewMode] = useState<ViewMode>('WEEKLY_DETAIL');
+  const [viewMode, setViewMode] = useState<ViewMode>('MULTI_WEEK');
+
+  // Matrix cell display mode: 'BALANCE' (± Thừa/Thiếu) | 'TEACHING' (Tiết dạy) | 'TOTAL' (Tổng quy đổi)
+  const [cellDisplayMode, setCellDisplayMode] = useState<'BALANCE' | 'TEACHING' | 'TOTAL'>('BALANCE');
 
   // Filters
   const [searchTerm, setSearchTerm] = useState('');
@@ -125,13 +142,6 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     useState<TeacherActualWorkload | null>(null);
   const [adjustInputVal, setAdjustInputVal] = useState<number>(0);
 
-  // Sync selectedWeek if currentWeek prop changes externally
-  useEffect(() => {
-    if (currentWeek >= 1 && currentWeek <= (isHK1 ? 18 : 35)) {
-      setSelectedWeek(currentWeek);
-    }
-  }, [currentWeek, isHK1]);
-
   // Save manual adjustments
   const handleSaveAdjustment = (teacherId: string, value: number) => {
     setManualAdjustments((prev) => {
@@ -149,7 +159,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   // Calculate actual workloads from timetable slots
   const allWorkloads = useMemo(() => {
     return calculateAllActualWorkloads(
-      selectedWeek,
+      selectedWeekNum,
       teachers,
       departments,
       classes,
@@ -158,10 +168,12 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
       weeklyTimetables,
       timetable,
       totalWeeks,
-      manualAdjustments
+      manualAdjustments,
+      startWeek,
+      endWeek
     );
   }, [
-    selectedWeek,
+    selectedWeekNum,
     teachers,
     departments,
     classes,
@@ -171,6 +183,8 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     timetable,
     totalWeeks,
     manualAdjustments,
+    startWeek,
+    endWeek,
   ]);
 
   // Filter workloads based on Level, Department, Search, and Status
@@ -233,21 +247,29 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   const stats = useMemo(() => {
     const list = filteredWorkloads;
     const totalTeachers = list.length;
+    const isSem = isSemesterView || viewMode === 'MULTI_WEEK';
+
     const totalTeachingPeriods = list.reduce(
-      (sum, w) => sum + w.teachingPeriods,
+      (sum, w) => sum + (isSem ? w.semesterTotalTeaching : w.teachingPeriods),
       0
     );
     const totalReductionPeriods = list.reduce(
-      (sum, w) => sum + w.reductionPeriods,
+      (sum, w) => sum + (isSem ? w.reductionPeriods * totalWeeks : w.reductionPeriods),
       0
     );
     const totalConvertedPeriods = list.reduce(
-      (sum, w) => sum + w.totalPeriods,
+      (sum, w) => sum + (isSem ? w.semesterTotalPeriods : w.totalPeriods),
       0
     );
-    const surplusCount = list.filter((w) => w.cumulativeBalance > 0).length;
-    const exactCount = list.filter((w) => w.cumulativeBalance === 0).length;
-    const deficitCount = list.filter((w) => w.cumulativeBalance < 0).length;
+    const surplusCount = list.filter((w) =>
+      isSem ? w.semesterBalance > 0 : w.cumulativeBalance > 0
+    ).length;
+    const exactCount = list.filter((w) =>
+      isSem ? w.semesterBalance === 0 : w.cumulativeBalance === 0
+    ).length;
+    const deficitCount = list.filter((w) =>
+      isSem ? w.semesterBalance < 0 : w.cumulativeBalance < 0
+    ).length;
 
     return {
       totalTeachers,
@@ -258,30 +280,67 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
       exactCount,
       deficitCount,
     };
-  }, [filteredWorkloads]);
+  }, [filteredWorkloads, isSemesterView, viewMode, totalWeeks]);
+
+  // Handle period change from dropdown or mode buttons
+  const handlePeriodChange = (val: string) => {
+    setSelectedPeriod(val);
+    if (val === 'HK1' || val === 'HK2') {
+      setViewMode('MULTI_WEEK');
+    } else {
+      setViewMode('WEEKLY_DETAIL');
+    }
+  };
 
   // Handle previous / next week
   const handlePrevWeek = () => {
-    const idx = weekList.indexOf(selectedWeek);
-    if (idx > 0) setSelectedWeek(weekList[idx - 1]);
+    if (selectedPeriod === 'HK2') {
+      handlePeriodChange('HK1');
+    } else if (selectedPeriod === 'HK1') {
+      // already at first semester
+    } else {
+      const w = Number(selectedPeriod);
+      if (w > 1) {
+        handlePeriodChange(String(w - 1));
+      } else {
+        handlePeriodChange('HK1');
+      }
+    }
   };
 
   const handleNextWeek = () => {
-    const idx = weekList.indexOf(selectedWeek);
-    if (idx < weekList.length - 1) setSelectedWeek(weekList[idx + 1]);
+    if (selectedPeriod === 'HK1') {
+      handlePeriodChange('1');
+    } else if (selectedPeriod === 'HK2') {
+      // already at HK2
+    } else {
+      const w = Number(selectedPeriod);
+      if (w < 35) {
+        handlePeriodChange(String(w + 1));
+      } else {
+        handlePeriodChange('HK2');
+      }
+    }
   };
 
   // Export handlers
   const handleExportExcel = () => {
-    if (viewMode === 'WEEKLY_DETAIL') {
+    if (isSemesterView || viewMode === 'MULTI_WEEK') {
+      exportActualMultiWeekExcel(
+        filteredWorkloads,
+        totalWeeks,
+        config,
+        startWeek,
+        endWeek,
+        semesterName
+      );
+    } else {
       exportActualWeeklyExcel(
-        selectedWeek,
+        selectedWeekNum,
         filteredWorkloads,
         config,
         useShortName
       );
-    } else {
-      exportActualMultiWeekExcel(filteredWorkloads, totalWeeks, config);
     }
   };
 
@@ -361,28 +420,46 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
           <div className="flex items-center gap-2">
             <div className="inline-flex bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs font-medium">
               <button
-                id="btn-mode-weekly"
-                onClick={() => setViewMode('WEEKLY_DETAIL')}
+                id="btn-mode-hk1"
+                onClick={() => handlePeriodChange('HK1')}
                 className={`px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-all ${
-                  viewMode === 'WEEKLY_DETAIL'
+                  selectedPeriod === 'HK1'
+                    ? 'bg-white text-emerald-900 font-bold shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <CalendarRange className="w-3.5 h-3.5 text-emerald-600" />
+                Tổng hợp Học kỳ 1 (18 tuần)
+              </button>
+              <button
+                id="btn-mode-hk2"
+                onClick={() => handlePeriodChange('HK2')}
+                className={`px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-all ${
+                  selectedPeriod === 'HK2'
+                    ? 'bg-white text-blue-900 font-bold shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <CalendarRange className="w-3.5 h-3.5 text-blue-600" />
+                Tổng hợp Học kỳ 2 (17 tuần)
+              </button>
+              <button
+                id="btn-mode-weekly"
+                onClick={() => {
+                  if (selectedPeriod === 'HK1' || selectedPeriod === 'HK2') {
+                    handlePeriodChange(String(selectedWeekNum));
+                  } else {
+                    setViewMode('WEEKLY_DETAIL');
+                  }
+                }}
+                className={`px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-all ${
+                  viewMode === 'WEEKLY_DETAIL' && !isSemesterView
                     ? 'bg-white text-slate-900 font-bold shadow-sm'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <FileSpreadsheet className="w-3.5 h-3.5 text-yellow-600" />
-                Chi tiết theo tuần (Mẫu Excel)
-              </button>
-              <button
-                id="btn-mode-multi"
-                onClick={() => setViewMode('MULTI_WEEK')}
-                className={`px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-all ${
-                  viewMode === 'MULTI_WEEK'
-                    ? 'bg-white text-slate-900 font-bold shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <CalendarRange className="w-3.5 h-3.5 text-blue-600" />
-                Tổng thể các tuần ({totalWeeks} tuần)
+                Chi tiết từng tuần (Mẫu Excel)
               </button>
             </div>
 
@@ -405,35 +482,48 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
             <button
               id="btn-prev-week"
               onClick={handlePrevWeek}
-              disabled={selectedWeek === weekList[0]}
+              disabled={selectedPeriod === 'HK1'}
               className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              title="Tuần trước"
+              title="Tuần trước / Học kỳ trước"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
 
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-semibold text-slate-700">Tuần:</span>
+              <span className="text-xs font-semibold text-slate-700">Chọn tuần / Học kỳ:</span>
               <select
                 id="select-active-week"
-                value={selectedWeek}
-                onChange={(e) => setSelectedWeek(Number(e.target.value))}
-                className="text-xs font-bold text-slate-900 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                value={selectedPeriod}
+                onChange={(e) => handlePeriodChange(e.target.value)}
+                className="text-xs font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-yellow-400"
               >
-                {weekList.map((w) => (
-                  <option key={w} value={w}>
-                    Tuần {w} {w === currentWeek ? '(Hiện tại)' : ''}
-                  </option>
-                ))}
+                <optgroup label="Tổng hợp học kỳ">
+                  <option value="HK1">Học kỳ 1 (Tuần 1 - Tuần 18)</option>
+                  <option value="HK2">Học kỳ 2 (Tuần 19 - Tuần 35)</option>
+                </optgroup>
+                <optgroup label="Từng tuần (Học kỳ 1: T1 - T18)">
+                  {Array.from({ length: 18 }, (_, i) => i + 1).map((w) => (
+                    <option key={w} value={String(w)}>
+                      Tuần {w} {w === currentWeek ? '(Hiện tại)' : ''}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="Từng tuần (Học kỳ 2: T19 - T35)">
+                  {Array.from({ length: 17 }, (_, i) => i + 19).map((w) => (
+                    <option key={w} value={String(w)}>
+                      Tuần {w} {w === currentWeek ? '(Hiện tại)' : ''}
+                    </option>
+                  ))}
+                </optgroup>
               </select>
             </div>
 
             <button
               id="btn-next-week"
               onClick={handleNextWeek}
-              disabled={selectedWeek === weekList[weekList.length - 1]}
+              disabled={selectedPeriod === 'HK2'}
               className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              title="Tuần sau"
+              title="Tuần sau / Học kỳ sau"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -538,7 +628,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
         <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] text-slate-500 font-medium">
-            Tiết thực dạy (Tuần {selectedWeek})
+            Tiết thực dạy ({isSemesterView || viewMode === 'MULTI_WEEK' ? `Cả ${semesterName}` : `Tuần ${selectedWeekNum}`})
           </span>
           <div className="text-lg font-bold text-blue-700 mt-0.5">
             {stats.totalTeachingPeriods} <span className="text-xs font-normal text-slate-400">tiết</span>
@@ -547,7 +637,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
         <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] text-slate-500 font-medium">
-            Quy đổi kiêm nhiệm
+            Quy đổi kiêm nhiệm ({isSemesterView || viewMode === 'MULTI_WEEK' ? `Cả ${semesterName}` : `Tuần ${selectedWeekNum}`})
           </span>
           <div className="text-lg font-bold text-indigo-700 mt-0.5">
             {stats.totalReductionPeriods} <span className="text-xs font-normal text-slate-400">tiết</span>
@@ -556,7 +646,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
         <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] text-slate-500 font-medium">
-            Thừa tiết (Lũy kế {'>'} 0)
+            Thừa tiết ({isSemesterView || viewMode === 'MULTI_WEEK' ? 'Cả kỳ > 0' : 'Lũy kế > 0'})
           </span>
           <div className="text-lg font-bold text-emerald-600 mt-0.5 flex items-center gap-1">
             {stats.surplusCount} <span className="text-xs font-normal text-slate-400">GV</span>
@@ -574,7 +664,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
         <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] text-slate-500 font-medium">
-            Thiếu tiết (Lũy kế {'<'} 0)
+            Thiếu tiết ({isSemesterView || viewMode === 'MULTI_WEEK' ? 'Cả kỳ < 0' : 'Lũy kế < 0'})
           </span>
           <div className="text-lg font-bold text-amber-600 mt-0.5 flex items-center gap-1">
             {stats.deficitCount} <span className="text-xs font-normal text-slate-400">GV</span>
@@ -590,7 +680,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
               <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
-                Bảng Số Tiết Thực Dạy • Tuần {selectedWeek} • {levelScope === 'THPT' ? 'Cấp THPT' : levelScope === 'THCS' ? 'Cấp THCS' : 'Toàn trường'}
+                Bảng Số Tiết Thực Dạy • Tuần {selectedWeekNum} • {levelScope === 'THPT' ? 'Cấp THPT' : levelScope === 'THCS' ? 'Cấp THCS' : 'Toàn trường'}
               </h2>
             </div>
             <div className="text-xs text-slate-500">
@@ -858,18 +948,63 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
         </div>
       )}
 
-      {/* VIEW 2: MULTI-WEEK MATRIX VIEW ("Tổng thể các tuần") */}
+      {/* VIEW 2: MULTI-WEEK MATRIX VIEW ("Tổng thể các tuần / Học kỳ") */}
       {viewMode === 'MULTI_WEEK' && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-slate-200 flex items-center justify-between">
+          <div className="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-              <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
-                Bảng Tổng Thể Các Tuần • {config.semester || 'HK1'} ({totalWeeks} Tuần) • {levelScope === 'THPT' ? 'Cấp THPT' : levelScope === 'THCS' ? 'Cấp THCS' : 'Toàn trường'}
-              </h2>
+              <div>
+                <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+                  Bảng Tổng Hợp Thừa / Thiếu Tiết Dạy • {semesterName.toUpperCase()} ({startWeek === 1 ? 'Tuần 1 - 18' : 'Tuần 19 - 35'}, {totalWeeks} Tuần) • {levelScope === 'THPT' ? 'Cấp THPT' : levelScope === 'THCS' ? 'Cấp THCS' : 'Toàn trường'}
+                </h2>
+                <div className="text-xs text-slate-500 mt-0.5">
+                  Theo dõi số tiết thừa (+) hoặc thiếu (-) theo từng tuần và tổng hợp cả {semesterName}
+                </div>
+              </div>
             </div>
-            <div className="text-xs text-slate-500">
-              Theo dõi sự biến động tiết dạy qua từng tuần
+
+            {/* Cell Display Mode Toggle */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-slate-600">Hiển thị ô tuần:</span>
+              <div className="inline-flex bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs">
+                <button
+                  id="btn-cell-balance"
+                  onClick={() => setCellDisplayMode('BALANCE')}
+                  className={`px-2.5 py-1 rounded-md transition-all font-semibold ${
+                    cellDisplayMode === 'BALANCE'
+                      ? 'bg-white text-emerald-800 shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                  title="Hiển thị độ thừa (+) hoặc thiếu (-) của từng tuần"
+                >
+                  ± Thừa/Thiếu tuần
+                </button>
+                <button
+                  id="btn-cell-teaching"
+                  onClick={() => setCellDisplayMode('TEACHING')}
+                  className={`px-2.5 py-1 rounded-md transition-all font-semibold ${
+                    cellDisplayMode === 'TEACHING'
+                      ? 'bg-white text-blue-800 shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                  title="Hiển thị số tiết thực dạy trong tuần"
+                >
+                  Tiết thực dạy
+                </button>
+                <button
+                  id="btn-cell-total"
+                  onClick={() => setCellDisplayMode('TOTAL')}
+                  className={`px-2.5 py-1 rounded-md transition-all font-semibold ${
+                    cellDisplayMode === 'TOTAL'
+                      ? 'bg-white text-slate-900 shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                  title="Hiển thị tổng tiết quy đổi (Dạy + Kiêm nhiệm)"
+                >
+                  Tổng tiết quy đổi
+                </button>
+              </div>
             </div>
           </div>
 
@@ -877,7 +1012,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
             <table
               id="multi-week-teaching-hours-table"
               className="w-full border-collapse text-xs text-slate-800"
-              style={{ minWidth: '1100px' }}
+              style={{ minWidth: '1180px' }}
             >
               <thead>
                 <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-300">
@@ -887,22 +1022,22 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                   <th className="border border-slate-300 px-3 py-2 text-left w-36">
                     Giáo viên
                   </th>
-                  <th className="border border-slate-300 px-3 py-2 text-left w-36">
+                  <th className="border border-slate-300 px-3 py-2 text-left w-32">
                     Tổ chuyên môn
                   </th>
                   <th className="border border-slate-300 px-2 py-2 text-center w-24">
                     Kiêm nhiệm
                   </th>
-                  <th className="border border-slate-300 px-2 py-2 text-center w-14">
+                  <th className="border border-slate-300 px-2 py-2 text-center w-14" title="Định mức tiết/tuần">
                     ĐM/T
                   </th>
 
-                  {/* Week Columns: T1 to T18 */}
-                  {weekList.map((w) => (
+                  {/* Week Columns for the active semester */}
+                  {semesterWeeks.map((w) => (
                     <th
                       key={w}
-                      className={`border border-slate-300 px-1 py-2 text-center w-10 text-[11px] ${
-                        w === selectedWeek
+                      className={`border border-slate-300 px-1 py-2 text-center w-11 text-[11px] ${
+                        String(w) === selectedPeriod
                           ? 'bg-yellow-200 text-black font-extrabold'
                           : ''
                       }`}
@@ -911,23 +1046,23 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                     </th>
                   ))}
 
-                  <th className="border border-slate-300 px-2 py-2 text-center w-16 bg-blue-50 font-bold text-blue-900">
+                  <th className="border border-slate-300 px-2 py-2 text-center w-16 bg-blue-50 font-bold text-blue-900" title="Tổng tiết dạy thực tế cả học kỳ">
                     Tổng Dạy
                   </th>
-                  <th className="border border-slate-300 px-2 py-2 text-center w-16 bg-indigo-50 font-bold text-indigo-900">
+                  <th className="border border-slate-300 px-2 py-2 text-center w-16 bg-indigo-50 font-bold text-indigo-900" title="Tổng tiết giảm trừ kiêm nhiệm cả học kỳ">
                     Tổng KN
                   </th>
-                  <th className="border border-slate-300 px-2 py-2 text-center w-16 bg-emerald-50 font-bold text-emerald-900">
+                  <th className="border border-slate-300 px-2 py-2 text-center w-16 bg-emerald-50 font-bold text-emerald-900" title="Tổng tiết quy đổi cả học kỳ (Dạy + KN)">
                     Tổng QĐ
                   </th>
-                  <th className="border border-slate-300 px-2 py-2 text-center w-16 bg-slate-50">
+                  <th className="border border-slate-300 px-2 py-2 text-center w-16 bg-slate-50" title="Định mức tiết cả học kỳ">
                     ĐM Kỳ
                   </th>
-                  <th className="border border-slate-300 px-2 py-2 text-center w-20 font-bold">
-                    Lũy kế T{selectedWeek}
+                  <th className="border border-slate-300 px-2 py-2 text-center w-20 font-bold" title={`Lũy kế đến tuần ${selectedWeekNum}`}>
+                    Lũy kế T{selectedWeekNum}
                   </th>
-                  <th className="border border-slate-300 px-2 py-2 text-center w-20 font-bold">
-                    Thừa/Thiếu Kỳ
+                  <th className="border border-slate-300 px-2 py-2 text-center w-24 font-extrabold bg-amber-50 text-amber-950" title={`Tổng thừa hoặc thiếu của cả ${semesterName}`}>
+                    Thừa/Thiếu {activeSemester}
                   </th>
                 </tr>
               </thead>
@@ -944,53 +1079,89 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                   const semBal = w.semesterBalance;
                   const semColor =
                     semBal > 0
-                      ? 'text-emerald-700 font-bold'
+                      ? 'text-emerald-700'
                       : semBal < 0
-                      ? 'text-rose-700 font-bold'
+                      ? 'text-rose-700'
                       : 'text-slate-600';
 
                   return (
                     <tr
                       key={w.teacherId}
-                      className="hover:bg-slate-50 transition-colors"
+                      className="hover:bg-slate-50/80 transition-colors"
                     >
                       <td className="border border-slate-300 px-2 py-1.5 text-center text-slate-500 font-medium">
                         {idx + 1}
                       </td>
                       <td className="border border-slate-300 px-3 py-1.5 font-bold text-slate-900">
                         {w.teacherName}
+                        {w.callingName && w.callingName !== w.teacherName && (
+                          <span className="text-[10px] text-slate-400 font-normal ml-1">
+                            ({w.callingName})
+                          </span>
+                        )}
                       </td>
                       <td className="border border-slate-300 px-3 py-1.5 text-slate-700">
                         {w.departmentName}
                       </td>
                       <td className="border border-slate-300 px-2 py-1.5 text-center text-slate-800">
-                        {w.duties}
+                        <span className="inline-block px-1.5 py-0.5 rounded text-[11px] bg-slate-100 text-slate-700">
+                          {w.duties}
+                        </span>
                       </td>
-                      <td className="border border-slate-300 px-2 py-1.5 text-center font-semibold text-slate-700">
+                      <td className="border border-slate-300 px-2 py-1.5 text-center font-bold text-slate-700">
                         {w.standardPeriods}
                       </td>
 
-                      {/* Week totals */}
-                      {weekList.map((wk) => {
-                        const totalW = w.weeklyTotals[wk] ?? 0;
-                        const diff = totalW - w.standardPeriods;
-                        const cellColor =
-                          totalW === 0
-                            ? 'text-slate-300'
-                            : diff > 0
-                            ? 'text-emerald-700 font-bold'
-                            : diff < 0
-                            ? 'text-amber-700 font-semibold'
-                            : 'text-slate-800';
+                      {/* Week totals / balances */}
+                      {semesterWeeks.map((wk) => {
+                        const bal =
+                          w.weeklyBalances?.[wk] ??
+                          ((w.weeklyTotals?.[wk] ?? 0) - w.standardPeriods);
+                        const teachingP = w.weeklyTeaching?.[wk] ?? 0;
+                        const totalP = w.weeklyTotals?.[wk] ?? 0;
 
                         return (
                           <td
                             key={wk}
-                            className={`border border-slate-300 px-1 py-1.5 text-center text-[11px] ${cellColor} ${
-                              wk === selectedWeek ? 'bg-yellow-50 font-bold' : ''
+                            className={`border border-slate-300 px-1 py-1 text-center text-[11px] ${
+                              String(wk) === selectedPeriod
+                                ? 'bg-yellow-100/70 font-bold'
+                                : ''
                             }`}
+                            title={`Tuần ${wk}: Dạy ${teachingP}t + KN ${w.reductionPeriods}t = ${totalP}t (Định mức: ${w.standardPeriods}t) -> Thừa/thiếu: ${
+                              bal > 0 ? `+${bal}` : bal
+                            } tiết`}
                           >
-                            {totalW}
+                            <div className="flex flex-col items-center justify-center min-h-[30px]">
+                              {cellDisplayMode === 'BALANCE' ? (
+                                <>
+                                  {bal > 0 ? (
+                                    <span className="inline-block px-1.5 py-0.5 rounded font-bold text-[11px] text-emerald-800 bg-emerald-100/90">
+                                      +{bal}
+                                    </span>
+                                  ) : bal < 0 ? (
+                                    <span className="inline-block px-1.5 py-0.5 rounded font-bold text-[11px] text-rose-800 bg-rose-100/90">
+                                      {bal}
+                                    </span>
+                                  ) : (
+                                    <span className="inline-block px-1.5 py-0.5 rounded font-medium text-[11px] text-slate-500 bg-slate-100">
+                                      0
+                                    </span>
+                                  )}
+                                  <span className="text-[9px] text-slate-400 font-normal">
+                                    {teachingP}t
+                                  </span>
+                                </>
+                              ) : cellDisplayMode === 'TEACHING' ? (
+                                <span className="font-semibold text-blue-800">
+                                  {teachingP}
+                                </span>
+                              ) : (
+                                <span className="font-semibold text-slate-800">
+                                  {totalP}
+                                </span>
+                              )}
+                            </div>
                           </td>
                         );
                       })}
@@ -1005,22 +1176,114 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                         {w.semesterTotalPeriods}
                       </td>
                       <td className="border border-slate-300 px-2 py-1.5 text-center text-slate-600 bg-slate-50/40">
-                        {w.semesterRequiredPeriods}
+                        <span className="font-semibold">{w.semesterRequiredPeriods}</span>
+                        <div className="text-[10px] text-slate-400">
+                          ({w.standardPeriods}t × {totalWeeks}T)
+                        </div>
                       </td>
                       <td
                         className={`border border-slate-300 px-2 py-1.5 text-center ${cumColor}`}
                       >
                         {cumBal > 0 ? `+${cumBal}` : cumBal}
                       </td>
-                      <td
-                        className={`border border-slate-300 px-2 py-1.5 text-center ${semColor}`}
-                      >
-                        {semBal > 0 ? `+${semBal}` : semBal}
+                      <td className="border border-slate-300 px-2 py-1.5 text-center bg-slate-50/60">
+                        <div className={`text-sm font-extrabold ${semColor}`}>
+                          {semBal > 0 ? `+${semBal}` : semBal}
+                        </div>
+                        <div className="text-[10px] font-medium text-slate-500">
+                          {semBal > 0
+                            ? 'Thừa tiết'
+                            : semBal < 0
+                            ? 'Thiếu tiết'
+                            : 'Đủ chuẩn'}
+                        </div>
                       </td>
                     </tr>
                   );
                 })}
               </tbody>
+
+              {/* Multi-week table footer summary */}
+              <tfoot>
+                <tr className="bg-slate-100 font-bold border-t-2 border-slate-400 text-slate-900">
+                  <td className="border border-slate-300 px-2 py-2 text-center">
+                    ∑
+                  </td>
+                  <td
+                    colSpan={4}
+                    className="border border-slate-300 px-3 py-2 text-left text-slate-700"
+                  >
+                    TỔNG CỘNG ({filteredWorkloads.length} giáo viên)
+                  </td>
+
+                  {/* Week column sums */}
+                  {semesterWeeks.map((wk) => {
+                    const totalTeachingThisWeek = filteredWorkloads.reduce(
+                      (sum, w) => sum + (w.weeklyTeaching?.[wk] ?? 0),
+                      0
+                    );
+                    const totalBalanceThisWeek = filteredWorkloads.reduce(
+                      (sum, w) =>
+                        sum +
+                        (w.weeklyBalances?.[wk] ??
+                          ((w.weeklyTotals?.[wk] ?? 0) - w.standardPeriods)),
+                      0
+                    );
+
+                    return (
+                      <td
+                        key={wk}
+                        className="border border-slate-300 px-1 py-1.5 text-center text-[11px]"
+                      >
+                        {cellDisplayMode === 'BALANCE' ? (
+                          <span
+                            className={`font-bold ${
+                              totalBalanceThisWeek > 0
+                                ? 'text-emerald-700'
+                                : totalBalanceThisWeek < 0
+                                ? 'text-rose-700'
+                                : 'text-slate-600'
+                            }`}
+                          >
+                            {totalBalanceThisWeek > 0
+                              ? `+${totalBalanceThisWeek}`
+                              : totalBalanceThisWeek}
+                          </span>
+                        ) : (
+                          <span className="font-bold text-blue-900">
+                            {totalTeachingThisWeek}
+                          </span>
+                        )}
+                      </td>
+                    );
+                  })}
+
+                  <td className="border border-slate-300 px-2 py-2 text-center font-bold text-blue-900 bg-blue-100/50">
+                    {filteredWorkloads.reduce((sum, w) => sum + w.semesterTotalTeaching, 0)}
+                  </td>
+                  <td className="border border-slate-300 px-2 py-2 text-center font-bold text-indigo-900 bg-indigo-100/50">
+                    {filteredWorkloads.reduce((sum, w) => sum + w.reductionPeriods * totalWeeks, 0)}
+                  </td>
+                  <td className="border border-slate-300 px-2 py-2 text-center font-bold text-emerald-900 bg-emerald-100/50">
+                    {filteredWorkloads.reduce((sum, w) => sum + w.semesterTotalPeriods, 0)}
+                  </td>
+                  <td className="border border-slate-300 px-2 py-2 text-center font-bold text-slate-700 bg-slate-100">
+                    {filteredWorkloads.reduce((sum, w) => sum + w.semesterRequiredPeriods, 0)}
+                  </td>
+                  <td className="border border-slate-300 px-2 py-2 text-center font-bold text-slate-800">
+                    {stats.surplusCount} thừa / {stats.deficitCount} thiếu
+                  </td>
+                  <td className="border border-slate-300 px-2 py-2 text-center font-extrabold bg-amber-100/60 text-slate-900">
+                    {(() => {
+                      const netSem = filteredWorkloads.reduce(
+                        (sum, w) => sum + w.semesterBalance,
+                        0
+                      );
+                      return netSem > 0 ? `+${netSem}` : netSem;
+                    })()}
+                  </td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>
