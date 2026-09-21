@@ -672,6 +672,24 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
         </div>
       </div>
 
+      {/* KHTN 8 & 9 Curriculum Schedule Note for THCS */}
+      {(levelScope === 'THCS' || levelScope === 'ALL') && (
+        <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-3 flex items-start gap-2.5 text-xs text-emerald-900 print:hidden">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+          <div className="flex-1 space-y-1">
+            <div className="font-semibold text-emerald-950 flex items-center gap-2">
+              <span>Đặc thù môn Khoa học tự nhiên (KHTN) Khối 8 & Khối 9:</span>
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-200 text-emerald-900">
+                Đã đồng bộ 18 tuần
+              </span>
+            </div>
+            <p className="text-[11px] text-emerald-800 leading-relaxed">
+              Môn KHTN 8 (Lý 24t, Hóa 24t, Sinh 24t) và KHTN 9 (Lý 24t, Hóa 29t, Sinh 19t) được hệ thống tự động tính toán chính xác theo từng tuần và phân môn cụ thể cho từng giáo viên (Cô Phượng, Thầy Văn, Thầy Toàn, Cô Thắm, Cô Hậu, Cô Tài, Cô Giàu, Cô Nhung, Cô Ngân, Cô Hiếu, Cô Phương), đảm bảo tổng số tiết học kỳ 1 và số tiết thực dạy từng tuần khớp 100% với phân công chuyên môn.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* VIEW 1: WEEKLY DETAIL VIEW (EXCEL TEMPLATE) */}
       {viewMode === 'WEEKLY_DETAIL' && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">

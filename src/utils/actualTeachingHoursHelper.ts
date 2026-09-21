@@ -8,6 +8,12 @@ import {
   SchoolTimetable,
 } from '../types';
 import { OFFICIAL_WEEK_2_SLOTS } from '../data/officialWeek2Timetable';
+import {
+  KHTN_8_WEEKS,
+  KHTN_9_WEEKS,
+  KHTN_8_CLASS_ASSIGNMENTS,
+  KHTN_9_CLASS_ASSIGNMENTS,
+} from '../data/khtnCurriculumSchedule';
 
 export interface TeacherSubjectRow {
   classes: string;
@@ -78,6 +84,130 @@ export function formatActualSubjectName(subName: string): string {
 }
 
 /**
+ * Adjust KHTN slots for Grade 8 and Grade 9 according to the weekly curriculum distribution
+ */
+export function adjustKhtnSlotsForWeek(
+  baseSlots: TimetableSlot[],
+  weekNumber: number
+): TimetableSlot[] {
+  const dist8 = KHTN_8_WEEKS[weekNumber] || { ly: 1, sinh: 1, hoa: 2 };
+  const dist9 = KHTN_9_WEEKS[weekNumber] || { ly: 1, sinh: 1, hoa: 2 };
+
+  const k89ClassIds = new Set([
+    ...KHTN_8_CLASS_ASSIGNMENTS.map((c) => c.classId),
+    ...KHTN_9_CLASS_ASSIGNMENTS.map((c) => c.classId),
+  ]);
+
+  // Keep non-KHTN slots for Grade 8 and 9, and keep all slots for other classes
+  const nonKhtnSlots = baseSlots.filter((s) => {
+    if (!k89ClassIds.has(s.classId)) return true;
+    const sub = (s.subjectId || '').toLowerCase();
+    const name = (s.subjectName || '').toLowerCase();
+    const isKhtn =
+      sub.includes('khtn') ||
+      sub.includes('li') ||
+      sub.includes('hoa') ||
+      sub.includes('sinh') ||
+      name.includes('khoa học tự nhiên') ||
+      name.includes('vật lí') ||
+      name.includes('hóa học') ||
+      name.includes('sinh học') ||
+      name.includes('khtn');
+    return !isKhtn;
+  });
+
+  const adaptedSlots: TimetableSlot[] = [...nonKhtnSlots];
+
+  // Add precise slots for Grade 8
+  for (const c of KHTN_8_CLASS_ASSIGNMENTS) {
+    for (let i = 0; i < dist8.ly; i++) {
+      adaptedSlots.push({
+        id: `slot-khtn8-ly-${c.classId}-w${weekNumber}-${i}`,
+        classId: c.classId,
+        className: c.className,
+        teacherId: c.lyTeacherId,
+        subjectId: 'sub-li',
+        subjectName: 'Vật lí (KHTN)',
+        dayOfWeek: 2 + i,
+        session: 'SANG',
+        period: 1,
+      });
+    }
+    for (let i = 0; i < dist8.hoa; i++) {
+      adaptedSlots.push({
+        id: `slot-khtn8-hoa-${c.classId}-w${weekNumber}-${i}`,
+        classId: c.classId,
+        className: c.className,
+        teacherId: c.hoaTeacherId,
+        subjectId: 'sub-hoa',
+        subjectName: 'Hóa học (KHTN)',
+        dayOfWeek: 2 + i,
+        session: 'SANG',
+        period: 2,
+      });
+    }
+    for (let i = 0; i < dist8.sinh; i++) {
+      adaptedSlots.push({
+        id: `slot-khtn8-sinh-${c.classId}-w${weekNumber}-${i}`,
+        classId: c.classId,
+        className: c.className,
+        teacherId: c.sinhTeacherId,
+        subjectId: 'sub-sinh',
+        subjectName: 'Sinh học (KHTN)',
+        dayOfWeek: 3 + i,
+        session: 'SANG',
+        period: 3,
+      });
+    }
+  }
+
+  // Add precise slots for Grade 9
+  for (const c of KHTN_9_CLASS_ASSIGNMENTS) {
+    for (let i = 0; i < dist9.ly; i++) {
+      adaptedSlots.push({
+        id: `slot-khtn9-ly-${c.classId}-w${weekNumber}-${i}`,
+        classId: c.classId,
+        className: c.className,
+        teacherId: c.lyTeacherId,
+        subjectId: 'sub-li',
+        subjectName: 'Vật lí (KHTN)',
+        dayOfWeek: 2 + i,
+        session: 'SANG',
+        period: 1,
+      });
+    }
+    for (let i = 0; i < dist9.hoa; i++) {
+      adaptedSlots.push({
+        id: `slot-khtn9-hoa-${c.classId}-w${weekNumber}-${i}`,
+        classId: c.classId,
+        className: c.className,
+        teacherId: c.hoaTeacherId,
+        subjectId: 'sub-hoa',
+        subjectName: 'Hóa học (KHTN)',
+        dayOfWeek: 2 + i,
+        session: 'SANG',
+        period: 2,
+      });
+    }
+    for (let i = 0; i < dist9.sinh; i++) {
+      adaptedSlots.push({
+        id: `slot-khtn9-sinh-${c.classId}-w${weekNumber}-${i}`,
+        classId: c.classId,
+        className: c.className,
+        teacherId: c.sinhTeacherId,
+        subjectId: 'sub-sinh',
+        subjectName: 'Sinh học (KHTN)',
+        dayOfWeek: 3 + i,
+        session: 'SANG',
+        period: 3,
+      });
+    }
+  }
+
+  return adaptedSlots;
+}
+
+/**
  * Get timetable slots for a specific week
  */
 export function getSlotsForWeek(
@@ -85,19 +215,22 @@ export function getSlotsForWeek(
   weeklyTimetables?: Record<number, SchoolTimetable>,
   fallbackTimetable?: SchoolTimetable
 ): TimetableSlot[] {
+  let baseSlots: TimetableSlot[] = [];
   if (weeklyTimetables && weeklyTimetables[weekNumber]?.slots?.length > 0) {
-    return weeklyTimetables[weekNumber].slots;
+    baseSlots = weeklyTimetables[weekNumber].slots;
+  } else if (weekNumber === 2 && OFFICIAL_WEEK_2_SLOTS?.length > 0) {
+    baseSlots = OFFICIAL_WEEK_2_SLOTS;
+  } else if (weeklyTimetables && weeklyTimetables[1]?.slots?.length > 0) {
+    baseSlots = weeklyTimetables[1].slots;
+  } else if (fallbackTimetable?.slots?.length > 0) {
+    baseSlots = fallbackTimetable.slots;
+  } else if (OFFICIAL_WEEK_2_SLOTS?.length > 0) {
+    baseSlots = OFFICIAL_WEEK_2_SLOTS;
   }
-  if (weekNumber === 2 && OFFICIAL_WEEK_2_SLOTS?.length > 0) {
-    return OFFICIAL_WEEK_2_SLOTS;
-  }
-  if (weeklyTimetables && weeklyTimetables[1]?.slots?.length > 0) {
-    return weeklyTimetables[1].slots;
-  }
-  if (fallbackTimetable?.slots?.length > 0) {
-    return fallbackTimetable.slots;
-  }
-  return [];
+
+  if (baseSlots.length === 0) return [];
+
+  return adjustKhtnSlotsForWeek(baseSlots, weekNumber);
 }
 
 /**
