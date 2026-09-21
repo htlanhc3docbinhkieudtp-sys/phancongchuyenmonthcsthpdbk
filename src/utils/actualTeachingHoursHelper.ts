@@ -20,6 +20,13 @@ import {
   CONG_NGHE_8_CLASS_ASSIGNMENTS,
   CONG_NGHE_9_CLASS_ASSIGNMENTS,
 } from '../data/congNgheCurriculumSchedule';
+import {
+  SU_8_WEEKS,
+  DIA_8_WEEKS,
+  SU_9_WEEKS,
+  DIA_9_WEEKS,
+  LSDL_ALL_CLASS_ASSIGNMENTS,
+} from '../data/lsdlCurriculumSchedule';
 
 export interface TeacherSubjectRow {
   classes: string;
@@ -279,6 +286,119 @@ export function adjustCongNgheSlotsForWeek(
 }
 
 /**
+ * Adjust Lịch sử - Địa lí slots for Grade 8 and Grade 9 according to the weekly curriculum distribution:
+ * - Khối 8 (105t/năm: Sử 50t, Địa 55t):
+ *   + HK1 (54t = Sử 26t + Địa 28t): T1-4 (Sử 2, Địa 1), T5-9 (Sử 1, Địa 2), T10-13 (Sử 2, Địa 1), T14-18 (Sử 1, Địa 2)
+ *   + HK2 (51t = Sử 24t + Địa 27t): T19-22 (Sử 2, Địa 1), T23-27 (Sử 1, Địa 2), T28-30 (Sử 2, Địa 1), T31-35 (Sử 1, Địa 2)
+ * - Khối 9 (105t/năm: Sử 52t, Địa 53t):
+ *   + HK1 (54t = Sử 26t + Địa 28t): T1-4 (Sử 2, Địa 1), T5-9 (Sử 1, Địa 2), T10-13 (Sử 2, Địa 1), T14-18 (Sử 1, Địa 2)
+ *   + HK2 (51t = Sử 26t + Địa 25t): T19-22 (Sử 2, Địa 1), T23-27 (Sử 1, Địa 2), T28-30 (Sử 2, Địa 1), T31-33 (Sử 1, Địa 2), T34 (Sử 3, Địa 0), T35 (Sử 1, Địa 2)
+ */
+export function adjustLsdlSlotsForWeek(
+  baseSlots: TimetableSlot[],
+  weekNumber: number
+): TimetableSlot[] {
+  const pSu8 = SU_8_WEEKS[weekNumber] ?? (weekNumber <= 4 ? 2 : (weekNumber <= 9 ? 1 : (weekNumber <= 13 ? 2 : 1)));
+  const pDia8 = DIA_8_WEEKS[weekNumber] ?? (weekNumber <= 4 ? 1 : (weekNumber <= 9 ? 2 : (weekNumber <= 13 ? 1 : 2)));
+  const pSu9 = SU_9_WEEKS[weekNumber] ?? (weekNumber <= 4 ? 2 : (weekNumber <= 9 ? 1 : (weekNumber <= 13 ? 2 : 1)));
+  const pDia9 = DIA_9_WEEKS[weekNumber] ?? (weekNumber <= 4 ? 1 : (weekNumber <= 9 ? 2 : (weekNumber <= 13 ? 1 : 2)));
+
+  const lsdl8Classes = LSDL_ALL_CLASS_ASSIGNMENTS.filter((c) => c.grade === '8');
+  const lsdl9Classes = LSDL_ALL_CLASS_ASSIGNMENTS.filter((c) => c.grade === '9');
+
+  const k89ClassIds = new Set([
+    ...lsdl8Classes.map((c) => c.classId),
+    ...lsdl9Classes.map((c) => c.classId),
+  ]);
+
+  // Filter out existing LSDL slots for Grade 8 and 9, keep other slots
+  const nonLsdlSlots = baseSlots.filter((s) => {
+    if (!k89ClassIds.has(s.classId)) return true;
+    const sub = (s.subjectId || '').toLowerCase();
+    const name = (s.subjectName || '').toLowerCase();
+    const isLsdl =
+      sub === 'sub-su' ||
+      sub === 'sub-dia' ||
+      sub === 'sub-lsdl' ||
+      sub === 'sub-lsdl-cs' ||
+      name.includes('lịch sử') ||
+      name.includes('địa lí') ||
+      name.includes('địa lý') ||
+      name.includes('ls-đl') ||
+      name.includes('ls&đl');
+    return !isLsdl;
+  });
+
+  const adaptedSlots: TimetableSlot[] = [...nonLsdlSlots];
+
+  // Add precise slots for Grade 8
+  for (const c of lsdl8Classes) {
+    for (let i = 0; i < pSu8; i++) {
+      adaptedSlots.push({
+        id: `slot-ls8-su-${c.classId}-w${weekNumber}-${i}`,
+        classId: c.classId,
+        className: c.className,
+        teacherId: c.historyTeacherId!,
+        teacherName: c.historyTeacherName,
+        subjectId: 'sub-su',
+        subjectName: 'Lịch sử',
+        dayOfWeek: 2 + i * 2,
+        session: 'SANG',
+        period: 3,
+      });
+    }
+    for (let i = 0; i < pDia8; i++) {
+      adaptedSlots.push({
+        id: `slot-ls8-dia-${c.classId}-w${weekNumber}-${i}`,
+        classId: c.classId,
+        className: c.className,
+        teacherId: c.geographyTeacherId!,
+        teacherName: c.geographyTeacherName,
+        subjectId: 'sub-dia',
+        subjectName: 'Địa lí',
+        dayOfWeek: 3 + i * 2,
+        session: 'SANG',
+        period: 4,
+      });
+    }
+  }
+
+  // Add precise slots for Grade 9
+  for (const c of lsdl9Classes) {
+    for (let i = 0; i < pSu9; i++) {
+      adaptedSlots.push({
+        id: `slot-ls9-su-${c.classId}-w${weekNumber}-${i}`,
+        classId: c.classId,
+        className: c.className,
+        teacherId: c.historyTeacherId!,
+        teacherName: c.historyTeacherName,
+        subjectId: 'sub-su',
+        subjectName: 'Lịch sử',
+        dayOfWeek: 2 + i * 2,
+        session: 'SANG',
+        period: 3,
+      });
+    }
+    for (let i = 0; i < pDia9; i++) {
+      adaptedSlots.push({
+        id: `slot-ls9-dia-${c.classId}-w${weekNumber}-${i}`,
+        classId: c.classId,
+        className: c.className,
+        teacherId: c.geographyTeacherId!,
+        teacherName: c.geographyTeacherName,
+        subjectId: 'sub-dia',
+        subjectName: 'Địa lí',
+        dayOfWeek: 3 + i * 2,
+        session: 'SANG',
+        period: 4,
+      });
+    }
+  }
+
+  return adaptedSlots;
+}
+
+/**
  * Get timetable slots for a specific week
  */
 export function getSlotsForWeek(
@@ -302,7 +422,8 @@ export function getSlotsForWeek(
   if (baseSlots.length === 0) return [];
 
   const khtnAdjusted = adjustKhtnSlotsForWeek(baseSlots, weekNumber);
-  return adjustCongNgheSlotsForWeek(khtnAdjusted, weekNumber);
+  const cnAdjusted = adjustCongNgheSlotsForWeek(khtnAdjusted, weekNumber);
+  return adjustLsdlSlotsForWeek(cnAdjusted, weekNumber);
 }
 
 /**

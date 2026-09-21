@@ -713,8 +713,7 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-6-1-toan', classId: 'cls-6a1', subjectId: 'sub-toan', teacherId: 'tch-t-3', periodsPerWeek: 4 }, // Lang
   { id: 'as-6-1-anh', classId: 'cls-6a1', subjectId: 'sub-anh', teacherId: 'tch-av-11', periodsPerWeek: 3 }, // Thảo
   { id: 'as-6-1-khtn', classId: 'cls-6a1', subjectId: 'sub-khtn-cs', teacherId: 'tch-khtn-18', periodsPerWeek: 4 }, // Tài
-  { id: 'as-6-1-su', classId: 'cls-6a1', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân
-  { id: 'as-6-1-dia', classId: 'cls-6a1', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-6-1-lsdl', classId: 'cls-6a1', subjectId: 'sub-lsdl-cs', teacherId: 'tch-ls-10', periodsPerWeek: 3 }, // Tân (1 GV dạy trọn gói LS&ĐL)
   { id: 'as-6-1-gdcd', classId: 'cls-6a1', subjectId: 'sub-gdcd', teacherId: 'tch-ls-1', periodsPerWeek: 1 }, // Thuý
   { id: 'as-6-1-tin', classId: 'cls-6a1', subjectId: 'sub-tin', teacherId: 'tch-av-14', periodsPerWeek: 1.5 }, // Phướng
   { id: 'as-6-1-td', classId: 'cls-6a1', subjectId: 'sub-gdtc', teacherId: 'tch-td-8', periodsPerWeek: 2 }, // Hùng
@@ -727,8 +726,7 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-6-2-toan', classId: 'cls-6a2', subjectId: 'sub-toan', teacherId: 'tch-t-8', periodsPerWeek: 4 }, // Bình
   { id: 'as-6-2-anh', classId: 'cls-6a2', subjectId: 'sub-anh', teacherId: 'tch-av-10', periodsPerWeek: 3 }, // Hậu
   { id: 'as-6-2-khtn', classId: 'cls-6a2', subjectId: 'sub-khtn-cs', teacherId: 'tch-khtn-13', periodsPerWeek: 4 }, // Thắm
-  { id: 'as-6-2-su', classId: 'cls-6a2', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân
-  { id: 'as-6-2-dia', classId: 'cls-6a2', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-6-2-lsdl', classId: 'cls-6a2', subjectId: 'sub-lsdl-cs', teacherId: 'tch-ls-10', periodsPerWeek: 3 }, // Tân (1 GV dạy trọn gói LS&ĐL)
   { id: 'as-6-2-gdcd', classId: 'cls-6a2', subjectId: 'sub-gdcd', teacherId: 'tch-ls-1', periodsPerWeek: 1 }, // Thuý
   { id: 'as-6-2-tin', classId: 'cls-6a2', subjectId: 'sub-tin', teacherId: 'tch-av-14', periodsPerWeek: 1.5 }, // Phướng
   { id: 'as-6-2-td', classId: 'cls-6a2', subjectId: 'sub-gdtc', teacherId: 'tch-td-8', periodsPerWeek: 2 }, // Hùng
@@ -741,8 +739,7 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-6-3-toan', classId: 'cls-6a3', subjectId: 'sub-toan', teacherId: 'tch-t-9', periodsPerWeek: 4 }, // Hùng
   { id: 'as-6-3-anh', classId: 'cls-6a3', subjectId: 'sub-anh', teacherId: 'tch-av-11', periodsPerWeek: 3 }, // Thảo
   { id: 'as-6-3-khtn', classId: 'cls-6a3', subjectId: 'sub-khtn-cs', teacherId: 'tch-khtn-17', periodsPerWeek: 4 }, // Ngân
-  { id: 'as-6-3-su', classId: 'cls-6a3', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân
-  { id: 'as-6-3-dia', classId: 'cls-6a3', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-6-3-lsdl', classId: 'cls-6a3', subjectId: 'sub-lsdl-cs', teacherId: 'tch-ls-10', periodsPerWeek: 3 }, // Tân (1 GV dạy trọn gói LS&ĐL)
   { id: 'as-6-3-gdcd', classId: 'cls-6a3', subjectId: 'sub-gdcd', teacherId: 'tch-ls-1', periodsPerWeek: 1 }, // Thuý
   { id: 'as-6-3-tin', classId: 'cls-6a3', subjectId: 'sub-tin', teacherId: 'tch-av-14', periodsPerWeek: 1.5 }, // Phướng
   { id: 'as-6-3-td', classId: 'cls-6a3', subjectId: 'sub-gdtc', teacherId: 'tch-td-8', periodsPerWeek: 2 }, // Hùng
@@ -755,8 +752,7 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-6-4-toan', classId: 'cls-6a4', subjectId: 'sub-toan', teacherId: 'tch-t-8', periodsPerWeek: 4 }, // Bình
   { id: 'as-6-4-anh', classId: 'cls-6a4', subjectId: 'sub-anh', teacherId: 'tch-av-10', periodsPerWeek: 3 }, // Hậu
   { id: 'as-6-4-khtn', classId: 'cls-6a4', subjectId: 'sub-khtn-cs', teacherId: 'tch-khtn-17', periodsPerWeek: 4 }, // Ngân
-  { id: 'as-6-4-su', classId: 'cls-6a4', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân
-  { id: 'as-6-4-dia', classId: 'cls-6a4', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-6-4-lsdl', classId: 'cls-6a4', subjectId: 'sub-lsdl-cs', teacherId: 'tch-ls-10', periodsPerWeek: 3 }, // Tân (1 GV dạy trọn gói LS&ĐL)
   { id: 'as-6-4-gdcd', classId: 'cls-6a4', subjectId: 'sub-gdcd', teacherId: 'tch-ls-1', periodsPerWeek: 1 }, // Thuý
   { id: 'as-6-4-tin', classId: 'cls-6a4', subjectId: 'sub-tin', teacherId: 'tch-av-14', periodsPerWeek: 1.5 }, // Phướng
   { id: 'as-6-4-td', classId: 'cls-6a4', subjectId: 'sub-gdtc', teacherId: 'tch-td-8', periodsPerWeek: 2 }, // Hùng
@@ -769,8 +765,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-6-5-toan', classId: 'cls-6a5', subjectId: 'sub-toan', teacherId: 'tch-t-8', periodsPerWeek: 4 }, // Bình
   { id: 'as-6-5-anh', classId: 'cls-6a5', subjectId: 'sub-anh', teacherId: 'tch-av-11', periodsPerWeek: 3 }, // Thảo
   { id: 'as-6-5-khtn', classId: 'cls-6a5', subjectId: 'sub-khtn-cs', teacherId: 'tch-khtn-17', periodsPerWeek: 4 }, // Ngân
-  { id: 'as-6-5-su', classId: 'cls-6a5', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân
-  { id: 'as-6-5-dia', classId: 'cls-6a5', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-6-5-su', classId: 'cls-6a5', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân (2 GV: Sử Tân, Địa Hòa)
+  { id: 'as-6-5-dia', classId: 'cls-6a5', subjectId: 'sub-dia', teacherId: 'tch-ls-6', periodsPerWeek: 1.5 }, // Hòa
   { id: 'as-6-5-gdcd', classId: 'cls-6a5', subjectId: 'sub-gdcd', teacherId: 'tch-ls-1', periodsPerWeek: 1 }, // Thuý
   { id: 'as-6-5-tin', classId: 'cls-6a5', subjectId: 'sub-tin', teacherId: 'tch-av-14', periodsPerWeek: 1.5 }, // Phướng
   { id: 'as-6-5-td', classId: 'cls-6a5', subjectId: 'sub-gdtc', teacherId: 'tch-td-8', periodsPerWeek: 2 }, // Hùng
@@ -783,8 +779,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-6-6-toan', classId: 'cls-6a6', subjectId: 'sub-toan', teacherId: 'tch-t-8', periodsPerWeek: 4 }, // Bình
   { id: 'as-6-6-anh', classId: 'cls-6a6', subjectId: 'sub-anh', teacherId: 'tch-av-10', periodsPerWeek: 3 }, // Hậu
   { id: 'as-6-6-khtn', classId: 'cls-6a6', subjectId: 'sub-khtn-cs', teacherId: 'tch-khtn-18', periodsPerWeek: 4 }, // Tài
-  { id: 'as-6-6-su', classId: 'cls-6a6', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân
-  { id: 'as-6-6-dia', classId: 'cls-6a6', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-6-6-su', classId: 'cls-6a6', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân (2 GV: Sử Tân, Địa Hòa)
+  { id: 'as-6-6-dia', classId: 'cls-6a6', subjectId: 'sub-dia', teacherId: 'tch-ls-6', periodsPerWeek: 1.5 }, // Hòa
   { id: 'as-6-6-gdcd', classId: 'cls-6a6', subjectId: 'sub-gdcd', teacherId: 'tch-ls-1', periodsPerWeek: 1 }, // Thuý
   { id: 'as-6-6-tin', classId: 'cls-6a6', subjectId: 'sub-tin', teacherId: 'tch-av-14', periodsPerWeek: 1.5 }, // Phướng
   { id: 'as-6-6-td', classId: 'cls-6a6', subjectId: 'sub-gdtc', teacherId: 'tch-td-8', periodsPerWeek: 2 }, // Hùng
@@ -855,7 +851,7 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-7-5-anh', classId: 'cls-7a5', subjectId: 'sub-anh', teacherId: 'tch-av-3', periodsPerWeek: 3 }, // Khanh
   // KHTN 7A5 (Nguyên - chưa rõ GV -> bỏ qua)
   { id: 'as-7-5-su', classId: 'cls-7a5', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.5 }, // The
-  { id: 'as-7-5-dia', classId: 'cls-7a5', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-7-5-dia', classId: 'cls-7a5', subjectId: 'sub-dia', teacherId: 'tch-ls-7', periodsPerWeek: 1.5 }, // Tuấn (Ngô Anh Tuấn)
   { id: 'as-7-5-gdcd', classId: 'cls-7a5', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-7-5-tin', classId: 'cls-7a5', subjectId: 'sub-tin', teacherId: 'tch-av-13', periodsPerWeek: 1.5 }, // Lộc
   { id: 'as-7-5-td', classId: 'cls-7a5', subjectId: 'sub-gdtc', teacherId: 'tch-td-7', periodsPerWeek: 2 }, // Dân
@@ -869,7 +865,7 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-7-6-anh', classId: 'cls-7a6', subjectId: 'sub-anh', teacherId: 'tch-av-12', periodsPerWeek: 3 }, // Dương
   { id: 'as-7-6-khtn', classId: 'cls-7a6', subjectId: 'sub-khtn-cs', teacherId: 'tch-khtn-12', periodsPerWeek: 4 }, // Toàn (Võ Hoàng)
   { id: 'as-7-6-su', classId: 'cls-7a6', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.5 }, // The
-  { id: 'as-7-6-dia', classId: 'cls-7a6', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-7-6-dia', classId: 'cls-7a6', subjectId: 'sub-dia', teacherId: 'tch-ls-7', periodsPerWeek: 1.5 }, // Tuấn (Ngô Anh Tuấn)
   { id: 'as-7-6-gdcd', classId: 'cls-7a6', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-7-6-tin', classId: 'cls-7a6', subjectId: 'sub-tin', teacherId: 'tch-av-13', periodsPerWeek: 1.5 }, // Lộc
   { id: 'as-7-6-td', classId: 'cls-7a6', subjectId: 'sub-gdtc', teacherId: 'tch-td-8', periodsPerWeek: 2 }, // Hùng
@@ -885,8 +881,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-8-1-li', classId: 'cls-8a1', subjectId: 'sub-li', teacherId: 'tch-khtn-13', periodsPerWeek: 1.33 }, // Thắm (24t/18w)
   { id: 'as-8-1-hoa', classId: 'cls-8a1', subjectId: 'sub-hoa', teacherId: 'tch-khtn-11', periodsPerWeek: 1.33 }, // Phương (24t/18w)
   { id: 'as-8-1-sinh', classId: 'cls-8a1', subjectId: 'sub-sinh', teacherId: 'tch-khtn-12', periodsPerWeek: 1.33 }, // Toàn (24t/18w)
-  { id: 'as-8-1-su', classId: 'cls-8a1', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.5 }, // The
-  { id: 'as-8-1-dia', classId: 'cls-8a1', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-8-1-su', classId: 'cls-8a1', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.44 }, // The (HK1: 26t/18w, Cả năm: 50t)
+  { id: 'as-8-1-dia', classId: 'cls-8a1', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.56 }, // Đỉnh (HK1: 28t/18w, Cả năm: 55t)
   { id: 'as-8-1-gdcd', classId: 'cls-8a1', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-8-1-tin', classId: 'cls-8a1', subjectId: 'sub-tin', teacherId: 'tch-av-14', periodsPerWeek: 1.5 }, // Phướng
   { id: 'as-8-1-td', classId: 'cls-8a1', subjectId: 'sub-gdtc', teacherId: 'tch-td-7', periodsPerWeek: 2 }, // Dân
@@ -901,8 +897,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-8-2-li', classId: 'cls-8a2', subjectId: 'sub-li', teacherId: 'tch-khtn-13', periodsPerWeek: 1.33 }, // Thắm (24t/18w)
   { id: 'as-8-2-hoa', classId: 'cls-8a2', subjectId: 'sub-hoa', teacherId: 'tch-khtn-11', periodsPerWeek: 1.33 }, // Phương (24t/18w)
   { id: 'as-8-2-sinh', classId: 'cls-8a2', subjectId: 'sub-sinh', teacherId: 'tch-khtn-18', periodsPerWeek: 1.33 }, // Tài (24t/18w)
-  { id: 'as-8-2-su', classId: 'cls-8a2', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.5 }, // The
-  { id: 'as-8-2-dia', classId: 'cls-8a2', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-8-2-su', classId: 'cls-8a2', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.44 }, // The (HK1: 26t/18w, Cả năm: 50t)
+  { id: 'as-8-2-dia', classId: 'cls-8a2', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.56 }, // Đỉnh (HK1: 28t/18w, Cả năm: 55t)
   { id: 'as-8-2-gdcd', classId: 'cls-8a2', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-8-2-tin', classId: 'cls-8a2', subjectId: 'sub-tin', teacherId: 'tch-av-14', periodsPerWeek: 1.5 }, // Phướng
   { id: 'as-8-2-td', classId: 'cls-8a2', subjectId: 'sub-gdtc', teacherId: 'tch-td-7', periodsPerWeek: 2 }, // Dân
@@ -917,8 +913,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-8-3-li', classId: 'cls-8a3', subjectId: 'sub-li', teacherId: 'tch-khtn-13', periodsPerWeek: 1.33 }, // Thắm
   { id: 'as-8-3-hoa', classId: 'cls-8a3', subjectId: 'sub-hoa', teacherId: 'tch-khtn-18', periodsPerWeek: 1.33 }, // Tài
   { id: 'as-8-3-sinh', classId: 'cls-8a3', subjectId: 'sub-sinh', teacherId: 'tch-khtn-18', periodsPerWeek: 1.33 }, // Tài
-  { id: 'as-8-3-su', classId: 'cls-8a3', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.5 }, // The
-  { id: 'as-8-3-dia', classId: 'cls-8a3', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-8-3-su', classId: 'cls-8a3', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.44 }, // The (HK1: 26t/18w, Cả năm: 50t)
+  { id: 'as-8-3-dia', classId: 'cls-8a3', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.56 }, // Đỉnh (HK1: 28t/18w, Cả năm: 55t)
   { id: 'as-8-3-gdcd', classId: 'cls-8a3', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-8-3-tin', classId: 'cls-8a3', subjectId: 'sub-tin', teacherId: 'tch-av-14', periodsPerWeek: 1.5 }, // Phướng
   { id: 'as-8-3-td', classId: 'cls-8a3', subjectId: 'sub-gdtc', teacherId: 'tch-td-7', periodsPerWeek: 2 }, // Dân
@@ -933,8 +929,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-8-4-li', classId: 'cls-8a4', subjectId: 'sub-li', teacherId: 'tch-khtn-13', periodsPerWeek: 1.33 }, // Thắm
   { id: 'as-8-4-hoa', classId: 'cls-8a4', subjectId: 'sub-hoa', teacherId: 'tch-khtn-17', periodsPerWeek: 1.33 }, // Ngân
   { id: 'as-8-4-sinh', classId: 'cls-8a4', subjectId: 'sub-sinh', teacherId: 'tch-khtn-18', periodsPerWeek: 1.33 }, // Tài
-  { id: 'as-8-4-su', classId: 'cls-8a4', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân
-  { id: 'as-8-4-dia', classId: 'cls-8a4', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-8-4-su', classId: 'cls-8a4', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.44 }, // Tân (HK1: 26t/18w, Cả năm: 50t)
+  { id: 'as-8-4-dia', classId: 'cls-8a4', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.56 }, // Đỉnh (HK1: 28t/18w, Cả năm: 55t)
   { id: 'as-8-4-gdcd', classId: 'cls-8a4', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-8-4-tin', classId: 'cls-8a4', subjectId: 'sub-tin', teacherId: 'tch-av-14', periodsPerWeek: 1.5 }, // Phướng
   { id: 'as-8-4-td', classId: 'cls-8a4', subjectId: 'sub-gdtc', teacherId: 'tch-td-7', periodsPerWeek: 2 }, // Dân
@@ -949,8 +945,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-8-5-li', classId: 'cls-8a5', subjectId: 'sub-li', teacherId: 'tch-khtn-10', periodsPerWeek: 1.33 }, // Hậu
   { id: 'as-8-5-hoa', classId: 'cls-8a5', subjectId: 'sub-hoa', teacherId: 'tch-khtn-12', periodsPerWeek: 1.33 }, // Toàn (Võ Hoàng)
   { id: 'as-8-5-sinh', classId: 'cls-8a5', subjectId: 'sub-sinh', teacherId: 'tch-khtn-12', periodsPerWeek: 1.33 }, // Toàn (Võ Hoàng)
-  { id: 'as-8-5-su', classId: 'cls-8a5', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân
-  { id: 'as-8-5-dia', classId: 'cls-8a5', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-8-5-su', classId: 'cls-8a5', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.44 }, // Tân (HK1: 26t/18w, Cả năm: 50t)
+  { id: 'as-8-5-dia', classId: 'cls-8a5', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.56 }, // Đỉnh (HK1: 28t/18w, Cả năm: 55t)
   { id: 'as-8-5-gdcd', classId: 'cls-8a5', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-8-5-tin', classId: 'cls-8a5', subjectId: 'sub-tin', teacherId: 'tch-av-14', periodsPerWeek: 1.5 }, // Phướng
   { id: 'as-8-5-td', classId: 'cls-8a5', subjectId: 'sub-gdtc', teacherId: 'tch-td-7', periodsPerWeek: 2 }, // Dân
@@ -965,8 +961,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-8-6-li', classId: 'cls-8a6', subjectId: 'sub-li', teacherId: 'tch-khtn-10', periodsPerWeek: 1.33 }, // Hậu
   { id: 'as-8-6-hoa', classId: 'cls-8a6', subjectId: 'sub-hoa', teacherId: 'tch-khtn-12', periodsPerWeek: 1.33 }, // Toàn (Võ Hoàng)
   { id: 'as-8-6-sinh', classId: 'cls-8a6', subjectId: 'sub-sinh', teacherId: 'tch-khtn-12', periodsPerWeek: 1.33 }, // Toàn (Võ Hoàng)
-  { id: 'as-8-6-su', classId: 'cls-8a6', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân
-  { id: 'as-8-6-dia', classId: 'cls-8a6', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-8-6-su', classId: 'cls-8a6', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.44 }, // Tân (HK1: 26t/18w, Cả năm: 50t)
+  { id: 'as-8-6-dia', classId: 'cls-8a6', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.56 }, // Đỉnh (HK1: 28t/18w, Cả năm: 55t)
   { id: 'as-8-6-gdcd', classId: 'cls-8a6', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-8-6-tin', classId: 'cls-8a6', subjectId: 'sub-tin', teacherId: 'tch-av-14', periodsPerWeek: 1.5 }, // Phướng
   { id: 'as-8-6-td', classId: 'cls-8a6', subjectId: 'sub-gdtc', teacherId: 'tch-td-7', periodsPerWeek: 2 }, // Dân
@@ -982,8 +978,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-9-1-li', classId: 'cls-9a1', subjectId: 'sub-li', teacherId: 'tch-khtn-10', periodsPerWeek: 1.33 }, // Hậu (24t/18w)
   { id: 'as-9-1-hoa', classId: 'cls-9a1', subjectId: 'sub-hoa', teacherId: 'tch-khtn-11', periodsPerWeek: 1.61 }, // Phương (29t/18w)
   { id: 'as-9-1-sinh', classId: 'cls-9a1', subjectId: 'sub-sinh', teacherId: 'tch-khtn-16', periodsPerWeek: 1.06 }, // Nhung (19t/18w)
-  { id: 'as-9-1-su', classId: 'cls-9a1', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.5 }, // The
-  { id: 'as-9-1-dia', classId: 'cls-9a1', subjectId: 'sub-dia', teacherId: 'tch-ls-12', periodsPerWeek: 1.5 }, // Lý
+  { id: 'as-9-1-su', classId: 'cls-9a1', subjectId: 'sub-su', teacherId: 'tch-ls-2', periodsPerWeek: 1.44 }, // Sơn (Trịnh Văn Sơn - HK1: 26t/18w, Cả năm: 52t)
+  { id: 'as-9-1-dia', classId: 'cls-9a1', subjectId: 'sub-dia', teacherId: 'tch-ls-12', periodsPerWeek: 1.56 }, // Lý (HK1: 28t/18w, Cả năm: 53t)
   { id: 'as-9-1-gdcd', classId: 'cls-9a1', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-9-1-tin', classId: 'cls-9a1', subjectId: 'sub-tin', teacherId: 'tch-av-13', periodsPerWeek: 1.5 }, // Lộc
   { id: 'as-9-1-td', classId: 'cls-9a1', subjectId: 'sub-gdtc', teacherId: 'tch-td-6', periodsPerWeek: 2 }, // Ẩn
@@ -998,8 +994,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-9-2-li', classId: 'cls-9a2', subjectId: 'sub-li', teacherId: 'tch-khtn-10', periodsPerWeek: 1.33 }, // Hậu
   { id: 'as-9-2-hoa', classId: 'cls-9a2', subjectId: 'sub-hoa', teacherId: 'tch-khtn-11', periodsPerWeek: 1.61 }, // Phương
   { id: 'as-9-2-sinh', classId: 'cls-9a2', subjectId: 'sub-sinh', teacherId: 'tch-khtn-16', periodsPerWeek: 1.06 }, // Nhung
-  { id: 'as-9-2-su', classId: 'cls-9a2', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.5 }, // The
-  { id: 'as-9-2-dia', classId: 'cls-9a2', subjectId: 'sub-dia', teacherId: 'tch-ls-12', periodsPerWeek: 1.5 }, // Lý
+  { id: 'as-9-2-su', classId: 'cls-9a2', subjectId: 'sub-su', teacherId: 'tch-ls-2', periodsPerWeek: 1.44 }, // Sơn (Trịnh Văn Sơn - HK1: 26t/18w, Cả năm: 52t)
+  { id: 'as-9-2-dia', classId: 'cls-9a2', subjectId: 'sub-dia', teacherId: 'tch-ls-12', periodsPerWeek: 1.56 }, // Lý (HK1: 28t/18w, Cả năm: 53t)
   { id: 'as-9-2-gdcd', classId: 'cls-9a2', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-9-2-tin', classId: 'cls-9a2', subjectId: 'sub-tin', teacherId: 'tch-av-13', periodsPerWeek: 1.5 }, // Lộc
   { id: 'as-9-2-td', classId: 'cls-9a2', subjectId: 'sub-gdtc', teacherId: 'tch-td-6', periodsPerWeek: 2 }, // Ẩn
@@ -1014,8 +1010,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-9-3-li', classId: 'cls-9a3', subjectId: 'sub-li', teacherId: 'tch-khtn-13', periodsPerWeek: 1.33 }, // Thắm
   { id: 'as-9-3-hoa', classId: 'cls-9a3', subjectId: 'sub-hoa', teacherId: 'tch-khtn-12', periodsPerWeek: 1.61 }, // Toàn (Võ Hoàng)
   { id: 'as-9-3-sinh', classId: 'cls-9a3', subjectId: 'sub-sinh', teacherId: 'tch-khtn-4', periodsPerWeek: 1.06 }, // Hiếu
-  { id: 'as-9-3-su', classId: 'cls-9a3', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.5 }, // The
-  { id: 'as-9-3-dia', classId: 'cls-9a3', subjectId: 'sub-dia', teacherId: 'tch-ls-12', periodsPerWeek: 1.5 }, // Lý
+  { id: 'as-9-3-su', classId: 'cls-9a3', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.44 }, // The (HK1: 26t/18w, Cả năm: 52t)
+  { id: 'as-9-3-dia', classId: 'cls-9a3', subjectId: 'sub-dia', teacherId: 'tch-ls-12', periodsPerWeek: 1.56 }, // Lý (HK1: 28t/18w, Cả năm: 53t)
   { id: 'as-9-3-gdcd', classId: 'cls-9a3', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-9-3-tin', classId: 'cls-9a3', subjectId: 'sub-tin', teacherId: 'tch-av-13', periodsPerWeek: 1.5 }, // Lộc
   { id: 'as-9-3-td', classId: 'cls-9a3', subjectId: 'sub-gdtc', teacherId: 'tch-td-6', periodsPerWeek: 2 }, // Ẩn
@@ -1030,8 +1026,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-9-4-li', classId: 'cls-9a4', subjectId: 'sub-li', teacherId: 'tch-khtn-13', periodsPerWeek: 1.33 }, // Thắm
   { id: 'as-9-4-hoa', classId: 'cls-9a4', subjectId: 'sub-hoa', teacherId: 'tch-khtn-12', periodsPerWeek: 1.61 }, // Toàn (Võ Hoàng)
   { id: 'as-9-4-sinh', classId: 'cls-9a4', subjectId: 'sub-sinh', teacherId: 'tch-khtn-4', periodsPerWeek: 1.06 }, // Hiếu
-  { id: 'as-9-4-su', classId: 'cls-9a4', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân
-  { id: 'as-9-4-dia', classId: 'cls-9a4', subjectId: 'sub-dia', teacherId: 'tch-ls-12', periodsPerWeek: 1.5 }, // Lý
+  { id: 'as-9-4-su', classId: 'cls-9a4', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.44 }, // The (HK1: 26t/18w, Cả năm: 52t)
+  { id: 'as-9-4-dia', classId: 'cls-9a4', subjectId: 'sub-dia', teacherId: 'tch-ls-12', periodsPerWeek: 1.56 }, // Lý (HK1: 28t/18w, Cả năm: 53t)
   { id: 'as-9-4-gdcd', classId: 'cls-9a4', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-9-4-tin', classId: 'cls-9a4', subjectId: 'sub-tin', teacherId: 'tch-av-13', periodsPerWeek: 1.5 }, // Lộc
   { id: 'as-9-4-td', classId: 'cls-9a4', subjectId: 'sub-gdtc', teacherId: 'tch-td-6', periodsPerWeek: 2 }, // Ẩn
@@ -1046,8 +1042,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-9-5-li', classId: 'cls-9a5', subjectId: 'sub-li', teacherId: 'tch-khtn-10', periodsPerWeek: 1.33 }, // Hậu
   { id: 'as-9-5-hoa', classId: 'cls-9a5', subjectId: 'sub-hoa', teacherId: 'tch-khtn-11', periodsPerWeek: 1.61 }, // Phương
   { id: 'as-9-5-sinh', classId: 'cls-9a5', subjectId: 'sub-sinh', teacherId: 'tch-khtn-4', periodsPerWeek: 1.06 }, // Hiếu
-  { id: 'as-9-5-su', classId: 'cls-9a5', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân
-  { id: 'as-9-5-dia', classId: 'cls-9a5', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-9-5-su', classId: 'cls-9a5', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.44 }, // The (HK1: 26t/18w, Cả năm: 52t)
+  { id: 'as-9-5-dia', classId: 'cls-9a5', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.56 }, // Đỉnh (HK1: 28t/18w, Cả năm: 53t)
   { id: 'as-9-5-gdcd', classId: 'cls-9a5', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-9-5-tin', classId: 'cls-9a5', subjectId: 'sub-tin', teacherId: 'tch-av-13', periodsPerWeek: 1.5 }, // Lộc
   { id: 'as-9-5-td', classId: 'cls-9a5', subjectId: 'sub-gdtc', teacherId: 'tch-td-6', periodsPerWeek: 2 }, // Ẩn
@@ -1062,8 +1058,8 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-9-6-li', classId: 'cls-9a6', subjectId: 'sub-li', teacherId: 'tch-khtn-13', periodsPerWeek: 1.33 }, // Thắm
   { id: 'as-9-6-hoa', classId: 'cls-9a6', subjectId: 'sub-hoa', teacherId: 'tch-khtn-11', periodsPerWeek: 1.61 }, // Phương
   { id: 'as-9-6-sinh', classId: 'cls-9a6', subjectId: 'sub-sinh', teacherId: 'tch-khtn-4', periodsPerWeek: 1.06 }, // Hiếu
-  { id: 'as-9-6-su', classId: 'cls-9a6', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.5 }, // Tân
-  { id: 'as-9-6-dia', classId: 'cls-9a6', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.5 }, // Đỉnh
+  { id: 'as-9-6-su', classId: 'cls-9a6', subjectId: 'sub-su', teacherId: 'tch-ls-9', periodsPerWeek: 1.44 }, // The (HK1: 26t/18w, Cả năm: 52t)
+  { id: 'as-9-6-dia', classId: 'cls-9a6', subjectId: 'sub-dia', teacherId: 'tch-ls-11', periodsPerWeek: 1.56 }, // Đỉnh (HK1: 28t/18w, Cả năm: 53t)
   { id: 'as-9-6-gdcd', classId: 'cls-9a6', subjectId: 'sub-gdcd', teacherId: 'tch-ls-13', periodsPerWeek: 1 }, // Xe
   { id: 'as-9-6-tin', classId: 'cls-9a6', subjectId: 'sub-tin', teacherId: 'tch-av-13', periodsPerWeek: 1.5 }, // Lộc
   { id: 'as-9-6-td', classId: 'cls-9a6', subjectId: 'sub-gdtc', teacherId: 'tch-td-6', periodsPerWeek: 2 }, // Ẩn
