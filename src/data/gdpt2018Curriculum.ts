@@ -478,10 +478,10 @@ export const THCS_CURRICULUM: ThcsSubjectItem[] = [
     grades: {
       '6': { hk1: 18, hk2: 17, total: 35 },
       '7': { hk1: 18, hk2: 17, total: 35 },
-      '8': { hk1: 34, hk2: 18, total: 52 },
+      '8': { hk1: 26, hk2: 26, total: 52 },
       '9': { hk1: 18, hk2: 34, total: 52 },
     },
-    note: 'Lớp 6,7: 35 tiết (1t/w). Lớp 8: HK1 34t (2t/w) + HK2 18t (1t/w) = 52t. Lớp 9: HK1 18t (1t/w) + HK2 34t (2t/w) = 52t'
+    note: 'Lớp 6,7: 35t (1t/w). Lớp 8: 52t (HK1 26t: T1-8 dạy 2t/w, T9-18 dạy 1t/w; HK2 26t: T19-27 dạy 2t/w, T28-35 dạy 1t/w). Lớp 9: 52t (HK1 18t: T1-18 dạy 1t/w; HK2 34t: T19-35 dạy 2t/w).'
   },
   {
     tt: 8,

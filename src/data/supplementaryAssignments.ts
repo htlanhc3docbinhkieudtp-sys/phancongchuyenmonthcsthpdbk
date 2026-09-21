@@ -1462,8 +1462,8 @@ export const supplementaryAssignments: Assignment[] = [
     "classId": "cls-8a7",
     "subjectId": "sub-cn",
     "teacherId": "tch-khtn-26",
-    "periodsPerWeek": 2,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1.44,
+    "note": "Công nghệ 8 (HK1: 26t/18w - T1-8: 2t/w, T9-18: 1t/w)"
   },
   {
     "id": "as-tkb-cls-8a7-sub-van",
@@ -1566,8 +1566,8 @@ export const supplementaryAssignments: Assignment[] = [
     "classId": "cls-8a8",
     "subjectId": "sub-cn",
     "teacherId": "tch-khtn-26",
-    "periodsPerWeek": 2,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1.44,
+    "note": "Công nghệ 8 (HK1: 26t/18w - T1-8: 2t/w, T9-18: 1t/w)"
   },
   {
     "id": "as-tkb-cls-8a8-sub-am-nhac",
@@ -1686,8 +1686,8 @@ export const supplementaryAssignments: Assignment[] = [
     "classId": "cls-8a9",
     "subjectId": "sub-cn",
     "teacherId": "tch-khtn-26",
-    "periodsPerWeek": 2,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1.44,
+    "note": "Công nghệ 8 (HK1: 26t/18w - T1-8: 2t/w, T9-18: 1t/w)"
   },
   {
     "id": "as-tkb-cls-8a9-sub-gdtc",
@@ -1782,8 +1782,8 @@ export const supplementaryAssignments: Assignment[] = [
     "classId": "cls-8a10",
     "subjectId": "sub-cn",
     "teacherId": "tch-khtn-26",
-    "periodsPerWeek": 2,
-    "note": "Bổ sung từ TKB Tuần 1"
+    "periodsPerWeek": 1.44,
+    "note": "Công nghệ 8 (HK1: 26t/18w - T1-8: 2t/w, T9-18: 1t/w)"
   },
   {
     "id": "as-tkb-cls-8a10-sub-am-nhac",

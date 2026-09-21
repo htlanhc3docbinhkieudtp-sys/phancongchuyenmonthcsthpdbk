@@ -674,18 +674,40 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
       {/* KHTN 8 & 9 Curriculum Schedule Note for THCS */}
       {(levelScope === 'THCS' || levelScope === 'ALL') && (
-        <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-3 flex items-start gap-2.5 text-xs text-emerald-900 print:hidden">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-          <div className="flex-1 space-y-1">
-            <div className="font-semibold text-emerald-950 flex items-center gap-2">
-              <span>Đặc thù môn Khoa học tự nhiên (KHTN) Khối 8 & Khối 9:</span>
-              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-200 text-emerald-900">
-                Đã đồng bộ 18 tuần
-              </span>
+        <div className="space-y-2 print:hidden">
+          <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-3 flex items-start gap-2.5 text-xs text-emerald-900">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+            <div className="flex-1 space-y-1">
+              <div className="font-semibold text-emerald-950 flex items-center gap-2">
+                <span>Đặc thù môn Khoa học tự nhiên (KHTN) Khối 8 & Khối 9:</span>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-200 text-emerald-900">
+                  Đã đồng bộ 18 tuần
+                </span>
+              </div>
+              <p className="text-[11px] text-emerald-800 leading-relaxed">
+                Môn KHTN 8 (Lý 24t, Hóa 24t, Sinh 24t) và KHTN 9 (Lý 24t, Hóa 29t, Sinh 19t) được hệ thống tự động tính toán chính xác theo từng tuần và phân môn cụ thể cho từng giáo viên (Cô Phượng, Thầy Văn, Thầy Toàn, Cô Thắm, Cô Hậu, Cô Tài, Cô Giàu, Cô Nhung, Cô Ngân, Cô Hiếu, Cô Phương), đảm bảo tổng số tiết học kỳ 1 và số tiết thực dạy từng tuần khớp 100% với phân công chuyên môn.
+              </p>
             </div>
-            <p className="text-[11px] text-emerald-800 leading-relaxed">
-              Môn KHTN 8 (Lý 24t, Hóa 24t, Sinh 24t) và KHTN 9 (Lý 24t, Hóa 29t, Sinh 19t) được hệ thống tự động tính toán chính xác theo từng tuần và phân môn cụ thể cho từng giáo viên (Cô Phượng, Thầy Văn, Thầy Toàn, Cô Thắm, Cô Hậu, Cô Tài, Cô Giàu, Cô Nhung, Cô Ngân, Cô Hiếu, Cô Phương), đảm bảo tổng số tiết học kỳ 1 và số tiết thực dạy từng tuần khớp 100% với phân công chuyên môn.
-            </p>
+          </div>
+
+          <div className="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3 flex items-start gap-2.5 text-xs text-amber-950">
+            <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+            <div className="flex-1 space-y-1">
+              <div className="font-semibold text-amber-950 flex items-center gap-2">
+                <span>Đặc thù môn Công nghệ (C.Nghệ) Khối 8 & Khối 9 (52 tiết/năm):</span>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-200 text-amber-900">
+                  Đã đồng bộ 52 tiết/năm
+                </span>
+              </div>
+              <div className="text-[11px] text-amber-900 leading-relaxed space-y-0.5">
+                <p>
+                  • <strong>Khối 8 (52t/năm - HK1: 26t, HK2: 26t)</strong>: Tuần 1–8 dạy 2 tiết/tuần; Tuần 9–18 dạy 1 tiết/tuần. Phân công: Thầy <strong>Trần Phi Hải</strong> (8A1–8A6, HK1: 156t), Thầy <strong>Phan Văn Tặt</strong> (8A7–8A10, HK1: 104t).
+                </p>
+                <p>
+                  • <strong>Khối 9 (52t/năm - HK1: 18t, HK2: 34t)</strong>: Tuần 1–18 dạy 1 tiết/tuần. Phân công: Cô <strong>Trần Thị Cẩm</strong> (9A1–9A3, HK1: 54t), Cô <strong>Lê Kim Ngân</strong> (9A4–9A6, HK1: 54t), Cô <strong>Nguyễn Thị Ngọc Diễm</strong> (9A7–9A10, HK1: 72t).
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}

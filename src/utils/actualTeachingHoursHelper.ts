@@ -14,6 +14,12 @@ import {
   KHTN_8_CLASS_ASSIGNMENTS,
   KHTN_9_CLASS_ASSIGNMENTS,
 } from '../data/khtnCurriculumSchedule';
+import {
+  CONG_NGHE_8_WEEKS,
+  CONG_NGHE_9_WEEKS,
+  CONG_NGHE_8_CLASS_ASSIGNMENTS,
+  CONG_NGHE_9_CLASS_ASSIGNMENTS,
+} from '../data/congNgheCurriculumSchedule';
 
 export interface TeacherSubjectRow {
   classes: string;
@@ -208,6 +214,71 @@ export function adjustKhtnSlotsForWeek(
 }
 
 /**
+ * Adjust Công nghệ slots for Grade 8 and Grade 9 according to the 52-period annual curriculum:
+ * - Khối 8 (52t/năm): HK1 = 26t (T1-8 dạy 2t/w, T9-18 dạy 1t/w); HK2 = 26t (T19-27 dạy 2t/w, T28-35 dạy 1t/w)
+ * - Khối 9 (52t/năm): HK1 = 18t (T1-18 dạy 1t/w); HK2 = 34t (T19-35 dạy 2t/w)
+ */
+export function adjustCongNgheSlotsForWeek(
+  baseSlots: TimetableSlot[],
+  weekNumber: number
+): TimetableSlot[] {
+  const p8 = CONG_NGHE_8_WEEKS[weekNumber] ?? (weekNumber <= 8 ? 2 : 1);
+  const p9 = CONG_NGHE_9_WEEKS[weekNumber] ?? (weekNumber <= 18 ? 1 : 2);
+
+  const k89ClassIds = new Set([
+    ...CONG_NGHE_8_CLASS_ASSIGNMENTS.map((c) => c.classId),
+    ...CONG_NGHE_9_CLASS_ASSIGNMENTS.map((c) => c.classId),
+  ]);
+
+  // Filter out existing Công nghệ slots for Grade 8 and 9, keep other slots
+  const nonCnSlots = baseSlots.filter((s) => {
+    if (!k89ClassIds.has(s.classId)) return true;
+    const sub = (s.subjectId || '').toLowerCase();
+    const name = (s.subjectName || '').toLowerCase();
+    const isCn = sub === 'sub-cn' || name.includes('công nghệ') || name.includes('c.nghệ');
+    return !isCn;
+  });
+
+  const adaptedSlots: TimetableSlot[] = [...nonCnSlots];
+
+  // Add precise slots for Grade 8
+  for (const c of CONG_NGHE_8_CLASS_ASSIGNMENTS) {
+    for (let i = 0; i < p8; i++) {
+      adaptedSlots.push({
+        id: `slot-cn8-${c.classId}-w${weekNumber}-${i}`,
+        classId: c.classId,
+        className: c.className,
+        teacherId: c.teacherId,
+        subjectId: 'sub-cn',
+        subjectName: 'Công nghệ',
+        dayOfWeek: 2 + i * 2,
+        session: 'SANG',
+        period: 4,
+      });
+    }
+  }
+
+  // Add precise slots for Grade 9
+  for (const c of CONG_NGHE_9_CLASS_ASSIGNMENTS) {
+    for (let i = 0; i < p9; i++) {
+      adaptedSlots.push({
+        id: `slot-cn9-${c.classId}-w${weekNumber}-${i}`,
+        classId: c.classId,
+        className: c.className,
+        teacherId: c.teacherId,
+        subjectId: 'sub-cn',
+        subjectName: 'Công nghệ',
+        dayOfWeek: 3 + i * 2,
+        session: 'SANG',
+        period: 4,
+      });
+    }
+  }
+
+  return adaptedSlots;
+}
+
+/**
  * Get timetable slots for a specific week
  */
 export function getSlotsForWeek(
@@ -230,7 +301,8 @@ export function getSlotsForWeek(
 
   if (baseSlots.length === 0) return [];
 
-  return adjustKhtnSlotsForWeek(baseSlots, weekNumber);
+  const khtnAdjusted = adjustKhtnSlotsForWeek(baseSlots, weekNumber);
+  return adjustCongNgheSlotsForWeek(khtnAdjusted, weekNumber);
 }
 
 /**
