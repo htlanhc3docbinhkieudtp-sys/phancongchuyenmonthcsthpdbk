@@ -137,40 +137,35 @@ export function calculateTeacherSingleWeek(
   const level: 'THPT' | 'THCS' = isTHPT ? 'THPT' : 'THCS';
 
   // Specific leadership and role teaching quotas per government regulations & school rules:
-  // - Hiệu trưởng: 2 tiết/tuần
-  // - Phó Hiệu trưởng: 4 tiết/tuần
-  // - Tổng phụ trách đội: 6 tiết/tuần
-  // - Giáo viên THPT: 17 tiết/tuần
-  // - Giáo viên THCS: 19 tiết/tuần
+  // 4 Người lãnh đạo (Ban Giám Hiệu):
+  // - Hiệu trưởng: Thầy Lê Thanh Cường (Định mức 2 tiết/tuần)
+  // - 3 Phó Hiệu trưởng: Nguyễn Minh Trí, Phan Thanh Thảo, Nguyễn Thanh Tòng (Định mức 4 tiết/tuần)
+  // Lãnh đạo không tính tiết kiêm nhiệm vì định mức đã rất thấp (2t và 4t), không có kiêm nhiệm + tiết.
   const isHT =
     teacher.id === 'tch-bgh-1' ||
-    teacher.role === 'HieuTruong' ||
-    teacher.code?.includes('(HT)') ||
-    teacher.code?.toLowerCase().includes('.lt') ||
     teacher.name === 'Lê Thanh Cường' ||
-    (teacher.notes?.toLowerCase().includes('hiệu trưởng') && !teacher.notes?.toLowerCase().includes('phó')) ||
-    teacher.duties?.some(d => d.type === 'HieuTruong' || (d.name?.toLowerCase().includes('hiệu trưởng') && !d.name?.toLowerCase().includes('phó'))) ||
-    teacher.baseStandardPeriods === 2;
+    teacher.code === 'Cường.LT (HT)' ||
+    (teacher.role === 'HieuTruong' && teacher.name === 'Lê Thanh Cường');
 
   const isPHT =
     !isHT &&
     (teacher.id === 'tch-bgh-2' ||
       teacher.id === 'tch-bgh-3' ||
       teacher.id === 'tch-bgh-4' ||
-      teacher.id?.startsWith('tch-bgh') ||
-      teacher.departmentId === 'dept-bgh' ||
-      teacher.role === 'PhoHieuTruong' ||
-      teacher.code?.includes('(PHT)') ||
-      ['Nguyễn Minh Trí', 'Phan Thanh Thảo', 'Nguyễn Thanh Tòng'].some(n => teacher.name?.includes(n)) ||
-      teacher.notes?.toLowerCase().includes('phó hiệu trưởng') ||
-      teacher.duties?.some(d => d.type === 'PhoHieuTruong' || d.name?.toLowerCase().includes('phó hiệu trưởng')) ||
-      teacher.baseStandardPeriods === 4);
+      teacher.name === 'Nguyễn Minh Trí' ||
+      teacher.name === 'Phan Thanh Thảo' ||
+      teacher.name === 'Nguyễn Thanh Tòng' ||
+      teacher.code === 'Trí.NM (PHT)' ||
+      teacher.code === 'Thảo.PT (PHT)' ||
+      teacher.code === 'Tòng.NT (PHT)');
+
+  const isLeader = isHT || isPHT;
 
   const isTPT =
     teacher.role === 'TongPhuTrachDoi' ||
     teacher.code?.includes('(TPT') ||
     teacher.notes?.toLowerCase().includes('tổng phụ trách') ||
-    teacher.duties?.some(d => d.type === 'TongPhuTrachDoi') ||
+    teacher.duties?.some((d) => d.type === 'TongPhuTrachDoi') ||
     teacher.baseStandardPeriods === 6;
 
   let standardPeriods = isTHPT
@@ -298,77 +293,78 @@ export function calculateTeacherSingleWeek(
   const dutyList: string[] = [];
   let reductionPeriods = 0;
 
-  // 1. Hiệu trưởng / Phó Hiệu trưởng / Tổng phụ trách (định mức đã được hạ, thêm nhãn hiển thị)
-  if (isHT) {
-    dutyList.push('Hiệu trưởng');
-  } else if (isPHT) {
-    dutyList.push('Phó Hiệu trưởng');
-  } else if (isTPT) {
-    dutyList.push('TPT Đội');
-  }
-
-  // 2. Kiểm tra danh sách kiêm nhiệm chính thức (teacher.duties)
-  if (teacher.duties && teacher.duties.length > 0) {
-    teacher.duties.forEach((d) => {
-      let red = d.reductionPeriods;
-      if (red === undefined || red === null) {
-        if (d.type === 'ToTruong') red = 3;
-        else if (d.type === 'ToPho') red = 1;
-        else if (d.type === 'PhoCap') red = 4;
-        else if (d.type === 'ConNho') red = 3;
-        else if (d.type === 'PhoBiThuDoan') red = 6;
-        else if (d.type === 'BiThuDoan') red = 12;
-        else red = 0;
-      }
-      reductionPeriods += red;
-      const label = d.type === 'ToTruong' ? 'Tổ trưởng' :
-                    d.type === 'ToPho' ? 'Tổ phó' :
-                    d.type === 'PhoCap' ? 'Phổ cập' :
-                    d.type === 'ConNho' ? 'Con nhỏ' :
-                    d.type === 'PhoBiThuDoan' ? 'Phó Bí thư đoàn' :
-                    d.type === 'BiThuDoan' ? 'Bí thư đoàn' : d.name;
-      if (!dutyList.includes(label)) {
-        dutyList.push(label);
-      }
-    });
-  } else {
-    // Dự phòng khi chưa có mảng duties
-    if (teacher.role === 'ToTruong' || teacher.code?.includes('(TT')) {
-      if (!dutyList.includes('Tổ trưởng')) dutyList.push('Tổ trưởng');
-      reductionPeriods += 3;
-    } else if (teacher.role === 'ToPho' || teacher.code?.includes('(TP')) {
-      if (!dutyList.includes('Tổ phó')) dutyList.push('Tổ phó');
-      reductionPeriods += 1;
+  // Lãnh đạo (Hiệu trưởng 2t, Phó Hiệu trưởng 4t) KHÔNG tính tiết kiêm nhiệm vì định mức đã rất thấp.
+  // Xóa bỏ phần kiêm nhiệm và + tiết của lãnh đạo theo đúng chỉ đạo.
+  if (!isLeader) {
+    if (isTPT) {
+      dutyList.push('TPT Đội');
     }
 
-    if (teacher.role === 'PhoBiThuDoan' || teacher.code?.includes('(PBT')) {
-      if (!dutyList.includes('Phó Bí thư đoàn')) dutyList.push('Phó Bí thư đoàn');
-      reductionPeriods += 6;
-    } else if (teacher.role === 'BiThuDoan' || teacher.code?.includes('(BT')) {
-      if (!dutyList.includes('Bí thư đoàn')) dutyList.push('Bí thư đoàn');
-      reductionPeriods += 12;
+    // 2. Kiểm tra danh sách kiêm nhiệm chính thức (teacher.duties)
+    if (teacher.duties && teacher.duties.length > 0) {
+      teacher.duties.forEach((d) => {
+        // Loại bỏ nếu có nhầm lẫn loại HieuTruong / PhoHieuTruong trong duties
+        if (d.type === 'HieuTruong' || d.type === 'PhoHieuTruong') return;
+        let red = d.reductionPeriods;
+        if (red === undefined || red === null) {
+          if (d.type === 'ToTruong') red = 3;
+          else if (d.type === 'ToPho') red = 1;
+          else if (d.type === 'PhoCap') red = 4;
+          else if (d.type === 'ConNho') red = 3;
+          else if (d.type === 'PhoBiThuDoan') red = 6;
+          else if (d.type === 'BiThuDoan') red = 12;
+          else red = 0;
+        }
+        reductionPeriods += red;
+        const label = d.type === 'ToTruong' ? 'Tổ trưởng' :
+                      d.type === 'ToPho' ? 'Tổ phó' :
+                      d.type === 'PhoCap' ? 'Phổ cập' :
+                      d.type === 'ConNho' ? 'Con nhỏ' :
+                      d.type === 'PhoBiThuDoan' ? 'Phó Bí thư đoàn' :
+                      d.type === 'BiThuDoan' ? 'Bí thư đoàn' : d.name;
+        if (!dutyList.includes(label)) {
+          dutyList.push(label);
+        }
+      });
+    } else {
+      // Dự phòng khi chưa có mảng duties
+      if (teacher.role === 'ToTruong' || teacher.code?.includes('(TT')) {
+        if (!dutyList.includes('Tổ trưởng')) dutyList.push('Tổ trưởng');
+        reductionPeriods += 3;
+      } else if (teacher.role === 'ToPho' || teacher.code?.includes('(TP')) {
+        if (!dutyList.includes('Tổ phó')) dutyList.push('Tổ phó');
+        reductionPeriods += 1;
+      }
+
+      if (teacher.role === 'PhoBiThuDoan' || teacher.code?.includes('(PBT')) {
+        if (!dutyList.includes('Phó Bí thư đoàn')) dutyList.push('Phó Bí thư đoàn');
+        reductionPeriods += 6;
+      } else if (teacher.role === 'BiThuDoan' || teacher.code?.includes('(BT')) {
+        if (!dutyList.includes('Bí thư đoàn')) dutyList.push('Bí thư đoàn');
+        reductionPeriods += 12;
+      }
+
+      if (teacher.role === 'PhoCap' || teacher.code?.includes('PC-') || teacher.code?.toLowerCase().includes('phổ cập')) {
+        if (!dutyList.includes('Phổ cập')) dutyList.push('Phổ cập');
+        reductionPeriods += 4;
+      }
+
+      if (teacher.role === 'ConNho' || teacher.code?.toLowerCase().includes('con nhỏ')) {
+        if (!dutyList.includes('Con nhỏ')) dutyList.push('Con nhỏ');
+        reductionPeriods += 3;
+      }
     }
 
-    if (teacher.role === 'PhoCap' || teacher.code?.includes('PC-') || teacher.code?.toLowerCase().includes('phổ cập')) {
-      if (!dutyList.includes('Phổ cập')) dutyList.push('Phổ cập');
+    // 3. Giảm trừ tùy biến khác (nếu có)
+    if (teacher.customReductionPeriods) {
+      reductionPeriods += teacher.customReductionPeriods;
+    }
+
+    // 4. Giáo viên chủ nhiệm (GVCN: +4 tiết/tuần không phân biệt cấp THPT hay THCS)
+    if (isHomeroom) {
+      if (!dutyList.includes('GVCN')) dutyList.push('GVCN');
       reductionPeriods += 4;
     }
-
-    if (teacher.role === 'ConNho' || teacher.code?.toLowerCase().includes('con nhỏ')) {
-      if (!dutyList.includes('Con nhỏ')) dutyList.push('Con nhỏ');
-      reductionPeriods += 3;
-    }
-  }
-
-  // 3. Giảm trừ tùy biến khác (nếu có)
-  if (teacher.customReductionPeriods) {
-    reductionPeriods += teacher.customReductionPeriods;
-  }
-
-  // 4. Giáo viên chủ nhiệm (GVCN: +4 tiết/tuần không phân biệt cấp THPT hay THCS)
-  if (isHomeroom) {
-    if (!dutyList.includes('GVCN')) dutyList.push('GVCN');
-    reductionPeriods += 4;
   }
 
   // Convert groups into rows

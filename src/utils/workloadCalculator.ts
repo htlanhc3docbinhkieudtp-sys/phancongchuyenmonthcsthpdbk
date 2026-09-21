@@ -237,30 +237,31 @@ export function calculateTeacherWorkloads(
     const isHomeroom = homeroomMap.has(teacher.id);
     const homeroomClass = homeroomMap.get(teacher.id);
     
-    const dutyReduction = getTeacherTotalDutyReduction(teacher);
-    const customReduction = teacher.customReductionPeriods || 0;
-    const hrReduction = isHomeroom ? homeroomReduction : 0;
-    const totalReduction = dutyReduction + customReduction + hrReduction;
-
-    const teacherAssignments = assignments.filter(a => a.teacherId === teacher.id);
-    const assignedPeriods = teacherAssignments.reduce((sum, a) => sum + (a.periodsPerWeek || 0), 0);
-
     let baseStandard = teacher.baseStandardPeriods;
     const isHT =
       teacher.id === 'tch-bgh-1' ||
-      teacher.role === 'HieuTruong' ||
-      teacher.code?.includes('(HT)') ||
-      teacher.name === 'Lê Thanh Cường';
+      teacher.name === 'Lê Thanh Cường' ||
+      teacher.code === 'Cường.LT (HT)' ||
+      (teacher.role === 'HieuTruong' && teacher.name === 'Lê Thanh Cường');
     const isPHT =
       !isHT &&
       (teacher.id === 'tch-bgh-2' ||
         teacher.id === 'tch-bgh-3' ||
         teacher.id === 'tch-bgh-4' ||
-        teacher.id.startsWith('tch-bgh') ||
-        teacher.departmentId === 'dept-bgh' ||
-        teacher.role === 'PhoHieuTruong' ||
-        teacher.code?.includes('(PHT)') ||
-        ['Nguyễn Minh Trí', 'Phan Thanh Thảo', 'Nguyễn Thanh Tòng'].includes(teacher.name));
+        ['Nguyễn Minh Trí', 'Phan Thanh Thảo', 'Nguyễn Thanh Tòng'].includes(teacher.name) ||
+        teacher.code === 'Trí.NM (PHT)' ||
+        teacher.code === 'Thảo.PT (PHT)' ||
+        teacher.code === 'Tòng.NT (PHT)');
+
+    const isLeader = isHT || isPHT;
+
+    const dutyReduction = isLeader ? 0 : getTeacherTotalDutyReduction(teacher);
+    const customReduction = isLeader ? 0 : (teacher.customReductionPeriods || 0);
+    const hrReduction = isLeader ? 0 : (isHomeroom ? homeroomReduction : 0);
+    const totalReduction = dutyReduction + customReduction + hrReduction;
+
+    const teacherAssignments = assignments.filter(a => a.teacherId === teacher.id);
+    const assignedPeriods = teacherAssignments.reduce((sum, a) => sum + (a.periodsPerWeek || 0), 0);
 
     if (isHT) {
       baseStandard = 2;
@@ -270,7 +271,7 @@ export function calculateTeacherWorkloads(
       baseStandard = teacher.campus === 'THCSDBK' || teacher.campus === 'THCSTK' ? 19 : 17;
     }
 
-    const targetPeriods = Math.max(0, baseStandard - totalReduction);
+    const targetPeriods = baseStandard;
     const balance = assignedPeriods - targetPeriods;
 
     const assignedClasses = teacherAssignments.map(a => ({

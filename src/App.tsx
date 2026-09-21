@@ -224,15 +224,8 @@ export default function App() {
             code: 'Cường.LT (HT)',
             role: 'HieuTruong',
             baseStandardPeriods: 2,
-            duties: [
-              {
-                id: 'duty-bgh1-ht',
-                type: 'HieuTruong',
-                name: 'Hiệu trưởng',
-                reductionPeriods: 0,
-                notes: 'Hiệu trưởng (Định mức 2 tiết/tuần theo quy định)'
-              }
-            ]
+            customReductionPeriods: 0,
+            duties: []
           };
         }
         // Phó Hiệu trưởng: 4 tiết/tuần
@@ -243,15 +236,8 @@ export default function App() {
             code: 'Trí.NM (PHT)',
             role: 'PhoHieuTruong',
             baseStandardPeriods: 4,
-            duties: [
-              {
-                id: 'duty-bgh2-pht',
-                type: 'PhoHieuTruong',
-                name: 'Phó Hiệu trưởng',
-                reductionPeriods: 0,
-                notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
-              }
-            ]
+            customReductionPeriods: 0,
+            duties: []
           };
         }
         if (t.id === 'tch-bgh-3' || t.name === 'Phan Thanh Thảo') {
@@ -261,15 +247,8 @@ export default function App() {
             code: 'Thảo.PT (PHT)',
             role: 'PhoHieuTruong',
             baseStandardPeriods: 4,
-            duties: [
-              {
-                id: 'duty-bgh3-pht',
-                type: 'PhoHieuTruong',
-                name: 'Phó Hiệu trưởng',
-                reductionPeriods: 0,
-                notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
-              }
-            ]
+            customReductionPeriods: 0,
+            duties: []
           };
         }
         if (t.id === 'tch-bgh-4' || t.name === 'Nguyễn Thanh Tòng') {
@@ -279,15 +258,8 @@ export default function App() {
             code: 'Tòng.NT (PHT)',
             role: 'PhoHieuTruong',
             baseStandardPeriods: 4,
-            duties: [
-              {
-                id: 'duty-bgh4-pht',
-                type: 'PhoHieuTruong',
-                name: 'Phó Hiệu trưởng',
-                reductionPeriods: 0,
-                notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
-              }
-            ]
+            customReductionPeriods: 0,
+            duties: []
           };
         }
         return updated;

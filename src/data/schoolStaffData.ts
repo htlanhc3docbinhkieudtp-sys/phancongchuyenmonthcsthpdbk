@@ -28,16 +28,8 @@ export const officialStaffList: Teacher[] = [
     role: 'HieuTruong',
     customReductionPeriods: 0,
     baseStandardPeriods: 2,
-    duties: [
-      {
-        id: 'duty-bgh1-ht',
-        type: 'HieuTruong',
-        name: 'Hiệu trưởng',
-        reductionPeriods: 0,
-        notes: 'Hiệu trưởng (Định mức 2 tiết/tuần theo quy định)'
-      }
-    ],
-    notes: 'Hiệu trưởng (THPTDBK) - Môn dạy: Tiếng Anh (Định mức 2t/tuần)',
+    duties: [],
+    notes: 'Hiệu trưởng (THPTDBK) - Môn dạy: Tiếng Anh (Định mức 2t/tuần, không tính tiết kiêm nhiệm)',
   },
   {
     id: 'tch-bgh-2',
@@ -51,16 +43,8 @@ export const officialStaffList: Teacher[] = [
     role: 'PhoHieuTruong',
     customReductionPeriods: 0,
     baseStandardPeriods: 4,
-    duties: [
-      {
-        id: 'duty-bgh2-pht',
-        type: 'PhoHieuTruong',
-        name: 'Phó Hiệu trưởng',
-        reductionPeriods: 0,
-        notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
-      }
-    ],
-    notes: 'Phó Hiệu trưởng (THPTDBK) - Môn dạy: Vật Lý (Định mức 4t/tuần)',
+    duties: [],
+    notes: 'Phó Hiệu trưởng (THPTDBK) - Môn dạy: Vật Lý (Định mức 4t/tuần, không tính tiết kiêm nhiệm)',
   },
   {
     id: 'tch-bgh-3',
@@ -74,16 +58,8 @@ export const officialStaffList: Teacher[] = [
     role: 'PhoHieuTruong',
     customReductionPeriods: 0,
     baseStandardPeriods: 4,
-    duties: [
-      {
-        id: 'duty-bgh3-pht',
-        type: 'PhoHieuTruong',
-        name: 'Phó Hiệu trưởng',
-        reductionPeriods: 0,
-        notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
-      }
-    ],
-    notes: 'Phó Hiệu trưởng (THCSDBK) - Môn dạy: Lịch sử (Định mức 4t/tuần)',
+    duties: [],
+    notes: 'Phó Hiệu trưởng (THCSDBK) - Môn dạy: Lịch sử (Định mức 4t/tuần, không tính tiết kiêm nhiệm)',
   },
   {
     id: 'tch-bgh-4',
@@ -97,16 +73,8 @@ export const officialStaffList: Teacher[] = [
     role: 'PhoHieuTruong',
     customReductionPeriods: 0,
     baseStandardPeriods: 4,
-    duties: [
-      {
-        id: 'duty-bgh4-pht',
-        type: 'PhoHieuTruong',
-        name: 'Phó Hiệu trưởng',
-        reductionPeriods: 0,
-        notes: 'Phó Hiệu trưởng (Định mức 4 tiết/tuần theo quy định)'
-      }
-    ],
-    notes: 'Phó Hiệu trưởng (THCSTK) - Môn dạy: KHTN (Định mức 4t/tuần)',
+    duties: [],
+    notes: 'Phó Hiệu trưởng (THCSTK) - Môn dạy: KHTN (Định mức 4t/tuần, không tính tiết kiêm nhiệm)',
   },
 
   // ==========================================
