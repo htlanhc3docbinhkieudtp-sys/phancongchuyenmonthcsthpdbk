@@ -235,7 +235,7 @@ export function calculateTeacherSingleWeek(
 
     // Check if this class has a special topic (Chuyên đề học tập) taught by this teacher
     let hasSpecialTopic = false;
-    if (cls && cls.grade === '12' && cls.specialTopics) {
+    if (cls && (cls.level === 'THPT' || cls.grade === '10' || cls.grade === '11' || cls.grade === '12') && cls.specialTopics) {
       for (const cd of Object.values(cls.specialTopics)) {
         if (cd && cd.teacherId === teacher.id) {
           const matchVan =
