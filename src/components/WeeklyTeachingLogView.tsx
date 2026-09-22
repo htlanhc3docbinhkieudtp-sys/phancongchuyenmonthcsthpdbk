@@ -707,7 +707,11 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                   • <strong>Khối 9 (52t/năm - HK1: 18t, HK2: 34t)</strong>: Tuần 1–18 dạy 1 tiết/tuần. Phân công: Cô <strong>Trần Thị Cẩm</strong> (9A1–9A3, HK1: 54t), Cô <strong>Lê Kim Ngân</strong> (9A4–9A6, HK1: 54t), Cô <strong>Nguyễn Thị Ngọc Diễm</strong> (9A7–9A10, HK1: 72t).
                 </p>
                 <p>
-                  • <strong>Điều chỉnh HĐTNHN Khối 8 từ Tuần 4</strong>: Thầy <strong>Thái Văn Tiến</strong> nhận thêm HĐTNHN lớp 8A9, 8A10 (4 tiết/tuần) từ Thầy <strong>Phan Văn Tặt</strong> (Tuần 1–3: Thầy Tặt 27t/w, Thầy Tiến 0t; Tuần 4–8: Thầy Tặt 23t/w, Thầy Tiến 4t/w; Tuần 9–18: Thầy Tặt 19t/w, Thầy Tiến 4t/w).
+                  • <strong>Lịch học TC Chính trị Thầy Thái Văn Tiến & Phân công dạy thay (từ Tuần 4)</strong>:
+                  <br />
+                  - <em>15 tuần Ở NHÀ</em> (HK1: Tuần 3, 4, 7, 8, 11, 12, 15, 16; HK2: Tuần 20, 22, 26, 27, 30, 31, 34): Thầy Tiến dạy đủ 4 lớp Sinh 8 (8A7–8A10) và 4 lớp HĐTNHN (8A7–8A10, 8 tiết/tuần).
+                  <br />
+                  - <em>20 tuần ĐI HỌC</em> (HK1: Tuần 1, 2, 5, 6, 9, 10, 13, 14, 17, 18; HK2: Tuần 19, 21, 23, 24, 25, 28, 29, 32, 33, 35): Cô <strong>Đinh Thị Giàu</strong> dạy thay 4 lớp Sinh 8; Thầy <strong>Phan Văn Tặt</strong> dạy thay 4 lớp HĐTNHN (8 tiết/tuần); Thầy <strong>Thái Văn Tiến</strong> được tính đủ 19 tiết định mức theo quy định Thông tư 05.
                 </p>
               </div>
             </div>

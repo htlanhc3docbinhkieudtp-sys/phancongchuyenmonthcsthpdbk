@@ -189,8 +189,8 @@ export const KHTN_8_CLASS_ASSIGNMENTS: KhtnClassAssignment[] = [
     lyTeacherName: 'Nguyễn Thị Bích Phượng',
     hoaTeacherId: 'tch-khtn-15',
     hoaTeacherName: 'Võ Ngọc Đình Văn',
-    sinhTeacherId: 'tch-khtn-15',
-    sinhTeacherName: 'Võ Ngọc Đình Văn',
+    sinhTeacherId: 'tch-khtn-2',
+    sinhTeacherName: 'Thái Văn Tiến',
   },
   {
     classId: 'cls-8a8',
@@ -201,8 +201,8 @@ export const KHTN_8_CLASS_ASSIGNMENTS: KhtnClassAssignment[] = [
     lyTeacherName: 'Nguyễn Thị Bích Phượng',
     hoaTeacherId: 'tch-khtn-15',
     hoaTeacherName: 'Võ Ngọc Đình Văn',
-    sinhTeacherId: 'tch-khtn-15',
-    sinhTeacherName: 'Võ Ngọc Đình Văn',
+    sinhTeacherId: 'tch-khtn-2',
+    sinhTeacherName: 'Thái Văn Tiến',
   },
   {
     classId: 'cls-8a9',
@@ -213,8 +213,8 @@ export const KHTN_8_CLASS_ASSIGNMENTS: KhtnClassAssignment[] = [
     lyTeacherName: 'Nguyễn Thị Bích Phượng',
     hoaTeacherId: 'tch-khtn-15',
     hoaTeacherName: 'Võ Ngọc Đình Văn',
-    sinhTeacherId: 'tch-khtn-15',
-    sinhTeacherName: 'Võ Ngọc Đình Văn',
+    sinhTeacherId: 'tch-khtn-2',
+    sinhTeacherName: 'Thái Văn Tiến',
   },
   {
     classId: 'cls-8a10',
@@ -225,10 +225,19 @@ export const KHTN_8_CLASS_ASSIGNMENTS: KhtnClassAssignment[] = [
     lyTeacherName: 'Nguyễn Thị Bích Phượng',
     hoaTeacherId: 'tch-khtn-15',
     hoaTeacherName: 'Võ Ngọc Đình Văn',
-    sinhTeacherId: 'tch-khtn-15',
-    sinhTeacherName: 'Võ Ngọc Đình Văn',
+    sinhTeacherId: 'tch-khtn-2',
+    sinhTeacherName: 'Thái Văn Tiến',
   },
 ];
+
+/**
+ * Lịch học Trung cấp chính trị của Thầy Thái Văn Tiến (15 tuần Ở NHÀ):
+ * - HK1: Tuần 3, 4, 7, 8, 11, 12, 15, 16
+ * - HK2: Tuần 20, 22, 26, 27, 30, 31, 34
+ */
+export const THAY_TIEN_AT_HOME_WEEKS = new Set<number>([
+  3, 4, 7, 8, 11, 12, 15, 16, 20, 22, 26, 27, 30, 31, 34,
+]);
 
 export const KHTN_9_CLASS_ASSIGNMENTS: KhtnClassAssignment[] = [
   {

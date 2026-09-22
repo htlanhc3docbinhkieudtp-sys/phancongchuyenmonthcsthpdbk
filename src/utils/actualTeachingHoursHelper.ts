@@ -13,6 +13,7 @@ import {
   KHTN_9_WEEKS,
   KHTN_8_CLASS_ASSIGNMENTS,
   KHTN_9_CLASS_ASSIGNMENTS,
+  THAY_TIEN_AT_HOME_WEEKS,
 } from '../data/khtnCurriculumSchedule';
 import {
   CONG_NGHE_8_WEEKS,
@@ -399,20 +400,30 @@ export function adjustLsdlSlotsForWeek(
 }
 
 /**
- * Adjust teacher assignments for specific weeks based on official school reassignments:
- * - Từ Tuần 4 trở đi (weekNumber >= 4):
- *   Thầy Thái Văn Tiến (tch-khtn-2) nhận thêm môn HĐTNHN lớp 8A9, 8A10 từ Thầy Phan Văn Tặt (tch-khtn-26).
+ * Adjust teacher assignments for specific weeks based on official school reassignments & study schedule:
+ * 1. Phân công chuyên môn chính thức từ Tuần 4 của Thầy Thái Văn Tiến:
+ *    - 4 lớp Sinh học Khối 8: 8A7, 8A8, 8A9, 8A10
+ *    - 4 lớp HĐTNHN Khối 8: 8A7, 8A8, 8A9, 8A10 (nhận thêm 8A9, 8A10 từ Thầy Phan Văn Tặt)
+ * 2. Lịch học Trung cấp chính trị của Thầy Thái Văn Tiến:
+ *    - Khi Thầy Tiến Ở NHÀ (15 tuần: 3, 4, 7, 8, 11, 12, 15, 16 ở HK1; 20, 22, 26, 27, 30, 31, 34 ở HK2):
+ *      Thầy Tiến dạy đủ các lớp theo phân công chuyên môn từ Tuần 4 (Sinh 8: 8A7-8A10, HĐTNHN: 8A7-8A10).
+ *    - Khi Thầy Tiến ĐI HỌC (các tuần còn lại):
+ *      + Cô Đinh Thị Giàu (tch-khtn-20) dạy thay 4 lớp Sinh 8 (8A7, 8A8, 8A9, 8A10).
+ *      + Thầy Phan Văn Tặt (tch-khtn-26) dạy thay 4 lớp HĐTNHN (8A7, 8A8, 8A9, 8A10).
+ *      + Thầy Tiến được tính đủ 19 tiết định mức theo quy định Thông tư 05 dù thực tế không đi dạy.
  */
 export function adjustTeacherAssignmentsForWeek(
   slots: TimetableSlot[],
   weekNumber: number
 ): TimetableSlot[] {
-  if (weekNumber < 4) {
-    return slots;
-  }
+  const isTienAtHome = THAY_TIEN_AT_HOME_WEEKS.has(weekNumber);
 
   return slots.map((slot) => {
     const isTargetClass =
+      slot.className === '8A7' ||
+      slot.classId === 'cls-8a7' ||
+      slot.className === '8A8' ||
+      slot.classId === 'cls-8a8' ||
       slot.className === '8A9' ||
       slot.classId === 'cls-8a9' ||
       slot.className === '8A10' ||
@@ -420,24 +431,58 @@ export function adjustTeacherAssignmentsForWeek(
 
     if (!isTargetClass) return slot;
 
-    const isTat =
-      slot.teacherId === 'tch-khtn-26' ||
-      (slot.teacherName && slot.teacherName.includes('Tặt'));
+    // 1. Phân môn Sinh học Khối 8 cho 4 lớp 8A7, 8A8, 8A9, 8A10
+    const isSinh =
+      slot.subjectId === 'sub-sinh' ||
+      slot.subjectName?.includes('Sinh học');
 
-    if (!isTat) return slot;
+    if (isSinh) {
+      if (isTienAtHome) {
+        // Thầy Tiến ở nhà dạy Sinh 8
+        return {
+          ...slot,
+          teacherId: 'tch-khtn-2',
+          teacherName: 'Thái Văn Tiến',
+          teacherCode: 'Tiến.TV (TP-8A7)',
+        };
+      } else {
+        // Thầy Tiến đi học -> Cô Đinh Thị Giàu dạy thay Sinh 8
+        return {
+          ...slot,
+          teacherId: 'tch-khtn-20',
+          teacherName: 'Đinh Thị Giàu',
+          teacherCode: 'Giàu.ĐT (9A8)',
+        };
+      }
+    }
 
+    // 2. Môn HĐTNHN Khối 8 cho 4 lớp 8A7, 8A8, 8A9, 8A10
     const isHdtn =
       slot.subjectId?.includes('hdtn') ||
       slot.subjectName?.includes('HĐTNHN') ||
       slot.subjectName?.includes('Hoạt động trải nghiệm');
 
     if (isHdtn) {
-      return {
-        ...slot,
-        teacherId: 'tch-khtn-2',
-        teacherName: 'Thái Văn Tiến',
-        teacherCode: 'Tiến.TV (TP-8A7)',
-      };
+      // Từ tuần 4 trở đi, Thầy Tiến chính thức nhận 4 lớp HĐTNHN (8A7, 8A8, 8A9, 8A10)
+      if (weekNumber >= 4) {
+        if (isTienAtHome) {
+          // Thầy Tiến ở nhà dạy 4 lớp HĐTNHN
+          return {
+            ...slot,
+            teacherId: 'tch-khtn-2',
+            teacherName: 'Thái Văn Tiến',
+            teacherCode: 'Tiến.TV (TP-8A7)',
+          };
+        } else {
+          // Thầy Tiến đi học -> Thầy Phan Văn Tặt dạy thay 4 lớp HĐTNHN
+          return {
+            ...slot,
+            teacherId: 'tch-khtn-26',
+            teacherName: 'Phan Văn Tặt',
+            teacherCode: 'Tặt.PV',
+          };
+        }
+      }
     }
 
     return slot;
@@ -773,8 +818,19 @@ export function calculateTeacherSingleWeek(
   }
 
   const teachingPeriods = rows.reduce((sum, r) => sum + r.periods, 0);
-  const totalPeriods = teachingPeriods + reductionPeriods;
-  const weeklyBalance = totalPeriods - standardPeriods;
+  let totalPeriods = teachingPeriods + reductionPeriods;
+  let weeklyBalance = totalPeriods - standardPeriods;
+
+  // Trường hợp đặc biệt: Thầy Thái Văn Tiến học Trung cấp chính trị theo Thông tư 05
+  // Trong các tuần đi học, Thầy Tiến được tính đủ 19 tiết định mức dù thực tế không đi dạy.
+  const isTien = teacher.id === 'tch-khtn-2' || teacher.name === 'Thái Văn Tiến';
+  if (isTien && !THAY_TIEN_AT_HOME_WEEKS.has(weekNumber)) {
+    if (!dutyList.includes('Đi học TC Chính trị (tính đủ 19t định mức theo TT 05)')) {
+      dutyList.push('Đi học TC Chính trị (tính đủ 19t định mức theo TT 05)');
+    }
+    totalPeriods = standardPeriods;
+    weeklyBalance = 0;
+  }
 
   return {
     rows,
