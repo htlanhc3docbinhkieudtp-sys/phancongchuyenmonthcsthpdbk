@@ -202,6 +202,15 @@ export default function App() {
           }
         }
 
+        if (t.id === 'tch-khtn-9' || t.name === 'Trần Thị Kiều') {
+          return {
+            ...updated,
+            name: 'Trần Thị Kiều',
+            code: 'Kiều.TT (10CB2)',
+            role: 'GVBM',
+            duties: []
+          };
+        }
         if (t.id === 'tch-td-2' || t.name === 'Nguyễn Kim Rang' || t.name === 'Đặng Văn Rạng') {
           return { ...updated, name: 'Nguyễn Kim Rạng', code: 'Rạng.NK (TP)', role: 'ToPho', campus: 'THPTDBK' };
         }

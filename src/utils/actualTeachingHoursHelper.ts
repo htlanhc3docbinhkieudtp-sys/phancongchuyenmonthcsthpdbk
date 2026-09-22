@@ -723,6 +723,7 @@ export function calculateTeacherSingleWeek(
       teacher.duties.forEach((d) => {
         // Loại bỏ nếu có nhầm lẫn loại HieuTruong / PhoHieuTruong trong duties
         if (d.type === 'HieuTruong' || d.type === 'PhoHieuTruong') return;
+        if ((teacher.id === 'tch-khtn-9' || teacher.name === 'Trần Thị Kiều') && d.type === 'ConNho') return;
         let red = d.reductionPeriods;
         if (red === undefined || red === null) {
           if (d.type === 'ToTruong') red = 3;
@@ -767,7 +768,7 @@ export function calculateTeacherSingleWeek(
         reductionPeriods += 4;
       }
 
-      if (teacher.role === 'ConNho' || teacher.code?.toLowerCase().includes('con nhỏ')) {
+      if ((teacher.role === 'ConNho' || teacher.code?.toLowerCase().includes('con nhỏ')) && teacher.id !== 'tch-khtn-9' && teacher.name !== 'Trần Thị Kiều') {
         if (!dutyList.includes('Con nhỏ')) dutyList.push('Con nhỏ');
         reductionPeriods += 3;
       }

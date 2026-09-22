@@ -897,24 +897,16 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-khtn-9',
     name: 'Trần Thị Kiều',
-    code: 'Kiều.TT (Con nhỏ-10CB2)',
+    code: 'Kiều.TT (10CB2)',
     gender: 'Nữ',
     birthDate: '11/18/1980',
     campus: 'THPTDBK',
     departmentId: 'dept-khtn',
     primarySubjectId: 'sub-hoa',
-    role: 'ConNho',
-    duties: [
-      {
-        id: 'duty-k9-connho',
-        type: 'ConNho',
-        name: 'Con nhỏ',
-        reductionPeriods: 3,
-        notes: 'Nuôi con nhỏ dưới 36 tháng tuổi (-3t)'
-      }
-    ],
+    role: 'GVBM',
+    duties: [],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Hóa (Khối 10-12) - GVCN 10CB2 - Nuôi con nhỏ',
+    notes: 'THPTDBK - Hóa (Khối 10-12) - GVCN 10CB2',
   },
   {
     id: 'tch-khtn-10',
