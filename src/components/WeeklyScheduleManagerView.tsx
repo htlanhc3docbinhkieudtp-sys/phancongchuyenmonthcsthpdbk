@@ -30,6 +30,7 @@ import { buildTHPTWeek1Slots } from '../data/thptWeek1Timetable';
 import { buildTHCSDBKWeek1Slots } from '../data/thcsDBKWeek1Timetable';
 import { buildTHCSTKWeek1Slots } from '../data/thcsTKWeek1Timetable';
 import { normalizeTimetableSlots } from '../utils/timetableHelper';
+import { getSlotsForWeek } from '../utils/actualTeachingHoursHelper';
 import {
   Calendar,
   ChevronLeft,
@@ -151,17 +152,24 @@ export const WeeklyScheduleManagerView: React.FC<WeeklyScheduleManagerViewProps>
   } | null>(null);
 
   // Effective timetable slots for the currently selected week
-  // For Week 2: guaranteed 1,538 slots
+  // Auto-applies dynamic curriculum & teacher adjustments (KHTN, CN, LSDL, and Teacher reassignments)
   const effectiveSlots = useMemo(() => {
-    const customSlots = weeklyTimetables?.[selectedWeek]?.slots;
-    if (customSlots && customSlots.length > 0) {
-      return normalizeTimetableSlots(customSlots);
+    if (selectedWeek === 1 && (!weeklyTimetables || !weeklyTimetables[1]?.slots?.length) && (!timetableSlots || timetableSlots.length === 0)) {
+      return normalizeTimetableSlots([
+        ...buildTHPTWeek1Slots(),
+        ...buildTHCSDBKWeek1Slots(),
+        ...buildTHCSTKWeek1Slots()
+      ]);
     }
-    if (selectedWeek === 2) {
-      return normalizeTimetableSlots(OFFICIAL_WEEK_2_SLOTS);
-    }
-    if (timetableSlots && timetableSlots.length > 0) {
-      return normalizeTimetableSlots(timetableSlots);
+    const slots = getSlotsForWeek(
+      selectedWeek,
+      weeklyTimetables,
+      timetableSlots && timetableSlots.length > 0
+        ? ({ id: `tb-${selectedWeek}`, weekNumber: selectedWeek, slots: timetableSlots } as any)
+        : undefined
+    );
+    if (slots && slots.length > 0) {
+      return normalizeTimetableSlots(slots);
     }
     return normalizeTimetableSlots([
       ...buildTHPTWeek1Slots(),

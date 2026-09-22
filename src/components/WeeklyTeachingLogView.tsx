@@ -706,6 +706,9 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                 <p>
                   • <strong>Khối 9 (52t/năm - HK1: 18t, HK2: 34t)</strong>: Tuần 1–18 dạy 1 tiết/tuần. Phân công: Cô <strong>Trần Thị Cẩm</strong> (9A1–9A3, HK1: 54t), Cô <strong>Lê Kim Ngân</strong> (9A4–9A6, HK1: 54t), Cô <strong>Nguyễn Thị Ngọc Diễm</strong> (9A7–9A10, HK1: 72t).
                 </p>
+                <p>
+                  • <strong>Điều chỉnh HĐTNHN Khối 8 từ Tuần 4</strong>: Thầy <strong>Thái Văn Tiến</strong> nhận thêm HĐTNHN lớp 8A9, 8A10 (4 tiết/tuần) từ Thầy <strong>Phan Văn Tặt</strong> (Tuần 1–3: Thầy Tặt 27t/w, Thầy Tiến 0t; Tuần 4–8: Thầy Tặt 23t/w, Thầy Tiến 4t/w; Tuần 9–18: Thầy Tặt 19t/w, Thầy Tiến 4t/w).
+                </p>
               </div>
             </div>
           </div>

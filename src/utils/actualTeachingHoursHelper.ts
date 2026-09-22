@@ -399,6 +399,52 @@ export function adjustLsdlSlotsForWeek(
 }
 
 /**
+ * Adjust teacher assignments for specific weeks based on official school reassignments:
+ * - Từ Tuần 4 trở đi (weekNumber >= 4):
+ *   Thầy Thái Văn Tiến (tch-khtn-2) nhận thêm môn HĐTNHN lớp 8A9, 8A10 từ Thầy Phan Văn Tặt (tch-khtn-26).
+ */
+export function adjustTeacherAssignmentsForWeek(
+  slots: TimetableSlot[],
+  weekNumber: number
+): TimetableSlot[] {
+  if (weekNumber < 4) {
+    return slots;
+  }
+
+  return slots.map((slot) => {
+    const isTargetClass =
+      slot.className === '8A9' ||
+      slot.classId === 'cls-8a9' ||
+      slot.className === '8A10' ||
+      slot.classId === 'cls-8a10';
+
+    if (!isTargetClass) return slot;
+
+    const isTat =
+      slot.teacherId === 'tch-khtn-26' ||
+      (slot.teacherName && slot.teacherName.includes('Tặt'));
+
+    if (!isTat) return slot;
+
+    const isHdtn =
+      slot.subjectId?.includes('hdtn') ||
+      slot.subjectName?.includes('HĐTNHN') ||
+      slot.subjectName?.includes('Hoạt động trải nghiệm');
+
+    if (isHdtn) {
+      return {
+        ...slot,
+        teacherId: 'tch-khtn-2',
+        teacherName: 'Thái Văn Tiến',
+        teacherCode: 'Tiến.TV (TP-8A7)',
+      };
+    }
+
+    return slot;
+  });
+}
+
+/**
  * Get timetable slots for a specific week
  */
 export function getSlotsForWeek(
@@ -423,7 +469,8 @@ export function getSlotsForWeek(
 
   const khtnAdjusted = adjustKhtnSlotsForWeek(baseSlots, weekNumber);
   const cnAdjusted = adjustCongNgheSlotsForWeek(khtnAdjusted, weekNumber);
-  return adjustLsdlSlotsForWeek(cnAdjusted, weekNumber);
+  const lsdlAdjusted = adjustLsdlSlotsForWeek(cnAdjusted, weekNumber);
+  return adjustTeacherAssignmentsForWeek(lsdlAdjusted, weekNumber);
 }
 
 /**

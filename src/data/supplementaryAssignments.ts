@@ -1621,9 +1621,9 @@ export const supplementaryAssignments: Assignment[] = [
     "id": "as-tkb-cls-8a9-sub-hdtn-cd",
     "classId": "cls-8a9",
     "subjectId": "sub-hdtn-cd",
-    "teacherId": "tch-khtn-26",
+    "teacherId": "tch-khtn-2",
     "periodsPerWeek": 1,
-    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần (Thầy Thái Văn Tiến nhận từ Thầy Phan Văn Tặt từ Tuần 4)"
   },
   {
     "id": "as-tkb-cls-8a9-sub-toan",
@@ -1717,17 +1717,17 @@ export const supplementaryAssignments: Assignment[] = [
     "id": "as-tkb-cls-8a9-sub-hdtn-shl",
     "classId": "cls-8a9",
     "subjectId": "sub-hdtn-shl",
-    "teacherId": "tch-khtn-26",
+    "teacherId": "tch-khtn-2",
     "periodsPerWeek": 1,
-    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần (Thầy Thái Văn Tiến nhận từ Thầy Phan Văn Tặt từ Tuần 4)"
   },
   {
     "id": "as-tkb-cls-8a10-sub-hdtn-cd",
     "classId": "cls-8a10",
     "subjectId": "sub-hdtn-cd",
-    "teacherId": "tch-khtn-26",
+    "teacherId": "tch-khtn-2",
     "periodsPerWeek": 1,
-    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần"
+    "note": "HĐTNHN (Chuyên đề) - 1 tiết/tuần (Thầy Thái Văn Tiến nhận từ Thầy Phan Văn Tặt từ Tuần 4)"
   },
   {
     "id": "as-tkb-cls-8a10-sub-anh",
@@ -1821,9 +1821,9 @@ export const supplementaryAssignments: Assignment[] = [
     "id": "as-tkb-cls-8a10-sub-hdtn-shl",
     "classId": "cls-8a10",
     "subjectId": "sub-hdtn-shl",
-    "teacherId": "tch-khtn-26",
+    "teacherId": "tch-khtn-2",
     "periodsPerWeek": 1,
-    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần"
+    "note": "HĐTNHN (Sinh hoạt lớp) - 1 tiết/tuần (Thầy Thái Văn Tiến nhận từ Thầy Phan Văn Tặt từ Tuần 4)"
   },
   {
     "id": "as-tkb-cls-9a7-sub-hdtn-cd",
