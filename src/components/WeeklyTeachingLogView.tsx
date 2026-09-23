@@ -707,6 +707,13 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                   • <strong>Khối 9 (52t/năm - HK1: 18t, HK2: 34t)</strong>: Tuần 1–18 dạy 1 tiết/tuần. Phân công: Cô <strong>Trần Thị Cẩm</strong> (9A1–9A3, HK1: 54t), Cô <strong>Lê Kim Ngân</strong> (9A4–9A6, HK1: 54t), Cô <strong>Nguyễn Thị Ngọc Diễm</strong> (9A7–9A10, HK1: 72t).
                 </p>
                 <p>
+                  • <strong>Quy định môn Hoạt động trải nghiệm, hướng nghiệp (HĐTNHN)</strong>:
+                  <br />
+                  - <em>Cấp THPT</em>: Tính <strong>2 tiết/lớp/tuần</strong> (hiển thị <em>'Hoạt động trải nghiệm, hướng nghiệp'</em>).
+                  <br />
+                  - <em>Cấp THCS</em>: Chia nhỏ chi tiết theo phân công chuyên môn: <strong>HĐTNHN (Chuyên đề)</strong> tính <strong>1 tiết/lớp/tuần</strong> và <strong>HĐTNHN (Quy mô lớp)</strong> tính <strong>1 tiết/lớp/tuần</strong> giúp kiểm tra, đối soát chính xác theo từng tuần.
+                </p>
+                <p>
                   • <strong>Lịch học TC Chính trị Thầy Thái Văn Tiến & Phân công dạy thay (từ Tuần 4)</strong>:
                   <br />
                   - <em>15 tuần Ở NHÀ</em> (HK1: Tuần 3, 4, 7, 8, 11, 12, 15, 16; HK2: Tuần 20, 22, 26, 27, 30, 31, 34): Thầy Tiến dạy đủ 4 lớp Sinh 8 (8A7–8A10) và 4 lớp HĐTNHN (8A7–8A10, 8 tiết/tuần).

@@ -211,6 +211,18 @@ export default function App() {
             duties: []
           };
         }
+        if (t.id === 'tch-td-5' || t.name === 'Lê Minh Đạt') {
+          return {
+            ...updated,
+            name: 'Lê Minh Đạt',
+            code: 'Đạt.LM',
+            role: 'GVBM',
+            campus: 'THCSDBK',
+            duties: [],
+            baseStandardPeriods: 19,
+            notes: 'THCSDBK - Mỹ thuật (Khối 6-9)'
+          };
+        }
         if (t.id === 'tch-td-2' || t.name === 'Nguyễn Kim Rang' || t.name === 'Đặng Văn Rạng') {
           return { ...updated, name: 'Nguyễn Kim Rạng', code: 'Rạng.NK (TP)', role: 'ToPho', campus: 'THPTDBK' };
         }

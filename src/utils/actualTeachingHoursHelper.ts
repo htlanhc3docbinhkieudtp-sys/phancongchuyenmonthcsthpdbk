@@ -77,16 +77,53 @@ export interface TeacherActualWorkload {
 /**
  * Format subject display name cleanly
  */
-export function formatActualSubjectName(subName: string): string {
+/**
+ * Format subject display name cleanly according to educational level
+ * - Cấp THPT: Môn Hoạt động trải nghiệm, hướng nghiệp tính 2 tiết/lớp/tuần
+ * - Cấp THCS: Phân tách rõ ràng:
+ *   + HĐTNHN (Chuyên đề) - 1 tiết/lớp/tuần
+ *   + HĐTNHN (Quy mô lớp) - 1 tiết/lớp/tuần
+ */
+export function formatActualSubjectName(
+  subName: string,
+  level?: 'THPT' | 'THCS'
+): string {
   if (!subName) return 'Khác';
   const s = subName.trim();
-  if (
+  const isHdtn =
     s.includes('HĐTN') ||
     s.includes('HĐ TN') ||
-    s.includes('Hoạt động trải nghiệm')
-  ) {
-    return 'Hoạt động trải nghiệm hướng nghiệp';
+    s.includes('Hoạt động trải nghiệm') ||
+    s.includes('HDTN') ||
+    s.includes('HĐ CĐ') ||
+    s.includes('HĐ QML');
+
+  if (isHdtn) {
+    if (level === 'THPT') {
+      return 'Hoạt động trải nghiệm, hướng nghiệp';
+    } else {
+      // Cấp THCS: phân biệt rõ giữa Chuyên đề (1 tiết/lớp/tuần) và Quy mô lớp (1 tiết/lớp/tuần)
+      if (
+        s.includes('Quy mô lớp') ||
+        s.includes('QML') ||
+        s.includes('quy mô lớp') ||
+        s.includes('Lớp') ||
+        s.includes('lớp')
+      ) {
+        return 'HĐTNHN (Quy mô lớp)';
+      }
+      if (
+        s.includes('Chuyên đề') ||
+        s.includes('CĐ') ||
+        s.includes('chuyên đề') ||
+        s.includes('Chủ đề')
+      ) {
+        return 'HĐTNHN (Chuyên đề)';
+      }
+      return 'HĐTNHN (Chuyên đề)';
+    }
   }
+
   if (s === 'Toán học') return 'Toán';
   if (s.includes('GD QP') || s.includes('GDQP')) {
     return 'GD Quốc phòng & An ninh';
@@ -580,11 +617,13 @@ export function calculateTeacherSingleWeek(
   const isLeader = isHT || isPHT;
 
   const isTPT =
-    teacher.role === 'TongPhuTrachDoi' ||
-    teacher.code?.includes('(TPT') ||
-    teacher.notes?.toLowerCase().includes('tổng phụ trách') ||
-    teacher.duties?.some((d) => d.type === 'TongPhuTrachDoi') ||
-    teacher.baseStandardPeriods === 6;
+    (teacher.role === 'TongPhuTrachDoi' ||
+      teacher.code?.includes('(TPT') ||
+      teacher.notes?.toLowerCase().includes('tổng phụ trách') ||
+      teacher.duties?.some((d) => d.type === 'TongPhuTrachDoi') ||
+      teacher.baseStandardPeriods === 6) &&
+    teacher.id !== 'tch-td-5' &&
+    teacher.name !== 'Lê Minh Đạt';
 
   let standardPeriods = isTHPT
     ? config.standardThptPeriods || 17
@@ -649,7 +688,16 @@ export function calculateTeacherSingleWeek(
 
   for (const item of classSubCount.values()) {
     const cls = classMap.get(item.classId);
-    const subFormatted = formatActualSubjectName(item.subjectName);
+    const isThptClass =
+      cls?.level === 'THPT' ||
+      cls?.grade === '10' ||
+      cls?.grade === '11' ||
+      cls?.grade === '12' ||
+      item.className.startsWith('10') ||
+      item.className.startsWith('11') ||
+      item.className.startsWith('12');
+    const classLevel: 'THPT' | 'THCS' = isThptClass ? 'THPT' : 'THCS';
+    const subFormatted = formatActualSubjectName(item.subjectName, classLevel);
 
     // Check if this class has a special topic (Chuyên đề học tập) taught by this teacher
     let hasSpecialTopic = false;
@@ -724,6 +772,7 @@ export function calculateTeacherSingleWeek(
         // Loại bỏ nếu có nhầm lẫn loại HieuTruong / PhoHieuTruong trong duties
         if (d.type === 'HieuTruong' || d.type === 'PhoHieuTruong') return;
         if ((teacher.id === 'tch-khtn-9' || teacher.name === 'Trần Thị Kiều') && d.type === 'ConNho') return;
+        if ((teacher.id === 'tch-td-5' || teacher.name === 'Lê Minh Đạt') && (d.type === 'TongPhuTrachDoi' || d.name?.includes('Tổng phụ trách'))) return;
         let red = d.reductionPeriods;
         if (red === undefined || red === null) {
           if (d.type === 'ToTruong') red = 3;
@@ -788,14 +837,15 @@ export function calculateTeacherSingleWeek(
 
   // Convert groups into rows
   const rows: TeacherSubjectRow[] = [];
-  // Sort order: Core subjects first, then Chuyên đề, then HĐTN
+  // Sort order: Core subjects first, then Chuyên đề học tập, then HĐTNHN
   const sortedGroupEntries = Array.from(groups.entries()).sort((a, b) => {
-    const isCdA = a[0].includes('Chuyên đề');
-    const isCdB = b[0].includes('Chuyên đề');
-    const isHdA = a[0].includes('Hoạt động trải nghiệm');
-    const isHdB = b[0].includes('Hoạt động trải nghiệm');
-    if (isCdA && !isCdB) return 1;
-    if (!isCdA && isCdB) return -1;
+    const isCdMonA = a[0].startsWith('Chuyên đề học tập');
+    const isCdMonB = b[0].startsWith('Chuyên đề học tập');
+    const isHdA = a[0].includes('Hoạt động trải nghiệm') || a[0].includes('HĐTNHN');
+    const isHdB = b[0].includes('Hoạt động trải nghiệm') || b[0].includes('HĐTNHN');
+
+    if (isCdMonA && !isCdMonB && !isHdB) return 1;
+    if (!isCdMonA && isCdMonB && !isHdA) return -1;
     if (isHdA && !isHdB) return 1;
     if (!isHdA && isHdB) return -1;
     return a[0].localeCompare(b[0], 'vi');

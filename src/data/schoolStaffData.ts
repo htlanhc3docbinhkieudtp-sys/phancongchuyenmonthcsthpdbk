@@ -1465,24 +1465,16 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-td-5',
     name: 'Lê Minh Đạt',
-    code: 'Đạt.LM (TPT Đội)',
+    code: 'Đạt.LM',
     gender: 'Nam',
     birthDate: '10/10/1969',
     campus: 'THCSDBK',
     departmentId: 'dept-gdtc-qpan-nt',
     primarySubjectId: 'sub-my-thuat',
-    role: 'TongPhuTrachDoi',
-    duties: [
-      {
-        id: 'duty-td5-tpt',
-        type: 'TongPhuTrachDoi',
-        name: 'Tổng phụ trách Đội',
-        reductionPeriods: 13,
-        notes: 'Tổng phụ trách Đội (Định mức 6 tiết/tuần)'
-      }
-    ],
-    baseStandardPeriods: 6,
-    notes: 'THCSDBK - Tổng phụ trách Đội (Định mức 6t/tuần)',
+    role: 'GVBM',
+    duties: [],
+    baseStandardPeriods: 19,
+    notes: 'THCSDBK - Mỹ thuật (Khối 6-9)',
   },
   {
     id: 'tch-td-6',
