@@ -52,8 +52,24 @@ interface WeeklyTeachingLogViewProps {
 }
 
 type ViewMode = 'WEEKLY_DETAIL' | 'MULTI_WEEK';
-type LevelScope = 'THPT' | 'THCS' | 'ALL';
+export type LevelScope = 'THPT' | 'THCS' | 'THCS_DBK' | 'THCS_TK' | 'ALL';
 type StatusFilter = 'ALL' | 'SURPLUS' | 'EXACT' | 'DEFICIT';
+
+export const getScopeLabel = (scope: LevelScope): string => {
+  switch (scope) {
+    case 'THPT':
+      return 'Cấp THPT (Khối 10 - 12)';
+    case 'THCS_DBK':
+      return 'THCS Đốc Binh Kiều';
+    case 'THCS_TK':
+      return 'THCS Tân Kiều';
+    case 'THCS':
+      return 'Cấp THCS (Cả 2 điểm)';
+    case 'ALL':
+    default:
+      return 'Toàn trường';
+  }
+};
 
 const ADJUSTMENT_STORAGE_KEY = 'docbinhkieu_actual_teaching_hours_adjustments_v1';
 
@@ -190,9 +206,11 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   // Filter workloads based on Level, Department, Search, and Status
   const filteredWorkloads = useMemo(() => {
     return allWorkloads.filter((item) => {
-      // Level filter
+      // Level and campus filter
       if (levelScope === 'THPT' && item.level !== 'THPT') return false;
       if (levelScope === 'THCS' && item.level !== 'THCS') return false;
+      if (levelScope === 'THCS_DBK' && (item.level !== 'THCS' || item.campus !== 'THCSDBK')) return false;
+      if (levelScope === 'THCS_TK' && (item.level !== 'THCS' || item.campus !== 'THCSTK')) return false;
 
       // Department filter
       if (selectedDept !== 'ALL' && item.departmentId !== selectedDept)
@@ -232,12 +250,18 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     });
   }, [allWorkloads, levelScope, selectedDept, statusFilter, searchTerm]);
 
-  // Department list filtered by selected level
+  // Department list filtered by selected level / campus
   const availableDepartments = useMemo(() => {
     if (levelScope === 'ALL') return departments;
     const activeDeptIds = new Set(
       allWorkloads
-        .filter((w) => w.level === levelScope)
+        .filter((w) => {
+          if (levelScope === 'THPT') return w.level === 'THPT';
+          if (levelScope === 'THCS') return w.level === 'THCS';
+          if (levelScope === 'THCS_DBK') return w.level === 'THCS' && w.campus === 'THCSDBK';
+          if (levelScope === 'THCS_TK') return w.level === 'THCS' && w.campus === 'THCSTK';
+          return true;
+        })
         .map((w) => w.departmentId)
     );
     return departments.filter((d) => activeDeptIds.has(d.id));
@@ -372,7 +396,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
           {/* Level Scope Segmented Switch */}
           <div className="flex items-center gap-2">
-            <div className="inline-flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold">
+            <div className="inline-flex flex-wrap items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold gap-1">
               <button
                 id="btn-scope-thpt"
                 onClick={() => setLevelScope('THPT')}
@@ -382,32 +406,70 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <Check className="w-3.5 h-3.5" />
+                {levelScope === 'THPT' && <Check className="w-3.5 h-3.5" />}
                 Cấp THPT (Khối 10 - 12)
-                <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-white/20">
-                  Đang xem
-                </span>
+                {levelScope === 'THPT' && (
+                  <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-white/20">
+                    Đang xem
+                  </span>
+                )}
+              </button>
+              <button
+                id="btn-scope-thcs-dbk"
+                onClick={() => setLevelScope('THCS_DBK')}
+                className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
+                  levelScope === 'THCS_DBK'
+                    ? 'bg-emerald-600 text-white shadow-sm font-bold'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {levelScope === 'THCS_DBK' && <Check className="w-3.5 h-3.5" />}
+                THCS Đốc Binh Kiều
+                {levelScope === 'THCS_DBK' && (
+                  <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-white/20">
+                    Đang xem
+                  </span>
+                )}
+              </button>
+              <button
+                id="btn-scope-thcs-tk"
+                onClick={() => setLevelScope('THCS_TK')}
+                className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
+                  levelScope === 'THCS_TK'
+                    ? 'bg-emerald-600 text-white shadow-sm font-bold'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {levelScope === 'THCS_TK' && <Check className="w-3.5 h-3.5" />}
+                THCS Tân Kiều
+                {levelScope === 'THCS_TK' && (
+                  <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-white/20">
+                    Đang xem
+                  </span>
+                )}
               </button>
               <button
                 id="btn-scope-thcs"
                 onClick={() => setLevelScope('THCS')}
-                className={`px-3 py-1.5 rounded-lg transition-all ${
+                className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
                   levelScope === 'THCS'
                     ? 'bg-emerald-600 text-white shadow-sm font-bold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Cấp THCS (Khối 6 - 9)
+                {levelScope === 'THCS' && <Check className="w-3.5 h-3.5" />}
+                Cấp THCS (Cả 2 điểm)
               </button>
               <button
                 id="btn-scope-all"
                 onClick={() => setLevelScope('ALL')}
-                className={`px-3 py-1.5 rounded-lg transition-all ${
+                className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
                   levelScope === 'ALL'
                     ? 'bg-emerald-600 text-white shadow-sm font-bold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
+                {levelScope === 'ALL' && <Check className="w-3.5 h-3.5" />}
                 Toàn trường
               </button>
             </div>
@@ -619,7 +681,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 print:hidden">
         <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] text-slate-500 font-medium">
-            Số giáo viên ({levelScope})
+            Số giáo viên ({getScopeLabel(levelScope)})
           </span>
           <div className="text-lg font-bold text-slate-900 mt-0.5">
             {stats.totalTeachers} <span className="text-xs font-normal text-slate-400">GV</span>
@@ -741,7 +803,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
               <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
-                Bảng Số Tiết Thực Dạy • Tuần {selectedWeekNum} • {levelScope === 'THPT' ? 'Cấp THPT' : levelScope === 'THCS' ? 'Cấp THCS' : 'Toàn trường'}
+                Bảng Số Tiết Thực Dạy • Tuần {selectedWeekNum} • {getScopeLabel(levelScope)}
               </h2>
             </div>
             <div className="text-xs text-slate-500">
@@ -1017,7 +1079,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
               <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
               <div>
                 <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
-                  Bảng Tổng Hợp Thừa / Thiếu Tiết Dạy • {semesterName.toUpperCase()} ({startWeek === 1 ? 'Tuần 1 - 18' : 'Tuần 19 - 35'}, {totalWeeks} Tuần) • {levelScope === 'THPT' ? 'Cấp THPT' : levelScope === 'THCS' ? 'Cấp THCS' : 'Toàn trường'}
+                  Bảng Tổng Hợp Thừa / Thiếu Tiết Dạy • {semesterName.toUpperCase()} ({startWeek === 1 ? 'Tuần 1 - 18' : 'Tuần 19 - 35'}, {totalWeeks} Tuần) • {getScopeLabel(levelScope)}
                 </h2>
                 <div className="text-xs text-slate-500 mt-0.5">
                   Theo dõi số tiết thừa (+) hoặc thiếu (-) theo từng tuần và tổng hợp cả {semesterName}

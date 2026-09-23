@@ -235,6 +235,26 @@ export default function App() {
         if (t.id === 'tch-khtn-15' || t.name === 'Võ Ngọc Đỉnh Văn') {
           return { ...updated, name: 'Võ Ngọc Đình Văn', code: 'Văn.VNĐ' };
         }
+        if (t.id === 'tch-ls-12' || t.name === 'Nguyễn Thị Lý') {
+          return {
+            ...updated,
+            name: 'Nguyễn Thị Lý',
+            code: 'Lý.NT (TPT)',
+            role: 'TongPhuTrachDoi',
+            campus: 'THCSDBK',
+            baseStandardPeriods: 6,
+            notes: 'THCSDBK - Địa lý (Khối 6-9) - Tổng phụ trách Đội (Định mức 6 tiết)',
+            duties: [
+              {
+                id: 'duty-tch-ls-12-tpt',
+                type: 'TongPhuTrachDoi',
+                name: 'Tổng phụ trách Đội',
+                reductionPeriods: 0,
+                notes: 'Định mức 6 tiết/tuần theo Thông tư 05/2025'
+              }
+            ]
+          };
+        }
 
         // BGH Leadership standard teaching quota enforcement:
         // Hiệu trưởng: 2 tiết/tuần

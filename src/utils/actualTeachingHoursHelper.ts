@@ -789,7 +789,7 @@ export function calculateTeacherSingleWeek(
   // Xóa bỏ phần kiêm nhiệm và + tiết của lãnh đạo theo đúng chỉ đạo.
   if (!isLeader) {
     if (isTPT) {
-      dutyList.push('TPT Đội');
+      if (!dutyList.includes('TPT Đội')) dutyList.push('TPT Đội');
     }
 
     // 2. Kiểm tra danh sách kiêm nhiệm chính thức (teacher.duties)
@@ -799,6 +799,8 @@ export function calculateTeacherSingleWeek(
         if (d.type === 'HieuTruong' || d.type === 'PhoHieuTruong') return;
         if ((teacher.id === 'tch-khtn-9' || teacher.name === 'Trần Thị Kiều') && d.type === 'ConNho') return;
         if ((teacher.id === 'tch-td-5' || teacher.name === 'Lê Minh Đạt') && (d.type === 'TongPhuTrachDoi' || d.name?.includes('Tổng phụ trách'))) return;
+        // TPT Đội đã được add nhãn TPT Đội ở trên và định mức đã được hạ về 6 tiết/tuần
+        if (d.type === 'TongPhuTrachDoi' || d.name?.includes('Tổng phụ trách')) return;
         let red = d.reductionPeriods;
         if (red === undefined || red === null) {
           if (d.type === 'ToTruong') red = 3;

@@ -678,15 +678,24 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-ls-12',
     name: 'Nguyễn Thị Lý',
-    code: 'Lý.NT',
+    code: 'Lý.NT (TPT)',
     gender: 'Nữ',
     birthDate: '01/01/1989',
     campus: 'THCSDBK',
     departmentId: 'dept-khxh',
     primarySubjectId: 'sub-dia',
-    role: 'GVBM',
-    baseStandardPeriods: 19,
-    notes: 'THCSDBK - Địa lý (Khối 6-9)',
+    role: 'TongPhuTrachDoi',
+    duties: [
+      {
+        id: 'duty-tch-ls-12-tpt',
+        type: 'TongPhuTrachDoi',
+        name: 'Tổng phụ trách Đội',
+        reductionPeriods: 0,
+        notes: 'Định mức 6 tiết/tuần theo Thông tư 05/2025'
+      }
+    ],
+    baseStandardPeriods: 6,
+    notes: 'THCSDBK - Địa lý (Khối 6-9) - Tổng phụ trách Đội (Định mức 6 tiết)',
   },
   {
     id: 'tch-ls-13',
