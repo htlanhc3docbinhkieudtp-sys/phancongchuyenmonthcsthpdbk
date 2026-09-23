@@ -8,6 +8,7 @@ import {
   SchoolTimetable,
 } from '../types';
 import { OFFICIAL_WEEK_2_SLOTS } from '../data/officialWeek2Timetable';
+import { OFFICIAL_WEEK_3_SLOTS } from '../data/officialWeek3Timetable';
 import {
   KHTN_8_WEEKS,
   KHTN_9_WEEKS,
@@ -522,6 +523,25 @@ export function adjustTeacherAssignmentsForWeek(
       }
     }
 
+    // 3. Phân công môn GDTC Khối 8 từ Tuần 3 đến hết năm học:
+    // Lớp 8A3 GDTC được phân công cho Thầy Lê Văn Nguyên (Tổ trưởng)
+    if (weekNumber >= 3) {
+      const is8A3Gdtc =
+        (slot.className === '8A3' || slot.classId === 'cls-8a3') &&
+        (slot.subjectId === 'sub-gdtc' ||
+          slot.subjectName?.includes('thể chất') ||
+          slot.subjectName?.includes('Thể dục'));
+
+      if (is8A3Gdtc) {
+        return {
+          ...slot,
+          teacherId: 'tch-td-1',
+          teacherName: 'Lê Văn Nguyên',
+          teacherCode: 'Nguyên.LV (TT)',
+        };
+      }
+    }
+
     return slot;
   });
 }
@@ -537,12 +557,18 @@ export function getSlotsForWeek(
   let baseSlots: TimetableSlot[] = [];
   if (weeklyTimetables && weeklyTimetables[weekNumber]?.slots?.length > 0) {
     baseSlots = weeklyTimetables[weekNumber].slots;
+  } else if (weekNumber >= 3 && weeklyTimetables && weeklyTimetables[3]?.slots?.length > 0) {
+    baseSlots = weeklyTimetables[3].slots;
+  } else if (weekNumber >= 3 && OFFICIAL_WEEK_3_SLOTS?.length > 0) {
+    baseSlots = OFFICIAL_WEEK_3_SLOTS;
   } else if (weekNumber === 2 && OFFICIAL_WEEK_2_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_2_SLOTS;
   } else if (weeklyTimetables && weeklyTimetables[1]?.slots?.length > 0) {
     baseSlots = weeklyTimetables[1].slots;
   } else if (fallbackTimetable?.slots?.length > 0) {
     baseSlots = fallbackTimetable.slots;
+  } else if (OFFICIAL_WEEK_3_SLOTS?.length > 0) {
+    baseSlots = OFFICIAL_WEEK_3_SLOTS;
   } else if (OFFICIAL_WEEK_2_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_2_SLOTS;
   }

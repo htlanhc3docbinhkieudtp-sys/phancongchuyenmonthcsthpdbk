@@ -551,6 +551,12 @@ export default function App() {
         ) {
           return { ...a, teacherId: 'tch-ls-8', subjectId: 'sub-gdktpl' };
         }
+        if (
+          (a.classId === 'cls-8a3' || a.classId === '8A3') &&
+          (a.subjectId === 'sub-gdtc' || a.subjectId?.includes('td'))
+        ) {
+          return { ...a, teacherId: 'tch-td-1' };
+        }
         return a;
       });
       setAssignments(sanitizedAssignments);
@@ -1189,6 +1195,12 @@ export default function App() {
                 (a.teacherId === 'tch-bgh-1' && (a.subjectId.includes('kt') || a.subjectId.includes('pl')))
               ) {
                 return { ...a, teacherId: 'tch-ls-8', subjectId: 'sub-gdktpl' };
+              }
+              if (
+                (a.classId === 'cls-8a3' || a.classId === '8A3') &&
+                (a.subjectId === 'sub-gdtc' || a.subjectId?.includes('td'))
+              ) {
+                return { ...a, teacherId: 'tch-td-1' };
               }
               return a;
             });

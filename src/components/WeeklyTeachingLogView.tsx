@@ -720,6 +720,13 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                   <br />
                   - <em>20 tuần ĐI HỌC</em> (HK1: Tuần 1, 2, 5, 6, 9, 10, 13, 14, 17, 18; HK2: Tuần 19, 21, 23, 24, 25, 28, 29, 32, 33, 35): Cô <strong>Đinh Thị Giàu</strong> dạy thay 4 lớp Sinh 8; Thầy <strong>Phan Văn Tặt</strong> dạy thay 4 lớp HĐTNHN (8 tiết/tuần); Thầy <strong>Thái Văn Tiến</strong> được tính đủ 19 tiết định mức theo quy định Thông tư 05.
                 </p>
+                <p>
+                  • <strong>Phân công môn GDTC (Thể dục) tại điểm Đốc Binh Kiều (tính từ Tuần 3 đến hết năm học)</strong>:
+                  <br />
+                  - <strong>Thầy Lê Văn Nguyên (Tổ trưởng)</strong>: Dạy <strong>7 lớp GDTC</strong> (7A1, 7A2, 7A3, 7A5, 8A1, 8A2, 8A3) = <strong>14 tiết/tuần</strong>; Giảm trừ kiêm nhiệm Tổ trưởng <strong>3 tiết</strong> &rarr; Tổng tính: <strong>17 tiết/tuần</strong>.
+                  <br />
+                  - <strong>Thầy Huỳnh Thanh Dân (GVCN 8A6)</strong>: Dạy <strong>7 lớp GDTC</strong> (8A4, 8A5, 8A6, 9A3, 9A4, 9A5, 9A6) = <strong>14 tiết/tuần</strong> + Dạy 1 tiết HĐTNHN (Quy mô lớp 8A6) = <strong>15 tiết thực dạy</strong>; Giảm trừ kiêm nhiệm GVCN <strong>4 tiết</strong> &rarr; Tổng tính: <strong>19 tiết/tuần</strong> (Đạt đúng 100% định mức 19 tiết THCS).
+                </p>
               </div>
             </div>
           </div>
