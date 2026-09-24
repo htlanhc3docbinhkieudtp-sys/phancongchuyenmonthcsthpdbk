@@ -114,14 +114,30 @@ function safeLocalStorageSet(key: string, value: string): boolean {
 }
 
 export default function App() {
-  // Authentication State: Only Quản trị viên (Admin) is allowed access. Free guest view & teacher login are removed.
-  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
-    const legacyAdmin = localStorage.getItem(`${STORAGE_KEY}_is_admin`);
+  // Authentication & Role State:
+  // - 'guest': Chế độ xem tự do (Khách / Người ngoài) -> CHỈ ĐƯỢC XEM DUY NHẤT TAB THỜI KHÓA BIỂU
+  // - 'teacher': Giáo viên trường đăng nhập -> Được xem tự do tất cả các tab, KHÔNG được chỉnh sửa bất cứ gì
+  // - 'admin': Quản trị viên -> Toàn quyền quản trị và chỉnh sửa
+  const [userRole, setUserRole] = useState<'guest' | 'teacher' | 'admin'>(() => {
     const savedRole = localStorage.getItem(`${STORAGE_KEY}_user_role`);
-    return legacyAdmin === 'true' || savedRole === 'admin';
+    if (savedRole === 'admin') return 'admin';
+    if (savedRole === 'teacher') return 'teacher';
+    const legacyAdmin = localStorage.getItem(`${STORAGE_KEY}_is_admin`);
+    if (legacyAdmin === 'true') return 'admin';
+    return 'guest';
   });
 
+  const [teacherUser, setTeacherUser] = useState<string>(() => {
+    return localStorage.getItem(`${STORAGE_KEY}_teacher_name`) || '';
+  });
+
+  const isAdmin = userRole === 'admin';
+  const isTeacher = userRole === 'teacher';
+  const isGuest = userRole === 'guest';
+
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [loginModalMode, setLoginModalMode] = useState<'teacher' | 'admin'>('teacher');
+  const [loginPromptReason, setLoginPromptReason] = useState<string | null>(null);
 
   // Load saved state or default
   const [config, setConfig] = useState<SchoolConfig>(() => {
@@ -233,6 +249,32 @@ export default function App() {
         if (t.id === 'tch-khtn-15' || t.name === 'Võ Ngọc Đỉnh Văn') {
           return { ...updated, name: 'Võ Ngọc Đình Văn', code: 'Văn.VNĐ' };
         }
+        if (t.id === 'tch-td-6' || t.name === 'Lê Ngọc Ẩn') {
+          return {
+            ...updated,
+            name: 'Lê Ngọc Ẩn',
+            code: 'Ẩn.LN (7A4)',
+            role: 'GVBM',
+            campus: 'THCSDBK',
+            baseStandardPeriods: 19,
+            duties: [],
+            customReductionPeriods: 0,
+            notes: 'THCSDBK - GDTC (Khối 6-9) - GVCN 7A4'
+          };
+        }
+        if (t.id === 'tch-ls-7' || t.name === 'Ngô Anh Tuấn') {
+          return {
+            ...updated,
+            name: 'Ngô Anh Tuấn',
+            code: 'Tuấn.NA',
+            role: 'GVBM',
+            campus: 'THPTDBK',
+            baseStandardPeriods: 17,
+            duties: [],
+            customReductionPeriods: 0,
+            notes: 'THPTDBK - Địa lý (Khối 10-12)'
+          };
+        }
         if (t.id === 'tch-ls-12' || t.name === 'Nguyễn Thị Lý') {
           return {
             ...updated,
@@ -240,15 +282,15 @@ export default function App() {
             code: 'Lý.NT (TPT)',
             role: 'TongPhuTrachDoi',
             campus: 'THCSDBK',
-            baseStandardPeriods: 6,
-            notes: 'THCSDBK - Địa lý (Khối 6-9) - Tổng phụ trách Đội (Định mức 6 tiết)',
+            baseStandardPeriods: 2,
+            notes: 'THCSDBK - Địa lý (Khối 6-9) - Tổng phụ trách Đội (Trường trên 28 lớp - Định mức 2 tiết/tuần)',
             duties: [
               {
                 id: 'duty-tch-ls-12-tpt',
                 type: 'TongPhuTrachDoi',
                 name: 'Tổng phụ trách Đội',
                 reductionPeriods: 0,
-                notes: 'Định mức 6 tiết/tuần theo Thông tư 05/2025'
+                notes: 'Trường trên 28 lớp - Định mức 2 tiết/tuần theo Thông tư 28/2009 & TT 05/2025'
               }
             ]
           };
@@ -464,9 +506,13 @@ export default function App() {
     return createEmptyTimetableForWeek(currentWeek, config.academicYear);
   }, [weeklyTimetables, currentWeek, config.academicYear, classes, subjects, teachers, assignments, config]);
 
-  // Active tab state
+  // Active tab state: If guest, restrict to 'timetable'
   const [activeTab, setActiveTab] = useState<ActiveTabType>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_active_tab`) as ActiveTabType | null;
+    const initialRole = localStorage.getItem(`${STORAGE_KEY}_user_role`);
+    if (!initialRole || initialRole === 'guest') {
+      return 'timetable';
+    }
     const allowedTabs: ActiveTabType[] = [
       'timetable',
       'weekly_schedule',
@@ -481,6 +527,13 @@ export default function App() {
     return 'timetable';
   });
 
+  // Guard: Guests are strictly limited to the 'timetable' tab
+  useEffect(() => {
+    if (isGuest && activeTab !== 'timetable') {
+      setActiveTab('timetable');
+    }
+  }, [isGuest, activeTab]);
+
   const [openReconcileOnLoad, setOpenReconcileOnLoad] = useState<boolean>(false);
 
   useEffect(() => {
@@ -488,13 +541,43 @@ export default function App() {
   }, [activeTab]);
 
   const handleTabChange = (tab: ActiveTabType) => {
+    if (isGuest && tab !== 'timetable') {
+      setLoginModalMode('teacher');
+      setLoginPromptReason(
+        'Vui lòng đăng nhập với tài khoản Giáo viên hoặc Quản trị viên để xem chi tiết công việc nội bộ của nhà trường.'
+      );
+      setIsLoginModalOpen(true);
+      return;
+    }
     setActiveTab(tab);
   };
 
   const handleLogout = () => {
-    setIsAdmin(false);
-    localStorage.removeItem(`${STORAGE_KEY}_is_admin`);
+    setUserRole('guest');
+    setTeacherUser('');
     localStorage.removeItem(`${STORAGE_KEY}_user_role`);
+    localStorage.removeItem(`${STORAGE_KEY}_teacher_name`);
+    localStorage.setItem(`${STORAGE_KEY}_is_admin`, 'false');
+    setActiveTab('timetable');
+    showToast('Đã đăng xuất về chế độ xem tự do (Chỉ xem Thời khóa biểu)!');
+  };
+
+  const handleTeacherLoginSuccess = (teacherName: string, teacherId?: string) => {
+    setUserRole('teacher');
+    setTeacherUser(teacherName);
+    localStorage.setItem(`${STORAGE_KEY}_user_role`, 'teacher');
+    localStorage.setItem(`${STORAGE_KEY}_teacher_name`, teacherName);
+    localStorage.setItem(`${STORAGE_KEY}_is_admin`, 'false');
+    setIsLoginModalOpen(false);
+    showToast(`Chào mừng Thầy/Cô ${teacherName}! Bạn có thể xem tự do tất cả các tab nội bộ.`);
+  };
+
+  const handleAdminLoginSuccess = () => {
+    setUserRole('admin');
+    localStorage.setItem(`${STORAGE_KEY}_user_role`, 'admin');
+    localStorage.setItem(`${STORAGE_KEY}_is_admin`, 'true');
+    setIsLoginModalOpen(false);
+    showToast('Đăng nhập Quản trị viên thành công! Bạn hiện có toàn quyền quản trị.');
   };
 
   // Cloud Sync state
@@ -722,15 +805,16 @@ export default function App() {
     };
   }, []);
 
-  // Save isAdmin state
+  // Save userRole & isAdmin state
   useEffect(() => {
+    localStorage.setItem(`${STORAGE_KEY}_user_role`, userRole);
     localStorage.setItem(`${STORAGE_KEY}_is_admin`, String(isAdmin));
-    if (isAdmin) {
-      localStorage.setItem(`${STORAGE_KEY}_user_role`, 'admin');
-    } else {
-      localStorage.removeItem(`${STORAGE_KEY}_user_role`);
+    if (userRole === 'teacher') {
+      localStorage.setItem(`${STORAGE_KEY}_teacher_name`, teacherUser);
+    } else if (userRole === 'guest') {
+      localStorage.removeItem(`${STORAGE_KEY}_teacher_name`);
     }
-  }, [isAdmin]);
+  }, [userRole, teacherUser, isAdmin]);
 
   // Save currentWeek to localStorage independently (does NOT trigger cloud auto-save)
   useEffect(() => {
@@ -1787,7 +1871,13 @@ export default function App() {
         cloudSyncStatus={cloudSyncStatus}
         lastSyncedAt={lastSyncedAt}
         isAdmin={isAdmin}
-        onOpenAdminLogin={() => setIsLoginModalOpen(true)}
+        userRole={userRole}
+        teacherUser={teacherUser}
+        onOpenAdminLogin={() => {
+          setLoginModalMode(userRole === 'teacher' ? 'admin' : 'teacher');
+          setLoginPromptReason(null);
+          setIsLoginModalOpen(true);
+        }}
         onLogoutAdmin={handleLogout}
         onSaveToCloud={handleSaveToCloud}
         onOpenConflictDrawer={() => setIsConflictDrawerOpen(true)}
@@ -1800,7 +1890,16 @@ export default function App() {
         onTabChange={handleTabChange}
         unassignedCount={unassignedCount}
         isAdmin={isAdmin}
-        onPromptAdminLogin={() => setIsLoginModalOpen(true)}
+        userRole={userRole}
+        teacherUser={teacherUser}
+        onPromptLogin={(reason) => {
+          setLoginModalMode('teacher');
+          setLoginPromptReason(
+            reason ||
+              'Vui lòng đăng nhập với tài khoản Giáo viên hoặc Quản trị viên để xem chi tiết công việc nội bộ của nhà trường.'
+          );
+          setIsLoginModalOpen(true);
+        }}
       />
 
       {/* Main Content Area */}
@@ -1929,18 +2028,22 @@ export default function App() {
         onLockCell={handleToggleLockCell}
       />
 
-      {/* Admin Login Modal (for popup login while viewing public timetable) */}
+      {/* Login Modal (supports both Teacher login & Admin login) */}
       <AdminLoginModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
-        onLoginSuccess={() => {
-          setIsAdmin(true);
-          setIsLoginModalOpen(false);
-          localStorage.setItem(`${STORAGE_KEY}_is_admin`, 'true');
-          localStorage.setItem(`${STORAGE_KEY}_user_role`, 'admin');
-          showToast('Đăng nhập Quản trị viên thành công! Bạn hiện có toàn quyền chỉnh sửa.');
+        teachers={teachers}
+        initialMode={loginModalMode}
+        promptReason={loginPromptReason}
+        onLoginAsTeacher={(teacherName, teacherId) => {
+          handleTeacherLoginSuccess(teacherName, teacherId);
         }}
-        promptReason="Đăng nhập tài khoản Quản trị viên để chỉnh sửa phân công và mở/khóa chế độ xem TKB."
+        onLoginAsAdmin={() => {
+          handleAdminLoginSuccess();
+        }}
+        onLoginSuccess={() => {
+          handleAdminLoginSuccess();
+        }}
       />
 
       {/* Global In-App Toast Notification */}

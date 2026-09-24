@@ -23,58 +23,70 @@ interface ViewTabsProps {
   onTabChange: (tab: ActiveTabType) => void;
   unassignedCount?: number;
   userRole?: 'guest' | 'teacher' | 'admin';
+  teacherUser?: string;
   isAdmin?: boolean;
-  onPromptAdminLogin?: () => void;
+  onPromptLogin?: (reason?: string) => void;
 }
 
 export const ViewTabs: React.FC<ViewTabsProps> = ({
   activeTab,
   onTabChange,
-  isAdmin = true,
-  onPromptAdminLogin,
+  userRole = 'guest',
+  isAdmin = false,
+  onPromptLogin,
 }) => {
   const navRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
-  const tabs: Array<{
+  const allTabs: Array<{
     id: ActiveTabType;
     label: string;
     shortLabel: string;
     icon: React.ComponentType<{ className?: string }>;
     badge?: string;
+    isPublic?: boolean;
   }> = [
     {
       id: 'timetable',
       label: 'Thời Khóa Biểu Toàn Trường',
       shortLabel: 'Thời Khóa Biểu',
       icon: CalendarRange,
+      isPublic: true,
     },
     {
       id: 'weekly_log',
       label: 'Số Tiết Thực Dạy',
       shortLabel: 'Số Tiết Thực Dạy',
       icon: TrendingUp,
+      isPublic: false,
     },
     {
       id: 'summary',
       label: 'Bảng Tổng Hợp Toàn Trường',
       shortLabel: 'Tổng Hợp Trường',
       icon: TableProperties,
+      isPublic: false,
     },
     {
       id: 'homeroom',
       label: 'Phân Công Chủ Nhiệm',
       shortLabel: 'GV Chủ Nhiệm',
       icon: UserCheck,
+      isPublic: false,
     },
     {
       id: 'curriculum',
       label: 'Khung Tiết GDPT 2018',
       shortLabel: 'Khung Tiết',
       icon: BookOpenCheck,
+      isPublic: false,
     },
   ];
+
+  // If guest, show only timetable or locked internal items
+  const isGuest = userRole === 'guest';
+  const visibleTabs = isGuest ? allTabs.filter((t) => t.isPublic) : allTabs;
 
   const checkScroll = () => {
     if (navRef.current) {
@@ -116,10 +128,10 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
         <nav
           ref={navRef}
           onScroll={checkScroll}
-          className="flex space-x-1 sm:space-x-2 overflow-x-auto scrollbar-none py-1 w-full"
+          className="flex items-center space-x-1 sm:space-x-2 overflow-x-auto scrollbar-none py-1.5 w-full"
           aria-label="Tabs"
         >
-          {tabs.map(tab => {
+          {visibleTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
 
@@ -132,26 +144,48 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
                 key={tab.id}
                 onClick={handleClick}
                 title={tab.label}
-                className={`flex items-center gap-1.5 h-9 px-3 text-xs font-bold transition-all whitespace-nowrap rounded-lg cursor-pointer shrink-0 ${
+                className={`flex items-center gap-1.5 h-9 px-3.5 text-xs font-bold transition-all whitespace-nowrap rounded-lg cursor-pointer shrink-0 ${
                   isActive
                     ? 'bg-indigo-600 text-white shadow-xs font-extrabold'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                <span className="hidden lg:inline">{tab.label}</span>
-                <span className="lg:hidden">{tab.shortLabel}</span>
+                <Icon
+                  className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`}
+                />
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="sm:hidden">{tab.shortLabel}</span>
 
                 {tab.badge && (
-                  <span className={`ml-1 text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
-                    isActive ? 'bg-white text-indigo-700' : 'bg-rose-100 text-rose-700'
-                  }`}>
+                  <span
+                    className={`ml-1 text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
+                      isActive ? 'bg-white text-indigo-700' : 'bg-rose-100 text-rose-700'
+                    }`}
+                  >
                     {tab.badge}
                   </span>
                 )}
               </button>
             );
           })}
+
+          {/* If Guest: Show a locked prompt button to access internal school tabs */}
+          {isGuest && (
+            <button
+              type="button"
+              onClick={() =>
+                onPromptLogin?.(
+                  'Vui lòng đăng nhập với tài khoản Giáo viên hoặc Quản trị viên để xem chi tiết công việc nội bộ của nhà trường (Số tiết thực dạy, Tổng hợp, Phân công chủ nhiệm, Khung tiết).'
+                )
+              }
+              className="flex items-center gap-1.5 h-9 px-3 text-xs font-semibold text-slate-500 hover:text-indigo-700 bg-slate-50 hover:bg-indigo-50/70 border border-dashed border-slate-300 hover:border-indigo-300 rounded-lg cursor-pointer transition-all shrink-0 ml-1"
+              title="Đăng nhập tài khoản Giáo viên để xem các mục nội bộ"
+            >
+              <Lock className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              <span className="hidden md:inline">Chi tiết công việc nội bộ trường (Cần đăng nhập GV)</span>
+              <span className="md:hidden">Nội bộ trường (Khóa)</span>
+            </button>
+          )}
         </nav>
 
         {/* Right Scroll Button if overflowing */}
@@ -168,4 +202,3 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
     </div>
   );
 };
-

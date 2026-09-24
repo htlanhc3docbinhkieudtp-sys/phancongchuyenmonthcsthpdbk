@@ -604,24 +604,16 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-ls-7',
     name: 'Ngô Anh Tuấn',
-    code: 'Tuấn.NA (Phổ cập)',
+    code: 'Tuấn.NA',
     gender: 'Nam',
     birthDate: '11/22/1986',
     campus: 'THPTDBK',
     departmentId: 'dept-khxh',
     primarySubjectId: 'sub-dia',
-    role: 'PhoCap',
-    duties: [
-      {
-        id: 'duty-s7-phocap',
-        type: 'PhoCap',
-        name: 'Phổ cập',
-        reductionPeriods: 4,
-        notes: 'Phổ cập giáo dục (-4t)'
-      }
-    ],
+    role: 'GVBM',
+    duties: [],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Địa (Khối 10-12) - Kiêm Phổ cập giáo dục',
+    notes: 'THPTDBK - Địa lý (Khối 10-12)',
   },
   {
     id: 'tch-ls-8',
@@ -691,11 +683,11 @@ export const officialStaffList: Teacher[] = [
         type: 'TongPhuTrachDoi',
         name: 'Tổng phụ trách Đội',
         reductionPeriods: 0,
-        notes: 'Định mức 6 tiết/tuần theo Thông tư 05/2025'
+        notes: 'Trường trên 28 lớp - Định mức 2 tiết/tuần theo Thông tư 28/2009 & TT 05/2025'
       }
     ],
-    baseStandardPeriods: 6,
-    notes: 'THCSDBK - Địa lý (Khối 6-9) - Tổng phụ trách Đội (Định mức 6 tiết)',
+    baseStandardPeriods: 2,
+    notes: 'THCSDBK - Địa lý (Khối 6-9) - Tổng phụ trách Đội (Trường trên 28 lớp - Định mức 2 tiết/tuần)',
   },
   {
     id: 'tch-ls-13',
@@ -1495,6 +1487,7 @@ export const officialStaffList: Teacher[] = [
     departmentId: 'dept-gdtc-qpan-nt',
     primarySubjectId: 'sub-gdtc',
     role: 'GVBM',
+    duties: [],
     baseStandardPeriods: 19,
     notes: 'THCSDBK - GDTC (Khối 6-9) - GVCN 7A4',
   },

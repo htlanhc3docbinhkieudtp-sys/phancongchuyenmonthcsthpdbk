@@ -267,6 +267,8 @@ export function calculateTeacherWorkloads(
       baseStandard = 2;
     } else if (isPHT) {
       baseStandard = 4;
+    } else if (teacher.id === 'tch-ls-12' || teacher.name === 'Nguyễn Thị Lý') {
+      baseStandard = 2;
     } else if (!baseStandard) {
       baseStandard = teacher.campus === 'THCSDBK' || teacher.campus === 'THCSTK' ? 19 : 17;
     }

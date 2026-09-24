@@ -604,18 +604,28 @@ export function calculateTeacherSingleWeek(
   weeklyBalance: number;
   level: 'THPT' | 'THCS';
 } {
+  // Determine if teacher belongs to THCS or THPT:
+  // Thầy Lê Ngọc Ẩn: giáo viên THCS Điểm Đốc Binh Kiều (định mức 19t/tuần), dù có phân công dạy tăng cường một số lớp 10
+  const isTHCS =
+    teacher.campus === 'THCSDBK' ||
+    teacher.campus === 'THCSTK' ||
+    teacher.baseStandardPeriods === 19 ||
+    teacher.id === 'tch-td-6' ||
+    teacher.name === 'Lê Ngọc Ẩn';
+
   const isTHPT =
-    teacher.campus === 'THPTDBK' ||
-    teacher.baseStandardPeriods === 17 ||
-    slots.some(
-      (s) =>
-        s.teacherId === teacher.id &&
-        s.className &&
-        (s.className.startsWith('10') ||
-          s.className.startsWith('11') ||
-          s.className.startsWith('12'))
-    );
-  const level: 'THPT' | 'THCS' = isTHPT ? 'THPT' : 'THCS';
+    !isTHCS &&
+    (teacher.campus === 'THPTDBK' ||
+      teacher.baseStandardPeriods === 17 ||
+      slots.some(
+        (s) =>
+          s.teacherId === teacher.id &&
+          s.className &&
+          (s.className.startsWith('10') ||
+            s.className.startsWith('11') ||
+            s.className.startsWith('12'))
+      ));
+  const level: 'THPT' | 'THCS' = isTHCS ? 'THCS' : isTHPT ? 'THPT' : 'THCS';
 
   // Specific leadership and role teaching quotas per government regulations & school rules:
   // 4 Người lãnh đạo (Ban Giám Hiệu):
@@ -647,7 +657,10 @@ export function calculateTeacherSingleWeek(
       teacher.code?.includes('(TPT') ||
       teacher.notes?.toLowerCase().includes('tổng phụ trách') ||
       teacher.duties?.some((d) => d.type === 'TongPhuTrachDoi') ||
-      teacher.baseStandardPeriods === 6) &&
+      teacher.baseStandardPeriods === 2 ||
+      teacher.baseStandardPeriods === 6 ||
+      teacher.id === 'tch-ls-12' ||
+      teacher.name === 'Nguyễn Thị Lý') &&
     teacher.id !== 'tch-td-5' &&
     teacher.name !== 'Lê Minh Đạt';
 
@@ -659,8 +672,14 @@ export function calculateTeacherSingleWeek(
     standardPeriods = 2;
   } else if (isPHT) {
     standardPeriods = 4;
+  } else if (teacher.id === 'tch-ls-12' || teacher.name === 'Nguyễn Thị Lý') {
+    // Trường THCS Đốc Binh Kiều trên 28 lớp: Định mức TPT Đội cô Lý là 2 tiết/tuần
+    standardPeriods = 2;
+  } else if (teacher.id === 'tch-td-6' || teacher.name === 'Lê Ngọc Ẩn') {
+    // Thầy Lê Ngọc Ẩn: Giáo viên THCS Điểm Đốc Binh Kiều, định mức 19 tiết/tuần
+    standardPeriods = 19;
   } else if (isTPT) {
-    standardPeriods = 6;
+    standardPeriods = teacher.baseStandardPeriods && teacher.baseStandardPeriods > 0 ? teacher.baseStandardPeriods : 2;
   } else if (teacher.baseStandardPeriods && teacher.baseStandardPeriods < standardPeriods) {
     standardPeriods = teacher.baseStandardPeriods;
   }
@@ -813,6 +832,8 @@ export function calculateTeacherSingleWeek(
       teacher.duties.forEach((d) => {
         // Loại bỏ nếu có nhầm lẫn loại HieuTruong / PhoHieuTruong trong duties
         if (d.type === 'HieuTruong' || d.type === 'PhoHieuTruong') return;
+        // Phổ cập chỉ duy nhất Thầy Cao Văn Tùng phụ trách
+        if (d.type === 'PhoCap' && teacher.id !== 'tch-khtn-5' && teacher.name !== 'Cao Văn Tùng') return;
         if ((teacher.id === 'tch-khtn-9' || teacher.name === 'Trần Thị Kiều') && d.type === 'ConNho') return;
         if ((teacher.id === 'tch-td-5' || teacher.name === 'Lê Minh Đạt') && (d.type === 'TongPhuTrachDoi' || d.name?.includes('Tổng phụ trách'))) return;
         // TPT Đội đã được add nhãn TPT Đội ở trên và định mức đã được hạ về 6 tiết/tuần
@@ -856,7 +877,7 @@ export function calculateTeacherSingleWeek(
         reductionPeriods += 12;
       }
 
-      if (teacher.role === 'PhoCap' || teacher.code?.includes('PC-') || teacher.code?.toLowerCase().includes('phổ cập')) {
+      if ((teacher.role === 'PhoCap' || teacher.code?.includes('PC-') || teacher.code?.toLowerCase().includes('phổ cập')) && (teacher.id === 'tch-khtn-5' || teacher.name === 'Cao Văn Tùng')) {
         if (!dutyList.includes('Phổ cập')) dutyList.push('Phổ cập');
         reductionPeriods += 4;
       }
@@ -1052,7 +1073,7 @@ export function calculateAllActualWorkloads(
       teacherCode: teacher.code,
       departmentId: teacher.departmentId,
       departmentName: deptName,
-      campus: teacher.campus || 'THPTDBK',
+      campus: teacher.campus || (weekData.level === 'THPT' ? 'THPTDBK' : 'THCSDBK'),
       level: weekData.level,
       role: teacher.role,
       rows: weekData.rows,

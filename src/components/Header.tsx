@@ -39,6 +39,7 @@ interface HeaderProps {
   lastSyncedAt: number | null;
   isAdmin: boolean;
   userRole?: 'guest' | 'teacher' | 'admin';
+  teacherUser?: string;
   onOpenAdminLogin: () => void;
   onLogoutAdmin: () => void;
   onSaveToCloud: () => void;
@@ -63,6 +64,7 @@ export const Header: React.FC<HeaderProps> = ({
   lastSyncedAt,
   isAdmin,
   userRole = 'guest',
+  teacherUser,
   onOpenAdminLogin,
   onLogoutAdmin,
   onSaveToCloud,
@@ -266,7 +268,7 @@ export const Header: React.FC<HeaderProps> = ({
             </>
           ) : null}
 
-          {/* Admin Status & Logout Action */}
+          {/* Role Status & Auth Actions */}
           {isAdmin ? (
             <div className="flex items-center gap-2 pl-2 border-l border-indigo-700/60">
               <div
@@ -279,9 +281,37 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={onLogoutAdmin}
                 className="flex items-center gap-1 px-3 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 border border-rose-700/60 hover:border-rose-500 text-rose-200 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-xs active:scale-95"
-                title="Đăng xuất và khóa hệ thống"
+                title="Đăng xuất về chế độ xem tự do"
               >
                 <LogOut className="w-3.5 h-3.5" />
+                <span>Đăng xuất</span>
+              </button>
+            </div>
+          ) : userRole === 'teacher' ? (
+            <div className="flex items-center gap-2 pl-2 border-l border-indigo-700/60">
+              <div
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-500/20 border border-teal-400/50 text-teal-200 text-xs font-bold"
+                title={`Đang đăng nhập với tư cách Giáo viên: ${teacherUser || 'Giáo viên trường'} (Quyền xem tự do, không chỉnh sửa)`}
+              >
+                <GraduationCap className="w-3.5 h-3.5 text-teal-300" />
+                <span className="hidden sm:inline">GV: {teacherUser || 'Giáo viên'} (Chỉ xem)</span>
+                <span className="sm:hidden">GV (Chỉ xem)</span>
+              </div>
+              <button
+                type="button"
+                onClick={onOpenAdminLogin}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-800 hover:bg-indigo-700 border border-indigo-600 text-indigo-100 text-xs font-medium transition-all cursor-pointer"
+                title="Chuyển sang quyền Quản trị viên"
+              >
+                <KeyRound className="w-3 h-3 text-amber-300" />
+                <span className="hidden md:inline">Vào Quản trị</span>
+              </button>
+              <button
+                onClick={onLogoutAdmin}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-950/70 hover:bg-rose-900 border border-rose-700/60 text-rose-200 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-xs active:scale-95"
+                title="Đăng xuất về chế độ xem tự do"
+              >
+                <LogOut className="w-3 h-3" />
                 <span>Đăng xuất</span>
               </button>
             </div>
@@ -289,7 +319,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center gap-2 pl-2 border-l border-indigo-700/60">
               <div
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-800/90 border border-indigo-700 text-indigo-200 text-xs font-semibold"
-                title="Bạn đang ở chế độ xem Thời khóa biểu (Chỉ xem)"
+                title="Bạn đang ở chế độ xem tự do (Chỉ xem Thời khóa biểu)"
               >
                 <Eye className="w-3.5 h-3.5 text-indigo-300" />
                 <span className="hidden sm:inline">Chỉ xem TKB</span>
@@ -298,10 +328,10 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={onOpenAdminLogin}
                 className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-bold transition-all cursor-pointer shadow-sm active:scale-95"
-                title="Đăng nhập tài khoản Quản trị viên để chỉnh sửa và quản lý"
+                title="Đăng nhập tài khoản Giáo viên hoặc Quản trị viên để xem chi tiết công việc nội bộ"
               >
                 <KeyRound className="w-3.5 h-3.5" />
-                <span>Đăng nhập Quản trị</span>
+                <span>Đăng nhập (GV / Quản trị)</span>
               </button>
             </div>
           )}

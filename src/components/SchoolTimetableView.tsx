@@ -685,18 +685,6 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
 
             {/* Right: Week Actions */}
             <div className="flex flex-wrap items-center gap-2">
-              {onNavigateToWeeklySchedule && (
-                <button
-                  type="button"
-                  onClick={() => onNavigateToWeeklySchedule(currentWeek)}
-                  className="px-3.5 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
-                  title={`Đối chiếu và đồng bộ Thời khóa biểu Tuần ${currentWeek} sang bảng Phân công giảng dạy`}
-                >
-                  <ArrowRightLeft className="w-3.5 h-3.5" />
-                  <span>Đối Chiếu & Đồng Bộ Sang Phân Công Tuần {currentWeek}</span>
-                </button>
-              )}
-
               {isAdmin ? (
                 <>
                   {currentWeek === 1 && activeSlots.length > 0 && (!weeklyTimetables[2] || !weeklyTimetables[2].slots || weeklyTimetables[2].slots.length === 0) && (
