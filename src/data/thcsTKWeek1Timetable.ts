@@ -14,6 +14,8 @@ const TEACHER_MAP: Record<string, { id: string; name: string; code: string }> = 
   'Tuyền': { id: 'tch-av-1', name: 'Lê Thị Ngọc Tuyền', code: 'Tuyền.LTN' },
   'Nga': { id: 'tch-t-14', name: 'Huỳnh Thị Huỳnh Nga', code: 'Nga.HTH' },
   'Vi': { id: 'tch-v-tk-vi', name: 'Nguyễn Hiền Vi', code: 'Vi.NH' },
+  'Hiền Vi': { id: 'tch-v-tk-vi', name: 'Nguyễn Hiền Vi', code: 'Vi.NH' },
+  'Nguyễn Hiền Vi': { id: 'tch-v-tk-vi', name: 'Nguyễn Hiền Vi', code: 'Vi.NH' },
   'Châu': { id: 'tch-ls-3', name: 'Phạm Thị Mỹ Châu', code: 'Châu.PTM' },
   'Diễm': { id: 'tch-khtn-25', name: 'Nguyễn Thị Ngọc Diễm', code: 'Diễm.NTN' },
   'Phượng': { id: 'tch-khtn-14', name: 'Nguyễn Thị Bích Phượng', code: 'Phượng.NTB' },

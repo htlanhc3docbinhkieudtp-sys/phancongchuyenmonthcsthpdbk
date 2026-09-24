@@ -432,6 +432,21 @@ export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[]
       teacherId = 'tch-bgh-1';
       teacherName = 'Lê Thanh Cường';
       teacherCode = 'Cường.LT (HT)';
+    } else if (
+      teacherId === 'tch-v-tk-vi' ||
+      tNameLower === 'nguyễn hiền vi' ||
+      tNameLower === 'nguyen hien vi' ||
+      tNameLower === 'hiền vi' ||
+      tNameLower === 'hien vi' ||
+      tCodeLower === 'vi.nh' ||
+      tCodeLower === 'hiền vi' ||
+      tCodeLower === 'hien vi' ||
+      (tNameLower === 'vi' && (subLower.includes('văn') || subLower.includes('ngữ văn'))) ||
+      (tCodeLower === 'vi' && (subLower.includes('văn') || subLower.includes('ngữ văn')))
+    ) {
+      teacherId = 'tch-v-tk-vi';
+      teacherName = 'Nguyễn Hiền Vi';
+      teacherCode = 'Vi.NH';
     }
 
     // Normalize period and session:

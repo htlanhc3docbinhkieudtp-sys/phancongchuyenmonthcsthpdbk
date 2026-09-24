@@ -669,7 +669,23 @@ export function calculateTeacherSingleWeek(
   const hrClass = homeroomMap.get(teacher.id);
 
   // Filter slots for this teacher in this week
-  const tSlots = slots.filter((s) => s.teacherId === teacher.id);
+  const tSlots = slots.filter((s) => {
+    if (s.teacherId === teacher.id) return true;
+    if (teacher.id === 'tch-v-tk-vi') {
+      const sName = (s.teacherName || '').toLowerCase().trim();
+      const sCode = (s.teacherCode || '').toLowerCase().trim();
+      return (
+        sName === 'nguyễn hiền vi' ||
+        sName === 'hiền vi' ||
+        sCode === 'vi.nh' ||
+        sCode === 'hiền vi'
+      );
+    }
+    if (s.teacherName && teacher.name && s.teacherName.toLowerCase().trim() === teacher.name.toLowerCase().trim()) {
+      return true;
+    }
+    return false;
+  });
 
   // Exclude homeroom non-teaching slots if teacher is homeroom teacher
   const teachingSlots = tSlots.filter((s) => {

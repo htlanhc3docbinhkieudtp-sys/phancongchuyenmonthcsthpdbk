@@ -300,7 +300,7 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "className": "6A7"
   },
   {
-    "teacherCode": "Hiền Vi",
+    "teacherCode": "Vi.NH",
     "className": "6A8",
     "classId": "cls-6a8",
     "id": "cls-6a8_3_CHIEU_1",
@@ -310,8 +310,8 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "room": "",
     "period": 1,
     "dayOfWeek": 3,
-    "teacherId": "",
-    "teacherName": "Hiền Vi"
+    "teacherId": "tch-v-tk-vi",
+    "teacherName": "Nguyễn Hiền Vi"
   },
   {
     "dayOfWeek": 3,
@@ -356,7 +356,7 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "className": "6A7"
   },
   {
-    "teacherName": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "period": 2,
     "subjectName": "Ngữ văn",
     "session": "CHIEU",
@@ -364,10 +364,10 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "id": "cls-6a8_3_CHIEU_2",
     "dayOfWeek": 3,
     "classId": "cls-6a8",
-    "teacherId": "",
+    "teacherId": "tch-v-tk-vi",
     "subjectId": "sub-van",
     "room": "",
-    "teacherCode": "Hiền Vi"
+    "teacherCode": "Vi.NH"
   },
   {
     "teacherCode": "Hà.CTK",
@@ -400,16 +400,16 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
   {
     "id": "cls-6a7_3_CHIEU_3",
     "dayOfWeek": 3,
-    "teacherName": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "room": "",
     "classId": "cls-6a7",
-    "teacherId": "",
+    "teacherId": "tch-v-tk-vi",
     "subjectId": "sub-van",
     "subjectName": "Ngữ văn",
     "period": 3,
     "session": "CHIEU",
     "className": "6A7",
-    "teacherCode": "Hiền Vi"
+    "teacherCode": "Vi.NH"
   },
   {
     "teacherName": "Nguyễn Anh Văn",
@@ -973,17 +973,17 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
   },
   {
     "period": 1,
-    "teacherName": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "className": "6A8",
     "session": "CHIEU",
     "room": "",
     "subjectName": "Ngữ văn",
-    "teacherId": "",
+    "teacherId": "tch-v-tk-vi",
     "classId": "cls-6a8",
     "dayOfWeek": 6,
     "id": "cls-6a8_6_CHIEU_1",
     "subjectId": "sub-van",
-    "teacherCode": "Hiền Vi"
+    "teacherCode": "Vi.NH"
   },
   {
     "subjectId": "sub-toan",
@@ -1030,11 +1030,11 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
   {
     "subjectName": "Ngữ văn",
     "session": "CHIEU",
-    "teacherName": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "className": "6A8",
-    "teacherId": "",
+    "teacherId": "tch-v-tk-vi",
     "room": "",
-    "teacherCode": "Hiền Vi",
+    "teacherCode": "Vi.NH",
     "dayOfWeek": 6,
     "id": "cls-6a8_6_CHIEU_2",
     "period": 2,
@@ -1072,14 +1072,14 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
   {
     "dayOfWeek": 6,
     "classId": "cls-6a7",
-    "teacherCode": "Hiền Vi",
-    "teacherId": "",
+    "teacherCode": "Vi.NH",
+    "teacherId": "tch-v-tk-vi",
     "id": "cls-6a7_6_CHIEU_3",
     "subjectId": "sub-van",
     "period": 3,
     "room": "",
     "subjectName": "Ngữ văn",
-    "teacherName": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "className": "6A7",
     "session": "CHIEU"
   },
@@ -1239,8 +1239,8 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
   },
   {
     "subjectId": "sub-van",
-    "teacherName": "Hiền Vi",
-    "teacherId": "",
+    "teacherName": "Nguyễn Hiền Vi",
+    "teacherId": "tch-v-tk-vi",
     "period": 1,
     "dayOfWeek": 7,
     "session": "CHIEU",
@@ -1248,7 +1248,7 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "className": "6A7",
     "room": "",
     "classId": "cls-6a7",
-    "teacherCode": "Hiền Vi",
+    "teacherCode": "Vi.NH",
     "id": "cls-6a7_7_CHIEU_1"
   },
   {
@@ -1296,13 +1296,13 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
   {
     "subjectName": "Ngữ văn",
     "dayOfWeek": 7,
-    "teacherId": "",
+    "teacherId": "tch-v-tk-vi",
     "id": "cls-6a7_7_CHIEU_2",
-    "teacherName": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "subjectId": "sub-van",
     "room": "",
     "classId": "cls-6a7",
-    "teacherCode": "Hiền Vi",
+    "teacherCode": "Vi.NH",
     "session": "CHIEU",
     "period": 2,
     "className": "6A7"
@@ -1536,13 +1536,13 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "room": "",
     "classId": "cls-7a8",
-    "teacherName": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "className": "7A8",
     "session": "CHIEU",
     "dayOfWeek": 2,
-    "teacherCode": "Hiền Vi",
+    "teacherCode": "Vi.NH",
     "period": 1,
-    "teacherId": "",
+    "teacherId": "tch-v-tk-vi",
     "subjectId": "sub-van"
   },
   {
@@ -1574,17 +1574,17 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "className": "7A7"
   },
   {
-    "teacherCode": "Hiền Vi",
+    "teacherCode": "Vi.NH",
     "className": "7A8",
     "period": 2,
     "session": "CHIEU",
     "id": "cls-7a8_2_CHIEU_2",
-    "teacherId": "",
+    "teacherId": "tch-v-tk-vi",
     "classId": "cls-7a8",
     "subjectName": "Ngữ văn",
     "room": "",
     "dayOfWeek": 2,
-    "teacherName": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "subjectId": "sub-van"
   },
   {
@@ -1677,12 +1677,12 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "className": "7A9",
     "session": "CHIEU",
-    "teacherName": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "classId": "cls-7a9",
-    "teacherId": "",
+    "teacherId": "tch-v-tk-vi",
     "dayOfWeek": 2,
     "room": "",
-    "teacherCode": "Hiền Vi",
+    "teacherCode": "Vi.NH",
     "subjectId": "sub-van"
   },
   {
@@ -1859,12 +1859,12 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "room": "",
     "id": "cls-7a7_3_CHIEU_4",
-    "teacherName": "Hiền Vi",
-    "teacherCode": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
+    "teacherCode": "Vi.NH",
     "subjectId": "sub-van",
     "period": 4,
     "classId": "cls-7a7",
-    "teacherId": "",
+    "teacherId": "tch-v-tk-vi",
     "dayOfWeek": 3
   },
   {
@@ -1924,10 +1924,10 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "teacherName": "Phạm Thị Mỹ Châu"
   },
   {
-    "teacherCode": "Hiền Vi",
+    "teacherCode": "Vi.NH",
     "subjectId": "sub-van",
     "period": 5,
-    "teacherId": "",
+    "teacherId": "tch-v-tk-vi",
     "session": "CHIEU",
     "dayOfWeek": 3,
     "className": "7A9",
@@ -1935,7 +1935,7 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "subjectName": "Ngữ văn",
     "classId": "cls-7a9",
     "id": "cls-7a9_3_CHIEU_5",
-    "teacherName": "Hiền Vi"
+    "teacherName": "Nguyễn Hiền Vi"
   },
   {
     "subjectName": "Ngữ văn",
@@ -1943,12 +1943,12 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "id": "cls-7a7_4_CHIEU_1",
     "className": "7A7",
     "session": "CHIEU",
-    "teacherName": "Hiền Vi",
-    "teacherCode": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
+    "teacherCode": "Vi.NH",
     "subjectId": "sub-van",
     "dayOfWeek": 4,
     "classId": "cls-7a7",
-    "teacherId": "",
+    "teacherId": "tch-v-tk-vi",
     "period": 1
   },
   {
@@ -1985,9 +1985,9 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "period": 2,
     "room": "",
     "session": "CHIEU",
-    "teacherCode": "Hiền Vi",
-    "teacherId": "",
-    "teacherName": "Hiền Vi",
+    "teacherCode": "Vi.NH",
+    "teacherId": "tch-v-tk-vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "dayOfWeek": 4,
     "classId": "cls-7a7",
     "subjectName": "Ngữ văn",
@@ -2050,16 +2050,16 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "teacherCode": "Nga.HTH"
   },
   {
-    "teacherName": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "classId": "cls-7a9",
     "className": "7A9",
     "subjectName": "Ngữ văn",
     "period": 3,
-    "teacherId": "",
+    "teacherId": "tch-v-tk-vi",
     "id": "cls-7a9_4_CHIEU_3",
     "dayOfWeek": 4,
     "room": "",
-    "teacherCode": "Hiền Vi",
+    "teacherCode": "Vi.NH",
     "session": "CHIEU",
     "subjectId": "sub-van"
   },
@@ -2092,7 +2092,7 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "teacherCode": "Nga.HTH"
   },
   {
-    "teacherCode": "Hiền Vi",
+    "teacherCode": "Vi.NH",
     "className": "7A9",
     "period": 4,
     "session": "CHIEU",
@@ -2102,8 +2102,8 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "classId": "cls-7a9",
     "room": "",
     "dayOfWeek": 4,
-    "teacherName": "Hiền Vi",
-    "teacherId": ""
+    "teacherName": "Nguyễn Hiền Vi",
+    "teacherId": "tch-v-tk-vi"
   },
   {
     "room": "",
@@ -2122,12 +2122,12 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
   {
     "room": "",
     "subjectName": "Ngữ văn",
-    "teacherName": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "className": "7A8",
     "classId": "cls-7a8",
     "id": "cls-7a8_4_CHIEU_5",
-    "teacherId": "",
-    "teacherCode": "Hiền Vi",
+    "teacherId": "tch-v-tk-vi",
+    "teacherCode": "Vi.NH",
     "dayOfWeek": 4,
     "session": "CHIEU",
     "subjectId": "sub-van",
@@ -2372,15 +2372,15 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "subjectId": "sub-my-thuat"
   },
   {
-    "teacherId": "",
+    "teacherId": "tch-v-tk-vi",
     "subjectName": "Ngữ văn",
     "dayOfWeek": 6,
-    "teacherName": "Hiền Vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "classId": "cls-7a8",
     "id": "cls-7a8_6_CHIEU_4",
     "subjectId": "sub-van",
     "room": "",
-    "teacherCode": "Hiền Vi",
+    "teacherCode": "Vi.NH",
     "session": "CHIEU",
     "period": 4,
     "className": "7A8"
@@ -2400,15 +2400,15 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "session": "CHIEU"
   },
   {
-    "teacherCode": "Hiền Vi",
+    "teacherCode": "Vi.NH",
     "id": "cls-7a7_6_CHIEU_5",
     "room": "",
     "session": "CHIEU",
     "className": "7A7",
     "subjectName": "Ngữ văn",
     "dayOfWeek": 6,
-    "teacherId": "",
-    "teacherName": "Hiền Vi",
+    "teacherId": "tch-v-tk-vi",
+    "teacherName": "Nguyễn Hiền Vi",
     "subjectId": "sub-van",
     "period": 5,
     "classId": "cls-7a7"
