@@ -1249,12 +1249,15 @@ export function exportActualMultiWeekExcel(
     const wb = XLSX.utils.book_new();
     const rows: (string | number)[][] = [];
 
+    const isFullYear = startWeek === 1 && effectiveEndWeek >= 35;
+    const periodLabelUpper = isFullYear ? 'CẢ NĂM HỌC' : semesterName.toUpperCase();
+
     rows.push([config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU']);
     rows.push([
-      `BẢNG TỔNG HỢP THỪA/THIẾU TIẾT DẠY HÀNG TUẦN VÀ CẢ KỲ (${semesterName.toUpperCase()} - ${weekCount} TUẦN: T${startWeek} ĐẾN T${effectiveEndWeek})`,
+      `BẢNG TỔNG HỢP THỪA/THIẾU TIẾT DẠY HÀNG TUẦN VÀ ${periodLabelUpper} (${weekCount} TUẦN: T${startWeek} ĐẾN T${effectiveEndWeek})`,
     ]);
     rows.push([
-      `Năm học: ${config.academicYear} • Ghi chú: Cột T1..T${effectiveEndWeek} thể hiện số tiết thừa(+) hoặc thiếu(-) của từng tuần`,
+      `Năm học: ${config.academicYear} • Ghi chú: Cột T${startWeek}..T${effectiveEndWeek} thể hiện số tiết thừa(+) hoặc thiếu(-) của từng tuần`,
     ]);
     rows.push([]);
 
@@ -1272,8 +1275,8 @@ export function exportActualMultiWeekExcel(
       'Tổng Dạy',
       'Tổng KN',
       'Tổng Quy Đổi',
-      'Định Mức Kỳ',
-      'TỔNG THỪA/THIẾU KỲ'
+      isFullYear ? 'Định Mức Năm' : 'Định Mức Kỳ',
+      isFullYear ? 'TỔNG THỪA/THIẾU CẢ NĂM' : 'TỔNG THỪA/THIẾU KỲ'
     );
     rows.push(header);
 
@@ -1314,11 +1317,11 @@ export function exportActualMultiWeekExcel(
       { wch: 18 },
     ];
 
-    const safeSemName = semesterName.replace(/\s+/g, '_');
+    const safeSemName = isFullYear ? 'Ca_Nam_Hoc' : semesterName.replace(/\s+/g, '_');
     XLSX.utils.book_append_sheet(wb, ws, `Thua_Thieu_${safeSemName}`);
     XLSX.writeFile(
       wb,
-      `Bang_Tong_Hop_Thua_Thieu_Tiet_Day_${safeSemName}_${config.academicYear.replace(/\s+/g, '_')}.xlsx`
+      `Bang_Tong_Hop_Thua_Thieu_Tiet_Day_${safeSemName}_${(config.academicYear || '2026-2027').replace(/\s+/g, '_')}.xlsx`
     );
   });
 }
