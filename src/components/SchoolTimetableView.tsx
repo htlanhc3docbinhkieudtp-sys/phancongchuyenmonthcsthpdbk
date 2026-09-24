@@ -52,7 +52,6 @@ import {
   Trash2
 } from 'lucide-react';
 import { TimetableImportModal } from './TimetableImportModal';
-import { AutoScheduleModal } from './AutoScheduleModal';
 import { CopyTimetableModal } from './CopyTimetableModal';
 import { TeacherCollisionModal, TeacherCollisionDetail } from './TeacherCollisionModal';
 import { TimetableBackupModal } from './TimetableBackupModal';
@@ -119,7 +118,6 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   const [selectedSession, setSelectedSession] = useState<SessionFilter>('ALL');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-  const [isAutoScheduleModalOpen, setIsAutoScheduleModalOpen] = useState(false);
   const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
   const [isCollisionModalOpen, setIsCollisionModalOpen] = useState(false);
   const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
@@ -485,15 +483,6 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
             {isAdmin && (
               <>
                 <button
-                  onClick={() => setIsAutoScheduleModalOpen(true)}
-                  className="px-4 py-2 bg-gradient-to-r from-amber-500 via-amber-600 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-black rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer ring-2 ring-amber-400/40 animate-pulse-subtle"
-                  title="Tự động sắp xếp thời khóa biểu theo thuật toán CSP và các quy tắc sư phạm"
-                >
-                  <Sparkles className="w-4 h-4 text-amber-100" />
-                  <span>Xếp TKB Tự Động (Thuật Toán)</span>
-                </button>
-
-                <button
                   onClick={() => setIsImportModalOpen(true)}
                   className="px-4 py-2 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-700 hover:to-indigo-700 text-white text-xs font-black rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer ring-2 ring-emerald-400/40"
                   title="Nhập và cập nhật thời khóa biểu trực tiếp từ phần mềm VietSchool (Excel/CSV)"
@@ -847,37 +836,6 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
             })}
           </div>
         </div>
-
-        {/* Highlighted Auto-Schedule Banner (Admin only) */}
-        {isAdmin && (
-          <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-2xl p-3.5 sm:p-4 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border border-amber-300/40">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-white/20 rounded-xl backdrop-blur-xs shrink-0">
-                <Sparkles className="w-6 h-6 text-amber-100" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm sm:text-base font-black uppercase tracking-tight">
-                    Công Cụ Xếp Thời Khóa Biểu Tự Động (Thuật Toán CSP)
-                  </h3>
-                  <span className="px-2 py-0.5 bg-white/25 text-[10px] font-extrabold rounded-full">
-                    Mới
-                  </span>
-                </div>
-                <p className="text-xs text-amber-50 font-medium">
-                  Tự động xếp theo từng điểm trường (Điểm chính, Điểm Đốc Binh Kiều, Điểm Tân Kiều), bảo đảm không trùng giờ, tránh nắng Thể dục & tối ưu tiết đôi.
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => setIsAutoScheduleModalOpen(true)}
-              className="w-full sm:w-auto px-5 py-2.5 bg-white hover:bg-amber-50 text-amber-900 text-xs font-black rounded-xl shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer hover:scale-105 active:scale-95"
-            >
-              <Sparkles className="w-4 h-4 text-amber-600 fill-amber-600" />
-              <span>Mở Trình Xếp TKB Tự Động</span>
-            </button>
-          </div>
-        )}
 
         <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs space-y-3.5">
           {/* Top row: View Mode Switcher + Campus Selector */}
@@ -2017,21 +1975,6 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         config={config}
         currentWeek={currentWeek}
         onImportSuccess={handleImportSuccess}
-      />
-
-      {/* 6. Auto Schedule Modal */}
-      <AutoScheduleModal
-        isOpen={isAutoScheduleModalOpen}
-        onClose={() => setIsAutoScheduleModalOpen(false)}
-        classes={classes}
-        subjects={subjects}
-        teachers={teachers}
-        assignments={assignments}
-        config={config}
-        currentTimetable={timetable}
-        onApplyTimetable={(newTimetable) => {
-          onUpdateTimetable(newTimetable);
-        }}
       />
 
       {/* 7. Copy Timetable Modal */}

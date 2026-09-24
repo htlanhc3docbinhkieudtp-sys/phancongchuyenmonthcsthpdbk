@@ -73,8 +73,6 @@ import { WeeklyTeachingLogView } from './components/WeeklyTeachingLogView';
 import { ComprehensiveTableView } from './components/ComprehensiveTableView';
 import { HomeroomView } from './components/HomeroomView';
 import { CurriculumView } from './components/CurriculumView';
-import { ExcelImportExportModal } from './components/ExcelImportExportModal';
-import { AutoAssignModal } from './components/AutoAssignModal';
 import { ConflictAuditDrawer } from './components/ConflictAuditDrawer';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { Footer } from './components/Footer';
@@ -513,8 +511,6 @@ export default function App() {
   }, [weeklyTimetables]);
 
   // Modals state
-  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-  const [isAutoAssignOpen, setIsAutoAssignOpen] = useState(false);
   const [isConflictDrawerOpen, setIsConflictDrawerOpen] = useState(false);
 
   // In-app Notification Toast
@@ -1777,29 +1773,7 @@ export default function App() {
     }
   };
 
-  // Keep visitors on the timetable tab if public view is on
-  useEffect(() => {
-    if (!isAdmin && config.allowPublicTimetable && activeTab !== 'timetable') {
-      setActiveTab('timetable');
-    }
-  }, [isAdmin, config.allowPublicTimetable, activeTab]);
-
-  if (!isAdmin && !config.allowPublicTimetable) {
-    return (
-      <AdminLoginModal
-        isOpen={true}
-        isFullScreen={true}
-        onLoginSuccess={() => {
-          setIsAdmin(true);
-          localStorage.setItem(`${STORAGE_KEY}_is_admin`, 'true');
-          localStorage.setItem(`${STORAGE_KEY}_user_role`, 'admin');
-          showToast('Đăng nhập Quản trị viên thành công!');
-        }}
-        promptReason="Hệ thống đang khóa tính năng xem tự do. Vui lòng đăng nhập tài khoản Quản trị viên để truy cập thời khóa biểu và dữ liệu phân công."
-      />
-    );
-  }
-
+  // Webapp is in free view mode
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col text-slate-900 font-['Be_Vietnam_Pro',sans-serif]">
       {/* Header with App Title, Stats & Actions */}
@@ -1816,14 +1790,8 @@ export default function App() {
         onOpenAdminLogin={() => setIsLoginModalOpen(true)}
         onLogoutAdmin={handleLogout}
         onSaveToCloud={handleSaveToCloud}
-        onExportJsonBackup={handleExportJsonBackup}
-        onImportJsonBackup={handleImportJsonBackup}
-        onOpenImportModal={() => setIsImportModalOpen(true)}
-        onExportExcel={handleExportExcel}
-        onOpenAutoAssign={() => setIsAutoAssignOpen(true)}
         onOpenConflictDrawer={() => setIsConflictDrawerOpen(true)}
         onResetData={handleResetData}
-        onTogglePublicTimetable={handleTogglePublicTimetable}
       />
 
       {/* Primary Navigation Tabs */}
@@ -1954,28 +1922,6 @@ export default function App() {
       <Footer />
 
       {/* Modals & Slide-out Drawers */}
-      <ExcelImportExportModal
-        isOpen={isImportModalOpen}
-        onClose={() => setIsImportModalOpen(false)}
-        teachers={teachers}
-        classes={classes}
-        subjects={subjects}
-        departments={departments}
-        onApplyImport={handleApplyImport}
-        onExportExcel={handleExportExcel}
-      />
-
-      <AutoAssignModal
-        isOpen={isAutoAssignOpen}
-        onClose={() => setIsAutoAssignOpen(false)}
-        teachers={teachers}
-        classes={classes}
-        subjects={subjects}
-        departments={departments}
-        currentAssignments={assignments}
-        onApplyAssignments={setAssignments}
-      />
-
       <ConflictAuditDrawer
         isOpen={isConflictDrawerOpen}
         onClose={() => setIsConflictDrawerOpen(false)}

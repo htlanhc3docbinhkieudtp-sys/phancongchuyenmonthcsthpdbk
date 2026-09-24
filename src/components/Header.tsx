@@ -42,11 +42,11 @@ interface HeaderProps {
   onOpenAdminLogin: () => void;
   onLogoutAdmin: () => void;
   onSaveToCloud: () => void;
-  onExportJsonBackup: () => void;
-  onImportJsonBackup: (file: File) => void;
-  onOpenImportModal: () => void;
-  onExportExcel: () => void;
-  onOpenAutoAssign: () => void;
+  onExportJsonBackup?: () => void;
+  onImportJsonBackup?: (file: File) => void;
+  onOpenImportModal?: () => void;
+  onExportExcel?: () => void;
+  onOpenAutoAssign?: () => void;
   onOpenConflictDrawer: () => void;
   onResetData: () => void;
   onTogglePublicTimetable?: () => void;
@@ -66,27 +66,12 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAdminLogin,
   onLogoutAdmin,
   onSaveToCloud,
-  onExportJsonBackup,
-  onImportJsonBackup,
-  onOpenImportModal,
-  onExportExcel,
-  onOpenAutoAssign,
   onOpenConflictDrawer,
   onResetData,
-  onTogglePublicTimetable,
 }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const logoFileInputRef = useRef<HTMLInputElement>(null);
   const errorCount = conflicts.filter(c => c.severity === 'error').length;
   const warningCount = conflicts.filter(c => c.severity === 'warning').length;
-
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      onImportJsonBackup(file);
-      e.target.value = '';
-    }
-  };
 
   const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!isAdmin) {
@@ -265,107 +250,11 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </button>
             )}
-
-            {/* Backup & Restore Buttons (Admin Only) */}
-            {isAdmin && (
-              <>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileInputChange}
-                  accept=".json"
-                  className="hidden"
-                />
-                <button
-                  onClick={onExportJsonBackup}
-                  className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-indigo-200 hover:text-white bg-indigo-800/80 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
-                  title="Tải file bản sao lưu toàn bộ dữ liệu (.json) về máy tính"
-                >
-                  <Download className="w-3 h-3 text-indigo-300" />
-                  <span className="text-[11px]">Sao lưu</span>
-                </button>
-
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-indigo-200 hover:text-white bg-indigo-800/80 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
-                  title="Khôi phục dữ liệu từ file sao lưu JSON (khớp 100% dữ liệu máy thật)"
-                >
-                  <Upload className="w-3 h-3 text-emerald-300" />
-                  <span className="text-[11px]">Khôi phục JSON</span>
-                </button>
-              </>
-            )}
           </div>
 
           {/* Admin vs Read-Only Controls */}
           {isAdmin ? (
             <>
-              {/* Public Timetable View Mode Quick Toggle */}
-              {onTogglePublicTimetable && (
-                <button
-                  type="button"
-                  onClick={onTogglePublicTimetable}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95 border ${
-                    config.allowPublicTimetable
-                      ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-emerald-400 ring-2 ring-emerald-400/30'
-                      : 'bg-amber-500/25 hover:bg-amber-500/40 text-amber-200 border-amber-400/50'
-                  }`}
-                  title={
-                    config.allowPublicTimetable
-                      ? 'Chế độ xem tự do đang BẬT: Toàn trường và khách có thể xem Thời khóa biểu mà không cần mật khẩu. Bấm vào đây để KHÓA lại khi bạn cần cập nhật/chỉnh sửa.'
-                      : 'Chế độ xem tự do đang KHÓA: Hệ thống chỉ cho phép Quản trị viên truy cập. Bấm vào đây để MỞ KHÓA cho giáo viên & học sinh xem TKB.'
-                  }
-                >
-                  {config.allowPublicTimetable ? (
-                    <>
-                      <Unlock className="w-3.5 h-3.5 text-white" />
-                      <span className="hidden md:inline">Xem Tự Do:</span>
-                      <span className="bg-white/25 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider font-extrabold">
-                        Đang Mở
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <Lock className="w-3.5 h-3.5 text-amber-300" />
-                      <span className="hidden md:inline">Xem Tự Do:</span>
-                      <span className="bg-amber-400/30 text-amber-200 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider font-extrabold">
-                        Đang Khóa
-                      </span>
-                    </>
-                  )}
-                </button>
-              )}
-
-              {/* AI Auto Assign button */}
-              <button
-                onClick={onOpenAutoAssign}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 border border-indigo-500 shadow-xs transition-all active:scale-95 cursor-pointer"
-                title="Tự động phân công thông minh"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                <span className="hidden sm:inline">Tự Động Gán</span>
-              </button>
-
-              {/* Excel Import button */}
-              <button
-                onClick={onOpenImportModal}
-                className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-indigo-100 bg-indigo-800 hover:bg-indigo-700 border border-indigo-700 transition-all cursor-pointer"
-                title="Nhập dữ liệu từ file Excel của trường"
-              >
-                <Upload className="w-3.5 h-3.5 text-indigo-300" />
-                <span>Nhập Excel</span>
-              </button>
-
-              {/* Excel Export button (Admin only) */}
-              <button
-                onClick={onExportExcel}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-xs transition-all cursor-pointer"
-                title="Xuất bảng phân công ra file Excel"
-              >
-                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-100" />
-                <span>Xuất Excel</span>
-              </button>
-
               {/* Reset (Admin only) */}
               <button
                 onClick={onResetData}
