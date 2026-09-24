@@ -562,14 +562,14 @@ export default function App() {
     showToast('Đã đăng xuất về chế độ xem tự do (Chỉ xem Thời khóa biểu)!');
   };
 
-  const handleTeacherLoginSuccess = (teacherName: string, teacherId?: string) => {
+  const handleTeacherLoginSuccess = (teacherName: string = 'Giáo viên trường') => {
     setUserRole('teacher');
     setTeacherUser(teacherName);
     localStorage.setItem(`${STORAGE_KEY}_user_role`, 'teacher');
     localStorage.setItem(`${STORAGE_KEY}_teacher_name`, teacherName);
     localStorage.setItem(`${STORAGE_KEY}_is_admin`, 'false');
     setIsLoginModalOpen(false);
-    showToast(`Chào mừng Thầy/Cô ${teacherName}! Bạn có thể xem tự do tất cả các tab nội bộ.`);
+    showToast('Đăng nhập thành công với quyền Giáo viên trường! Thầy/Cô có thể xem tự do tất cả các tab nội bộ.');
   };
 
   const handleAdminLoginSuccess = () => {
@@ -2035,8 +2035,8 @@ export default function App() {
         teachers={teachers}
         initialMode={loginModalMode}
         promptReason={loginPromptReason}
-        onLoginAsTeacher={(teacherName, teacherId) => {
-          handleTeacherLoginSuccess(teacherName, teacherId);
+        onLoginAsTeacher={() => {
+          handleTeacherLoginSuccess();
         }}
         onLoginAsAdmin={() => {
           handleAdminLoginSuccess();
