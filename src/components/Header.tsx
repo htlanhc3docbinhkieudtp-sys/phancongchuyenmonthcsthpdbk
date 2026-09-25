@@ -42,7 +42,7 @@ interface HeaderProps {
   teacherUser?: string;
   onOpenAdminLogin: () => void;
   onLogoutAdmin: () => void;
-  onSaveToCloud: () => void;
+  onSaveToCloud?: () => void;
   onExportJsonBackup?: () => void;
   onImportJsonBackup?: (file: File) => void;
   onOpenImportModal?: () => void;
@@ -218,41 +218,16 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </button>
 
-          {/* Cloud Auto-Sync Indicator & Manual Save */}
-          <div className="flex items-center gap-1.5">
-            {/* Show Save to Cloud button ONLY when there are unsaved local changes (cloudSyncStatus !== 'synced') */}
-            {cloudSyncStatus !== 'synced' && (
-              <button
-                type="button"
-                onClick={onSaveToCloud}
-                disabled={cloudSyncStatus === 'saving'}
-                className="relative group overflow-hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white shadow-lg cursor-pointer transition-all active:scale-95 animate-rainbow-pulse bg-gradient-to-r from-amber-500 via-rose-500 via-purple-600 to-indigo-600 border border-white/40 hover:brightness-110"
-                title={
-                  cloudSyncStatus === 'saving'
-                    ? 'Đang đẩy dữ liệu lên đám mây Firebase...'
-                    : 'Dữ liệu trên máy vừa có thay đổi và chưa lưu lên Cloud! Bấm để đẩy lên Firestore cho toàn trường.'
-                }
-              >
-                {cloudSyncStatus === 'saving' ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 text-white animate-spin" />
-                    <span className="text-[11px] font-extrabold tracking-wide">Đang lưu Cloud...</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="relative flex h-2 w-2 mr-0.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-300 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-400"></span>
-                    </span>
-                    <UploadCloud className="w-4 h-4 text-white animate-bounce" />
-                    <span className="text-[11px] font-black tracking-wide drop-shadow-md">
-                      Lưu Cloud ngay
-                    </span>
-                  </>
-                )}
-              </button>
-            )}
-          </div>
+          {/* Cloud Auto-Sync Indicator (only shows transient spinner while uploading TKB) */}
+          {cloudSyncStatus === 'saving' && (
+            <div
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-900/60 border border-indigo-500/40 text-indigo-200 text-xs font-medium animate-pulse"
+              title="Đang tự động đồng bộ Thời khóa biểu mới lên đám mây..."
+            >
+              <RefreshCw className="w-3.5 h-3.5 text-indigo-300 animate-spin" />
+              <span className="hidden md:inline text-[11px] font-semibold">Đang lưu TKB...</span>
+            </div>
+          )}
 
           {/* Admin vs Read-Only Controls */}
           {isAdmin ? (

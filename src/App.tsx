@@ -841,11 +841,6 @@ export default function App() {
 
     // Mirror to IndexedDB (virtually unlimited browser storage)
     persistAllWeeklyTimetables(weeklyTimetables);
-
-    if (!isInitialCloudLoadRef.current && !isApplyingCloudDataRef.current) {
-      setCloudSyncStatus('offline');
-    }
-
   }, [config, departments, subjects, classes, teachers, assignments, lockedCells, weeklySchedules, weeklyTimetables, timetable, isAdmin]);
 
   // Derived Calculations
@@ -1380,8 +1375,7 @@ export default function App() {
             persistAllWeeklyTimetables(single);
           }
 
-          setCloudSyncStatus('offline');
-          alert('Đã khôi phục dữ liệu từ file sao lưu JSON thành công! Tất cả các tiết học đã được chuẩn hóa tự động (loại bỏ hoàn toàn trùng tiết và sửa gán nhầm giáo viên). Vui lòng bấm nút "Lưu Cloud" để các máy khác cập nhật ngay.');
+          alert('Đã khôi phục dữ liệu từ file sao lưu JSON thành công! Tất cả các tiết học đã được chuẩn hóa tự động.');
         }
       } catch (err) {
         alert('File sao lưu không hợp lệ hoặc bị lỗi định dạng!');
