@@ -266,3 +266,60 @@ export function buildWeeklyScheduleFromTimetableSlots(
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Chuẩn hóa và làm sạch danh sách phân công:
+ * 1. Loại bỏ các môn chào cờ / sinh hoạt nghi lễ không tính vào định mức dạy của giáo viên
+ * 2. Khử trùng mã môn đồng nghĩa (ví dụ sub-qpan -> sub-gdqp, sub-ktpl -> sub-gdktpl)
+ * 3. Khử trùng các cặp (classId, subjectId) bị trùng lặp
+ * 4. Gán đúng giáo viên phụ trách KT&PL và TD
+ */
+export function sanitizeAssignmentsList(
+  rawAssignments: Assignment[],
+  classList: ClassGroup[],
+  subjectList: Subject[],
+  teacherList?: Teacher[]
+): Assignment[] {
+  const validSubIds = new Set(subjectList.map(s => s.id));
+  const validClassIds = new Set(classList.map(c => c.id));
+  const seen = new Map<string, Assignment>();
+
+  rawAssignments.forEach(a => {
+    if (!a || !a.classId || !a.subjectId) return;
+
+    let subjectId = a.subjectId;
+    let teacherId = a.teacherId;
+
+    // Bỏ môn chào cờ
+    if (subjectId === 'sub-chao-co' || subjectId === 'chao-co') return;
+
+    // Chuẩn hóa tên mã môn đồng nghĩa
+    if (subjectId === 'sub-qpan' || subjectId === 'qpan') subjectId = 'sub-gdqp';
+    if (subjectId === 'sub-ktpl' || subjectId === 'ktpl') subjectId = 'sub-gdktpl';
+    if (subjectId === 'sub-td' || subjectId === 'the-duc') subjectId = 'sub-gdtc';
+
+    // Điều chỉnh đặc thù chuyên môn nhà trường: KT&PL thuộc Thầy Trường (tch-ls-8)
+    if (subjectId === 'sub-gdktpl' && teacherId === 'tch-bgh-1') {
+      teacherId = 'tch-ls-8';
+    }
+    // 8A3 thể dục thuộc Thầy tch-td-1
+    if ((a.classId === 'cls-8a3' || a.classId === '8A3') && subjectId === 'sub-gdtc') {
+      teacherId = 'tch-td-1';
+    }
+
+    if (!validSubIds.has(subjectId)) return;
+    if (!validClassIds.has(a.classId)) return;
+
+    const key = `${a.classId}_${subjectId}`;
+    if (!seen.has(key)) {
+      seen.set(key, {
+        ...a,
+        subjectId,
+        teacherId,
+      });
+    }
+  });
+
+  return Array.from(seen.values());
+}
+

@@ -54,8 +54,10 @@ import {
   extractAssignmentsFromTimetable,
   propagateTeacherToTimetableSlots,
   propagateTeacherToWeeklySchedules,
-  buildWeeklyScheduleFromTimetableSlots
+  buildWeeklyScheduleFromTimetableSlots,
+  sanitizeAssignmentsList
 } from './utils/timetableSyncHelper';
+import { calculateAllActualWorkloads } from './utils/actualTeachingHoursHelper';
 import {
   persistWeekTimetable,
   persistAllWeeklyTimetables,
@@ -462,9 +464,9 @@ export default function App() {
     }
     const w1Slots = weeklyTimetables[1]?.slots;
     if (w1Slots && w1Slots.length > 0) {
-      return extractAssignmentsFromTimetable(w1Slots, initialClasses, initialSubjects, initialTeachers, baseList);
+      baseList = extractAssignmentsFromTimetable(w1Slots, initialClasses, initialSubjects, initialTeachers, baseList);
     }
-    return baseList;
+    return sanitizeAssignmentsList(baseList, initialClasses, initialSubjects, initialTeachers);
   });
 
   const [lockedCells, setLockedCells] = useState<LockedCell[]>(() => {
@@ -641,23 +643,12 @@ export default function App() {
     if (cloudData.classes && cloudData.classes.length > 0) setClasses(cloudData.classes);
     if (cloudData.teachers && cloudData.teachers.length > 0) setTeachers(sanitizeTeachersList(cloudData.teachers));
     if (cloudData.assignments) {
-      // Reconcile assignments: KT&PL belongs to Thầy Phạm Nguyễn Văn Trường (tch-ls-8), not Hiệu trưởng (tch-bgh-1)
-      const sanitizedAssignments = cloudData.assignments.map(a => {
-        if (
-          a.subjectId === 'sub-gdktpl' ||
-          a.subjectId === 'sub-ktpl' ||
-          (a.teacherId === 'tch-bgh-1' && (a.subjectId.includes('kt') || a.subjectId.includes('pl')))
-        ) {
-          return { ...a, teacherId: 'tch-ls-8', subjectId: 'sub-gdktpl' };
-        }
-        if (
-          (a.classId === 'cls-8a3' || a.classId === '8A3') &&
-          (a.subjectId === 'sub-gdtc' || a.subjectId?.includes('td'))
-        ) {
-          return { ...a, teacherId: 'tch-td-1' };
-        }
-        return a;
-      });
+      const sanitizedAssignments = sanitizeAssignmentsList(
+        cloudData.assignments,
+        cloudData.classes && cloudData.classes.length > 0 ? cloudData.classes : classes,
+        cloudData.subjects && cloudData.subjects.length > 0 ? cloudData.subjects : subjects,
+        cloudData.teachers && cloudData.teachers.length > 0 ? cloudData.teachers : teachers
+      );
       setAssignments(sanitizedAssignments);
     }
     if (cloudData.lockedCells) setLockedCells(cloudData.lockedCells);
@@ -858,6 +849,41 @@ export default function App() {
   }, [config, departments, subjects, classes, teachers, assignments, lockedCells, weeklySchedules, weeklyTimetables, timetable, isAdmin]);
 
   // Derived Calculations
+  const currentSemester = currentWeek >= 19 ? 'HK2' : 'HK1';
+  const semesterStartWeek = currentSemester === 'HK2' ? 19 : 1;
+  const semesterEndWeek = currentSemester === 'HK2' ? 35 : 18;
+  const totalWeeksInSemester = semesterEndWeek - semesterStartWeek + 1;
+
+  // Authoritative Actual Workloads matching "Bảng Thống Kê Tiết Thực Dạy Học Kỳ 1 & Học Kỳ 2"
+  const actualWorkloads = useMemo(() => {
+    return calculateAllActualWorkloads(
+      currentWeek,
+      teachers,
+      departments,
+      classes,
+      subjects,
+      config,
+      weeklyTimetables,
+      timetable,
+      totalWeeksInSemester,
+      {},
+      semesterStartWeek,
+      semesterEndWeek
+    );
+  }, [
+    currentWeek,
+    teachers,
+    departments,
+    classes,
+    subjects,
+    config,
+    weeklyTimetables,
+    timetable,
+    totalWeeksInSemester,
+    semesterStartWeek,
+    semesterEndWeek
+  ]);
+
   const workloads = useMemo(() => {
     return calculateTeacherWorkloads(
       teachers,
@@ -877,9 +903,23 @@ export default function App() {
       subjects,
       departments,
       workloads,
-      lockedCells
+      lockedCells,
+      actualWorkloads,
+      currentSemester,
+      currentWeek
     );
-  }, [teachers, assignments, classes, subjects, departments, workloads, lockedCells]);
+  }, [
+    teachers,
+    assignments,
+    classes,
+    subjects,
+    departments,
+    workloads,
+    lockedCells,
+    actualWorkloads,
+    currentSemester,
+    currentWeek
+  ]);
 
   // Assignment percentage calculation
   const totalRequiredSlots = useMemo(() => {
@@ -2026,6 +2066,8 @@ export default function App() {
         onClose={() => setIsConflictDrawerOpen(false)}
         conflicts={conflicts}
         onLockCell={handleToggleLockCell}
+        currentSemester={currentSemester}
+        currentWeek={currentWeek}
       />
 
       {/* Login Modal (supports both Teacher login & Admin login) */}

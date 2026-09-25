@@ -4,7 +4,8 @@ import {
   CheckCircle2,
   X,
   ShieldAlert,
-  Lock
+  Lock,
+  Info
 } from 'lucide-react';
 import { ConflictIssue } from '../types';
 
@@ -14,6 +15,8 @@ interface ConflictAuditDrawerProps {
   conflicts: ConflictIssue[];
   onSelectIssue?: (issue: ConflictIssue) => void;
   onLockCell?: (classId: string, subjectId: string, reason?: string) => void;
+  currentSemester?: 'HK1' | 'HK2';
+  currentWeek?: number;
 }
 
 export const ConflictAuditDrawer: React.FC<ConflictAuditDrawerProps> = ({
@@ -22,6 +25,8 @@ export const ConflictAuditDrawer: React.FC<ConflictAuditDrawerProps> = ({
   conflicts,
   onSelectIssue,
   onLockCell,
+  currentSemester = 'HK1',
+  currentWeek = 1,
 }) => {
   const [filterType, setFilterType] = useState<string>('ALL');
 
@@ -51,7 +56,7 @@ export const ConflictAuditDrawer: React.FC<ConflictAuditDrawerProps> = ({
                   Kiểm Tra Xung Đột & Định Mức
                 </h3>
                 <p className="text-[10px] text-slate-500">
-                  Phát hiện thiếu tiết, vượt định mức, chưa có GVCN
+                  Đối soát theo Bảng Thống Kê Tiết Thực Dạy ({currentSemester} - Tuần {currentWeek})
                 </p>
               </div>
             </div>
@@ -61,6 +66,21 @@ export const ConflictAuditDrawer: React.FC<ConflictAuditDrawerProps> = ({
             >
               <X className="w-4 h-4" />
             </button>
+          </div>
+
+          {/* Data Source Notice */}
+          <div className="p-2.5 bg-blue-50/80 border-b border-blue-200/70 text-xs">
+            <div className="flex items-start gap-2">
+              <Info className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-blue-950 text-[11px]">
+                  Nguồn dữ liệu: Bảng Thống Kê Tiết Thực Dạy
+                </p>
+                <p className="text-[10px] text-blue-800 leading-relaxed mt-0.5">
+                  Dữ liệu được đối soát trực tiếp từ Thời Khóa Biểu thực dạy, Khung Tiết GDPT 2018 (phân môn KHTN, LS-ĐL, Công nghệ theo tuần/kỳ) và Giảm trừ kiêm nhiệm chính thức của nhà trường theo {currentSemester} (Tuần {currentWeek}).
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Filter Pills */}

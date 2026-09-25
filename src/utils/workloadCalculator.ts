@@ -10,6 +10,7 @@ import {
   DutyType,
   ConcurrentDuty
 } from '../types';
+import type { TeacherActualWorkload } from './actualTeachingHoursHelper';
 
 export interface DutyPreset {
   type: DutyType;
@@ -273,7 +274,7 @@ export function calculateTeacherWorkloads(
       baseStandard = teacher.campus === 'THCSDBK' || teacher.campus === 'THCSTK' ? 19 : 17;
     }
 
-    const targetPeriods = baseStandard;
+    const targetPeriods = Math.max(0, baseStandard - totalReduction);
     const balance = assignedPeriods - targetPeriods;
 
     const assignedClasses = teacherAssignments.map(a => ({
@@ -297,6 +298,46 @@ export function calculateTeacherWorkloads(
   });
 }
 
+/**
+ * Chuyển đổi bảng thống kê tiết thực dạy (TeacherActualWorkload) sang WorkloadStats chuẩn
+ * để đồng bộ 100% với Sổ thực dạy và Bảng thống kê tiết HK1 & HK2
+ */
+export function convertActualWorkloadsToStats(
+  actualWorkloads: TeacherActualWorkload[],
+  mode: 'WEEKLY' | 'SEMESTER' = 'SEMESTER',
+  totalWeeksInSemester: number = 18
+): WorkloadStats[] {
+  return actualWorkloads.map(aw => {
+    const isSemester = mode === 'SEMESTER';
+    const assignedPeriods = isSemester
+      ? Math.round((aw.semesterTotalTeaching / (totalWeeksInSemester || 18)) * 10) / 10
+      : aw.teachingPeriods;
+    const reductionPeriods = aw.reductionPeriods;
+    const targetPeriods = Math.max(0, aw.standardPeriods - reductionPeriods);
+    const balance = isSemester
+      ? Math.round((aw.semesterBalance / (totalWeeksInSemester || 18)) * 10) / 10
+      : aw.weeklyBalance;
+
+    const assignedClasses = aw.rows.map(r => ({
+      assignmentId: `act-${aw.teacherId}-${r.subject}`,
+      className: r.classes,
+      subjectName: r.subject,
+      periods: r.periods,
+    }));
+
+    return {
+      teacherId: aw.teacherId,
+      teacherName: aw.teacherName,
+      departmentName: aw.departmentName,
+      assignedPeriods,
+      reductionPeriods,
+      targetPeriods,
+      balance,
+      assignedClasses,
+    };
+  });
+}
+
 export function auditAssignmentConflicts(
   teachers: Teacher[],
   assignments: Assignment[],
@@ -304,7 +345,10 @@ export function auditAssignmentConflicts(
   subjects: Subject[],
   departments: Department[],
   workloads: WorkloadStats[],
-  lockedCells: LockedCell[] = []
+  lockedCells: LockedCell[] = [],
+  actualWorkloads?: TeacherActualWorkload[],
+  semesterName: 'HK1' | 'HK2' = 'HK1',
+  currentWeek: number = 1
 ): ConflictIssue[] {
   const issues: ConflictIssue[] = [];
   const subMap = new Map(subjects.map(s => [s.id, s]));
@@ -344,36 +388,87 @@ export function auditAssignmentConflicts(
   });
 
   // 2. Check Overloaded & Underloaded teachers
-  workloads.forEach(w => {
-    if (w.balance > 3) {
-      issues.push({
-        id: `overload-${w.teacherId}`,
-        type: 'OVERLOAD',
-        severity: 'warning',
-        title: `Vượt định mức: ${w.teacherName}`,
-        description: `Giáo viên đang dạy ${w.assignedPeriods} tiết (Vượt +${w.balance} tiết so với định mức ${w.targetPeriods} tiết).`,
-        teacherId: w.teacherId,
-      });
-    } else if (w.assignedPeriods === 0) {
-      issues.push({
-        id: `zero-${w.teacherId}`,
-        type: 'UNDERLOAD',
-        severity: 'info',
-        title: `Chưa phân công tiết: ${w.teacherName}`,
-        description: `Giáo viên chưa được phân công lớp nào (Định mức yêu cầu: ${w.targetPeriods} tiết).`,
-        teacherId: w.teacherId,
-      });
-    } else if (w.balance < -4) {
-      issues.push({
-        id: `underload-${w.teacherId}`,
-        type: 'UNDERLOAD',
-        severity: 'info',
-        title: `Thiếu định mức: ${w.teacherName}`,
-        description: `Giáo viên đang dạy ${w.assignedPeriods} tiết (Thiếu ${Math.abs(w.balance)} tiết so với định mức ${w.targetPeriods} tiết).`,
-        teacherId: w.teacherId,
-      });
-    }
-  });
+  // Nếu có dữ liệu Bảng Thống Kê Tiết Thực Dạy (Thời Khóa Biểu & Phân phối chương trình HK1 & HK2)
+  // Ưu tiên đối soát trực tiếp theo số liệu thực tế này để đảm bảo độ chính xác 100%
+  if (actualWorkloads && actualWorkloads.length > 0) {
+    const totalWeeksInSemester = semesterName === 'HK2' ? 17 : 18;
+
+    actualWorkloads.forEach(aw => {
+      const avgSemesterBalance = Math.round((aw.semesterBalance / totalWeeksInSemester) * 10) / 10;
+
+      // Cảnh báo VƯỢT ĐỊNH MỨC chỉ khi tính trên bình quân cả Học kỳ bị vượt quá 3 tiết/tuần
+      if (avgSemesterBalance > 3) {
+        issues.push({
+          id: `overload-${aw.teacherId}`,
+          type: 'OVERLOAD',
+          severity: 'warning',
+          title: `Vượt định mức ${semesterName}: ${aw.teacherName}`,
+          description: `Cả ${semesterName} tính ${aw.semesterTotalPeriods} tiết / yêu cầu ${aw.semesterRequiredPeriods} tiết (Vượt +${aw.semesterBalance} tiết cả kỳ, TB vượt +${avgSemesterBalance} tiết/tuần). Thực dạy Tuần ${currentWeek}: ${aw.teachingPeriods} tiết + giảm ${aw.reductionPeriods} tiết = ${aw.totalPeriods} tiết / định mức ${aw.standardPeriods} tiết.`,
+          teacherId: aw.teacherId,
+        });
+      } else if (aw.weeklyBalance > 4 && avgSemesterBalance <= 3) {
+        // Giáo viên dạy dồn tuần theo phân phối chương trình đặc thù của THCS (ví dụ Lịch sử, KHTN, Công nghệ)
+        issues.push({
+          id: `weekly-peak-${aw.teacherId}`,
+          type: 'OVERLOAD',
+          severity: 'info',
+          title: `Dạy dồn Tuần ${currentWeek}: ${aw.teacherName}`,
+          description: `Tuần ${currentWeek} đang dạy ${aw.teachingPeriods} tiết + giảm ${aw.reductionPeriods} tiết = ${aw.totalPeriods} tiết / định mức ${aw.standardPeriods} tiết (Dôi +${aw.weeklyBalance} tiết tuần này theo tiến độ phân môn). Trung bình cả ${semesterName} chênh lệch: ${aw.semesterBalance >= 0 ? '+' : ''}${avgSemesterBalance} tiết/tuần.`,
+          teacherId: aw.teacherId,
+        });
+      } else if (aw.semesterTotalTeaching === 0 && aw.standardPeriods > 4) {
+        issues.push({
+          id: `zero-${aw.teacherId}`,
+          type: 'UNDERLOAD',
+          severity: 'info',
+          title: `Chưa có tiết dạy trong ${semesterName}: ${aw.teacherName}`,
+          description: `Giáo viên chưa được phân công tiết dạy trong TKB ${semesterName} (Định mức yêu cầu: ${aw.standardPeriods} tiết/tuần).`,
+          teacherId: aw.teacherId,
+        });
+      } else if (avgSemesterBalance < -4 && aw.standardPeriods > 4) {
+        issues.push({
+          id: `underload-${aw.teacherId}`,
+          type: 'UNDERLOAD',
+          severity: 'info',
+          title: `Thiếu định mức ${semesterName}: ${aw.teacherName}`,
+          description: `Cả ${semesterName} tính ${aw.semesterTotalPeriods} tiết / yêu cầu ${aw.semesterRequiredPeriods} tiết (Thiếu ${Math.abs(aw.semesterBalance)} tiết cả kỳ, TB thiếu ${Math.abs(avgSemesterBalance)} tiết/tuần).`,
+          teacherId: aw.teacherId,
+        });
+      }
+    });
+  } else {
+    // Fallback: Sử dụng bảng phân công cơ bản nếu chưa có dữ liệu thời khóa biểu thực dạy
+    workloads.forEach(w => {
+      if (w.balance > 3) {
+        issues.push({
+          id: `overload-${w.teacherId}`,
+          type: 'OVERLOAD',
+          severity: 'warning',
+          title: `Vượt định mức: ${w.teacherName}`,
+          description: `Giáo viên đang dạy ${w.assignedPeriods} tiết (Vượt +${w.balance} tiết so với định mức yêu cầu ${w.targetPeriods} tiết sau giảm trừ).`,
+          teacherId: w.teacherId,
+        });
+      } else if (w.assignedPeriods === 0) {
+        issues.push({
+          id: `zero-${w.teacherId}`,
+          type: 'UNDERLOAD',
+          severity: 'info',
+          title: `Chưa phân công tiết: ${w.teacherName}`,
+          description: `Giáo viên chưa được phân công lớp nào (Định mức yêu cầu: ${w.targetPeriods} tiết).`,
+          teacherId: w.teacherId,
+        });
+      } else if (w.balance < -4) {
+        issues.push({
+          id: `underload-${w.teacherId}`,
+          type: 'UNDERLOAD',
+          severity: 'info',
+          title: `Thiếu định mức: ${w.teacherName}`,
+          description: `Giáo viên đang dạy ${w.assignedPeriods} tiết (Thiếu ${Math.abs(w.balance)} tiết so với định mức yêu cầu ${w.targetPeriods} tiết).`,
+          teacherId: w.teacherId,
+        });
+      }
+    });
+  }
 
   // 3. Check Homeroom unassigned
   classes.forEach(c => {
