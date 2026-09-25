@@ -219,7 +219,7 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           {/* Cloud Auto-Sync Indicator (only shows transient spinner while uploading TKB) */}
-          {cloudSyncStatus === 'saving' && (
+          {isAdmin && cloudSyncStatus === 'saving' && (
             <div
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-900/60 border border-indigo-500/40 text-indigo-200 text-xs font-medium animate-pulse"
               title="Đang tự động đồng bộ Thời khóa biểu mới lên đám mây..."

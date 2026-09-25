@@ -76,7 +76,6 @@ import { ComprehensiveTableView } from './components/ComprehensiveTableView';
 import { HomeroomView } from './components/HomeroomView';
 import { CurriculumView } from './components/CurriculumView';
 import { ConflictAuditDrawer } from './components/ConflictAuditDrawer';
-import { MainDisparityBanner } from './components/MainDisparityBanner';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { Footer } from './components/Footer';
 import {
@@ -732,7 +731,6 @@ export default function App() {
     let isMounted = true;
     const initCloudData = async () => {
       try {
-        setCloudSyncStatus('saving');
         const cloudPromise = loadSchoolPlanFromCloud();
         const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 7500));
         const cloudData = await Promise.race([cloudPromise, timeoutPromise]);
@@ -1971,15 +1969,6 @@ export default function App() {
           );
           setIsLoginModalOpen(true);
         }}
-      />
-
-      {/* Main Interface Important Notice: Top Excess & Deficit Teachers for HK1 & Full Year */}
-      <MainDisparityBanner
-        workloadsHK1={actualWorkloadsHK1}
-        workloadsYear={actualWorkloadsYear}
-        currentSemester={currentSemester}
-        onOpenConflictDrawer={() => setIsConflictDrawerOpen(true)}
-        onNavigateToWeeklyLog={() => setActiveTab('weekly_log')}
       />
 
       {/* Main Content Area */}
