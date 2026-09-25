@@ -2,6 +2,7 @@ import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import {
   getFirestore,
+  initializeFirestore,
   doc,
   setDoc,
   getDoc,
@@ -34,12 +35,28 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfigJson) : getApps
 
 export const auth = getAuth(app);
 
-// Initialize Firestore with custom databaseId if configured
-export const db: Firestore =
-  firebaseConfigJson.firestoreDatabaseId &&
-  firebaseConfigJson.firestoreDatabaseId !== '(default)'
-    ? getFirestore(app, firebaseConfigJson.firestoreDatabaseId)
-    : getFirestore(app);
+// Initialize Firestore with custom databaseId and resilient long-polling connection
+function initFirestoreInstance(): Firestore {
+  const dbId =
+    firebaseConfigJson.firestoreDatabaseId &&
+    firebaseConfigJson.firestoreDatabaseId !== '(default)'
+      ? firebaseConfigJson.firestoreDatabaseId
+      : undefined;
+
+  try {
+    return dbId
+      ? initializeFirestore(app, {
+          experimentalAutoDetectLongPolling: true,
+        }, dbId)
+      : initializeFirestore(app, {
+          experimentalAutoDetectLongPolling: true,
+        });
+  } catch {
+    return dbId ? getFirestore(app, dbId) : getFirestore(app);
+  }
+}
+
+export const db: Firestore = initFirestoreInstance();
 
 export enum OperationType {
   CREATE = 'create',
@@ -77,6 +94,24 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
   if (isQuota) {
     markFirestoreWriteQuotaExhausted();
     console.warn('[Firestore Quota Guard] Đã chạm giới hạn ghi miễn phí Firestore hôm nay. Ứng dụng tự động chuyển sang chế độ lưu an toàn ngoại tuyến.');
+    return;
+  }
+
+  // Handle transient offline / client offline / network timeout gracefully without throwing fatal errors
+  const lowerErr = errMessage.toLowerCase();
+  const errorCode = (error as any)?.code || '';
+  const isOffline =
+    lowerErr.includes('offline') ||
+    lowerErr.includes('unavailable') ||
+    lowerErr.includes("backend didn't respond") ||
+    lowerErr.includes('failed to get document') ||
+    lowerErr.includes('timeout') ||
+    lowerErr.includes('network') ||
+    errorCode === 'unavailable' ||
+    errorCode === 'failed-precondition';
+
+  if (isOffline) {
+    console.warn(`[Firestore Offline Notice] Thao tác ${operationType} trên ${path || 'Firestore'} đang hoạt động ở chế độ ngoại tuyến:`, errMessage);
     return;
   }
 
@@ -830,7 +865,12 @@ export async function loadSchoolPlanFromCloud(): Promise<SchoolPlanData | null> 
   const docPath = `${COLLECTION_NAME}/${DOC_ID}`;
   try {
     const planRef = doc(db, COLLECTION_NAME, DOC_ID);
-    const snap = await getDoc(planRef);
+    const snap = await Promise.race([
+      getDoc(planRef),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Backend timeout: client is offline")), 5000)
+      )
+    ]);
     if (!snap.exists()) {
       return null;
     }

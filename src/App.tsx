@@ -76,6 +76,7 @@ import { ComprehensiveTableView } from './components/ComprehensiveTableView';
 import { HomeroomView } from './components/HomeroomView';
 import { CurriculumView } from './components/CurriculumView';
 import { ConflictAuditDrawer } from './components/ConflictAuditDrawer';
+import { MainDisparityBanner } from './components/MainDisparityBanner';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { Footer } from './components/Footer';
 import {
@@ -878,6 +879,42 @@ export default function App() {
     semesterStartWeek,
     semesterEndWeek
   ]);
+
+  // Authoritative Actual Workloads for HK1 (Weeks 1 to 18)
+  const actualWorkloadsHK1 = useMemo(() => {
+    return calculateAllActualWorkloads(
+      currentWeek <= 18 ? currentWeek : 3,
+      teachers,
+      departments,
+      classes,
+      subjects,
+      config,
+      weeklyTimetables,
+      timetable,
+      18,
+      {},
+      1,
+      18
+    );
+  }, [currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable]);
+
+  // Authoritative Actual Workloads for Full Year (Weeks 1 to 35)
+  const actualWorkloadsYear = useMemo(() => {
+    return calculateAllActualWorkloads(
+      currentWeek,
+      teachers,
+      departments,
+      classes,
+      subjects,
+      config,
+      weeklyTimetables,
+      timetable,
+      35,
+      {},
+      1,
+      35
+    );
+  }, [currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable]);
 
   const workloads = useMemo(() => {
     return calculateTeacherWorkloads(
@@ -1936,6 +1973,15 @@ export default function App() {
         }}
       />
 
+      {/* Main Interface Important Notice: Top Excess & Deficit Teachers for HK1 & Full Year */}
+      <MainDisparityBanner
+        workloadsHK1={actualWorkloadsHK1}
+        workloadsYear={actualWorkloadsYear}
+        currentSemester={currentSemester}
+        onOpenConflictDrawer={() => setIsConflictDrawerOpen(true)}
+        onNavigateToWeeklyLog={() => setActiveTab('weekly_log')}
+      />
+
       {/* Main Content Area */}
       <main className="flex-1 pb-16">
         {/* Tab: Thời Khóa Biểu Toàn Trường */}
@@ -2062,6 +2108,12 @@ export default function App() {
         onLockCell={handleToggleLockCell}
         currentSemester={currentSemester}
         currentWeek={currentWeek}
+        workloadsHK1={actualWorkloadsHK1}
+        workloadsYear={actualWorkloadsYear}
+        onNavigateToWeeklyLog={() => {
+          setIsConflictDrawerOpen(false);
+          setActiveTab('weekly_log');
+        }}
       />
 
       {/* Login Modal (supports both Teacher login & Admin login) */}

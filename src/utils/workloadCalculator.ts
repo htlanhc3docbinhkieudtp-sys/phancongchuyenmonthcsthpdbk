@@ -393,20 +393,49 @@ export function auditAssignmentConflicts(
   if (actualWorkloads && actualWorkloads.length > 0) {
     const totalWeeksInSemester = semesterName === 'HK2' ? 17 : 18;
 
+    // Phân nhóm và sắp xếp từ lớn tới nhỏ theo yêu cầu
+    const sortedOverloads = actualWorkloads
+      .filter(aw => {
+        const avgSemesterBalance = Math.round((aw.semesterBalance / totalWeeksInSemester) * 10) / 10;
+        return avgSemesterBalance > 3;
+      })
+      .sort((a, b) => b.semesterBalance - a.semesterBalance); // Thừa nhiều nhất xếp trên cùng
+
+    const sortedUnderloads = actualWorkloads
+      .filter(aw => {
+        const avgSemesterBalance = Math.round((aw.semesterBalance / totalWeeksInSemester) * 10) / 10;
+        return avgSemesterBalance < -3 && aw.standardPeriods > 4;
+      })
+      .sort((a, b) => a.semesterBalance - b.semesterBalance); // Thiếu nhiều nhất (-217 trước -108) xếp trên cùng
+
+    sortedOverloads.forEach(aw => {
+      const avgSemesterBalance = Math.round((aw.semesterBalance / totalWeeksInSemester) * 10) / 10;
+      issues.push({
+        id: `overload-${aw.teacherId}`,
+        type: 'OVERLOAD',
+        severity: 'warning',
+        title: `Vượt định mức ${semesterName}: ${aw.teacherName} (+${aw.semesterBalance}t)`,
+        description: `Cả ${semesterName} tính ${aw.semesterTotalPeriods} tiết / yêu cầu ${aw.semesterRequiredPeriods} tiết (Vượt +${aw.semesterBalance} tiết cả kỳ, TB vượt +${avgSemesterBalance} tiết/tuần). Thực dạy Tuần ${currentWeek}: ${aw.teachingPeriods} tiết + giảm ${aw.reductionPeriods} tiết = ${aw.totalPeriods} tiết / định mức ${aw.standardPeriods} tiết.`,
+        teacherId: aw.teacherId,
+      });
+    });
+
+    sortedUnderloads.forEach(aw => {
+      const avgSemesterBalance = Math.round((aw.semesterBalance / totalWeeksInSemester) * 10) / 10;
+      issues.push({
+        id: `underload-${aw.teacherId}`,
+        type: 'UNDERLOAD',
+        severity: 'warning',
+        title: `Thiếu định mức ${semesterName}: ${aw.teacherName} (${aw.semesterBalance}t)`,
+        description: `Cả ${semesterName} tính ${aw.semesterTotalPeriods} tiết / yêu cầu ${aw.semesterRequiredPeriods} tiết (Thiếu ${Math.abs(aw.semesterBalance)} tiết cả kỳ, TB thiếu ${Math.abs(avgSemesterBalance)} tiết/tuần).`,
+        teacherId: aw.teacherId,
+      });
+    });
+
+    // Thông tin bổ sung (dạy dồn tuần hoặc chưa phân công)
     actualWorkloads.forEach(aw => {
       const avgSemesterBalance = Math.round((aw.semesterBalance / totalWeeksInSemester) * 10) / 10;
-
-      // Cảnh báo VƯỢT ĐỊNH MỨC chỉ khi tính trên bình quân cả Học kỳ bị vượt quá 3 tiết/tuần
-      if (avgSemesterBalance > 3) {
-        issues.push({
-          id: `overload-${aw.teacherId}`,
-          type: 'OVERLOAD',
-          severity: 'warning',
-          title: `Vượt định mức ${semesterName}: ${aw.teacherName}`,
-          description: `Cả ${semesterName} tính ${aw.semesterTotalPeriods} tiết / yêu cầu ${aw.semesterRequiredPeriods} tiết (Vượt +${aw.semesterBalance} tiết cả kỳ, TB vượt +${avgSemesterBalance} tiết/tuần). Thực dạy Tuần ${currentWeek}: ${aw.teachingPeriods} tiết + giảm ${aw.reductionPeriods} tiết = ${aw.totalPeriods} tiết / định mức ${aw.standardPeriods} tiết.`,
-          teacherId: aw.teacherId,
-        });
-      } else if (aw.weeklyBalance > 4 && avgSemesterBalance <= 3) {
+      if (aw.weeklyBalance > 4 && avgSemesterBalance <= 3) {
         // Giáo viên dạy dồn tuần theo phân phối chương trình đặc thù của THCS (ví dụ Lịch sử, KHTN, Công nghệ)
         issues.push({
           id: `weekly-peak-${aw.teacherId}`,
@@ -416,22 +445,13 @@ export function auditAssignmentConflicts(
           description: `Tuần ${currentWeek} đang dạy ${aw.teachingPeriods} tiết + giảm ${aw.reductionPeriods} tiết = ${aw.totalPeriods} tiết / định mức ${aw.standardPeriods} tiết (Dôi +${aw.weeklyBalance} tiết tuần này theo tiến độ phân môn). Trung bình cả ${semesterName} chênh lệch: ${aw.semesterBalance >= 0 ? '+' : ''}${avgSemesterBalance} tiết/tuần.`,
           teacherId: aw.teacherId,
         });
-      } else if (aw.semesterTotalTeaching === 0 && aw.standardPeriods > 4) {
+      } else if (aw.semesterTotalTeaching === 0 && aw.standardPeriods > 4 && !sortedUnderloads.some(u => u.teacherId === aw.teacherId)) {
         issues.push({
           id: `zero-${aw.teacherId}`,
           type: 'UNDERLOAD',
           severity: 'info',
           title: `Chưa có tiết dạy trong ${semesterName}: ${aw.teacherName}`,
           description: `Giáo viên chưa được phân công tiết dạy trong TKB ${semesterName} (Định mức yêu cầu: ${aw.standardPeriods} tiết/tuần).`,
-          teacherId: aw.teacherId,
-        });
-      } else if (avgSemesterBalance < -4 && aw.standardPeriods > 4) {
-        issues.push({
-          id: `underload-${aw.teacherId}`,
-          type: 'UNDERLOAD',
-          severity: 'info',
-          title: `Thiếu định mức ${semesterName}: ${aw.teacherName}`,
-          description: `Cả ${semesterName} tính ${aw.semesterTotalPeriods} tiết / yêu cầu ${aw.semesterRequiredPeriods} tiết (Thiếu ${Math.abs(aw.semesterBalance)} tiết cả kỳ, TB thiếu ${Math.abs(avgSemesterBalance)} tiết/tuần).`,
           teacherId: aw.teacherId,
         });
       }
