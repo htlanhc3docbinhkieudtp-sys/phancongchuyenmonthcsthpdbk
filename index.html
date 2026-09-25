@@ -4,10 +4,40 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Phân Công Chuyên Môn - THCS & THPT Đốc Binh Kiều</title>
-    <meta name="description" content="Phần mềm kéo thả phân công chuyên môn và giảng dạy trực quan cho Trường THCS & THPT Đốc Binh Kiều." />
+    <meta name="description" content="Phần mềm kéo thả phân công chuyên môn và giảng dạy trực quan cho Trường THCS & THPT Đốc Binh Kiều, hỗ trợ nhập xuất Excel và quản lý định mức tiết." />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://phancongchuyenmonthcsthptdbk.vercel.app/" />
+
+    <!-- OpenGraph Social Share Card (Zalo, Facebook, Messenger, Telegram) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://phancongchuyenmonthcsthptdbk.vercel.app/" />
+    <meta property="og:site_name" content="Trường THCS & THPT Đốc Binh Kiều" />
+    <meta property="og:title" content="Phân Công Chuyên Môn - THCS & THPT Đốc Binh Kiều" />
+    <meta property="og:description" content="Phần mềm kéo thả phân công chuyên môn và giảng dạy trực quan cho Trường THCS & THPT Đốc Binh Kiều." />
+    <meta property="og:image" content="https://phancongchuyenmonthcsthptdbk.vercel.app/og-image.png" />
+    <meta property="og:image:secure_url" content="https://phancongchuyenmonthcsthptdbk.vercel.app/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Logo Trường THCS & THPT Đốc Binh Kiều" />
+
+    <!-- Secondary square logo for platforms that crop to 1:1 like Zalo -->
+    <meta property="og:image" content="https://phancongchuyenmonthcsthptdbk.vercel.app/logo.png" />
+    <meta property="og:image:secure_url" content="https://phancongchuyenmonthcsthptdbk.vercel.app/logo.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Phân Công Chuyên Môn - THCS & THPT Đốc Binh Kiều" />
+    <meta name="twitter:description" content="Phần mềm kéo thả phân công chuyên môn và giảng dạy trực quan cho Trường THCS & THPT Đốc Binh Kiều." />
+    <meta name="twitter:image" content="https://phancongchuyenmonthcsthptdbk.vercel.app/og-image.png" />
+
     <!-- Icons & Favicon for Chrome, Cốc Cốc, Edge, Firefox, Safari -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -15,7 +45,47 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/logo.png" id="app-favicon" />
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <meta property="og:image" content="/logo.png" />
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Phân Công Chuyên Môn - THCS & THPT Đốc Binh Kiều",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "All",
+      "description": "Phần mềm kéo thả phân công chuyên môn và giảng dạy trực quan cho Trường THCS & THPT Đốc Binh Kiều.",
+      "url": "https://phancongchuyenmonthcsthptdbk.vercel.app/",
+      "image": "https://phancongchuyenmonthcsthptdbk.vercel.app/logo.png"
+    }
+    </script>
+
+    <!-- Dynamic OpenGraph origin updater -->
+    <script>
+      (function() {
+        try {
+          var origin = window.location.origin;
+          if (origin && !origin.includes('file://')) {
+            var ogUrl = document.querySelector('meta[property="og:url"]');
+            if (ogUrl) ogUrl.setAttribute('content', window.location.href);
+            var ogImages = document.querySelectorAll('meta[property="og:image"], meta[property="og:image:secure_url"]');
+            ogImages.forEach(function(el) {
+              var c = el.getAttribute('content');
+              if (c && c.startsWith('https://phancongchuyenmonthcsthptdbk.vercel.app/')) {
+                el.setAttribute('content', c.replace('https://phancongchuyenmonthcsthptdbk.vercel.app', origin));
+              }
+            });
+            var twImg = document.querySelector('meta[name="twitter:image"]');
+            if (twImg) {
+              var tc = twImg.getAttribute('content');
+              if (tc && tc.startsWith('https://phancongchuyenmonthcsthptdbk.vercel.app/')) {
+                twImg.setAttribute('content', tc.replace('https://phancongchuyenmonthcsthptdbk.vercel.app', origin));
+              }
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
