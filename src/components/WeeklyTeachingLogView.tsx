@@ -216,6 +216,37 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     endWeek,
   ]);
 
+  const fullYearWorkloads = useMemo(() => {
+    if (startWeek === 1 && endWeek === 35) return allWorkloads;
+    return calculateAllActualWorkloads(
+      selectedWeekNum,
+      teachers,
+      departments,
+      classes,
+      subjects,
+      config,
+      weeklyTimetables,
+      timetable,
+      35,
+      manualAdjustments,
+      1,
+      35
+    );
+  }, [
+    allWorkloads,
+    selectedWeekNum,
+    teachers,
+    departments,
+    classes,
+    subjects,
+    config,
+    weeklyTimetables,
+    timetable,
+    manualAdjustments,
+    startWeek,
+    endWeek,
+  ]);
+
   // Filter workloads based on Level, Department, Search, and Status
   const filteredWorkloads = useMemo(() => {
     return allWorkloads.filter((item) => {
@@ -283,6 +314,10 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   // Summary statistics
   const stats = useMemo(() => {
     const list = filteredWorkloads;
+    const visibleTeacherIds = new Set(list.map((workload) => workload.teacherId));
+    const yearList = fullYearWorkloads.filter((workload) =>
+      visibleTeacherIds.has(workload.teacherId)
+    );
     const totalTeachers = list.length;
     const isSem = isMultiWeekPeriod || viewMode === 'MULTI_WEEK';
 
@@ -307,6 +342,12 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     const deficitCount = list.filter((w) =>
       isSem ? w.semesterBalance < 0 : w.cumulativeBalance < 0
     ).length;
+    const hk1Balances = yearList.map((workload) =>
+      Array.from({ length: 18 }, (_, index) => workload.weeklyBalances[index + 1] ?? 0)
+        .reduce((sum, balance) => sum + balance, 0) +
+      (manualAdjustments[workload.teacherId] || 0)
+    );
+    const yearBalances = yearList.map((workload) => workload.semesterBalance);
 
     return {
       totalTeachers,
@@ -316,8 +357,12 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
       surplusCount,
       exactCount,
       deficitCount,
+      hk1SurplusPeriods: hk1Balances.reduce((sum, balance) => sum + Math.max(balance, 0), 0),
+      hk1DeficitPeriods: hk1Balances.reduce((sum, balance) => sum + Math.max(-balance, 0), 0),
+      yearSurplusPeriods: yearBalances.reduce((sum, balance) => sum + Math.max(balance, 0), 0),
+      yearDeficitPeriods: yearBalances.reduce((sum, balance) => sum + Math.max(-balance, 0), 0),
     };
-  }, [filteredWorkloads, isMultiWeekPeriod, viewMode, totalWeeks]);
+  }, [filteredWorkloads, fullYearWorkloads, manualAdjustments, isMultiWeekPeriod, viewMode, totalWeeks]);
 
   // Handle period change from dropdown or mode buttons
   const handlePeriodChange = (val: string) => {
@@ -709,7 +754,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
       {/* KPI Stats Summary Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 print:hidden">
-        <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 print:hidden">
           <span className="text-[11px] text-slate-500 font-medium">
             Số giáo viên ({getScopeLabel(levelScope)})
           </span>
@@ -760,6 +805,34 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
           </span>
           <div className="text-lg font-bold text-amber-600 mt-0.5 flex items-center gap-1">
             {stats.deficitCount} <span className="text-xs font-normal text-slate-400">GV</span>
+          </div>
+        </div>
+
+        <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[11px] text-slate-500 font-medium">Tổng tiết thừa Học kỳ 1</span>
+          <div className="text-lg font-bold text-emerald-600 mt-0.5">
+            {stats.hk1SurplusPeriods} <span className="text-xs font-normal text-slate-400">tiết</span>
+          </div>
+        </div>
+
+        <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[11px] text-slate-500 font-medium">Tổng tiết thừa cả năm</span>
+          <div className="text-lg font-bold text-emerald-600 mt-0.5">
+            {stats.yearSurplusPeriods} <span className="text-xs font-normal text-slate-400">tiết</span>
+          </div>
+        </div>
+
+        <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[11px] text-slate-500 font-medium">Tổng tiết thiếu Học kỳ 1</span>
+          <div className="text-lg font-bold text-rose-600 mt-0.5">
+            {stats.hk1DeficitPeriods} <span className="text-xs font-normal text-slate-400">tiết</span>
+          </div>
+        </div>
+
+        <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[11px] text-slate-500 font-medium">Tổng tiết thiếu cuối năm</span>
+          <div className="text-lg font-bold text-rose-600 mt-0.5">
+            {stats.yearDeficitPeriods} <span className="text-xs font-normal text-slate-400">tiết</span>
           </div>
         </div>
       </div>
