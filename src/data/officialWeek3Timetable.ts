@@ -1,4 +1,4 @@
-import { TimetableSlot } from "../types";
+import { TimetableSlot, SchoolTimetable } from "../types";
 
 /**
  * Official Week 3 Timetable Slots (Áp dụng từ Tuần 3 đến hết năm học)
@@ -21538,3 +21538,17 @@ export const OFFICIAL_WEEK_3_SLOTS: TimetableSlot[] = [
     "teacherId": "tch-td-1"
   }
 ];
+
+export function buildOfficialWeek3Timetable(academicYear: string = '2026 - 2027'): SchoolTimetable {
+  return {
+    id: 'tkb_HK1_tuan3',
+    academicYear,
+    semester: 'HK1',
+    weekNumber: 3,
+    appliedDate: 'Áp dụng Tuần 3 (từ 21/09/2026 đến 26/09/2026)',
+    title: 'Thời khóa biểu Tuần 3 (Áp dụng từ 21/09 đến 26/09)',
+    slots: OFFICIAL_WEEK_3_SLOTS,
+    updatedAt: Date.now(),
+    notes: 'Thời khóa biểu Tuần 3 chính thức đồng bộ từ file TKB sáng và chiều ngày 21/09/2026'
+  };
+}

@@ -12,8 +12,9 @@ import { buildTHPTWeek1Slots } from '../data/thptWeek1Timetable';
 import { buildTHCSDBKWeek1Slots } from '../data/thcsDBKWeek1Timetable';
 import { buildTHCSTKWeek1Slots } from '../data/thcsTKWeek1Timetable';
 import { buildOfficialWeek2Timetable, OFFICIAL_WEEK_2_SLOTS } from '../data/officialWeek2Timetable';
+import { buildOfficialWeek3Timetable, OFFICIAL_WEEK_3_SLOTS } from '../data/officialWeek3Timetable';
 
-export { buildOfficialWeek2Timetable, OFFICIAL_WEEK_2_SLOTS };
+export { buildOfficialWeek2Timetable, OFFICIAL_WEEK_2_SLOTS, buildOfficialWeek3Timetable, OFFICIAL_WEEK_3_SLOTS };
 
 export const DAYS_OF_WEEK = [
   { value: 2, label: 'Thứ Hai', shortLabel: 'Thứ 2' },

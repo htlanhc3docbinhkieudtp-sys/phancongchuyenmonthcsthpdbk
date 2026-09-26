@@ -39,6 +39,7 @@ import {
 import {
   generateInitialTimetable,
   buildOfficialWeek2Timetable,
+  buildOfficialWeek3Timetable,
   ensureTHPTOfficialSlots,
   cloneTimetableForWeek,
   createEmptyTimetableForWeek,
@@ -418,6 +419,7 @@ export default function App() {
           } else if (!parsed[2] || !parsed[2].slots || parsed[2].slots.length === 0) {
             parsed[2] = buildOfficialWeek2Timetable(initialSchoolConfig.academicYear);
           }
+          parsed[3] = buildOfficialWeek3Timetable(initialSchoolConfig.academicYear);
 
           return parsed;
         }
@@ -432,6 +434,7 @@ export default function App() {
     const week2Tkb = (exactW2Backup && exactW2Backup.slots && exactW2Backup.slots.length > 0)
       ? exactW2Backup
       : buildOfficialWeek2Timetable(initialSchoolConfig.academicYear);
+    const week3Tkb = buildOfficialWeek3Timetable(initialSchoolConfig.academicYear);
 
     if (emergencyW1) {
       try {
@@ -439,7 +442,8 @@ export default function App() {
         if (pW1 && pW1.slots && pW1.slots.length > 0) {
           return {
             1: pW1,
-            2: week2Tkb
+            2: week2Tkb,
+            3: week3Tkb
           };
         }
       } catch { /* ignore */ }
@@ -449,7 +453,8 @@ export default function App() {
       : generateInitialTimetable(initialClasses, initialSubjects, initialTeachers, initialAssignments, initialSchoolConfig);
     return {
       1: week1Tkb,
-      2: week2Tkb
+      2: week2Tkb,
+      3: week3Tkb
     };
   });
 
@@ -509,7 +514,10 @@ export default function App() {
     if (currentWeek === 2) {
       return buildOfficialWeek2Timetable(config.academicYear);
     }
-    // Weeks 3 to 35: Empty by default as requested by user
+    if (currentWeek === 3) {
+      return buildOfficialWeek3Timetable(config.academicYear);
+    }
+    // Weeks 4 to 35: Empty by default as requested by user
     return createEmptyTimetableForWeek(currentWeek, config.academicYear);
   }, [weeklyTimetables, currentWeek, config.academicYear, classes, subjects, teachers, assignments, config]);
 
