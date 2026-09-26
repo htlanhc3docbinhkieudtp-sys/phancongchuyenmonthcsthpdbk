@@ -287,11 +287,16 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
                             const periods = sub.defaultPeriods[cls.grade] || 0;
                             const assignment = getAssignmentForSubject(cls.id, sub.id);
                             const assignedTeacher = assignment ? teacherMap.get(assignment.teacherId) : null;
+                            const displayedTeacher = assignedTeacher || (
+                              !isThpt && sub.id === 'sub-shl' && cls.homeroomTeacherId
+                                ? teacherMap.get(cls.homeroomTeacherId)
+                                : null
+                            );
                             const isEditing = editingCell?.classId === cls.id && editingCell?.subjectId === sub.id;
                             if (periods === 0) return <td key={sub.id} className="p-1 border border-slate-300 text-center bg-slate-100/60 text-slate-300 text-[10px]">—</td>;
                             return (
                               <td key={sub.id} onClick={() => isAdmin ? setEditingCell({ classId: cls.id, subjectId: sub.id }) : onPromptAdminLogin?.()} className={`p-1 border border-slate-300 text-center transition-colors ${isAdmin ? 'cursor-pointer hover:bg-indigo-50/40' : 'cursor-default'}`} title={!isAdmin ? 'Chế độ xem - Bấm để đăng nhập Quản trị' : 'Bấm để gán giáo viên'}>
-                                {isEditing && isAdmin ? <select autoFocus value={assignedTeacher?.id || ''} onChange={e => { if (e.target.value) onAssignTeacher(cls.id, sub.id, e.target.value); setEditingCell(null); }} onBlur={() => setEditingCell(null)} className="text-[11px] p-1 border border-indigo-500 rounded bg-white w-full"><option value="">-- Bỏ phân công --</option>{teachers.filter(t => t.primarySubjectId === sub.id || t.departmentId === sub.departmentId).map(t => <option key={t.id} value={t.id}>{t.name} ({t.code})</option>)}</select> : assignedTeacher ? <span className="font-bold text-indigo-950 text-[11px]">{assignedTeacher.code || assignedTeacher.name}</span> : lockedSet.has(`${cls.id}_${sub.id}`) ? <span className="text-amber-800/80 font-medium text-[10px]">Khóa</span> : <span className="text-slate-300 text-[10px]">—</span>}
+                                {isEditing && isAdmin ? <select autoFocus value={assignedTeacher?.id || ''} onChange={e => { if (e.target.value) onAssignTeacher(cls.id, sub.id, e.target.value); setEditingCell(null); }} onBlur={() => setEditingCell(null)} className="text-[11px] p-1 border border-indigo-500 rounded bg-white w-full"><option value="">-- Bỏ phân công --</option>{teachers.filter(t => t.primarySubjectId === sub.id || t.departmentId === sub.departmentId).map(t => <option key={t.id} value={t.id}>{t.name} ({t.code})</option>)}</select> : displayedTeacher ? <span className="font-bold text-indigo-950 text-[11px]">{displayedTeacher.code || displayedTeacher.name}</span> : lockedSet.has(`${cls.id}_${sub.id}`) ? <span className="text-amber-800/80 font-medium text-[10px]">Khóa</span> : <span className="text-slate-300 text-[10px]">—</span>}
                               </td>
                             );
                           })}
