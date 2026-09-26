@@ -99,7 +99,7 @@ export function getTHCSDBKSubjectInfo(rawSubject: string): { id: string; name: s
     return { id: 'sub-shl', name: 'Sinh hoạt lớp' };
   }
   if (s.startsWith('HĐ TN-HN(SHL)') || s.startsWith('HĐTN-HN(SHL)') || s.startsWith('HĐCN') || s.startsWith('HĐ Chủ nhiệm') || s.includes('QML') || s.includes('quy mô lớp') || s.includes('chủ nhiệm')) {
-    return { id: 'sub-hdtn-cd', name: 'HĐTNHN (Quy mô lớp)' };
+    return { id: 'sub-hdtn-qml', name: 'HĐTNHN (Quy mô lớp)' };
   }
   if (s.startsWith('HĐ TN-HN') || s.startsWith('HĐTN-HN') || s.startsWith('HĐ TN') || s.startsWith('HĐTN')) {
     return { id: 'sub-hdtn-cd', name: 'HĐTNHN (Chuyên đề)' };

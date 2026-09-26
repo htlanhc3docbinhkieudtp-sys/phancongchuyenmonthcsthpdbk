@@ -50,11 +50,16 @@ export function extractAssignmentsFromTimetable(
   >();
 
   validSlots.forEach(slot => {
-    const key = `${slot.classId}_${slot.subjectId}`;
+    const classLevel = classMap.get(slot.classId)?.level;
+    const normalizedSubjectName = (slot.subjectName || '').toLowerCase();
+    const synchronizedSubjectId = classLevel === 'THCS' && normalizedSubjectName.includes('quy mô lớp')
+      ? 'sub-hdtn-qml'
+      : slot.subjectId;
+    const key = `${slot.classId}_${synchronizedSubjectId}`;
     if (!groupMap.has(key)) {
       groupMap.set(key, {
         classId: slot.classId,
-        subjectId: slot.subjectId,
+        subjectId: synchronizedSubjectId,
         periods: 0,
         teachers: new Map<string, number>()
       });

@@ -367,7 +367,7 @@ export function matchSubject(
   }
   if (upper === 'HĐCN' || upper === 'HĐ QML' || upper.includes('QUY MÔ LỚP') || upper.includes('HĐ TN-HN(SHL)') || upper.includes('HĐTNHN (SHL)')) {
     if (isTHCS) {
-      return { id: 'sub-hdtn-cd', name: 'HĐTNHN (Quy mô lớp)' };
+      return { id: 'sub-hdtn-qml', name: 'HĐTNHN (Quy mô lớp)' };
     }
     return { id: 'sub-shl', name: 'Sinh hoạt lớp' };
   }

@@ -175,7 +175,7 @@ function parseSlotText(raw: string, className: string): {
     subjectId = 'sub-shl';
     subjectName = 'Sinh hoạt lớp';
   } else if (upperSub.startsWith('HĐ QML') || upperSub === 'HD QML' || upperSub.startsWith('HĐCN') || upperSub.includes('QUY MÔ LỚP') || upperSub.includes('CHỦ NHIỆM')) {
-    subjectId = 'sub-hdtn-cd';
+    subjectId = 'sub-hdtn-qml';
     subjectName = 'HĐTNHN (Quy mô lớp)';
   } else if (upperSub.startsWith('HĐ CĐ') || upperSub === 'HD CD' || upperSub.startsWith('HĐTN') || upperSub.startsWith('HDTN') || upperSub.includes('CHỦ ĐỀ') || upperSub.includes('CHUYÊN ĐỀ')) {
     subjectId = 'sub-hdtn-cd';

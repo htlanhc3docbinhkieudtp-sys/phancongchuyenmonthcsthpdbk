@@ -139,7 +139,9 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
     const subjectIds = subjectId === 'sub-gdqp'
       ? ['sub-gdqp', 'sub-qpan']
       : subjectId === 'sub-shl'
-      ? ['sub-shl', 'sub-hdtn-shl']
+      ? ['sub-shl']
+      : subjectId === 'sub-hdtn-qml'
+      ? ['sub-hdtn-qml', 'sub-hdtn-shl']
       : [subjectId];
     const assignment = assignments.find(a => a.classId === classId && subjectIds.includes(a.subjectId));
     if (assignment || !['sub-su', 'sub-dia'].includes(subjectId)) return assignment;
