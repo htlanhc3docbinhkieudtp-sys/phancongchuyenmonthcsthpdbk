@@ -748,7 +748,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
       {/* KPI Stats Summary Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 print:hidden">
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 print:hidden">
+        <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] text-slate-500 font-medium">
             Số giáo viên ({getScopeLabel(levelScope)})
           </span>
