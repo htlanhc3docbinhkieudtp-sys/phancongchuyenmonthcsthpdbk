@@ -116,7 +116,7 @@ export const ExcelImportExportModal: React.FC<ExcelImportExportModalProps> = ({
                 Nhập & Xuất Dữ Liệu Excel Phân Công
               </h3>
               <p className="text-[11px] text-slate-500">
-                Tương thích định dạng THCS & THPT Đốc Binh Kiều
+                Tương thích định dạng THCS và THPT Đốc Binh Kiều
               </p>
             </div>
           </div>

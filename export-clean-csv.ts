@@ -133,7 +133,7 @@ const matrixRows = initialClasses.map((cls, idx) => {
 exportToCSV('TKB_TUAN_2_MA_TRAN_LOP.csv', matrixHeaders, matrixRows);
 
 // Also update TKB_TUAN_2_PROMPT_GOOGLE_AI_STUDIO.md with exact rules
-let md = `# DỮ LIỆU THỜI KHÓA BIỂU TUẦN 2 - TRƯỜNG THCS & THPT ĐỐC BINH KIỀU\n\n`;
+let md = `# DỮ LIỆU THỜI KHÓA BIỂU TUẦN 2 - TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU\n\n`;
 md += `> **Mục đích:** Dữ liệu chuẩn Thời khóa biểu Tuần 2 để nạp vào Google AI Studio.\n`;
 md += `> **Năm học:** ${initialSchoolConfig.academicYear || '2026 - 2027'} | **Học kỳ:** ${initialSchoolConfig.semester || 'HK1'} | **Tuần:** Tuần 2\n\n`;
 

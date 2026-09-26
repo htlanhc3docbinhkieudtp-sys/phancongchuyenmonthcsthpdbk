@@ -1,4 +1,4 @@
-# DỮ LIỆU THỜI KHÓA BIỂU TUẦN 2 - TRƯỜNG THCS & THPT ĐỐC BINH KIỀU
+# DỮ LIỆU THỜI KHÓA BIỂU TUẦN 2 - TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU
 
 > **Mục đích:** Dữ liệu chuẩn Thời khóa biểu Tuần 2 để nạp vào Google AI Studio.
 > **Năm học:** 2026 - 2027 | **Học kỳ:** HK1 | **Tuần:** Tuần 2

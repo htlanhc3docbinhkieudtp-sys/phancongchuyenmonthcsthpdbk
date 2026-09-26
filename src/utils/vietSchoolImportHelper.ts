@@ -1763,7 +1763,7 @@ export async function generateVietSchoolSampleExcel(
   const thptClasses = classes.filter(c => c.level === 'THPT' || c.campus === 'THPTDBK');
   const matrixHeaders = ['Thứ', 'Tiết', ...thptClasses.map(c => c.name)];
   const sampleMatrixData: any[][] = [
-    ['TRƯỜNG THCS & THPT ĐỐC BINH KIỀU'],
+    ['TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU'],
     ['THỜI KHÓA BIỂU TOÀN TRƯỜNG (XUẤT TỪ VIETSCHOOL)'],
     [],
     matrixHeaders

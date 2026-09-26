@@ -12,7 +12,7 @@ export const Footer: React.FC = () => {
           </div>
           <div>
             <div className="font-bold text-slate-100 text-xs sm:text-sm">
-              Trường THCS & THPT Đốc Binh Kiều
+              Trường THCS và THPT Đốc Binh Kiều
             </div>
             <div className="text-[11px] text-slate-400">
               Hệ thống Quản lý Phân công Chuyên môn & Thời khóa biểu (3 điểm trường)

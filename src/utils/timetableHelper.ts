@@ -603,7 +603,7 @@ export async function exportTimetableToExcel(
 
   // 1. Sheet 1: Tổng hợp TKB toàn trường (Dạng ma trận Lớp x Các Thứ)
   const masterData: (string | number)[][] = [
-    [`THỜI KHÓA BIỂU TOÀN TRƯỜNG - TRƯỜNG THCS & THPT ĐỐC BINH KIỀU`],
+    [`THỜI KHÓA BIỂU TOÀN TRƯỜNG - TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU`],
     [`Năm học: ${config.academicYear || '2026 - 2027'} • Học kỳ: ${config.semester || 'HK1'} • ${timetable.appliedDate || ''}`],
     [],
     [

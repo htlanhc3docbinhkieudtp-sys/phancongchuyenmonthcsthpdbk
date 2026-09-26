@@ -145,7 +145,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
         </div>
 
         <h2 className="font-extrabold text-sm sm:text-base tracking-tight text-white uppercase">
-          Trường THCS & THPT Đốc Binh Kiều
+          Trường THCS và THPT Đốc Binh Kiều
         </h2>
         <p className="text-xs text-indigo-200/90 mt-0.5">
           Đăng nhập xem thông tin chuyên môn & công việc nội bộ
@@ -318,7 +318,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
 
         <div className="text-center pt-2 border-t border-slate-100">
           <p className="text-[11px] text-slate-400">
-            Trường THCS & THPT Đốc Binh Kiều &bull; Hệ thống phân công & TKB nội bộ
+            Trường THCS và THPT Đốc Binh Kiều &bull; Hệ thống phân công & TKB nội bộ
           </p>
         </div>
       </div>

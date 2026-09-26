@@ -441,7 +441,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
           <div className="flex justify-between items-start text-xs uppercase font-bold text-slate-800 mb-1">
             <div className="text-left">
               <div className="text-[11px] text-slate-600">{config.subTitle || 'SỞ GD&ĐT TỈNH ĐỒNG THÁP'}</div>
-              <div className="text-slate-900 font-extrabold text-xs">{config.schoolName || 'TRƯỜNG THCS & THPT ĐỐC BINH KIỀU'}</div>
+              <div className="text-slate-900 font-extrabold text-xs">{config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU'}</div>
             </div>
             <div className="text-right">
               <div className="text-[11px]">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>

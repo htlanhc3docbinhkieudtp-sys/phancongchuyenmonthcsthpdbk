@@ -69,10 +69,10 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
         {/* Brand & School info */}
         <div className="flex items-center gap-3">
-          <div className="shrink-0" title="Logo Trường THCS & THPT Đốc Binh Kiều">
+          <div className="shrink-0" title="Logo Trường THCS và THPT Đốc Binh Kiều">
             <img
               src="/logo.png"
-              alt="Logo Trường THCS & THPT Đốc Binh Kiều"
+              alt="Logo Trường THCS và THPT Đốc Binh Kiều"
               className="w-10 h-10 object-contain rounded-full bg-white shadow-sm p-0.5 border-2 border-white/40"
             />
           </div>
@@ -81,7 +81,7 @@ export const Header: React.FC<HeaderProps> = ({
               Sở Giáo dục và Đào tạo Đồng Tháp
             </span>
             <h1 className="text-xs sm:text-base font-extrabold tracking-tight uppercase text-white whitespace-nowrap leading-tight">
-              Trường THCS & THPT Đốc Binh Kiều
+              Trường THCS và THPT Đốc Binh Kiều
             </h1>
           </div>
         </div>

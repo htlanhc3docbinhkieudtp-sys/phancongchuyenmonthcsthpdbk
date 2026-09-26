@@ -70,7 +70,7 @@ export const UnifiedOfficialTableView: React.FC<UnifiedOfficialTableViewProps> =
                 Bảng Phân Công Chuyên Môn Chính Thức - 3 Điểm Trường
               </h2>
               <p className="text-xs text-indigo-200/80 font-medium mt-0.5">
-                Trường THCS & THPT Đốc Binh Kiều • Năm học {config.academicYear || '2026 - 2027'}
+                Trường THCS và THPT Đốc Binh Kiều • Năm học {config.academicYear || '2026 - 2027'}
               </p>
             </div>
           </div>

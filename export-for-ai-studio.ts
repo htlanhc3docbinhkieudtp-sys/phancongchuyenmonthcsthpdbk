@@ -6,7 +6,7 @@ import { OFFICIAL_WEEK_2_SLOTS } from './src/data/officialWeek2Timetable';
 // 1. Prepare JSON Export
 const exportData = {
   schoolInfo: {
-    name: "TRƯỜNG THCS & THPT ĐỐC BINH KIỀU",
+    name: "TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU",
     academicYear: initialSchoolConfig.academicYear || "2026 - 2027",
     semester: initialSchoolConfig.semester || "HK1",
     targetWeek: 2,
@@ -51,7 +51,7 @@ fs.writeFileSync(
 );
 
 // 2. Prepare Markdown Prompt for Google AI Studio
-let md = `# DỮ LIỆU THỜI KHÓA BIỂU TUẦN 2 - TRƯỜNG THCS & THPT ĐỐC BINH KIỀU\n\n`;
+let md = `# DỮ LIỆU THỜI KHÓA BIỂU TUẦN 2 - TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU\n\n`;
 md += `> **Mục đích:** Dùng làm dữ liệu đầu vào (Context / Dataset) cho Google AI Studio để xây dựng thuật toán xếp TKB hoặc phân tích TKB Tuần 2.\n`;
 md += `> **Năm học:** ${exportData.schoolInfo.academicYear} | **Học kỳ:** ${exportData.schoolInfo.semester} | **Áp dụng:** Tuần 2\n`;
 md += `> **Quy mô:** 53 Lớp học, ${initialTeachers.length} Giáo viên, 3 Điểm trường, ${OFFICIAL_WEEK_2_SLOTS.length} Tiết học.\n\n`;

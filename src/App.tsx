@@ -1723,7 +1723,7 @@ export default function App() {
   };
 
   const handleResetData = () => {
-    if (window.confirm('Khôi phục toàn bộ dữ liệu mẫu ban đầu của THCS & THPT Đốc Binh Kiều?')) {
+    if (window.confirm('Khôi phục toàn bộ dữ liệu mẫu ban đầu của THCS và THPT Đốc Binh Kiều?')) {
       setConfig(initialSchoolConfig);
       setDepartments(initialDepartments);
       setSubjects(initialSubjects);

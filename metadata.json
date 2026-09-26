@@ -1,6 +1,6 @@
 {
-  "name": "Phân Công Chuyên Môn - THCS & THPT Đốc Binh Kiều",
-  "description": "Phần mềm kéo thả phân công chuyên môn và giảng dạy trực quan cho Trường THCS & THPT Đốc Binh Kiều, hỗ trợ nhập xuất Excel và quản lý định mức tiết.",
+  "name": "Phân Công Chuyên Môn - THCS và THPT Đốc Binh Kiều",
+  "description": "Phần mềm kéo thả phân công chuyên môn và giảng dạy trực quan cho Trường THCS và THPT Đốc Binh Kiều, hỗ trợ nhập xuất Excel và quản lý định mức tiết.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
