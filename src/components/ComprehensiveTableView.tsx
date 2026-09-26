@@ -109,6 +109,38 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
     ? 'Nguyễn Minh Trí'
     : (config.vicePrincipalName || 'Nguyễn Minh Trí');
 
+  const getSubjectsForLevel = (level: 'THPT' | 'THCS') => subjects.filter(sub => {
+    if (sub.id === 'sub-nv') return false;
+    const grades = level === 'THPT' ? ['10', '11', '12'] : ['6', '7', '8', '9'];
+    return grades.some(grade => (sub.defaultPeriods[grade] || 0) > 0);
+  });
+
+  const matchesSearch = (cls: ClassGroup) => {
+    const term = searchTerm.toLowerCase();
+    if (!term) return true;
+    const homeroomTeacher = cls.homeroomTeacherId
+      ? teacherMap.get(cls.homeroomTeacherId)
+      : undefined;
+    return cls.name.toLowerCase().includes(term)
+      || homeroomTeacher?.name.toLowerCase().includes(term) === true
+      || assignments
+        .filter(assignment => assignment.classId === cls.id)
+        .some(assignment => teacherMap.get(assignment.teacherId)?.name.toLowerCase().includes(term));
+  };
+
+  const getTeacherName = (teacherId?: string) => {
+    const teacher = teacherId ? teacherMap.get(teacherId) : undefined;
+    return teacher ? (teacher.code || teacher.name) : '';
+  };
+
+  const getAssignmentForSubject = (classId: string, subjectId: string) => {
+    const assignment = assignments.find(a => a.classId === classId && a.subjectId === subjectId);
+    if (assignment || !['sub-su', 'sub-dia'].includes(subjectId)) return assignment;
+
+    // A combined THCS LS-ĐL assignment means the same teacher handles both columns.
+    return assignments.find(a => a.classId === classId && a.subjectId === 'sub-lsdl-cs');
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-4">
       {/* Header Toolbar */}
@@ -189,134 +221,81 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
           </p>
         </div>
 
-        {/* Matrix Grid */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left border-collapse border border-slate-300">
-            <thead>
-              <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-300">
-                <th className="p-1.5 border border-slate-300 text-center w-8 text-[11px]">STT</th>
-                <th className="p-1.5 border border-slate-300 text-center w-12 text-[11px]">Khối</th>
-                <th className="p-1.5 border border-slate-300 text-center w-14 text-[11px]">Lớp</th>
-                <th className="p-1.5 border border-slate-300 text-center w-10 text-[11px]">Sĩ số</th>
-                <th className="p-1.5 border border-slate-300 text-left w-36 text-[11px]">GV Chủ Nhiệm</th>
-                {displayedSubjects.map(sub => (
-                  <th
-                    key={sub.id}
-                    className="p-1.5 border border-slate-300 text-center font-bold text-slate-900 whitespace-nowrap min-w-[75px] text-[11px]"
-                  >
-                    <div>{sub.shortName}</div>
-                    <div className="text-[9px] text-slate-500 font-normal">
-                      {getSubjectDisplayPeriod(sub)}
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-300">
-              {filteredClasses.map((cls, idx) => {
-                const hrTeacher = teachers.find(t => t.id === cls.homeroomTeacherId);
+        {/* Separate matrices for the two school levels */}
+        {(['THPT', 'THCS'] as const).map(level => {
+          const levelClasses = classes.filter(cls => cls.level === level && matchesSearch(cls)
+            && (selectedGrade === 'ALL' || selectedGrade === level || cls.grade === selectedGrade));
+          const levelSubjects = getSubjectsForLevel(level);
+          const isThpt = level === 'THPT';
 
-                return (
-                  <tr key={cls.id} className="hover:bg-slate-50">
-                    <td className="p-1.5 border border-slate-300 text-center font-medium text-slate-500 text-[11px]">
-                      {idx + 1}
-                    </td>
-                    <td className="p-1.5 border border-slate-300 text-center font-bold text-slate-700 text-[11px]">
-                      K.{cls.grade}
-                    </td>
-                    <td className="p-1.5 border border-slate-300 text-center font-extrabold text-indigo-900 text-xs">
-                      {cls.name}
-                    </td>
-                    <td className="p-1.5 border border-slate-300 text-center font-bold text-slate-800 text-[11px]">
-                      {cls.studentCount || 0}
-                    </td>
-                    <td className="p-1.5 border border-slate-300 text-left">
-                      {hrTeacher ? (
-                        <div>
-                          <span className="font-bold text-slate-900 text-[11px]">{hrTeacher.name}</span>
-                          <span className="text-[10px] text-slate-500 ml-1 font-mono">({hrTeacher.code})</span>
-                        </div>
-                      ) : (
-                        <span className="text-slate-400 italic text-[10px]">—</span>
-                      )}
-                    </td>
+          if (levelClasses.length === 0) return null;
 
-                    {/* Subject columns */}
-                    {displayedSubjects.map(sub => {
-                      const periods = sub.defaultPeriods[cls.grade] || 0;
-                      const assignment = assignments.find(
-                        a => a.classId === cls.id && a.subjectId === sub.id
-                      );
-                      const assignedTeacher = assignment ? teacherMap.get(assignment.teacherId) : null;
-                      const isEditing = editingCell?.classId === cls.id && editingCell?.subjectId === sub.id;
+          return (
+            <section key={level} className="space-y-2">
+              <div className={`flex items-center justify-between border-l-4 pl-3 ${isThpt ? 'border-indigo-600' : 'border-emerald-600'}`}>
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-tight text-slate-900">
+                    {isThpt ? 'Khối 10 - 12 (THPT)' : 'Khối 6 - 9 (THCS)'}
+                  </h3>
+                  <p className="text-[11px] text-slate-500">{levelClasses.length} lớp học • Bảng phân công riêng theo cấp học</p>
+                </div>
+              </div>
 
-                      if (periods === 0) {
-                        return (
-                          <td key={sub.id} className="p-1 border border-slate-300 text-center bg-slate-100/60 text-slate-300 text-[10px]">
-                            —
-                          </td>
-                        );
-                      }
-
+              <div className="overflow-x-auto border border-slate-300 rounded-lg">
+                <table className="w-full text-xs text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-300">
+                      <th className="p-1.5 border border-slate-300 text-center w-8 text-[11px]">STT</th>
+                      <th className="p-1.5 border border-slate-300 text-center w-12 text-[11px]">Khối</th>
+                      <th className="p-1.5 border border-slate-300 text-center w-14 text-[11px]">Lớp</th>
+                      <th className="p-1.5 border border-slate-300 text-center w-10 text-[11px]">Sĩ số</th>
+                      <th className="p-1.5 border border-slate-300 text-left w-36 text-[11px]">GV Chủ Nhiệm</th>
+                      {levelSubjects.map(sub => (
+                        <th key={sub.id} className="p-1.5 border border-slate-300 text-center font-bold text-slate-900 whitespace-nowrap min-w-[75px] text-[11px]">
+                          <div>{sub.shortName}</div>
+                          <div className="text-[9px] text-slate-500 font-normal">{sub.defaultPeriods[isThpt ? '10' : '6'] || 0}t</div>
+                        </th>
+                      ))}
+                      {isThpt && ['CĐ1', 'CĐ2', 'CĐ3'].map(topic => (
+                        <th key={topic} className="p-1.5 border border-slate-300 text-center min-w-[100px] bg-sky-50 text-sky-950 text-[11px]">{topic}<div className="text-[9px] font-normal text-sky-700">Môn chuyên đề</div></th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-300">
+                    {levelClasses.map((cls, idx) => {
+                      const hrTeacher = cls.homeroomTeacherId ? teacherMap.get(cls.homeroomTeacherId) : undefined;
                       return (
-                        <td
-                          key={sub.id}
-                          onClick={() => {
-                            if (isAdmin) {
-                              setEditingCell({ classId: cls.id, subjectId: sub.id });
-                            } else {
-                              onPromptAdminLogin?.();
-                            }
-                          }}
-                          className={`p-1 border border-slate-300 text-center transition-colors ${
-                            isAdmin ? 'cursor-pointer hover:bg-indigo-50/40' : 'cursor-default'
-                          }`}
-                          title={!isAdmin ? "Chế độ xem - Bấm để đăng nhập Quản trị" : "Bấm để gán giáo viên"}
-                        >
-                          {isEditing && isAdmin ? (
-                            <select
-                              autoFocus
-                              value={assignedTeacher?.id || ''}
-                              onChange={e => {
-                                if (e.target.value) {
-                                  onAssignTeacher(cls.id, sub.id, e.target.value);
-                                }
-                                setEditingCell(null);
-                              }}
-                              onBlur={() => setEditingCell(null)}
-                              className="text-[11px] p-1 border border-indigo-500 rounded bg-white w-full"
-                            >
-                              <option value="">-- Bỏ phân công --</option>
-                              {teachers
-                                .filter(t => t.primarySubjectId === sub.id || t.departmentId === sub.departmentId)
-                                .map(t => (
-                                  <option key={t.id} value={t.id}>
-                                    {t.name} ({t.code})
-                                  </option>
-                                ))}
-                            </select>
-                          ) : (
-                            <div>
-                              {assignedTeacher ? (
-                                <span className="font-bold text-indigo-950 text-[11px]">
-                                  {assignedTeacher.code || assignedTeacher.name}
-                                </span>
-                              ) : lockedSet.has(`${cls.id}_${sub.id}`) ? (
-                                <span className="text-amber-800/80 font-medium text-[10px]">🔒 Khóa</span>
-                              ) : (
-                                <span className="text-slate-300 text-[10px]">—</span>
-                              )}
-                            </div>
-                          )}
-                        </td>
+                        <tr key={cls.id} className="hover:bg-slate-50">
+                          <td className="p-1.5 border border-slate-300 text-center font-medium text-slate-500 text-[11px]">{idx + 1}</td>
+                          <td className="p-1.5 border border-slate-300 text-center font-bold text-slate-700 text-[11px]">K.{cls.grade}</td>
+                          <td className="p-1.5 border border-slate-300 text-center font-extrabold text-indigo-900 text-xs">{cls.name}</td>
+                          <td className="p-1.5 border border-slate-300 text-center font-bold text-slate-800 text-[11px]">{cls.studentCount || 0}</td>
+                          <td className="p-1.5 border border-slate-300 text-left">{hrTeacher ? <span className="font-bold text-slate-900 text-[11px]">{hrTeacher.name}</span> : <span className="text-slate-400 italic text-[10px]">—</span>}</td>
+                          {levelSubjects.map(sub => {
+                            const periods = sub.defaultPeriods[cls.grade] || 0;
+                            const assignment = getAssignmentForSubject(cls.id, sub.id);
+                            const assignedTeacher = assignment ? teacherMap.get(assignment.teacherId) : null;
+                            const isEditing = editingCell?.classId === cls.id && editingCell?.subjectId === sub.id;
+                            if (periods === 0) return <td key={sub.id} className="p-1 border border-slate-300 text-center bg-slate-100/60 text-slate-300 text-[10px]">—</td>;
+                            return (
+                              <td key={sub.id} onClick={() => isAdmin ? setEditingCell({ classId: cls.id, subjectId: sub.id }) : onPromptAdminLogin?.()} className={`p-1 border border-slate-300 text-center transition-colors ${isAdmin ? 'cursor-pointer hover:bg-indigo-50/40' : 'cursor-default'}`} title={!isAdmin ? 'Chế độ xem - Bấm để đăng nhập Quản trị' : 'Bấm để gán giáo viên'}>
+                                {isEditing && isAdmin ? <select autoFocus value={assignedTeacher?.id || ''} onChange={e => { if (e.target.value) onAssignTeacher(cls.id, sub.id, e.target.value); setEditingCell(null); }} onBlur={() => setEditingCell(null)} className="text-[11px] p-1 border border-indigo-500 rounded bg-white w-full"><option value="">-- Bỏ phân công --</option>{teachers.filter(t => t.primarySubjectId === sub.id || t.departmentId === sub.departmentId).map(t => <option key={t.id} value={t.id}>{t.name} ({t.code})</option>)}</select> : assignedTeacher ? <span className="font-bold text-indigo-950 text-[11px]">{assignedTeacher.code || assignedTeacher.name}</span> : lockedSet.has(`${cls.id}_${sub.id}`) ? <span className="text-amber-800/80 font-medium text-[10px]">Khóa</span> : <span className="text-slate-300 text-[10px]">—</span>}
+                              </td>
+                            );
+                          })}
+                          {isThpt && (['cd1', 'cd2', 'cd3'] as const).map(topicKey => {
+                            const topic = cls.specialTopics?.[topicKey];
+                            return <td key={topicKey} className="p-1 border border-slate-300 text-center bg-sky-50/50">{topic ? <><div className="text-[10px] font-semibold text-sky-800">{topic.title}</div><div className="text-[10px] font-black text-sky-950">{getTeacherName(topic.teacherId)}</div></> : <span className="text-slate-300 text-[10px]">—</span>}</td>;
+                          })}
+                        </tr>
                       );
                     })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          );
+        })}
 
         {/* Footer Signatures */}
         <div className="mt-8 pt-4 border-t border-slate-200 grid grid-cols-2 text-center text-xs font-semibold text-slate-800">
