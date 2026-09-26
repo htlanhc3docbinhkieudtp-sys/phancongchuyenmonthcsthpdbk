@@ -1,4 +1,3 @@
-import * as XLSX from 'xlsx';
 import {
   Teacher,
   Assignment,
@@ -10,7 +9,7 @@ import {
 } from '../types';
 import { getTeacherDutiesList } from './workloadCalculator';
 
-export function exportComprehensiveExcel(
+export async function exportComprehensiveExcel(
   config: SchoolConfig,
   departments: Department[],
   subjects: Subject[],
@@ -19,6 +18,7 @@ export function exportComprehensiveExcel(
   assignments: Assignment[],
   workloads: WorkloadStats[]
 ) {
+  const XLSX = await import('xlsx');
   const wb = XLSX.utils.book_new();
 
   const teacherMap = new Map(teachers.map(t => [t.id, t]));
@@ -151,7 +151,8 @@ export function exportComprehensiveExcel(
   XLSX.writeFile(wb, fileName);
 }
 
-export function generateExcelTemplate() {
+export async function generateExcelTemplate() {
+  const XLSX = await import('xlsx');
   const wb = XLSX.utils.book_new();
 
   // Template 1: Danh sách giáo viên
@@ -318,6 +319,7 @@ export async function parseExcelFile(
   currentSubjects: Subject[],
   currentDepartments: Department[]
 ): Promise<ExcelImportResult> {
+  const XLSX = await import('xlsx');
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 

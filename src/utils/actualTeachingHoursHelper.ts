@@ -1007,6 +1007,43 @@ export function calculateAllActualWorkloads(
     );
   }
 
+  const teacherIdsByName = new Map<string, string[]>();
+  teachers.forEach((teacher) => {
+    const normalizedName = teacher.name.toLowerCase().trim();
+    const matchingIds = teacherIdsByName.get(normalizedName) || [];
+    matchingIds.push(teacher.id);
+    teacherIdsByName.set(normalizedName, matchingIds);
+  });
+
+  const teacherSlotsByWeek = new Map<number, Map<string, TimetableSlot[]>>();
+  weekSlotsCache.forEach((slots, weekNumber) => {
+    const slotsByTeacher = new Map<string, TimetableSlot[]>();
+    slots.forEach((slot) => {
+      const matchingTeacherIds = new Set<string>();
+      if (slot.teacherId) matchingTeacherIds.add(slot.teacherId);
+
+      const normalizedName = (slot.teacherName || '').toLowerCase().trim();
+      teacherIdsByName.get(normalizedName)?.forEach((teacherId) => matchingTeacherIds.add(teacherId));
+
+      const normalizedCode = (slot.teacherCode || '').toLowerCase().trim();
+      if (
+        normalizedName === 'nguyễn hiền vi' ||
+        normalizedName === 'hiền vi' ||
+        normalizedCode === 'vi.nh' ||
+        normalizedCode === 'hiền vi'
+      ) {
+        matchingTeacherIds.add('tch-v-tk-vi');
+      }
+
+      matchingTeacherIds.forEach((teacherId) => {
+        const teacherSlots = slotsByTeacher.get(teacherId) || [];
+        teacherSlots.push(slot);
+        slotsByTeacher.set(teacherId, teacherSlots);
+      });
+    });
+    teacherSlotsByWeek.set(weekNumber, slotsByTeacher);
+  });
+
   const results: TeacherActualWorkload[] = [];
 
   for (const teacher of teachers) {
@@ -1014,7 +1051,7 @@ export function calculateAllActualWorkloads(
     const callingName = teacher.name.trim().split(/\s+/).pop() || teacher.name;
 
     // Calculate details for selected week
-    const currentWeekSlots = weekSlotsCache.get(selectedWeek) || [];
+    const currentWeekSlots = teacherSlotsByWeek.get(selectedWeek)?.get(teacher.id) || [];
     const weekData = calculateTeacherSingleWeek(
       teacher,
       selectedWeek,
@@ -1035,17 +1072,19 @@ export function calculateAllActualWorkloads(
     let cumulativeBalanceToSelectedWeek = 0;
 
     for (let w = startWeek; w <= effectiveEndWeek; w++) {
-      const wSlots = weekSlotsCache.get(w) || [];
-      const wData = calculateTeacherSingleWeek(
-        teacher,
-        w,
-        wSlots,
-        classes,
-        departments,
-        config,
-        classMap,
-        homeroomMap
-      );
+      const wSlots = teacherSlotsByWeek.get(w)?.get(teacher.id) || [];
+      const wData = w === selectedWeek
+        ? weekData
+        : calculateTeacherSingleWeek(
+            teacher,
+            w,
+            wSlots,
+            classes,
+            departments,
+            config,
+            classMap,
+            homeroomMap
+          );
       weeklyTotals[w] = wData.totalPeriods;
       weeklyTeaching[w] = wData.teachingPeriods;
       weeklyBalances[w] = wData.weeklyBalance;

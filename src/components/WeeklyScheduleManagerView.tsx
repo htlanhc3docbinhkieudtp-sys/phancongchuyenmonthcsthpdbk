@@ -58,7 +58,6 @@ import {
   X,
   Table as TableIcon
 } from 'lucide-react';
-import * as XLSX from 'xlsx';
 
 interface WeeklyScheduleManagerViewProps {
   config: SchoolConfig;

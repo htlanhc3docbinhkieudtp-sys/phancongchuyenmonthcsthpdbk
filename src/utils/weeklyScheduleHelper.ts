@@ -10,7 +10,6 @@ import {
   TeacherWeeklyWorkload,
   WorkloadStats
 } from '../types';
-import * as XLSX from 'xlsx';
 
 /**
  * Number of weeks per semester:
@@ -254,11 +253,12 @@ export function calculateTeacherWeeklyWorkloads(
 /**
  * Export complete weekly teaching log to Excel.
  */
-export function exportWeeklyWorkloadExcel(
+export async function exportWeeklyWorkloadExcel(
   config: SchoolConfig,
   workloads: TeacherWeeklyWorkload[],
   semester: 'HK1' | 'HK2'
 ) {
+  const XLSX = await import('xlsx');
   const weeks = semester === 'HK1' ? WEEKS_HK1 : WEEKS_HK2;
   const wb = XLSX.utils.book_new();
 

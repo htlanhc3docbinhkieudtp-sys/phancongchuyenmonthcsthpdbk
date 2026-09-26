@@ -5,8 +5,6 @@ import {
   Department,
   ClassGroup,
   Subject,
-  WeeklySchedule,
-  WorkloadStats,
   SchoolTimetable,
 } from '../types';
 import {
@@ -43,13 +41,10 @@ interface WeeklyTeachingLogViewProps {
   departments: Department[];
   classes: ClassGroup[];
   subjects: Subject[];
-  weeklySchedules?: WeeklySchedule[];
-  baseWorkloads?: WorkloadStats[];
   weeklyTimetables?: Record<number, SchoolTimetable>;
   currentWeek?: number;
   timetable?: SchoolTimetable;
   isAdmin?: boolean;
-  onOpenWeeklyScheduleManager?: () => void;
 }
 
 type ViewMode = 'WEEKLY_DETAIL' | 'MULTI_WEEK';
@@ -84,7 +79,6 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   currentWeek = 1,
   timetable,
   isAdmin = false,
-  onOpenWeeklyScheduleManager,
 }) => {
   // Selected period in week selector: 'FULL_YEAR' | 'HK1' | 'HK2' | '1'..'35'
   const [selectedPeriod, setSelectedPeriod] = useState<string>('FULL_YEAR');

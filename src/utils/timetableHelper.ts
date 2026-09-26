@@ -1,4 +1,3 @@
-import * as XLSX from 'xlsx';
 import {
   TimetableSlot,
   SchoolTimetable,
@@ -593,12 +592,13 @@ export function cloneTimetableForWeek(
 /**
  * Export Timetable to Excel with full sheets and formatting
  */
-export function exportTimetableToExcel(
+export async function exportTimetableToExcel(
   timetable: SchoolTimetable,
   classes: ClassGroup[],
   teachers: Teacher[],
   config: SchoolConfig
 ) {
+  const XLSX = await import('xlsx');
   const wb = XLSX.utils.book_new();
 
   // 1. Sheet 1: Tổng hợp TKB toàn trường (Dạng ma trận Lớp x Các Thứ)
@@ -701,12 +701,12 @@ export function exportTimetableToExcel(
 /**
  * Parse Excel / CSV / JSON to Timetable slots
  */
-export function parseImportedTimetable(
+export async function parseImportedTimetable(
   fileData: ArrayBuffer | string,
   classes: ClassGroup[],
   subjects: Subject[],
   teachers: Teacher[]
-): { slots: TimetableSlot[]; errors: string[]; successCount: number } {
+): Promise<{ slots: TimetableSlot[]; errors: string[]; successCount: number }> {
   const errors: string[] = [];
   const slots: TimetableSlot[] = [];
 
@@ -738,6 +738,7 @@ export function parseImportedTimetable(
       rawRows = JSON.parse(fileData);
     } else {
       // Excel or CSV Buffer
+      const XLSX = await import('xlsx');
       const workbook = XLSX.read(fileData, { type: 'buffer' });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];

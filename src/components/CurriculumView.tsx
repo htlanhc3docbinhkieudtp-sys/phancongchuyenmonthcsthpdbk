@@ -19,7 +19,6 @@ import {
   CheckCircle2,
   AlertCircle
 } from 'lucide-react';
-import * as XLSX from 'xlsx';
 import {
   THPT_CURRICULUM,
   THPT_SUMMARY,
@@ -60,7 +59,8 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
   const deptMap = new Map<string, Department>(departments.map(d => [d.id, d]));
 
   // Export to Excel function
-  const handleExportExcel = () => {
+  const handleExportExcel = async () => {
+    const XLSX = await import('xlsx');
     const wb = XLSX.utils.book_new();
 
     // 1. Sheet THPT

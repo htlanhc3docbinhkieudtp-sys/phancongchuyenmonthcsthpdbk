@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, lazy } from 'react';
 import {
   SchoolConfig,
   Teacher,
@@ -41,7 +41,6 @@ import {
   generateInitialTimetable,
   buildOfficialWeek2Timetable,
   buildOfficialWeek3Timetable,
-  ensureTHPTOfficialSlots,
   cloneTimetableForWeek,
   createEmptyTimetableForWeek,
   normalizeTimetableSlots
@@ -72,11 +71,11 @@ import {
 import { Header } from './components/Header';
 import { ViewTabs, ActiveTabType } from './components/ViewTabs';
 import { SchoolTimetableView } from './components/SchoolTimetableView';
-import { WeeklyScheduleManagerView } from './components/WeeklyScheduleManagerView';
-import { WeeklyTeachingLogView } from './components/WeeklyTeachingLogView';
-import { ComprehensiveTableView } from './components/ComprehensiveTableView';
-import { HomeroomView } from './components/HomeroomView';
-import { CurriculumView } from './components/CurriculumView';
+const WeeklyScheduleManagerView = lazy(() => import('./components/WeeklyScheduleManagerView').then(module => ({ default: module.WeeklyScheduleManagerView })));
+const WeeklyTeachingLogView = lazy(() => import('./components/WeeklyTeachingLogView').then(module => ({ default: module.WeeklyTeachingLogView })));
+const ComprehensiveTableView = lazy(() => import('./components/ComprehensiveTableView').then(module => ({ default: module.ComprehensiveTableView })));
+const HomeroomView = lazy(() => import('./components/HomeroomView').then(module => ({ default: module.HomeroomView })));
+const CurriculumView = lazy(() => import('./components/CurriculumView').then(module => ({ default: module.CurriculumView })));
 import { ConflictAuditDrawer } from './components/ConflictAuditDrawer';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { Footer } from './components/Footer';
@@ -141,7 +140,6 @@ export default function App() {
   });
 
   const isAdmin = userRole === 'admin';
-  const isTeacher = userRole === 'teacher';
   const isGuest = userRole === 'guest';
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -601,6 +599,11 @@ export default function App() {
 
   // Modals state
   const [isConflictDrawerOpen, setIsConflictDrawerOpen] = useState(false);
+  const [shouldLoadDisparityData, setShouldLoadDisparityData] = useState(false);
+  const openConflictDrawer = () => {
+    setShouldLoadDisparityData(true);
+    setIsConflictDrawerOpen(true);
+  };
 
   // In-app Notification Toast
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -612,6 +615,7 @@ export default function App() {
   };
 
   useEffect(() => {
+    if (currentWeek !== 4) return;
     let isMounted = true;
     loadOfficialWeek4Timetable(config.academicYear, initialClasses, initialSubjects, initialTeachers)
       .then(week4 => {
@@ -624,7 +628,7 @@ export default function App() {
     return () => {
       isMounted = false;
     };
-  }, [config.academicYear]);
+  }, [config.academicYear, currentWeek]);
 
   // Restore local timetable data from IndexedDB when browser storage was cleared.
   useEffect(() => {
@@ -738,6 +742,7 @@ export default function App() {
 
   // Authoritative Actual Workloads for HK1 (Weeks 1 to 18)
   const actualWorkloadsHK1 = useMemo(() => {
+    if (!shouldLoadDisparityData) return [];
     return calculateAllActualWorkloads(
       currentWeek <= 18 ? currentWeek : 3,
       teachers,
@@ -752,10 +757,11 @@ export default function App() {
       1,
       18
     );
-  }, [currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable]);
+  }, [shouldLoadDisparityData, currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable]);
 
   // Authoritative Actual Workloads for Full Year (Weeks 1 to 35)
   const actualWorkloadsYear = useMemo(() => {
+    if (!shouldLoadDisparityData) return [];
     return calculateAllActualWorkloads(
       currentWeek,
       teachers,
@@ -770,7 +776,7 @@ export default function App() {
       1,
       35
     );
-  }, [currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable]);
+  }, [shouldLoadDisparityData, currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable]);
 
   const workloads = useMemo(() => {
     return calculateTeacherWorkloads(
@@ -1616,6 +1622,7 @@ export default function App() {
 
   // Timetable is the Master Source of Truth for all weekly schedules in Teaching Log
   const effectiveWeeklySchedules = useMemo(() => {
+    if (activeTab !== 'weekly_schedule') return [];
     const currentSemester = config.semester || 'HK1';
     const weeks = currentSemester === 'HK1' ? WEEKS_HK1 : WEEKS_HK2;
     const scheduleMap = new Map<number, WeeklySchedule>();
@@ -1643,7 +1650,7 @@ export default function App() {
         w
       );
     });
-  }, [weeklySchedules, weeklyTimetables, timetable.slots, config.semester, classes, subjects, teachers]);
+  }, [activeTab, weeklySchedules, weeklyTimetables, timetable.slots, config.semester, classes, subjects, teachers]);
 
   const handleSyncTimetableToWeek = (targetWeek: number = currentWeek) => {
     const currentSemester = config.semester || 'HK1';
@@ -1752,7 +1759,7 @@ export default function App() {
           setIsLoginModalOpen(true);
         }}
         onLogoutAdmin={handleLogout}
-        onOpenConflictDrawer={() => setIsConflictDrawerOpen(true)}
+        onOpenConflictDrawer={openConflictDrawer}
         onResetData={handleResetData}
       />
 
@@ -1776,6 +1783,7 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 pb-16">
+        <React.Suspense fallback={<div className="mx-auto max-w-7xl px-4 py-8 text-sm text-slate-500" role="status">Đang tải màn hình...</div>}>
         {/* Tab: Thời Khóa Biểu Toàn Trường */}
         {activeTab === 'timetable' && (
           <SchoolTimetableView
@@ -1837,13 +1845,10 @@ export default function App() {
             departments={departments}
             classes={classes}
             subjects={subjects}
-            weeklySchedules={effectiveWeeklySchedules}
-            baseWorkloads={workloads}
             weeklyTimetables={weeklyTimetables}
             currentWeek={currentWeek}
             timetable={timetable}
             isAdmin={isAdmin}
-            onOpenWeeklyScheduleManager={() => setActiveTab('weekly_schedule')}
           />
         )}
 
@@ -1888,6 +1893,7 @@ export default function App() {
             onUpdateSubjectPeriod={handleUpdateSubjectPeriod}
           />
         )}
+        </React.Suspense>
       </main>
 
       <Footer />

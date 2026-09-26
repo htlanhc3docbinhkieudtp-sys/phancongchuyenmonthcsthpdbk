@@ -115,11 +115,11 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
 
       if (isTextFile) {
         const textReader = new FileReader();
-        textReader.onload = (e) => {
+        textReader.onload = async (e) => {
           try {
             const text = e.target?.result as string;
             if (text) {
-              const res = parseVietSchoolTimetable(text, classes, subjects, teachers);
+              const res = await parseVietSchoolTimetable(text, classes, subjects, teachers);
               resolve(res);
               return;
             }
@@ -174,11 +174,11 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
 
       // Excel binary (.xlsx, .xls)
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         try {
           const buffer = e.target?.result as ArrayBuffer;
           if (buffer) {
-            const res = parseVietSchoolTimetable(buffer, classes, subjects, teachers);
+            const res = await parseVietSchoolTimetable(buffer, classes, subjects, teachers);
             resolve(res);
             return;
           }
@@ -288,11 +288,11 @@ export const TimetableImportModal: React.FC<TimetableImportModalProps> = ({
     }
   };
 
-  const handlePasteParse = () => {
+  const handlePasteParse = async () => {
     if (!pasteText.trim()) return;
     setIsLoading(true);
     try {
-      const res = parseVietSchoolTimetable(pasteText, classes, subjects, teachers);
+      const res = await parseVietSchoolTimetable(pasteText, classes, subjects, teachers);
       const newFileItem: LoadedFileInfo = {
         id: `paste_${Date.now()}`,
         name: 'Dữ liệu dán từ clipboard',

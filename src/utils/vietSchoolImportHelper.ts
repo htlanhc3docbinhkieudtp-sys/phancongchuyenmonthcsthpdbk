@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx';
+import type * as XLSXTypes from 'xlsx';
 import {
   TimetableSlot,
   ClassGroup,
@@ -1160,12 +1160,13 @@ export function parseTeacherCentricFromRows(
  * Universal VietSchool Timetable Parser
  * Parses any VietSchool Excel file (multi-sheet), CSV, TSV or pasted content
  */
-export function parseVietSchoolTimetable(
+export async function parseVietSchoolTimetable(
   fileData: ArrayBuffer | string,
   classes: ClassGroup[],
   subjects: Subject[],
   teachers: Teacher[]
-): VietSchoolParseResult {
+): Promise<VietSchoolParseResult> {
+  const XLSX = await import('xlsx');
   const errors: string[] = [];
   const warnings: string[] = [];
   const slots: TimetableSlot[] = [];
@@ -1174,7 +1175,7 @@ export function parseVietSchoolTimetable(
   const recognizedTeacherNames = new Set<string>();
   const unrecognizedTeacherNames = new Set<string>();
 
-  let workbook: XLSX.WorkBook;
+  let workbook: XLSXTypes.WorkBook;
   try {
     let textContent: string | null = null;
 
@@ -1751,10 +1752,11 @@ export function parseVietSchoolTimetable(
 /**
  * Generate a standard VietSchool Sample Excel File with all 3 campuses
  */
-export function generateVietSchoolSampleExcel(
+export async function generateVietSchoolSampleExcel(
   classes: ClassGroup[],
   teachers: Teacher[]
 ) {
+  const XLSX = await import('xlsx');
   const wb = XLSX.utils.book_new();
 
   // Sheet 1: Ma trận VietSchool (Khối THPT)

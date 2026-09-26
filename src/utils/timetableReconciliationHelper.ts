@@ -7,7 +7,6 @@ import {
   Subject,
   Teacher
 } from '../types';
-import * as XLSX from 'xlsx';
 
 export interface ReconciliationRow {
   key: string;
@@ -485,7 +484,8 @@ export function supplementWeek1ScheduleFromTimetable(
 /**
  * Export the reconciliation table to Excel (.xlsx) with both detail rows and summary tables
  */
-export function exportReconciliationToExcel(report: TimetableReconciliationReport) {
+export async function exportReconciliationToExcel(report: TimetableReconciliationReport) {
+  const XLSX = await import('xlsx');
   const workbook = XLSX.utils.book_new();
 
   // Sheet 1: THỐNG KÊ TỔNG HỢP THEO ĐIỂM TRƯỜNG & KHỐI
