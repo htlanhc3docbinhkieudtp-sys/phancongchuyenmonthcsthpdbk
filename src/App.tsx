@@ -23,6 +23,7 @@ import {
   initialLockedCells
 } from './data/initialData';
 import { officialStaffList } from './data/schoolStaffData';
+import { loadOfficialWeek4Timetable } from './data/officialWeek4Timetable';
 import {
   calculateTeacherWorkloads,
   auditAssignmentConflicts
@@ -611,6 +612,21 @@ export default function App() {
       setToastMessage(prev => (prev === msg ? null : prev));
     }, 4000);
   };
+
+  useEffect(() => {
+    let isMounted = true;
+    loadOfficialWeek4Timetable(config.academicYear, initialClasses, initialSubjects, initialTeachers)
+      .then(week4 => {
+        if (isMounted) {
+          setWeeklyTimetables(prev => ({ ...prev, 4: week4 }));
+        }
+      })
+      .catch(error => console.error('Failed to load official week 4 timetable', error));
+
+    return () => {
+      isMounted = false;
+    };
+  }, [config.academicYear]);
 
   // Restore local timetable data from IndexedDB when browser storage was cleared.
   useEffect(() => {
