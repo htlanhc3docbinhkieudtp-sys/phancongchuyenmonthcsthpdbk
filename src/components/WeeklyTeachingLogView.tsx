@@ -162,10 +162,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     } catch (e) {
       console.error(e);
     }
-    // Default initial demonstration offset for Cô Lắm (+2 at Week 3) if not yet adjusted
-    return {
-      'tch-v-1': 2,
-    };
+    return {};
   });
 
   const [adjustModalTeacher, setAdjustModalTeacher] =
