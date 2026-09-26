@@ -74,7 +74,6 @@ import { SchoolTimetableView } from './components/SchoolTimetableView';
 const WeeklyScheduleManagerView = lazy(() => import('./components/WeeklyScheduleManagerView').then(module => ({ default: module.WeeklyScheduleManagerView })));
 const WeeklyTeachingLogView = lazy(() => import('./components/WeeklyTeachingLogView').then(module => ({ default: module.WeeklyTeachingLogView })));
 const ComprehensiveTableView = lazy(() => import('./components/ComprehensiveTableView').then(module => ({ default: module.ComprehensiveTableView })));
-const HomeroomView = lazy(() => import('./components/HomeroomView').then(module => ({ default: module.HomeroomView })));
 const CurriculumView = lazy(() => import('./components/CurriculumView').then(module => ({ default: module.CurriculumView })));
 import { ConflictAuditDrawer } from './components/ConflictAuditDrawer';
 import { AdminLoginModal } from './components/AdminLoginModal';
@@ -530,7 +529,6 @@ export default function App() {
       'weekly_schedule',
       'weekly_log',
       'summary',
-      'homeroom',
       'curriculum'
     ];
     if (saved && allowedTabs.includes(saved)) {
@@ -1867,19 +1865,6 @@ export default function App() {
             onPromptAdminLogin={() => {}}
             onAssignTeacher={handleAssignTeacher}
             onExportExcel={handleExportExcel}
-          />
-        )}
-
-        {/* Tab: Chủ Nhiệm */}
-        {activeTab === 'homeroom' && (
-          <HomeroomView
-            classes={classes}
-            teachers={teachers}
-            departments={departments}
-            workloads={workloads}
-            isAdmin={isAdmin}
-            onPromptAdminLogin={() => {}}
-            onAssignHomeroom={handleAssignHomeroom}
           />
         )}
 

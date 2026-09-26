@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import {
   TableProperties,
-  UserCheck,
   BookOpenCheck,
   CalendarRange,
   TrendingUp,
@@ -15,7 +14,6 @@ export type ActiveTabType =
   | 'weekly_schedule'
   | 'weekly_log'
   | 'summary'
-  | 'homeroom'
   | 'curriculum';
 
 interface ViewTabsProps {
@@ -66,13 +64,6 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
       label: 'Bảng Tổng Hợp Toàn Trường',
       shortLabel: 'Tổng Hợp Trường',
       icon: TableProperties,
-      isPublic: false,
-    },
-    {
-      id: 'homeroom',
-      label: 'Phân Công Chủ Nhiệm',
-      shortLabel: 'GV Chủ Nhiệm',
-      icon: UserCheck,
       isPublic: false,
     },
     {
@@ -175,7 +166,7 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
               type="button"
               onClick={() =>
                 onPromptLogin?.(
-                  'Vui lòng đăng nhập với tài khoản Giáo viên hoặc Quản trị viên để xem chi tiết công việc nội bộ của nhà trường (Số tiết thực dạy, Tổng hợp, Phân công chủ nhiệm, Khung tiết).'
+                  'Vui lòng đăng nhập với tài khoản Giáo viên hoặc Quản trị viên để xem chi tiết công việc nội bộ của nhà trường (Số tiết thực dạy, Tổng hợp, Khung tiết).'
                 )
               }
               className="flex items-center gap-1.5 h-9 px-3 text-xs font-semibold text-slate-500 hover:text-indigo-700 bg-slate-50 hover:bg-indigo-50/70 border border-dashed border-slate-300 hover:border-indigo-300 rounded-lg cursor-pointer transition-all shrink-0 ml-1"

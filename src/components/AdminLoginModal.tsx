@@ -206,7 +206,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
                 <span>Quyền xem tự do dành cho Giáo viên trường</span>
               </h4>
               <p className="text-emerald-800 text-[11px] leading-relaxed mt-1">
-                Nhập mật khẩu giáo viên để xem toàn bộ thông tin nội bộ: <strong>Số tiết thực dạy</strong>, <strong>Bảng tổng hợp trường</strong>, <strong>Phân công chủ nhiệm</strong> và <strong>Khung tiết GDPT 2018</strong>.
+                Nhập mật khẩu giáo viên để xem toàn bộ thông tin nội bộ: <strong>Số tiết thực dạy</strong>, <strong>Bảng tổng hợp trường</strong> và <strong>Khung tiết GDPT 2018</strong>.
               </p>
             </div>
 
