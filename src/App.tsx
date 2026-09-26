@@ -151,28 +151,26 @@ export default function App() {
   // Load saved state or default
   const [config, setConfig] = useState<SchoolConfig>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_config`);
-    const savedLogo = localStorage.getItem(`${STORAGE_KEY}_school_logo`) || localStorage.getItem('phancong_dbk_v2_school_logo');
     if (saved) {
       const parsed: SchoolConfig = JSON.parse(saved);
       return {
         ...parsed,
         academicYear: (!parsed.academicYear || parsed.academicYear.includes('2024')) ? '2026 - 2027' : parsed.academicYear,
         vicePrincipalName: (parsed.vicePrincipalName && parsed.vicePrincipalName.includes('-')) ? 'Nguyễn Minh Trí' : (parsed.vicePrincipalName || 'Nguyễn Minh Trí'),
-        logoUrl: parsed.logoUrl || savedLogo || '/logo.png',
+        logoUrl: '/logo.png',
         homeroomReduction: 4
       };
     }
     return {
       ...initialSchoolConfig,
       homeroomReduction: 4,
-      logoUrl: savedLogo || '/logo.png'
+      logoUrl: '/logo.png'
     };
   });
 
-  // Dynamically synchronize browser tab favicon with school logo
   useEffect(() => {
-    setBrowserFavicon(config.logoUrl);
-  }, [config.logoUrl]);
+    setBrowserFavicon('/logo.png');
+  }, []);
 
   const [departments, setDepartments] = useState<Department[]>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_departments`);

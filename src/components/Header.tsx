@@ -1,8 +1,7 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import {
   School,
   FileSpreadsheet,
-  Upload,
   Sparkles,
   AlertTriangle,
   CheckCircle2,
@@ -61,46 +60,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenConflictDrawer,
   onResetData,
 }) => {
-  const logoFileInputRef = useRef<HTMLInputElement>(null);
   const errorCount = conflicts.filter(c => c.severity === 'error').length;
   const warningCount = conflicts.filter(c => c.severity === 'warning').length;
-
-  const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!isAdmin) {
-      alert('Chỉ tài khoản Quản trị viên mới có quyền thay đổi logo trường.');
-      e.target.value = '';
-      return;
-    }
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        onUpdateConfig({
-          ...config,
-          logoUrl: dataUrl
-        });
-        try {
-          localStorage.setItem('docbinhkieu_phancong_data_v9_school_logo', dataUrl);
-          setBrowserFavicon(dataUrl);
-        } catch (err) {
-          console.error('Error saving logo:', err);
-        }
-      }
-    };
-    reader.readAsDataURL(file);
-    e.target.value = '';
-  };
-
-  const handleLogoClick = () => {
-    if (!isAdmin) {
-      alert('Chỉ tài khoản Quản trị viên mới có quyền thay đổi logo trường. Vui lòng đăng nhập quyền Quản trị.');
-      onOpenAdminLogin();
-      return;
-    }
-    logoFileInputRef.current?.click();
-  };
 
   return (
     <header className="bg-indigo-900 text-white sticky top-0 z-30 shadow-md shrink-0">
@@ -108,39 +69,11 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
         {/* Brand & School info */}
         <div className="flex items-center gap-3">
-          <div
-            className="relative group shrink-0"
-            title={
-              isAdmin
-                ? "Nhấp để tải lên/thay đổi tệp Logo trường"
-                : "Logo Trường THCS & THPT Đốc Binh Kiều (Chỉ Quản trị viên mới có quyền đổi logo)"
-            }
-          >
+          <div className="shrink-0" title="Logo Trường THCS & THPT Đốc Binh Kiều">
             <img
-              src={config.logoUrl || '/logo.png'}
+              src="/logo.png"
               alt="Logo Trường THCS & THPT Đốc Binh Kiều"
-              className={`w-10 h-10 object-contain rounded-full bg-white shadow-sm p-0.5 border-2 border-white/40 transition-transform ${
-                isAdmin ? 'cursor-pointer hover:scale-105' : 'cursor-default'
-              }`}
-              onClick={handleLogoClick}
-            />
-            {isAdmin && (
-              <button
-                type="button"
-                onClick={() => logoFileInputRef.current?.click()}
-                className="absolute -bottom-1 -right-1 bg-amber-500 hover:bg-amber-400 text-slate-900 p-0.5 rounded-full shadow-xs border border-white cursor-pointer"
-                title="Thay ảnh logo trường (Dành cho Quản trị viên)"
-              >
-                <Upload className="w-2.5 h-2.5" />
-              </button>
-            )}
-            <input
-              ref={logoFileInputRef}
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              className="hidden"
-              disabled={!isAdmin}
-              onChange={handleLogoFileChange}
+              className="w-10 h-10 object-contain rounded-full bg-white shadow-sm p-0.5 border-2 border-white/40"
             />
           </div>
           <div className="flex flex-col">
