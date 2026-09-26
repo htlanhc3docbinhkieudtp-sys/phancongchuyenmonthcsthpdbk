@@ -34,6 +34,7 @@ import {
   Building2,
   Check,
   RotateCcw,
+  ChevronDown,
 } from 'lucide-react';
 
 interface WeeklyTeachingLogViewProps {
@@ -137,6 +138,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
   // Level scope - defaults to 'THPT' as explicitly instructed by user
   const [levelScope, setLevelScope] = useState<LevelScope>('THPT');
+  const [showCurriculumNotes, setShowCurriculumNotes] = useState(false);
 
   // View mode: Weekly Detail (Excel Template) vs Multi-week Overview
   const [viewMode, setViewMode] = useState<ViewMode>('MULTI_WEEK');
@@ -765,6 +767,20 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
       {/* KHTN 8 & 9 Curriculum Schedule Note for THCS */}
       {(levelScope === 'THCS' || levelScope === 'ALL') && (
         <div className="space-y-2 print:hidden">
+          <button
+            type="button"
+            onClick={() => setShowCurriculumNotes((isVisible) => !isVisible)}
+            aria-expanded={showCurriculumNotes}
+            aria-controls="curriculum-schedule-notes"
+            className="flex w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50"
+          >
+            <span>Xem ghi chú phân phối môn KHTN và Công nghệ</span>
+            <ChevronDown
+              className={`h-4 w-4 shrink-0 transition-transform ${showCurriculumNotes ? 'rotate-180' : ''}`}
+            />
+          </button>
+          {showCurriculumNotes && (
+          <div id="curriculum-schedule-notes" className="space-y-2">
           <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-3 flex items-start gap-2.5 text-xs text-emerald-900">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <div className="flex-1 space-y-1">
@@ -820,6 +836,8 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
               </div>
             </div>
           </div>
+          </div>
+          )}
         </div>
       )}
 
