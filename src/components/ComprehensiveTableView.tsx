@@ -111,6 +111,8 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
 
   const getSubjectsForLevel = (level: 'THPT' | 'THCS') => subjects.filter(sub => {
     if (sub.id === 'sub-nv') return false;
+    // Keep one display column for subjects that have legacy/import aliases.
+    if (sub.id === 'sub-qpan' || sub.id === 'sub-hdtn-shl') return false;
     const grades = level === 'THPT' ? ['10', '11', '12'] : ['6', '7', '8', '9'];
     return grades.some(grade => (sub.defaultPeriods[grade] || 0) > 0);
   });
@@ -134,7 +136,12 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
   };
 
   const getAssignmentForSubject = (classId: string, subjectId: string) => {
-    const assignment = assignments.find(a => a.classId === classId && a.subjectId === subjectId);
+    const subjectIds = subjectId === 'sub-gdqp'
+      ? ['sub-gdqp', 'sub-qpan']
+      : subjectId === 'sub-shl'
+      ? ['sub-shl', 'sub-hdtn-shl']
+      : [subjectId];
+    const assignment = assignments.find(a => a.classId === classId && subjectIds.includes(a.subjectId));
     if (assignment || !['sub-su', 'sub-dia'].includes(subjectId)) return assignment;
 
     // A combined THCS LS-ĐL assignment means the same teacher handles both columns.
@@ -142,7 +149,7 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-4">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-4 space-y-4">
       {/* Header Toolbar */}
       <div className="bg-white p-3 rounded-lg border border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-3 print:hidden">
         <div className="flex flex-wrap items-center gap-2.5">
@@ -199,7 +206,7 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
       </div>
 
       {/* Official Table Document Card */}
-      <div className="bg-white rounded-lg border border-slate-200 shadow-2xs p-4 print:p-0 print:border-none print:shadow-none">
+      <div className="w-full bg-white rounded-lg border border-slate-200 shadow-2xs p-4 print:p-0 print:border-none print:shadow-none">
         {/* Formal Vietnamese School Header for Printing */}
         <div className="mb-4 pb-3 border-b border-slate-200 text-center">
           <div className="flex justify-between items-start text-xs uppercase font-bold text-slate-700 mb-3">
@@ -242,7 +249,10 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
               </div>
 
               <div className="overflow-x-auto border border-slate-300 rounded-lg">
-                <table className="w-full text-xs text-left border-collapse">
+                <table
+                  className="w-full text-xs text-left border-collapse"
+                  style={{ minWidth: isThpt ? '1700px' : '1650px' }}
+                >
                   <thead>
                     <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-300">
                       <th className="p-1.5 border border-slate-300 text-center w-8 text-[11px]">STT</th>
