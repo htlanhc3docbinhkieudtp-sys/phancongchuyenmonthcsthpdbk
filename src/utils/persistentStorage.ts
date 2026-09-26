@@ -7,6 +7,54 @@ const BACKUPS_STORE = 'backups';
 
 export const WEEK2_EXACT_BACKUP_KEY = 'docbinhkieu_week2_exact_backup';
 export const STORAGE_KEY_PREFIX = 'docbinhkieu_plan';
+const LOCAL_SNAPSHOTS_KEY = 'docbinhkieu_local_timetable_snapshots_v1';
+
+export interface TimetableSnapshotItem {
+  id: string;
+  createdAt: number;
+  description: string;
+  weekNumber: number;
+  slotCount: number;
+  timetable: SchoolTimetable;
+  createdBy?: string;
+}
+
+export async function saveTimetableSnapshot(
+  timetable: SchoolTimetable,
+  description: string,
+  createdBy = 'Quản trị viên'
+): Promise<boolean> {
+  try {
+    const raw = localStorage.getItem(LOCAL_SNAPSHOTS_KEY);
+    const existing: TimetableSnapshotItem[] = raw ? JSON.parse(raw) : [];
+    const createdAt = Date.now();
+    const snapshot: TimetableSnapshotItem = {
+      id: `snapshot_${timetable.weekNumber || 1}_${createdAt}`,
+      createdAt,
+      description,
+      weekNumber: timetable.weekNumber || 1,
+      slotCount: timetable.slots?.length || 0,
+      timetable,
+      createdBy,
+    };
+    localStorage.setItem(LOCAL_SNAPSHOTS_KEY, JSON.stringify([snapshot, ...existing].slice(0, 25)));
+    return true;
+  } catch (error) {
+    console.warn('Local timetable snapshot save failed:', error);
+    return false;
+  }
+}
+
+export async function getTimetableSnapshots(): Promise<TimetableSnapshotItem[]> {
+  try {
+    const raw = localStorage.getItem(LOCAL_SNAPSHOTS_KEY);
+    const snapshots: TimetableSnapshotItem[] = raw ? JSON.parse(raw) : [];
+    return snapshots.sort((a, b) => b.createdAt - a.createdAt).slice(0, 25);
+  } catch (error) {
+    console.warn('Local timetable snapshots could not be read:', error);
+    return [];
+  }
+}
 
 /**
  * Open IndexedDB instance safely

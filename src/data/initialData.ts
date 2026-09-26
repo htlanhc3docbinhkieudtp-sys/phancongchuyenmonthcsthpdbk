@@ -251,12 +251,13 @@ export const initialSubjects: Subject[] = [
 ];
 
 export const initialClasses: ClassGroup[] = [
-  // Khối 10 THPT (5 lớp)
+  // Khối 10 THPT (5 lớp) - Điểm chính, học Buổi Sáng
   {
     id: 'cls-10cb1',
     name: '10CB1',
     grade: '10',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 37,
     homeroomTeacherId: 'tch-khtn-5',
@@ -272,6 +273,7 @@ export const initialClasses: ClassGroup[] = [
     name: '10CB2',
     grade: '10',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 29,
     homeroomTeacherId: 'tch-khtn-9',
@@ -287,6 +289,7 @@ export const initialClasses: ClassGroup[] = [
     name: '10CB3',
     grade: '10',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 44,
     homeroomTeacherId: 'tch-v-5',
@@ -302,6 +305,7 @@ export const initialClasses: ClassGroup[] = [
     name: '10CB4',
     grade: '10',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 47,
     homeroomTeacherId: 'tch-av-9',
@@ -317,6 +321,7 @@ export const initialClasses: ClassGroup[] = [
     name: '10CB5',
     grade: '10',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 45,
     homeroomTeacherId: 'tch-v-4',
@@ -328,12 +333,13 @@ export const initialClasses: ClassGroup[] = [
     }
   },
 
-  // Khối 11 THPT (4 lớp)
+  // Khối 11 THPT (4 lớp) - Điểm chính, học Buổi Sáng
   {
     id: 'cls-11cb1',
     name: '11CB1',
     grade: '11',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 45,
     homeroomTeacherId: 'tch-khtn-1',
@@ -349,6 +355,7 @@ export const initialClasses: ClassGroup[] = [
     name: '11CB2',
     grade: '11',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 35,
     homeroomTeacherId: 'tch-khtn-8',
@@ -364,6 +371,7 @@ export const initialClasses: ClassGroup[] = [
     name: '11CB3',
     grade: '11',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 34,
     homeroomTeacherId: 'tch-ls-5',
@@ -379,6 +387,7 @@ export const initialClasses: ClassGroup[] = [
     name: '11CB4',
     grade: '11',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 33,
     homeroomTeacherId: 'tch-av-8',
@@ -390,12 +399,13 @@ export const initialClasses: ClassGroup[] = [
     }
   },
 
-  // Khối 12 THPT (5 lớp)
+  // Khối 12 THPT (5 lớp) - Điểm chính, học Buổi Sáng
   {
     id: 'cls-12cb1',
     name: '12CB1',
     grade: '12',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 28,
     homeroomTeacherId: 'tch-khtn-7',
@@ -411,6 +421,7 @@ export const initialClasses: ClassGroup[] = [
     name: '12CB2',
     grade: '12',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 23,
     homeroomTeacherId: 'tch-v-6',
@@ -426,6 +437,7 @@ export const initialClasses: ClassGroup[] = [
     name: '12CB3',
     grade: '12',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 47,
     homeroomTeacherId: 'tch-t-7',
@@ -441,6 +453,7 @@ export const initialClasses: ClassGroup[] = [
     name: '12CB4',
     grade: '12',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 47,
     homeroomTeacherId: 'tch-ls-4',
@@ -456,8 +469,10 @@ export const initialClasses: ClassGroup[] = [
     name: '12CB5',
     grade: '12',
     level: 'THPT',
+    campus: 'THPTDBK',
     track: 'CoBan',
     studentCount: 41,
+    homeroomTeacherId: 'tch-ls-2',
     homeroomTeacherId: 'tch-ls-2',
     roomNumber: 'P.12-5',
     specialTopics: {

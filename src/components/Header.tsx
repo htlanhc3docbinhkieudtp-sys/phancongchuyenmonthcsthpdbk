@@ -11,10 +11,6 @@ import {
   Users,
   GraduationCap,
   RotateCcw,
-  Cloud,
-  CloudCheck,
-  UploadCloud,
-  RefreshCw,
   Download,
   Database,
   Lock,
@@ -35,14 +31,11 @@ interface HeaderProps {
   totalClasses: number;
   assignedPercentage: number;
   conflicts: ConflictIssue[];
-  cloudSyncStatus: 'synced' | 'saving' | 'error' | 'offline';
-  lastSyncedAt: number | null;
   isAdmin: boolean;
   userRole?: 'guest' | 'teacher' | 'admin';
   teacherUser?: string;
   onOpenAdminLogin: () => void;
   onLogoutAdmin: () => void;
-  onSaveToCloud?: () => void;
   onExportJsonBackup?: () => void;
   onImportJsonBackup?: (file: File) => void;
   onOpenImportModal?: () => void;
@@ -60,14 +53,11 @@ export const Header: React.FC<HeaderProps> = ({
   totalClasses,
   assignedPercentage,
   conflicts,
-  cloudSyncStatus,
-  lastSyncedAt,
   isAdmin,
   userRole = 'guest',
   teacherUser,
   onOpenAdminLogin,
   onLogoutAdmin,
-  onSaveToCloud,
   onOpenConflictDrawer,
   onResetData,
 }) => {
@@ -217,17 +207,6 @@ export const Header: React.FC<HeaderProps> = ({
               {errorCount > 0 ? `${errorCount} lỗi` : warningCount > 0 ? `${warningCount} lưu ý` : 'Hợp lệ'}
             </span>
           </button>
-
-          {/* Cloud Auto-Sync Indicator (only shows transient spinner while uploading TKB) */}
-          {isAdmin && cloudSyncStatus === 'saving' && (
-            <div
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-900/60 border border-indigo-500/40 text-indigo-200 text-xs font-medium animate-pulse"
-              title="Đang tự động đồng bộ Thời khóa biểu mới lên đám mây..."
-            >
-              <RefreshCw className="w-3.5 h-3.5 text-indigo-300 animate-spin" />
-              <span className="hidden md:inline text-[11px] font-semibold">Đang lưu TKB...</span>
-            </div>
-          )}
 
           {/* Admin vs Read-Only Controls */}
           {isAdmin ? (

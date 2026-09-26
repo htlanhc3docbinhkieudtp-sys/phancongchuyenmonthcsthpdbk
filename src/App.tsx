@@ -78,19 +78,24 @@ import { CurriculumView } from './components/CurriculumView';
 import { ConflictAuditDrawer } from './components/ConflictAuditDrawer';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { Footer } from './components/Footer';
-import {
-  saveSchoolPlanToCloud,
-  loadSchoolPlanFromCloud,
-  subscribeToSchoolPlan,
-  exportDataAsJsonFile,
-  markDataAsCloudSynced,
-  deleteBatchWeekTimetablesFromCloud,
-  SchoolPlanData
-} from './services/firebase';
 
 const STORAGE_KEY = 'docbinhkieu_phancong_data_v9';
 
 export type UserRole = 'guest' | 'teacher' | 'admin';
+
+interface SchoolPlanBackup {
+  config?: SchoolConfig;
+  departments?: Department[];
+  subjects?: Subject[];
+  classes?: ClassGroup[];
+  teachers?: Teacher[];
+  assignments?: Assignment[];
+  lockedCells?: LockedCell[];
+  weeklySchedules?: WeeklySchedule[];
+  timetable?: SchoolTimetable;
+  weeklyTimetables?: Record<number, SchoolTimetable>;
+  updatedAt?: number;
+}
 
 function safeLocalStorageSet(key: string, value: string): boolean {
   try {
@@ -582,14 +587,6 @@ export default function App() {
     showToast('Đăng nhập Quản trị viên thành công! Bạn hiện có toàn quyền quản trị.');
   };
 
-  // Cloud Sync state
-  const [cloudSyncStatus, setCloudSyncStatus] = useState<'synced' | 'saving' | 'error' | 'offline'>('synced');
-  const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_last_cloud_sync`);
-    return saved ? Number(saved) : null;
-  });
-  const isInitialCloudLoadRef = React.useRef(true);
-  const isApplyingCloudDataRef = React.useRef(false);
   const weeklyTimetablesRef = React.useRef<Record<number, SchoolTimetable>>(weeklyTimetables);
   useEffect(() => {
     weeklyTimetablesRef.current = weeklyTimetables;
@@ -607,169 +604,9 @@ export default function App() {
     }, 4000);
   };
 
-  // Authoritative Cloud Data Applicator (used on initial mount, real-time updates, and manual force-sync)
-  const applyCloudData = (cloudData: SchoolPlanData, force = false): boolean => {
-    if (!cloudData) return false;
-
-    let appliedConfig = config;
-    if (cloudData.config) {
-      const savedLogo = localStorage.getItem(`${STORAGE_KEY}_school_logo`) || localStorage.getItem('phancong_dbk_v2_school_logo');
-      const sanitizedConfig: SchoolConfig = {
-        ...cloudData.config,
-        academicYear: (!cloudData.config.academicYear || cloudData.config.academicYear.includes('2024'))
-          ? '2026 - 2027'
-          : cloudData.config.academicYear,
-        vicePrincipalName: (cloudData.config.vicePrincipalName && cloudData.config.vicePrincipalName.includes('-'))
-          ? 'Nguyễn Minh Trí'
-          : (cloudData.config.vicePrincipalName || 'Nguyễn Minh Trí'),
-        logoUrl: cloudData.config.logoUrl || savedLogo || '/logo.png'
-      };
-      appliedConfig = sanitizedConfig;
-      setConfig(sanitizedConfig);
-    }
-    if (cloudData.departments && cloudData.departments.length > 0) setDepartments(cloudData.departments);
-    if (cloudData.subjects && cloudData.subjects.length > 0) {
-      const updatedSubs = cloudData.subjects.map(s => {
-        if (s.id === 'sub-gddp') {
-          return {
-            ...s,
-            defaultPeriods: { '10': 3, '11': 3, '12': 3, '6': 3, '7': 3, '8': 3, '9': 3 }
-          };
-        }
-        return s;
-      });
-      setSubjects(updatedSubs);
-    }
-    if (cloudData.classes && cloudData.classes.length > 0) setClasses(cloudData.classes);
-    if (cloudData.teachers && cloudData.teachers.length > 0) setTeachers(sanitizeTeachersList(cloudData.teachers));
-    if (cloudData.assignments) {
-      const sanitizedAssignments = sanitizeAssignmentsList(
-        cloudData.assignments,
-        cloudData.classes && cloudData.classes.length > 0 ? cloudData.classes : classes,
-        cloudData.subjects && cloudData.subjects.length > 0 ? cloudData.subjects : subjects,
-        cloudData.teachers && cloudData.teachers.length > 0 ? cloudData.teachers : teachers
-      );
-      setAssignments(sanitizedAssignments);
-    }
-    if (cloudData.lockedCells) setLockedCells(cloudData.lockedCells);
-    if (cloudData.weeklySchedules && cloudData.weeklySchedules.length > 0) {
-      setWeeklySchedules(cloudData.weeklySchedules);
-    }
-
-    let cloudTimetablesToApply: Record<number, SchoolTimetable> | null = null;
-    if (cloudData.weeklyTimetables && Object.keys(cloudData.weeklyTimetables).length > 0) {
-      const merged: Record<number, SchoolTimetable> = {};
-      Object.keys(cloudData.weeklyTimetables).forEach(wk => {
-        const wNum = Number(wk);
-        const tbl = cloudData.weeklyTimetables[wNum];
-        if (tbl) {
-          merged[wNum] = {
-            ...tbl,
-            weekNumber: wNum,
-            slots: normalizeTimetableSlots(tbl.slots || [])
-          };
-        }
-      });
-      cloudTimetablesToApply = merged;
-    } else if (cloudData.timetable && cloudData.timetable.slots && cloudData.timetable.slots.length > 0) {
-      const tkb1: SchoolTimetable = {
-        ...cloudData.timetable,
-        weekNumber: 1,
-        slots: normalizeTimetableSlots(cloudData.timetable.slots)
-      };
-      cloudTimetablesToApply = { 1: tkb1 };
-    }
-
-    if (cloudTimetablesToApply) {
-      setWeeklyTimetables(prev => {
-        const combined: Record<number, SchoolTimetable> = { ...prev };
-        Object.keys(cloudTimetablesToApply!).forEach(wStr => {
-          const w = Number(wStr);
-          const cloudTbl = cloudTimetablesToApply![w];
-          if (cloudTbl && cloudTbl.slots && cloudTbl.slots.length > 0) {
-            combined[w] = cloudTbl;
-          }
-        });
-        weeklyTimetablesRef.current = combined;
-        try {
-          localStorage.setItem('docbinhkieu_emergency_timetable_backup', JSON.stringify(combined));
-          if (combined[1]) {
-            localStorage.setItem('docbinhkieu_emergency_w1_timetable_backup', JSON.stringify(combined[1]));
-          }
-          if (combined[2]) {
-            localStorage.setItem(WEEK2_EXACT_BACKUP_KEY, JSON.stringify(combined[2]));
-          }
-        } catch { /* storage full */ }
-        persistAllWeeklyTimetables(combined);
-        return combined;
-      });
-    }
-
-    markDataAsCloudSynced({
-      config: appliedConfig,
-      departments: cloudData.departments || [],
-      subjects: cloudData.subjects || [],
-      classes: cloudData.classes || [],
-      teachers: sanitizeTeachersList(cloudData.teachers || []),
-      assignments: cloudData.assignments || [],
-      lockedCells: cloudData.lockedCells || [],
-      weeklySchedules: cloudData.weeklySchedules || [],
-      timetable: cloudData.timetable,
-      weeklyTimetables: cloudTimetablesToApply || cloudData.weeklyTimetables
-    });
-
-    if (cloudData.updatedAt) setLastSyncedAt(cloudData.updatedAt);
-    setCloudSyncStatus('synced');
-    setTimeout(() => {
-      isApplyingCloudDataRef.current = false;
-    }, 250);
-    return true;
-  };
-
-  // Initial fetch from Firestore on mount & Real-time multi-device synchronization
+  // Restore local timetable data from IndexedDB when browser storage was cleared.
   useEffect(() => {
     let isMounted = true;
-    const initCloudData = async () => {
-      try {
-        const cloudPromise = loadSchoolPlanFromCloud();
-        const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 7500));
-        const cloudData = await Promise.race([cloudPromise, timeoutPromise]);
-        if (cloudData && isMounted) {
-          isApplyingCloudDataRef.current = true;
-          applyCloudData(cloudData, true);
-        } else if (isMounted) {
-          console.warn('[Cloud] Cloud data was null or timed out. Retaining local state.');
-          setCloudSyncStatus('synced');
-        }
-      } catch (err) {
-        console.warn('Initial cloud sync notice:', err);
-        if (isMounted) setCloudSyncStatus('synced');
-      } finally {
-        if (isMounted) {
-          setTimeout(() => {
-            if (isMounted) {
-              isInitialCloudLoadRef.current = false;
-            }
-          }, 800);
-        }
-      }
-    };
-
-    initCloudData();
-
-    // Real-time Firestore subscription: whenever an admin saves, all other machines update in real time
-    let unsubscribe: (() => void) | null = null;
-    try {
-      unsubscribe = subscribeToSchoolPlan((incomingData) => {
-        if (!isMounted || !incomingData) return;
-        if (isApplyingCloudDataRef.current) return;
-        applyCloudData(incomingData, false);
-      });
-    } catch (e) {
-      console.warn('Real-time subscription notice:', e);
-    }
-
-    // Async IndexedDB restore fallback (in case browser cleared localStorage or on initial launch)
     loadAllTimetablesFromIndexedDB().then(idbTimetables => {
       if (idbTimetables && Object.keys(idbTimetables).length > 0 && isMounted) {
         setWeeklyTimetables(prev => {
@@ -791,7 +628,6 @@ export default function App() {
 
     return () => {
       isMounted = false;
-      if (unsubscribe) unsubscribe();
     };
   }, []);
 
@@ -811,7 +647,7 @@ export default function App() {
     safeLocalStorageSet(`${STORAGE_KEY}_current_week`, String(currentWeek));
   }, [currentWeek]);
 
-  // Save to localStorage & Auto-sync to Firebase with debounce (Admin only)
+  // Persist application data locally; official timetables remain available in src/data.
   useEffect(() => {
     safeLocalStorageSet(`${STORAGE_KEY}_config`, JSON.stringify(config));
     safeLocalStorageSet(`${STORAGE_KEY}_departments`, JSON.stringify(departments));
@@ -840,7 +676,7 @@ export default function App() {
 
     // Mirror to IndexedDB (virtually unlimited browser storage)
     persistAllWeeklyTimetables(weeklyTimetables);
-  }, [config, departments, subjects, classes, teachers, assignments, lockedCells, weeklySchedules, weeklyTimetables, timetable, isAdmin]);
+  }, [config, departments, subjects, classes, teachers, assignments, lockedCells, weeklySchedules, weeklyTimetables, timetable]);
 
   // Derived Calculations
   const currentSemester = currentWeek >= 19 ? 'HK2' : 'HK1';
@@ -1272,43 +1108,7 @@ export default function App() {
     }
   };
 
-  const handleSaveToCloud = async (isForced = true, overrideData?: Partial<SchoolPlanData>) => {
-    setCloudSyncStatus('saving');
-    isApplyingCloudDataRef.current = true;
-    const effectiveWeeklyTimetables = overrideData?.weeklyTimetables || weeklyTimetablesRef.current;
-    const effectiveWeeklySchedules = overrideData?.weeklySchedules || weeklySchedules;
-    const effectiveAssignments = overrideData?.assignments || assignments;
-    const effectiveTimetable = effectiveWeeklyTimetables[currentWeek] || timetable;
-
-    const payload: SchoolPlanData = {
-      config: overrideData?.config || config,
-      departments: overrideData?.departments || departments,
-      subjects: overrideData?.subjects || subjects,
-      classes: overrideData?.classes || classes,
-      teachers: overrideData?.teachers || teachers,
-      assignments: effectiveAssignments,
-      lockedCells: overrideData?.lockedCells || lockedCells,
-      weeklySchedules: effectiveWeeklySchedules,
-      timetable: effectiveTimetable,
-      weeklyTimetables: effectiveWeeklyTimetables,
-      updatedAt: Date.now()
-    };
-    const result = await saveSchoolPlanToCloud(payload, isForced);
-    if (result.success) {
-      setCloudSyncStatus('synced');
-      setLastSyncedAt(Date.now());
-      safeLocalStorageSet(`${STORAGE_KEY}_last_cloud_sync`, String(Date.now()));
-      showToast('Đã lưu toàn bộ Thời khóa biểu & Dữ liệu lên Cloud Firebase thành công!');
-    } else {
-      setCloudSyncStatus('error');
-      showToast(`Không thể lưu lên Cloud: ${result.error || 'Vui lòng kiểm tra kết nối mạng.'}`);
-    }
-    setTimeout(() => {
-      isApplyingCloudDataRef.current = false;
-    }, 1500);
-  };
-
-  const handleTogglePublicTimetable = async () => {
+  const handleTogglePublicTimetable = () => {
     if (!isAdmin) return;
     const newAllowPublic = !config.allowPublicTimetable;
     const updatedConfig: SchoolConfig = {
@@ -1318,18 +1118,15 @@ export default function App() {
     setConfig(updatedConfig);
     safeLocalStorageSet(`${STORAGE_KEY}_config`, JSON.stringify(updatedConfig));
 
-    // Persist immediately to Cloud so all devices/viewers get the status change in real time
-    await handleSaveToCloud(true, { config: updatedConfig });
-
     if (newAllowPublic) {
-      showToast('Đã MỞ KHÓA xem tự do! Giáo viên và học sinh toàn trường có thể tra cứu Thời khóa biểu.');
+      showToast('Đã mở xem tự do trên thiết bị này.');
     } else {
-      showToast('Đã KHÓA xem tự do! Hiện chỉ tài khoản Quản trị viên mới có thể truy cập hệ thống.');
+      showToast('Đã khóa xem tự do trên thiết bị này.');
     }
   };
 
   const handleExportJsonBackup = () => {
-    const payload: SchoolPlanData = {
+    const payload: SchoolPlanBackup = {
       config,
       departments,
       subjects,
@@ -1342,7 +1139,14 @@ export default function App() {
       weeklyTimetables,
       updatedAt: Date.now(),
     };
-    exportDataAsJsonFile(payload, `PhanCong_DocBinhKieu_${config.academicYear.replace(/\s+/g, '')}_${config.semester}.json`);
+    const filename = `PhanCong_DocBinhKieu_${config.academicYear.replace(/\s+/g, '')}_${config.semester}.json`;
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleImportJsonBackup = (file: File) => {
@@ -1350,7 +1154,7 @@ export default function App() {
     reader.onload = async (e) => {
       try {
         const content = e.target?.result as string;
-        const parsed: SchoolPlanData = JSON.parse(content);
+        const parsed: SchoolPlanBackup = JSON.parse(content);
         if (parsed) {
           if (parsed.config) setConfig(parsed.config);
           if (parsed.departments) setDepartments(parsed.departments);
@@ -1667,16 +1471,9 @@ export default function App() {
 
       showToast(
         importMode === 'merge'
-          ? `Đã gộp thành công ${normalizedSlots.length} tiết vào TKB Tuần ${targetWeek} (Tổng: ${totalFinalSlots || normalizedSlots.length} tiết)! Đang tự động lưu lên Cloud...`
-          : `Đã thay thế toàn bộ bằng ${normalizedSlots.length} tiết TKB mới Tuần ${targetWeek}! Đang tự động lưu lên Cloud...`
+          ? `Đã gộp ${normalizedSlots.length} tiết vào TKB Tuần ${targetWeek} (Tổng: ${totalFinalSlots || normalizedSlots.length} tiết) và lưu trên thiết bị.`
+          : `Đã thay thế TKB Tuần ${targetWeek} bằng ${normalizedSlots.length} tiết và lưu trên thiết bị.`
       );
-
-      // Auto-save directly to Cloud Firebase with fresh payload
-      await handleSaveToCloud(true, {
-        weeklyTimetables: nextWeekly,
-        weeklySchedules: nextSchedules,
-        assignments: nextAssignments
-      });
     } catch (err) {
       console.error('[Import] Error applying timetable batch:', err);
       showToast('Có lỗi xảy ra khi áp dụng thời khóa biểu.');
@@ -1692,8 +1489,6 @@ export default function App() {
         weeksToDelete.push(w);
       }
     }
-
-    setCloudSyncStatus('saving');
 
     // 1. Explicitly clear in React state with empty slot arrays
     const nextWeekly: Record<number, SchoolTimetable> = { ...weeklyTimetablesRef.current };
@@ -1736,22 +1531,11 @@ export default function App() {
       console.warn('IndexedDB delete notice:', e);
     }
 
-    // 2. Delete from Cloud subcollection & root plan
-    try {
-      await deleteBatchWeekTimetablesFromCloud(weeksToDelete);
-      await handleSaveToCloud(true, { weeklyTimetables: nextWeekly });
-      setCloudSyncStatus('synced');
-      setLastSyncedAt(Date.now());
-      showToast(
-        deleteAllSubsequent
-          ? `Đã dọn sạch Thời khóa biểu từ Tuần ${targetWeek} đến Tuần ${maxWeek} trên cả máy và Cloud!`
-          : `Đã xóa Thời khóa biểu Tuần ${targetWeek} thành công trên cả máy và Cloud! Bạn có thể tải file TKB mới lên ngay.`
-      );
-    } catch (e) {
-      console.error('Lỗi khi xóa TKB trên Cloud:', e);
-      setCloudSyncStatus('offline');
-      showToast(`Đã xóa trên máy. Lỗi khi xóa trên Cloud: ${e}`);
-    }
+    showToast(
+      deleteAllSubsequent
+        ? `Đã dọn TKB từ Tuần ${targetWeek} đến Tuần ${maxWeek} trên thiết bị.`
+        : `Đã xóa TKB Tuần ${targetWeek} trên thiết bị. Bạn có thể nhập TKB mới.`
+    );
   };
 
   const handleUpdateWeeklySchedule = (updated: WeeklySchedule) => {
@@ -1937,8 +1721,6 @@ export default function App() {
         totalClasses={classes.length}
         assignedPercentage={assignedPercentage}
         conflicts={conflicts}
-        cloudSyncStatus={cloudSyncStatus}
-        lastSyncedAt={lastSyncedAt}
         isAdmin={isAdmin}
         userRole={userRole}
         teacherUser={teacherUser}
@@ -1948,7 +1730,6 @@ export default function App() {
           setIsLoginModalOpen(true);
         }}
         onLogoutAdmin={handleLogout}
-        onSaveToCloud={handleSaveToCloud}
         onOpenConflictDrawer={() => setIsConflictDrawerOpen(true)}
         onResetData={handleResetData}
       />

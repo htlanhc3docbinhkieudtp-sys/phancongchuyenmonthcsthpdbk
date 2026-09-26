@@ -18,7 +18,7 @@ import {
   getTimetableSnapshots,
   saveTimetableSnapshot,
   TimetableSnapshotItem
-} from '../services/firebase';
+} from '../utils/persistentStorage';
 
 interface TimetableBackupModalProps {
   isOpen: boolean;
@@ -75,11 +75,11 @@ export const TimetableBackupModal: React.FC<TimetableBackupModalProps> = ({
       const desc = customNote.trim() || `Bản sao lưu thủ công Tuần ${currentWeek} (${currentTimetable.slots.length} tiết)`;
       const ok = await saveTimetableSnapshot(currentTimetable, desc, 'Quản trị viên');
       if (ok) {
-        if (onShowToast) onShowToast('Đã tạo bản sao lưu an toàn thành công lên Đám mây!');
+        if (onShowToast) onShowToast('Đã tạo bản sao lưu trên thiết bị.');
         setCustomNote('');
         await fetchBackups();
       } else {
-        alert('Không thể lưu bản sao lưu lên Đám mây. Vui lòng kiểm tra mạng.');
+        alert('Không thể lưu bản sao lưu cục bộ. Hãy kiểm tra dung lượng trình duyệt.');
       }
     } finally {
       setIsCreating(false);
@@ -194,7 +194,7 @@ export const TimetableBackupModal: React.FC<TimetableBackupModalProps> = ({
               className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
-              <span>{isCreating ? 'Đang lưu...' : 'Tạo Bản Sao Lưu Đám Mây'}</span>
+              <span>{isCreating ? 'Đang lưu...' : 'Tạo bản sao lưu cục bộ'}</span>
             </button>
           </div>
 
@@ -233,7 +233,7 @@ export const TimetableBackupModal: React.FC<TimetableBackupModalProps> = ({
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <History className="w-4 h-4 text-indigo-600" />
-              <span>Các phiên bản đã được sao lưu trên Đám Mây (Firebase):</span>
+              <span>Các bản sao lưu trên thiết bị này:</span>
             </h3>
             <button
               type="button"
@@ -248,14 +248,14 @@ export const TimetableBackupModal: React.FC<TimetableBackupModalProps> = ({
           {isLoading ? (
             <div className="py-12 flex flex-col items-center justify-center text-slate-400 gap-2">
               <div className="w-7 h-7 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-              <span className="text-xs">Đang tải lịch sử các phiên bản sao lưu từ Đám mây...</span>
+              <span className="text-xs">Đang tải lịch sử sao lưu...</span>
             </div>
           ) : snapshots.length === 0 ? (
             <div className="py-12 text-center bg-slate-50 rounded-xl border border-dashed border-slate-300 p-6">
               <Clock className="w-8 h-8 text-slate-400 mx-auto mb-2" />
               <p className="text-sm font-semibold text-slate-600">Chưa có bản sao lưu nào được ghi nhận</p>
               <p className="text-xs text-slate-400 mt-1">
-                Bấm vào nút "Tạo Bản Sao Lưu Đám Mây" ở trên hoặc hệ thống sẽ tự động sao lưu mỗi khi có chỉnh sửa.
+                Tạo bản sao lưu cục bộ hoặc xuất file JSON để lưu ở nơi khác.
               </p>
             </div>
           ) : (

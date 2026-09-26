@@ -529,7 +529,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-extrabold text-xs sm:text-sm uppercase tracking-tight">
-                    Chế độ cho xem tự do:
+                    Chế độ xem tự do trên thiết bị này:
                   </span>
                   <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider ${
                     config.allowPublicTimetable
@@ -541,8 +541,8 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 </div>
                 <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
                   {config.allowPublicTimetable
-                    ? 'Giáo viên và học sinh toàn trường hiện có thể vào xem Thời khóa biểu (chỉ xem TKB). Khi cần điều chỉnh, bạn bấm "Khóa Xem Tự Do" để tạm ẩn.'
-                    : 'Thời khóa biểu hiện đang khóa xem tự do để bạn an tâm cập nhật, đối soát TKB. Khi kiểm tra thấy đầy đủ rồi, bạn bấm "Mở Khóa Cho Xem Tự Do".'}
+                    ? 'Chế độ xem TKB chỉ được mở trên trình duyệt này. Dữ liệu không đồng bộ sang thiết bị khác.'
+                    : 'Chế độ xem tự do đang khóa trên trình duyệt này. Mở khóa chỉ áp dụng cho thiết bị hiện tại.'}
                 </p>
               </div>
             </div>
@@ -559,12 +559,12 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 {config.allowPublicTimetable ? (
                   <>
                     <Lock className="w-3.5 h-3.5" />
-                    <span>Khóa Xem Tự Do</span>
+                    <span>Khóa xem trên thiết bị</span>
                   </>
                 ) : (
                   <>
                     <Unlock className="w-3.5 h-3.5" />
-                    <span>Mở Khóa Cho Xem Tự Do</span>
+                    <span>Mở xem trên thiết bị</span>
                   </>
                 )}
               </button>
@@ -2016,7 +2016,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                     Xóa Thời Khóa Biểu Tuần {currentWeek}
                   </h3>
                   <p className="text-xs text-rose-100">
-                    Xác nhận dọn sạch dữ liệu TKB trên máy và Cloud
+                    Xác nhận dọn sạch dữ liệu TKB trên thiết bị này
                   </p>
                 </div>
               </div>
