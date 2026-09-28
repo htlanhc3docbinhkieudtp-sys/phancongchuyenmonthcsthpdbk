@@ -7,10 +7,13 @@ import {
   ChevronLeft,
   ChevronRight,
   Lock,
+  Award,
 } from 'lucide-react';
 
 export type ActiveTabType =
   | 'timetable'
+  | 'concurrent_duties'
+  | 'homeroom'
   | 'weekly_schedule'
   | 'weekly_log'
   | 'summary'
@@ -51,6 +54,13 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
       shortLabel: 'Thời Khóa Biểu',
       icon: CalendarRange,
       isPublic: true,
+    },
+    {
+      id: 'concurrent_duties',
+      label: 'Kiêm Nhiệm',
+      shortLabel: 'Kiêm Nhiệm',
+      icon: Award,
+      isPublic: false,
     },
     {
       id: 'weekly_log',
@@ -102,7 +112,7 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
   };
 
   return (
-    <div className="bg-white border-b border-slate-200 shrink-0 sticky top-0 z-20 shadow-2xs">
+    <div className="bg-white border-b border-slate-200 shrink-0 sticky top-0 z-20 shadow-2xs print:hidden">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 relative flex items-center">
         {/* Left Scroll Button if overflowing */}
         {canScrollLeft && (
@@ -124,7 +134,7 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
         >
           {visibleTabs.map((tab) => {
             const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
+            const isActive = activeTab === tab.id || (tab.id === 'concurrent_duties' && activeTab === 'homeroom');
 
             const handleClick = () => {
               onTabChange(tab.id);

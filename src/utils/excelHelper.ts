@@ -458,3 +458,181 @@ export async function parseExcelFile(
     reader.readAsArrayBuffer(file);
   });
 }
+
+/**
+ * Xuất file Excel Bảng Tổng Hợp Giáo Viên Kiêm Nhiệm & Giảm Trừ Định Mức
+ */
+export async function exportConcurrentDutiesExcel(
+  config: SchoolConfig,
+  teachers: Teacher[],
+  classes: ClassGroup[],
+  departments: Department[],
+  workloads?: WorkloadStats[]
+) {
+  const XLSX = await import('xlsx');
+  const wb = XLSX.utils.book_new();
+
+  const deptMap = new Map(departments.map(d => [d.id, d.name]));
+  const workloadMap = workloads ? new Map(workloads.map(w => [w.teacherId, w])) : new Map();
+
+  const homeroomMap = new Map<string, ClassGroup>();
+  classes.forEach(c => {
+    if (c.homeroomTeacherId) {
+      homeroomMap.set(c.homeroomTeacherId, c);
+    }
+  });
+
+  const excelRows: any[][] = [];
+
+  // Formal Administrative Header
+  excelRows.push([config.subTitle.toUpperCase(), '', '', '', 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM']);
+  excelRows.push([config.schoolName.toUpperCase(), '', '', '', 'Độc lập - Tự do - Hạnh phúc']);
+  excelRows.push([]);
+  excelRows.push([
+    `BẢNG TỔNG HỢP GIÁO VIÊN KIÊM NHIỆM & GIẢM ĐỊNH MỨC TIẾT DẠY - NĂM HỌC ${config.academicYear}`
+  ]);
+  excelRows.push([
+    `(Căn cứ Thông tư 28/2009/TT-BGDĐT, TT 15/2020/TT-BGDĐT và Thông tư 05/2025/TT-BGDĐT của Bộ GD&ĐT)`
+  ]);
+  excelRows.push([]);
+
+  // Column Headers
+  excelRows.push([
+    'STT',
+    'Mã GV',
+    'Họ và tên giáo viên',
+    'Giới tính',
+    'Tổ chuyên môn',
+    'Điểm trường / Cấp học',
+    'Chủ nhiệm lớp (GVCN)',
+    'Tiết giảm CN',
+    'Chức vụ & Kiêm nhiệm',
+    'Tiết giảm kiêm nhiệm',
+    'Giảm trừ khác',
+    'Tổng số tiết giảm',
+    'Định mức chuẩn gốc',
+    'Định mức thực tế sau giảm',
+    'Số tiết thực dạy',
+    'Chênh lệch (+Dư / -Thiếu)',
+    'Căn cứ quy định pháp lý',
+    'Ghi chú'
+  ]);
+
+  let stt = 1;
+  teachers.forEach(t => {
+    const isHT =
+      t.id === 'tch-bgh-1' ||
+      t.name === 'Lê Thanh Cường' ||
+      t.code === 'Cường.LT (HT)' ||
+      (t.role === 'HieuTruong' && t.name === 'Lê Thanh Cường');
+    const isPHT =
+      !isHT &&
+      (t.id === 'tch-bgh-2' ||
+        t.id === 'tch-bgh-3' ||
+        t.id === 'tch-bgh-4' ||
+        ['Nguyễn Minh Trí', 'Phan Thanh Thảo', 'Nguyễn Thanh Tòng'].includes(t.name) ||
+        t.code === 'Trí.NM (PHT)' ||
+        t.code === 'Thảo.PT (PHT)' ||
+        t.code === 'Tòng.NT (PHT)');
+    const isLeader = isHT || isPHT;
+
+    const hrClass = homeroomMap.get(t.id);
+    const hrReduction = isLeader ? 0 : hrClass ? (hrClass.level === 'THCS' ? 4 : (config.homeroomReduction || 3)) : 0;
+
+    let dutyReduction = 0;
+    const dutyNames: string[] = [];
+    if (t.duties && t.duties.length > 0) {
+      t.duties.forEach(d => {
+        dutyNames.push(`${d.name} (-${d.reductionPeriods}t)`);
+        dutyReduction += d.reductionPeriods;
+      });
+    } else if (t.role && t.role !== 'GVBM' && !isLeader) {
+      const presetDuties = getTeacherDutiesList(t);
+      presetDuties.forEach(pd => {
+        dutyNames.push(`${pd.name} (-${pd.reduction}t)`);
+        dutyReduction += pd.reduction;
+      });
+    }
+
+    const customReduction = isLeader ? 0 : (t.customReductionPeriods || 0);
+    const totalReduction = hrReduction + dutyReduction + customReduction;
+
+    const baseStandard = isHT ? 2 : isPHT ? 4 : (t.campus === 'THPTDBK' ? 17 : 19);
+    const targetPeriods = Math.max(0, baseStandard - totalReduction);
+
+    const workload = workloadMap.get(t.id);
+    const assignedPeriods = workload ? workload.assignedPeriods : 0;
+    const balance = assignedPeriods - targetPeriods;
+
+    let legalBasis = 'Chuẩn GVBM';
+    if (isLeader) {
+      legalBasis = 'Định mức BGH (TT 28/2009 & TT 15/2017)';
+    } else {
+      const basisArr: string[] = [];
+      if (hrClass) basisArr.push('GVCN: -3t/-4t (TT 28/2009)');
+      if (dutyNames.some(d => d.includes('Tổ trưởng') || d.includes('Tổ phó'))) basisArr.push('Tổ CM: -3t/-1t (TT 15/2020)');
+      if (dutyNames.some(d => d.includes('Đoàn') || d.includes('Đội') || d.includes('Phổ cập'))) basisArr.push('Đoàn/Đội/PC: (TT 05/2025)');
+      if (dutyNames.some(d => d.includes('Nuôi con'))) basisArr.push('Con nhỏ: (TT 28/2009)');
+      if (dutyNames.some(d => d.includes('Công đoàn') || d.includes('Thanh tra') || d.includes('Thư ký'))) basisArr.push('Đoàn thể/HĐ');
+      if (basisArr.length > 0) legalBasis = basisArr.join('; ');
+    }
+
+    excelRows.push([
+      stt++,
+      t.code || '',
+      t.name,
+      t.gender,
+      deptMap.get(t.departmentId) || '',
+      t.campus === 'THPTDBK' ? 'THPT Đốc Binh Kiều' : t.campus === 'THCSDBK' ? 'THCS Đốc Binh Kiều' : 'THCS Tân Kiều',
+      hrClass ? hrClass.name : '',
+      hrReduction > 0 ? hrReduction : '',
+      dutyNames.join('; '),
+      dutyReduction > 0 ? dutyReduction : '',
+      customReduction > 0 ? customReduction : '',
+      totalReduction,
+      baseStandard,
+      targetPeriods,
+      assignedPeriods,
+      balance >= 0 ? `+${balance}` : `${balance}`,
+      legalBasis,
+      t.notes || ''
+    ]);
+  });
+
+  excelRows.push([]);
+  excelRows.push([]);
+  excelRows.push(['', '', '', '', 'NGƯỜI LẬP BẢNG', '', '', '', '', '', '', 'HIỆU TRƯỞNG']);
+  excelRows.push(['', '', '', '', '(Ký và ghi rõ họ tên)', '', '', '', '', '', '', '(Ký tên, đóng dấu)']);
+  excelRows.push([]);
+  excelRows.push([]);
+  excelRows.push([]);
+  excelRows.push(['', '', '', '', config.vicePrincipalName || 'Nguyễn Minh Trí', '', '', '', '', '', '', config.principalName || 'Lê Thanh Cường']);
+
+  const ws = XLSX.utils.aoa_to_sheet(excelRows);
+
+  // Set column widths
+  ws['!cols'] = [
+    { wch: 6 },  // STT
+    { wch: 15 }, // Mã GV
+    { wch: 25 }, // Họ tên
+    { wch: 10 }, // Giới tính
+    { wch: 24 }, // Tổ CM
+    { wch: 22 }, // Điểm trường
+    { wch: 14 }, // Lớp CN
+    { wch: 12 }, // Tiết giảm CN
+    { wch: 30 }, // Chức vụ
+    { wch: 12 }, // Tiết giảm kiêm nhiệm
+    { wch: 12 }, // Giảm khác
+    { wch: 14 }, // Tổng giảm
+    { wch: 14 }, // Chuẩn gốc
+    { wch: 16 }, // Sau giảm
+    { wch: 14 }, // Thực dạy
+    { wch: 14 }, // Chênh lệch
+    { wch: 35 }, // Căn cứ
+    { wch: 30 }  // Ghi chú
+  ];
+
+  XLSX.utils.book_append_sheet(wb, ws, 'Danh Sách Kiêm Nhiệm');
+  XLSX.writeFile(wb, `Danh_Sach_Kiem_Nhiem_Giam_Tru_${config.academicYear.replace(/\s+/g, '_')}.xlsx`);
+}
+

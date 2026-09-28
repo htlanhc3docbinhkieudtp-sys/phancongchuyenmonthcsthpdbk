@@ -3,7 +3,7 @@ import { School, Heart } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="w-full bg-slate-900 border-t border-slate-800 text-slate-300 text-xs py-4 px-4 sm:px-6 lg:px-8 mt-auto">
+    <footer className="w-full bg-slate-900 border-t border-slate-800 text-slate-300 text-xs py-4 px-4 sm:px-6 lg:px-8 mt-auto print:hidden">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
         {/* School branding */}
         <div className="flex items-center gap-2.5 text-center md:text-left">

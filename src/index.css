@@ -22,3 +22,105 @@
   background-size: 250% 250%;
   animation: rainbow-pulse 2s ease-in-out infinite;
 }
+
+/* =========================================================================
+   PRINT STYLES: Standards for Vietnamese Administrative Documents
+   (Nghị định 30/2020/NĐ-CP & Fit on A4 Landscape Page)
+   ========================================================================= */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 5mm 6mm 5mm 6mm;
+  }
+
+  html, body {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    font-family: 'Times New Roman', Times, 'Be Vietnam Pro', serif, sans-serif !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Completely hide web layout scaffolding: app headers, nav tabs, footers, buttons, drawers */
+  header,
+  nav,
+  footer,
+  aside,
+  button,
+  .print-hide,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Reset main application container for clean full-width print */
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Administrative document print page break rules */
+  .print-page-break {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  .print-avoid-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Comprehensive Table Printing */
+  .comprehensive-print-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .comprehensive-print-table-wrapper {
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .comprehensive-print-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    font-size: 7.2pt !important;
+    line-height: 1.15 !important;
+  }
+
+  .comprehensive-print-table th,
+  .comprehensive-print-table td {
+    padding: 1.5px 1px !important;
+    border: 0.75pt solid #000000 !important;
+    color: #000000 !important;
+    background-color: transparent !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    word-break: break-word !important;
+    overflow: hidden !important;
+  }
+
+  .comprehensive-print-table th {
+    font-weight: bold !important;
+    background-color: #f1f5f9 !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+}
+

@@ -473,7 +473,6 @@ export const initialClasses: ClassGroup[] = [
     track: 'CoBan',
     studentCount: 41,
     homeroomTeacherId: 'tch-ls-2',
-    homeroomTeacherId: 'tch-ls-2',
     roomNumber: 'P.12-5',
     specialTopics: {
       cd1: { title: 'Toán', teacherId: 'tch-t-6' },

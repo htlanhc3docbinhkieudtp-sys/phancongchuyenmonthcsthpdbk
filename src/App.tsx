@@ -71,6 +71,7 @@ import {
 import { Header } from './components/Header';
 import { ViewTabs, ActiveTabType } from './components/ViewTabs';
 import { SchoolTimetableView } from './components/SchoolTimetableView';
+const ConcurrentDutiesView = lazy(() => import('./components/ConcurrentDutiesView').then(module => ({ default: module.ConcurrentDutiesView })));
 const WeeklyScheduleManagerView = lazy(() => import('./components/WeeklyScheduleManagerView').then(module => ({ default: module.WeeklyScheduleManagerView })));
 const WeeklyTeachingLogView = lazy(() => import('./components/WeeklyTeachingLogView').then(module => ({ default: module.WeeklyTeachingLogView })));
 const ComprehensiveTableView = lazy(() => import('./components/ComprehensiveTableView').then(module => ({ default: module.ComprehensiveTableView })));
@@ -526,11 +527,16 @@ export default function App() {
     }
     const allowedTabs: ActiveTabType[] = [
       'timetable',
+      'concurrent_duties',
+      'homeroom',
       'weekly_schedule',
       'weekly_log',
       'summary',
       'curriculum'
     ];
+    if (saved === 'homeroom') {
+      return 'concurrent_duties';
+    }
     if (saved && allowedTabs.includes(saved)) {
       return saved;
     }
@@ -1739,7 +1745,7 @@ export default function App() {
 
   // Webapp is in free view mode
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col text-slate-900 font-['Be_Vietnam_Pro',sans-serif]">
+    <div className="min-h-screen bg-slate-100 flex flex-col text-slate-900 font-['Be_Vietnam_Pro',sans-serif] print:bg-white print:p-0 print:m-0">
       {/* Header with App Title, Stats & Actions */}
       <Header
         config={config}
@@ -1780,7 +1786,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 pb-16">
+      <main className="flex-1 pb-16 print:p-0 print:m-0 print:w-full print:max-w-none">
         <React.Suspense fallback={<div className="mx-auto max-w-7xl px-4 py-8 text-sm text-slate-500" role="status">Đang tải màn hình...</div>}>
         {/* Tab: Thời Khóa Biểu Toàn Trường */}
         {activeTab === 'timetable' && (
@@ -1808,6 +1814,18 @@ export default function App() {
               setActiveTab('weekly_schedule');
               setOpenReconcileOnLoad(true);
             }}
+          />
+        )}
+
+        {/* Tab: Kiêm Nhiệm & Giảm Trừ */}
+        {(activeTab === 'concurrent_duties' || (activeTab as string) === 'homeroom') && (
+          <ConcurrentDutiesView
+            config={config}
+            teachers={teachers}
+            classes={classes}
+            departments={departments}
+            workloads={workloads}
+            assignments={assignments}
           />
         )}
 

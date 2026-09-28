@@ -64,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({
   const warningCount = conflicts.filter(c => c.severity === 'warning').length;
 
   return (
-    <header className="bg-indigo-900 text-white sticky top-0 z-30 shadow-md shrink-0">
+    <header className="bg-indigo-900 text-white sticky top-0 z-30 shadow-md shrink-0 print:hidden">
       {/* Top Main Nav Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
         {/* Brand & School info */}

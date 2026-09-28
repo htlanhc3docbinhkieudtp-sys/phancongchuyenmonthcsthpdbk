@@ -89,6 +89,7 @@ export interface Teacher {
   gender: 'Nam' | 'Nữ';
   birthDate?: string; // Ngày sinh
   campus?: SchoolCampus; // Phân hiệu/cơ sở trường (THPTDBK, THCSDBK, THCSTK)
+  isDualCampus?: boolean; // Dạy liên trường / 2 điểm trường
   departmentId: string;
   primarySubjectId?: string;
   secondarySubjectIds?: string[];
