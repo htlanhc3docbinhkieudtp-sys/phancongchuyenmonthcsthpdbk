@@ -51,6 +51,7 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
   const [editingCell, setEditingCell] = useState<{ classId: string; subjectId: string } | null>(null);
   const [printScope, setPrintScope] = useState<'ALL' | 'THPT' | 'THCS'>('ALL');
   const [showPrintMenu, setShowPrintMenu] = useState(false);
+  const [printFontSize, setPrintFontSize] = useState<'6.8pt' | '7.2pt' | '7.8pt'>('7.2pt');
 
   const teacherMap = new Map<string, Teacher>(teachers.map(t => [t.id, t]));
   const lockedSet = new Set(lockedCells.map(lc => `${lc.classId}_${lc.subjectId}`));
@@ -166,6 +167,21 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
 
         {/* Action buttons */}
         <div className="flex items-center gap-2 relative">
+          {/* Print Font Size Selector */}
+          <div className="hidden sm:flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-2 py-0.5 text-[11px] text-slate-600">
+            <span className="font-semibold text-slate-500">Cỡ in:</span>
+            <select
+              value={printFontSize}
+              onChange={e => setPrintFontSize(e.target.value as any)}
+              className="bg-transparent font-bold text-slate-800 focus:outline-hidden cursor-pointer"
+              title="Chọn cỡ chữ khi in ra PDF/máy in để tránh bị mất chữ"
+            >
+              <option value="6.8pt">6.8pt (Siêu gọn - không mất chữ)</option>
+              <option value="7.2pt">7.2pt (Chuẩn A4 ngang)</option>
+              <option value="7.8pt">7.8pt (Vừa vặn)</option>
+            </select>
+          </div>
+
           {/* Print Dropdown Button */}
           <div className="relative inline-block text-left">
             <div className="flex rounded-md shadow-2xs">
@@ -227,19 +243,23 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
                   </div>
                   {printScope === 'ALL' && <Check className="w-4 h-4 text-indigo-600" />}
                 </button>
+
+                <div className="px-3 py-1.5 text-[10px] font-semibold text-slate-500 border-t border-slate-100 bg-slate-50">
+                  Mẹo: Chọn cỡ chữ 6.8pt hoặc 7.2pt để vừa khít 100% trang A4 và không bị mất chữ khi lưu PDF.
+                </div>
               </div>
             )}
           </div>
 
-          {isAdmin && (
-            <button
-              onClick={onExportExcel}
-              className="flex items-center gap-1.5 px-3 py-1 rounded text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-2xs transition-all cursor-pointer"
-            >
-              <FileSpreadsheet className="w-3.5 h-3.5" />
-              <span>Xuất Excel</span>
-            </button>
-          )}
+          {/* Always Available Excel Export */}
+          <button
+            onClick={onExportExcel}
+            className="flex items-center gap-1.5 px-3 py-1 rounded text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-2xs transition-all cursor-pointer"
+            title="Tải tệp Excel chuẩn thể thức văn bản hành chính gồm các Sheet THPT, THCS và Thống kê"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" />
+            <span>Xuất Excel</span>
+          </button>
         </div>
       </div>
 
@@ -289,6 +309,7 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
         return (
           <div
             key={level}
+            style={{ ['--print-font-size' as any]: printFontSize }}
             className={`w-full bg-white rounded-lg border border-slate-200 shadow-2xs p-3 print:p-0 print:border-none print:shadow-none print:m-0 comprehensive-print-container ${
               isHiddenInPrint ? 'print:hidden' : ''
             } ${levelIdx > 0 && printScope === 'ALL' ? 'print-page-break' : ''}`}
@@ -404,7 +425,7 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
                         </td>
                         <td className="p-1 border border-slate-300 text-left print:text-center">
                           {hrTeacher ? (
-                            <span className="font-bold text-slate-900 print:text-black text-[10px] print:text-[7pt]">
+                            <span className="font-bold text-slate-900 print:text-black text-[10px] print:text-[var(--print-font-size)] print:whitespace-normal print:break-words">
                               <span className="print:hidden">{hrTeacher.name}</span>
                               <span className="hidden print:inline">{hrTeacher.code || hrTeacher.name}</span>
                             </span>
@@ -469,7 +490,7 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
 
                               {/* Teacher Display */}
                               {displayedTeacher ? (
-                                <span className="font-bold text-indigo-950 print:text-black text-[10px] print:text-[7pt] block truncate leading-tight">
+                                <span className="font-bold text-indigo-950 print:text-black text-[10px] print:text-[var(--print-font-size)] block truncate print:whitespace-normal print:overflow-visible print:break-words leading-tight">
                                   {displayedTeacher.code || displayedTeacher.name}
                                 </span>
                               ) : lockedSet.has(`${cls.id}_${sub.id}`) ? (
@@ -495,10 +516,10 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
                             >
                               {topic ? (
                                 <div className="leading-tight">
-                                  <div className="text-[9px] print:text-[6pt] font-medium text-sky-800 print:text-slate-700 truncate">
+                                  <div className="text-[9px] print:text-[6.2pt] font-medium text-sky-800 print:text-slate-800 truncate print:whitespace-normal print:overflow-visible print:break-words">
                                     {topic.title}
                                   </div>
-                                  <div className="text-[10px] print:text-[6.8pt] font-black text-sky-950 print:text-black truncate">
+                                  <div className="text-[10px] print:text-[var(--print-font-size)] font-black text-sky-950 print:text-black truncate print:whitespace-normal print:overflow-visible print:break-words">
                                     {getTeacherName(topic.teacherId)}
                                   </div>
                                 </div>

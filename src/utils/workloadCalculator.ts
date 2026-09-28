@@ -107,11 +107,11 @@ export const STANDARD_DUTIES_PRESETS: DutyPreset[] = [
   {
     type: 'TongPhuTrachDoi',
     name: 'Tổng phụ trách Đội',
-    defaultReduction: 13,
+    defaultReduction: 0,
     shortLabel: 'TPT Đội',
     badgeBg: 'bg-orange-50 border-orange-200',
     badgeColor: 'text-orange-800',
-    description: 'Tổng phụ trách Đội TNTP Hồ Chí Minh (giảm 13 tiết/tuần theo TT 05/2025)'
+    description: 'Tổng phụ trách Đội TNTP Hồ Chí Minh (Định mức 2 tiết/tuần theo Thông tư 28/2009)'
   },
   {
     type: 'ConNho',
@@ -159,7 +159,7 @@ export function getRoleReductionPeriods(role: Teacher['role']): number {
     case 'ThuKyHoiDong':
       return 2;
     case 'TongPhuTrachDoi':
-      return 13;
+      return 0; // Quy định định mức trực tiếp 2 tiết/tuần, không phải giảm trừ tiết
     case 'ConNho':
       return 3;
     case 'ChuTichCongDoan':

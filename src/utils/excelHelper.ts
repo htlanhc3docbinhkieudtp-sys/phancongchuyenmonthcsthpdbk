@@ -22,79 +22,258 @@ export async function exportComprehensiveExcel(
   const wb = XLSX.utils.book_new();
 
   const teacherMap = new Map(teachers.map(t => [t.id, t]));
-  const deptMap = new Map(departments.map(d => [d.id, d]));
-  const subMap = new Map(subjects.map(s => [s.id, s]));
+  const deptMap = new Map(departments.map(d => [d.id, d.name]));
 
-  // ==========================================
-  // SHEET 1: MA TRẬN PHÂN CÔNG CHUYÊN MÔN
-  // ==========================================
-  const matrixData: any[][] = [];
+  const displayAcademicYear = (!config.academicYear || config.academicYear.includes('2024'))
+    ? '2026 - 2027'
+    : config.academicYear;
 
-  // Header rows
-  matrixData.push([config.subTitle.toUpperCase(), '', '', 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM']);
-  matrixData.push([config.schoolName.toUpperCase(), '', '', 'Độc lập - Tự do - Hạnh phúc']);
-  matrixData.push([]);
-  matrixData.push([`BẢNG PHÂN CÔNG CHUYÊN MÔN GIẢNG DẠY - ${config.semester.toUpperCase()} NĂM HỌC ${config.academicYear}`]);
-  matrixData.push([]);
+  const displaySemester = config.semester === 'HK1' ? 'HỌC KỲ I' : 'HỌC KỲ II';
+  const displayVicePrincipal = (config.vicePrincipalName && config.vicePrincipalName.includes('-'))
+    ? 'Nguyễn Minh Trí'
+    : (config.vicePrincipalName || 'Nguyễn Minh Trí');
 
-  // Column Headers: STT, Khối, Lớp, Sĩ số, GVCN, [Môn 1], [Môn 2]...
-  const subjectHeaders = subjects.map(s => `${s.shortName} (${s.defaultPeriods['10'] || 2}t)`);
-  const headerRow = ['STT', 'Khối', 'Lớp', 'Sĩ số', 'GVCN', ...subjectHeaders];
-  matrixData.push(headerRow);
-
-  classes.forEach((cls, idx) => {
-    const homeroomTeacher = teachers.find(t => t.id === cls.homeroomTeacherId);
-    const row: any[] = [
-      idx + 1,
-      `Khối ${cls.grade}`,
-      cls.name,
-      cls.studentCount || '',
-      homeroomTeacher ? homeroomTeacher.name : 'Chưa xếp',
-    ];
-
-    subjects.forEach(sub => {
-      const assignment = assignments.find(a => a.classId === cls.id && a.subjectId === sub.id);
-      if (assignment) {
-        const teacher = teacherMap.get(assignment.teacherId);
-        row.push(teacher ? teacher.name : '');
-      } else {
-        row.push('');
-      }
-    });
-
-    matrixData.push(row);
+  const getSubjectsForLevel = (level: 'THPT' | 'THCS') => subjects.filter(sub => {
+    if (sub.id === 'sub-nv') return false;
+    if (sub.id === 'sub-qpan' || sub.id === 'sub-hdtn-shl') return false;
+    const grades = level === 'THPT' ? ['10', '11', '12'] : ['6', '7', '8', '9'];
+    return grades.some(grade => (sub.defaultPeriods[grade] || 0) > 0);
   });
 
-  const wsMatrix = XLSX.utils.aoa_to_sheet(matrixData);
-  XLSX.utils.book_append_sheet(wb, wsMatrix, 'Phân Công Lớp - Môn');
+  const getAssignmentForSubject = (classId: string, subjectId: string) => {
+    const subjectIds = subjectId === 'sub-gdqp'
+      ? ['sub-gdqp', 'sub-qpan']
+      : subjectId === 'sub-shl'
+      ? ['sub-shl']
+      : subjectId === 'sub-hdtn-qml'
+      ? ['sub-hdtn-qml', 'sub-hdtn-shl']
+      : [subjectId];
+    const assignment = assignments.find(a => a.classId === classId && subjectIds.includes(a.subjectId));
+    if (assignment || !['sub-su', 'sub-dia'].includes(subjectId)) return assignment;
+
+    return assignments.find(a => a.classId === classId && a.subjectId === 'sub-lsdl-cs');
+  };
+
+  // Helper function to build a formatted matrix worksheet for a level
+  const buildLevelSheet = (level: 'THPT' | 'THCS') => {
+    const isThpt = level === 'THPT';
+    const levelClasses = classes.filter(c => c.level === level);
+    const levelSubjects = getSubjectsForLevel(level);
+
+    const rows: any[][] = [];
+
+    // 1. National Administrative Header (Nghị định 30/2020/NĐ-CP)
+    rows.push([
+      config.subTitle.toUpperCase(),
+      '',
+      '',
+      '',
+      '',
+      'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM'
+    ]);
+    rows.push([
+      config.schoolName.toUpperCase(),
+      '',
+      '',
+      '',
+      '',
+      'Độc lập - Tự do - Hạnh phúc'
+    ]);
+    rows.push([]);
+
+    // 2. Document Title
+    rows.push([
+      `BẢNG TỔNG HỢP PHÂN CÔNG CHUYÊN MÔN GIẢNG DẠY - CẤP ${isThpt ? 'THPT (KHỐI 10 - 12)' : 'THCS (KHỐI 6 - 9)'}`
+    ]);
+    rows.push([
+      `${displaySemester} - NĂM HỌC ${displayAcademicYear} (Chương trình GDPT 2018)`
+    ]);
+    rows.push([]);
+
+    // 3. Column Headers
+    const colHeaders: string[] = [
+      'STT',
+      'Lớp',
+      'Khối',
+      'Sĩ số',
+      'Giáo viên Chủ nhiệm (GVCN)'
+    ];
+
+    levelSubjects.forEach(sub => {
+      const p = sub.defaultPeriods[isThpt ? '10' : '6'] || 0;
+      colHeaders.push(`${sub.name} (${p}t)`);
+    });
+
+    if (isThpt) {
+      colHeaders.push('Chuyên đề 1 (CĐ1)');
+      colHeaders.push('Chuyên đề 2 (CĐ2)');
+      colHeaders.push('Chuyên đề 3 (CĐ3)');
+    }
+
+    colHeaders.push('Ghi chú');
+    rows.push(colHeaders);
+
+    // 4. Data Rows
+    let totalStudents = 0;
+    levelClasses.forEach((cls, idx) => {
+      totalStudents += cls.studentCount || 0;
+      const hrTeacher = cls.homeroomTeacherId ? teacherMap.get(cls.homeroomTeacherId) : undefined;
+      const hrName = hrTeacher ? `${hrTeacher.name} (${hrTeacher.code})` : '—';
+
+      const row: any[] = [
+        idx + 1,
+        cls.name,
+        `Khối ${cls.grade}`,
+        cls.studentCount || 0,
+        hrName
+      ];
+
+      levelSubjects.forEach(sub => {
+        const periods = sub.defaultPeriods[cls.grade] || 0;
+        if (periods === 0) {
+          row.push('—');
+          return;
+        }
+
+        const assignment = getAssignmentForSubject(cls.id, sub.id);
+        const assignedTeacher = assignment ? teacherMap.get(assignment.teacherId) : null;
+        const displayedTeacher = assignedTeacher || (
+          !isThpt && sub.id === 'sub-shl' && cls.homeroomTeacherId
+            ? teacherMap.get(cls.homeroomTeacherId)
+            : null
+        );
+
+        if (displayedTeacher) {
+          row.push(displayedTeacher.name);
+        } else {
+          row.push('—');
+        }
+      });
+
+      if (isThpt) {
+        (['cd1', 'cd2', 'cd3'] as const).forEach(key => {
+          const topic = cls.specialTopics?.[key];
+          if (topic) {
+            const t = teacherMap.get(topic.teacherId);
+            row.push(`${topic.title} - ${t ? t.name : ''}`);
+          } else {
+            row.push('—');
+          }
+        });
+      }
+
+      row.push(''); // Ghi chú
+      rows.push(row);
+    });
+
+    // 5. Total Row
+    const totalRow = new Array(colHeaders.length).fill('');
+    totalRow[1] = 'TỔNG CỘNG';
+    totalRow[2] = `${levelClasses.length} lớp`;
+    totalRow[3] = totalStudents;
+    rows.push(totalRow);
+
+    // 6. Signature Blocks
+    rows.push([]);
+    rows.push([]);
+    const dateRow = new Array(colHeaders.length).fill('');
+    dateRow[colHeaders.length - 3] = 'Đồng Tháp, ngày ..... tháng ..... năm 2026';
+    rows.push(dateRow);
+
+    const signRow1 = new Array(colHeaders.length).fill('');
+    signRow1[3] = 'NGƯỜI LẬP BẢNG';
+    signRow1[colHeaders.length - 3] = 'HIỆU TRƯỞNG';
+    rows.push(signRow1);
+
+    const signRow2 = new Array(colHeaders.length).fill('');
+    signRow2[3] = '(Ký và ghi rõ họ tên)';
+    signRow2[colHeaders.length - 3] = '(Ký tên, đóng dấu)';
+    rows.push(signRow2);
+
+    rows.push([]);
+    rows.push([]);
+    rows.push([]);
+
+    const signRow3 = new Array(colHeaders.length).fill('');
+    signRow3[3] = displayVicePrincipal;
+    signRow3[colHeaders.length - 3] = config.principalName || 'Lê Thanh Cường';
+    rows.push(signRow3);
+
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+
+    // Beautiful Column Widths
+    const cols = [
+      { wch: 6 },  // STT
+      { wch: 10 }, // Lớp
+      { wch: 10 }, // Khối
+      { wch: 9 },  // Sĩ số
+      { wch: 25 }, // GVCN
+    ];
+
+    levelSubjects.forEach(() => {
+      cols.push({ wch: 18 }); // Each subject
+    });
+
+    if (isThpt) {
+      cols.push({ wch: 24 }); // CĐ1
+      cols.push({ wch: 24 }); // CĐ2
+      cols.push({ wch: 24 }); // CĐ3
+    }
+    cols.push({ wch: 16 }); // Ghi chú
+    ws['!cols'] = cols;
+
+    // Page setup for printing
+    ws['!pageSetup'] = {
+      orientation: 'landscape',
+      paperSize: 9, // A4
+      fitToWidth: 1,
+      fitToHeight: 0
+    };
+
+    return ws;
+  };
 
   // ==========================================
-  // SHEET 2: THỐNG KÊ ĐỊNH MỨC GIÁO VIÊN
+  // SHEET 1: CẤP THPT (Khối 10 - 12)
+  // ==========================================
+  const wsThpt = buildLevelSheet('THPT');
+  XLSX.utils.book_append_sheet(wb, wsThpt, 'THPT (Khối 10-12)');
+
+  // ==========================================
+  // SHEET 2: CẤP THCS (Khối 6 - 9)
+  // ==========================================
+  const wsThcs = buildLevelSheet('THCS');
+  XLSX.utils.book_append_sheet(wb, wsThcs, 'THCS (Khối 6-9)');
+
+  // ==========================================
+  // SHEET 3: THỐNG KÊ ĐỊNH MỨC GIÁO VIÊN
   // ==========================================
   const statsData: any[][] = [];
-  statsData.push([`THỐNG KÊ ĐỊNH MỨC TIẾT DẠY GIÁO VIÊN - NĂM HỌC ${config.academicYear}`]);
+  statsData.push([config.subTitle.toUpperCase(), '', '', '', 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM']);
+  statsData.push([config.schoolName.toUpperCase(), '', '', '', 'Độc lập - Tự do - Hạnh phúc']);
+  statsData.push([]);
+  statsData.push([`THỐNG KÊ ĐỊNH MỨC & PHÂN CÔNG GIẢNG DẠY - NĂM HỌC ${displayAcademicYear}`]);
   statsData.push([]);
   statsData.push([
     'STT',
     'Mã GV',
     'Họ và tên giáo viên',
     'Tổ chuyên môn',
-    'Môn chính',
+    'Điểm trường',
     'Chức vụ / Kiêm nhiệm',
-    'GVCN Lớp',
-    'Định mức chuẩn (tiết)',
-    'Giảm trừ (tiết)',
-    'Định mức giao (tiết)',
-    'Số tiết thực dạy',
-    'Chênh lệch (+Dư / -Thiếu)',
-    'Danh sách lớp dạy (Số tiết)',
+    'Chủ nhiệm lớp',
+    'ĐM chuẩn',
+    'Tổng giảm',
+    'ĐM sau giảm',
+    'Số tiết dạy',
+    'Chênh lệch (+/-)',
+    'Danh sách lớp & môn phụ trách'
   ]);
 
   workloads.forEach((w, idx) => {
     const teacher = teacherMap.get(w.teacherId);
-    const sub = teacher ? subMap.get(teacher.primarySubjectId) : undefined;
     const dutiesStr = teacher 
-      ? getTeacherDutiesList(teacher).map(d => `${d.name} (-${d.reduction}t)`).join('; ') || 'GV bộ môn'
+      ? getTeacherDutiesList(teacher).map(d => `${d.name} (${d.reduction > 0 ? `-${d.reduction}t` : 'ĐM 2t'})`).join('; ') || 'GV bộ môn'
       : '';
     const classListStr = w.assignedClasses
       .map(c => `${c.className} (${c.subjectName}: ${c.periods}t)`)
@@ -105,10 +284,10 @@ export async function exportComprehensiveExcel(
       teacher?.code || '',
       w.teacherName,
       w.departmentName,
-      sub?.name || '',
+      teacher?.campus === 'THPTDBK' ? 'THPT ĐBK' : teacher?.campus === 'THCSDBK' ? 'THCS ĐBK' : 'THCS Tân Kiều',
       dutiesStr,
       w.homeroomClass || '',
-      teacher?.baseStandardPeriods || 17,
+      teacher?.baseStandardPeriods || (teacher?.campus === 'THPTDBK' ? 17 : 19),
       w.reductionPeriods,
       w.targetPeriods,
       w.assignedPeriods,
@@ -117,37 +296,37 @@ export async function exportComprehensiveExcel(
     ]);
   });
 
+  // Signatures on stats sheet
+  statsData.push([]);
+  statsData.push([]);
+  statsData.push(['', '', '', '', 'NGƯỜI LẬP BẢNG', '', '', '', '', '', 'HIỆU TRƯỞNG']);
+  statsData.push(['', '', '', '', '(Ký và ghi rõ họ tên)', '', '', '', '', '', '(Ký tên, đóng dấu)']);
+  statsData.push([]);
+  statsData.push([]);
+  statsData.push([]);
+  statsData.push(['', '', '', '', displayVicePrincipal, '', '', '', '', '', config.principalName || 'Lê Thanh Cường']);
+
   const wsStats = XLSX.utils.aoa_to_sheet(statsData);
-  XLSX.utils.book_append_sheet(wb, wsStats, 'Thống Kê Định Mức');
+  wsStats['!cols'] = [
+    { wch: 6 },
+    { wch: 14 },
+    { wch: 24 },
+    { wch: 22 },
+    { wch: 14 },
+    { wch: 28 },
+    { wch: 14 },
+    { wch: 12 },
+    { wch: 12 },
+    { wch: 14 },
+    { wch: 12 },
+    { wch: 14 },
+    { wch: 45 }
+  ];
+  wsStats['!pageSetup'] = { orientation: 'landscape', paperSize: 9, fitToWidth: 1, fitToHeight: 0 };
+  XLSX.utils.book_append_sheet(wb, wsStats, 'Thống Kê Định Mức GV');
 
-  // ==========================================
-  // SHEET 3: DANH SÁCH GIÁO VIÊN CHỦ NHIỆM
-  // ==========================================
-  const hrData: any[][] = [];
-  hrData.push([`DANH SÁCH PHÂN CÔNG GIÁO VIÊN CHỦ NHIỆM - ${config.academicYear}`]);
-  hrData.push([]);
-  hrData.push(['STT', 'Lớp', 'Khối', 'Ban / Phân ban', 'Sĩ số', 'Họ tên GVCN', 'Tổ chuyên môn', 'Số điện thoại']);
-
-  classes.forEach((cls, idx) => {
-    const hr = teachers.find(t => t.id === cls.homeroomTeacherId);
-    const dept = hr ? deptMap.get(hr.departmentId) : undefined;
-    hrData.push([
-      idx + 1,
-      cls.name,
-      `Khối ${cls.grade}`,
-      cls.track || 'Cơ bản',
-      cls.studentCount || '',
-      hr ? hr.name : 'Chưa phân công',
-      dept?.name || '',
-      hr?.phone || '',
-    ]);
-  });
-
-  const wsHr = XLSX.utils.aoa_to_sheet(hrData);
-  XLSX.utils.book_append_sheet(wb, wsHr, 'Danh Sách GVCN');
-
-  // Generate binary and trigger download
-  const fileName = `Phan_Cong_Chuyen_Mon_${config.schoolName.replace(/[^a-zA-Z0-9]/g, '_')}_${config.academicYear.replace(/\s+/g, '')}.xlsx`;
+  // Trigger download
+  const fileName = `Bang_Tong_Hop_Phan_Cong_Chuyen_Mon_${displayAcademicYear.replace(/\s+/g, '_')}.xlsx`;
   XLSX.writeFile(wb, fileName);
 }
 
@@ -536,6 +715,13 @@ export async function exportConcurrentDutiesExcel(
         t.code === 'Tòng.NT (PHT)');
     const isLeader = isHT || isPHT;
 
+    const isTPT =
+      t.id === 'tch-ls-12' ||
+      t.name === 'Nguyễn Thị Lý' ||
+      t.role === 'TongPhuTrachDoi' ||
+      t.code?.includes('(TPT') ||
+      t.duties?.some(d => d.type === 'TongPhuTrachDoi');
+
     const hrClass = homeroomMap.get(t.id);
     const hrReduction = isLeader ? 0 : hrClass ? (hrClass.level === 'THCS' ? 4 : (config.homeroomReduction || 3)) : 0;
 
@@ -543,13 +729,25 @@ export async function exportConcurrentDutiesExcel(
     const dutyNames: string[] = [];
     if (t.duties && t.duties.length > 0) {
       t.duties.forEach(d => {
-        dutyNames.push(`${d.name} (-${d.reductionPeriods}t)`);
+        if (d.reductionPeriods > 0) {
+          dutyNames.push(`${d.name} (-${d.reductionPeriods}t)`);
+        } else if (d.type === 'TongPhuTrachDoi' || d.name.includes('Tổng phụ trách')) {
+          dutyNames.push(`${d.name} (ĐM 2t/tuần)`);
+        } else {
+          dutyNames.push(d.name);
+        }
         dutyReduction += d.reductionPeriods;
       });
     } else if (t.role && t.role !== 'GVBM' && !isLeader) {
       const presetDuties = getTeacherDutiesList(t);
       presetDuties.forEach(pd => {
-        dutyNames.push(`${pd.name} (-${pd.reduction}t)`);
+        if (pd.reduction > 0) {
+          dutyNames.push(`${pd.name} (-${pd.reduction}t)`);
+        } else if (pd.shortLabel === 'TPT Đội' || pd.name.includes('Tổng phụ trách')) {
+          dutyNames.push(`${pd.name} (ĐM 2t/tuần)`);
+        } else {
+          dutyNames.push(pd.name);
+        }
         dutyReduction += pd.reduction;
       });
     }
@@ -557,7 +755,13 @@ export async function exportConcurrentDutiesExcel(
     const customReduction = isLeader ? 0 : (t.customReductionPeriods || 0);
     const totalReduction = hrReduction + dutyReduction + customReduction;
 
-    const baseStandard = isHT ? 2 : isPHT ? 4 : (t.campus === 'THPTDBK' ? 17 : 19);
+    const baseStandard = isHT
+      ? 2
+      : isPHT
+      ? 4
+      : isTPT
+      ? (t.baseStandardPeriods && t.baseStandardPeriods > 0 ? t.baseStandardPeriods : 2)
+      : (t.campus === 'THPTDBK' ? 17 : 19);
     const targetPeriods = Math.max(0, baseStandard - totalReduction);
 
     const workload = workloadMap.get(t.id);
@@ -567,11 +771,13 @@ export async function exportConcurrentDutiesExcel(
     let legalBasis = 'Chuẩn GVBM';
     if (isLeader) {
       legalBasis = 'Định mức BGH (TT 28/2009 & TT 15/2017)';
+    } else if (isTPT) {
+      legalBasis = 'TPT Đội: ĐM 2t/tuần (TT 28/2009 & TT 05/2025)';
     } else {
       const basisArr: string[] = [];
       if (hrClass) basisArr.push('GVCN: -3t/-4t (TT 28/2009)');
       if (dutyNames.some(d => d.includes('Tổ trưởng') || d.includes('Tổ phó'))) basisArr.push('Tổ CM: -3t/-1t (TT 15/2020)');
-      if (dutyNames.some(d => d.includes('Đoàn') || d.includes('Đội') || d.includes('Phổ cập'))) basisArr.push('Đoàn/Đội/PC: (TT 05/2025)');
+      if (dutyNames.some(d => d.includes('Đoàn') || d.includes('Phổ cập'))) basisArr.push('Đoàn/PC: (TT 05/2025)');
       if (dutyNames.some(d => d.includes('Nuôi con'))) basisArr.push('Con nhỏ: (TT 28/2009)');
       if (dutyNames.some(d => d.includes('Công đoàn') || d.includes('Thanh tra') || d.includes('Thư ký'))) basisArr.push('Đoàn thể/HĐ');
       if (basisArr.length > 0) legalBasis = basisArr.join('; ');

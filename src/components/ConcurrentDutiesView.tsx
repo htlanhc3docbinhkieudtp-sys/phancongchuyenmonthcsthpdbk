@@ -51,6 +51,7 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<DutyFilterCategory>('ALL_CONCURRENT');
   const [selectedDept, setSelectedDept] = useState<string>('ALL');
   const [selectedCampus, setSelectedCampus] = useState<string>('ALL');
+  const [printFontSize, setPrintFontSize] = useState<'6.8pt' | '7.2pt' | '7.8pt'>('7.2pt');
 
   const deptMap = useMemo(() => new Map(departments.map(d => [d.id, d.name])), [departments]);
   const workloadMap = useMemo(() => new Map(workloads.map(w => [w.teacherId, w])), [workloads]);
@@ -84,6 +85,13 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
           teacher.code === 'Tòng.NT (PHT)');
       const isLeader = isHT || isPHT;
 
+      const isTPT =
+        teacher.id === 'tch-ls-12' ||
+        teacher.name === 'Nguyễn Thị Lý' ||
+        teacher.role === 'TongPhuTrachDoi' ||
+        teacher.code?.includes('(TPT') ||
+        teacher.duties?.some(d => d.type === 'TongPhuTrachDoi');
+
       const hrClass = homeroomMap.get(teacher.id);
       // Homeroom reduction: THPT = 3 or config, THCS = 4
       const hrReduction = isLeader
@@ -101,7 +109,19 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
       const customReduction = isLeader ? 0 : (teacher.customReductionPeriods || 0);
       const totalReduction = hrReduction + dutyReduction + customReduction;
 
-      const baseStandard = isHT ? 2 : isPHT ? 4 : (teacher.campus === 'THPTDBK' ? 17 : 19);
+      // Base standard periods:
+      // - Hiệu trưởng: 2t
+      // - Phó Hiệu trưởng: 4t
+      // - Tổng phụ trách Đội (Trường THCS Đốc Binh Kiều trên 28 lớp): Định mức 2 tiết/tuần (theo TT 28/2009 & TT 05/2025)
+      // - GV THPT: 17t, GV THCS: 19t
+      const baseStandard = isHT
+        ? 2
+        : isPHT
+        ? 4
+        : isTPT
+        ? (teacher.baseStandardPeriods && teacher.baseStandardPeriods > 0 ? teacher.baseStandardPeriods : 2)
+        : (teacher.campus === 'THPTDBK' ? 17 : 19);
+
       const targetPeriods = Math.max(0, baseStandard - totalReduction);
 
       const workload = workloadMap.get(teacher.id);
@@ -112,29 +132,33 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
       const isToTruongOrPho = dutiesList.some(
         d => d.name.includes('Tổ trưởng') || d.name.includes('Tổ phó')
       );
-      const isOrganization = dutiesList.some(
-        d =>
-          d.name.includes('Đoàn') ||
-          d.name.includes('Đội') ||
-          d.name.includes('Giáo vụ') ||
-          d.name.includes('Phổ cập') ||
-          d.name.includes('Công đoàn') ||
-          d.name.includes('Thanh tra') ||
-          d.name.includes('Thư ký')
-      );
+      const isOrganization =
+        isTPT ||
+        dutiesList.some(
+          d =>
+            d.name.includes('Đoàn') ||
+            d.name.includes('Đội') ||
+            d.name.includes('Giáo vụ') ||
+            d.name.includes('Phổ cập') ||
+            d.name.includes('Công đoàn') ||
+            d.name.includes('Thanh tra') ||
+            d.name.includes('Thư ký')
+        );
       const isConNho = dutiesList.some(d => d.name.includes('con nhỏ'));
 
       const hasConcurrentDuty =
         totalReduction > 0 ||
         isHomeroom ||
         dutiesList.length > 0 ||
-        customReduction > 0;
+        customReduction > 0 ||
+        isTPT;
 
       return {
         ...teacher,
         isHT,
         isPHT,
         isLeader,
+        isTPT,
         hrClass,
         hrReduction,
         dutiesList,
@@ -279,6 +303,21 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
+          {/* Print Font Size Selector */}
+          <div className="hidden sm:flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-2 py-1 text-[11px] text-slate-600">
+            <span className="font-semibold text-slate-500">Cỡ in:</span>
+            <select
+              value={printFontSize}
+              onChange={e => setPrintFontSize(e.target.value as any)}
+              className="bg-transparent font-bold text-slate-800 focus:outline-hidden cursor-pointer"
+              title="Chọn cỡ chữ khi in ra PDF/máy in để tránh bị mất chữ"
+            >
+              <option value="6.8pt">6.8pt (Siêu gọn - không mất chữ)</option>
+              <option value="7.2pt">7.2pt (Chuẩn A4 ngang)</option>
+              <option value="7.8pt">7.8pt (Vừa vặn)</option>
+            </select>
+          </div>
+
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Chế độ xem (Chỉ đọc)</span>
@@ -287,7 +326,7 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
           <button
             onClick={handlePrint}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 shadow-2xs transition-all cursor-pointer"
-            title="In Báo Cáo theo thể thức văn bản hành chính"
+            title="In Báo Cáo theo thể thức văn bản hành chính (A4 nằm ngang)"
           >
             <Printer className="w-4 h-4 text-slate-500" />
             <span>In Báo Cáo</span>
@@ -296,7 +335,7 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
           <button
             onClick={handleExportExcel}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-2xs transition-all cursor-pointer"
-            title="Tải bảng danh sách kiêm nhiệm dạng Excel"
+            title="Tải bảng danh sách kiêm nhiệm dạng Excel chuẩn thể thức văn bản"
           >
             <FileSpreadsheet className="w-4 h-4" />
             <span>Xuất Excel</span>
@@ -452,36 +491,39 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
       </div>
 
       {/* Main Table Document */}
-      <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden print:border-none print:shadow-none print:rounded-none">
-        <div className="overflow-x-auto print:overflow-visible">
-          <table className="w-full text-xs text-left border-collapse print:table-fixed">
+      <div
+        style={{ ['--print-font-size' as any]: printFontSize }}
+        className="bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden print:border-none print:shadow-none print:rounded-none concurrent-print-container"
+      >
+        <div className="overflow-x-auto print:overflow-visible concurrent-print-table-wrapper">
+          <table className="w-full text-xs text-left border-collapse print:table-fixed concurrent-print-table">
             <thead>
               <tr className="bg-slate-100/90 text-slate-800 font-bold border-b border-slate-300 print:bg-slate-200">
-                <th className="p-2 border border-slate-300 text-center w-10 text-[11px]">STT</th>
-                <th className="p-2 border border-slate-300 text-center w-24 text-[11px]">Mã GV</th>
-                <th className="p-2 border border-slate-300 text-left min-w-[170px] text-[11px]">Họ và Tên</th>
-                <th className="p-2 border border-slate-300 text-center w-14 text-[11px]">Phái</th>
-                <th className="p-2 border border-slate-300 text-left min-w-[140px] text-[11px]">Tổ Chuyên Môn</th>
-                <th className="p-2 border border-slate-300 text-center w-28 text-[11px]">Điểm Trường</th>
-                <th className="p-2 border border-slate-300 text-center min-w-[130px] text-[11px] bg-emerald-50/70 text-emerald-950">
+                <th className="p-2 border border-slate-300 text-center w-10 text-[11px] print:w-[3%] print:text-[var(--print-font-size)]">STT</th>
+                <th className="p-2 border border-slate-300 text-center w-24 text-[11px] print:w-[6%] print:text-[var(--print-font-size)]">Mã GV</th>
+                <th className="p-2 border border-slate-300 text-left min-w-[170px] text-[11px] print:w-[13%] print:text-[var(--print-font-size)]">Họ và Tên</th>
+                <th className="p-2 border border-slate-300 text-center w-14 text-[11px] print:w-[4%] print:text-[var(--print-font-size)]">Phái</th>
+                <th className="p-2 border border-slate-300 text-left min-w-[140px] text-[11px] print:w-[11%] print:text-[var(--print-font-size)]">Tổ Chuyên Môn</th>
+                <th className="p-2 border border-slate-300 text-center w-28 text-[11px] print:w-[8%] print:text-[var(--print-font-size)]">Điểm Trường</th>
+                <th className="p-2 border border-slate-300 text-center min-w-[130px] text-[11px] print:w-[9%] print:text-[var(--print-font-size)] bg-emerald-50/70 text-emerald-950">
                   Chủ Nhiệm Lớp (GVCN)
                 </th>
-                <th className="p-2 border border-slate-300 text-left min-w-[200px] text-[11px] bg-indigo-50/60 text-indigo-950">
+                <th className="p-2 border border-slate-300 text-left min-w-[200px] text-[11px] print:w-[18%] print:text-[var(--print-font-size)] bg-indigo-50/60 text-indigo-950">
                   Chức Vụ & Kiêm Nhiệm Khác
                 </th>
-                <th className="p-2 border border-slate-300 text-center w-16 text-[11px]">
+                <th className="p-2 border border-slate-300 text-center w-16 text-[11px] print:w-[5%] print:text-[var(--print-font-size)]">
                   ĐM Chuẩn
                 </th>
-                <th className="p-2 border border-slate-300 text-center w-20 text-[11px] bg-purple-50 text-purple-950 font-extrabold">
+                <th className="p-2 border border-slate-300 text-center w-20 text-[11px] print:w-[5.5%] print:text-[var(--print-font-size)] bg-purple-50 text-purple-950 font-extrabold">
                   Tổng Giảm
                 </th>
-                <th className="p-2 border border-slate-300 text-center w-20 text-[11px] bg-amber-50 text-amber-950 font-extrabold">
+                <th className="p-2 border border-slate-300 text-center w-20 text-[11px] print:w-[5.5%] print:text-[var(--print-font-size)] bg-amber-50 text-amber-950 font-extrabold">
                   ĐM Sau Giảm
                 </th>
-                <th className="p-2 border border-slate-300 text-center w-18 text-[11px]">
+                <th className="p-2 border border-slate-300 text-center w-18 text-[11px] print:w-[5%] print:text-[var(--print-font-size)]">
                   Thực Dạy
                 </th>
-                <th className="p-2 border border-slate-300 text-center w-18 text-[11px]">
+                <th className="p-2 border border-slate-300 text-center w-18 text-[11px] print:w-[5%] print:text-[var(--print-font-size)]">
                   Chênh Lệch
                 </th>
                 <th className="p-2 border border-slate-300 text-left min-w-[170px] text-[11px] print:hidden">
@@ -522,6 +564,11 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
                           {t.isLeader && (
                             <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-300">
                               {t.isHT ? 'Hiệu trưởng' : 'Phó HT'}
+                            </span>
+                          )}
+                          {t.isTPT && (
+                            <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-orange-100 text-orange-800 border border-orange-300">
+                              TPT Đội (ĐM 2t)
                             </span>
                           )}
                         </div>
@@ -583,9 +630,15 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
                                 title={duty.name}
                               >
                                 <span>{duty.name}</span>
-                                <span className="font-extrabold underline">
-                                  (-{duty.reduction}t)
-                                </span>
+                                {duty.reduction > 0 ? (
+                                  <span className="font-extrabold underline">
+                                    (-{duty.reduction}t)
+                                  </span>
+                                ) : (
+                                  <span className="font-semibold text-[9px] px-1 rounded bg-orange-100 text-orange-900 border border-orange-200">
+                                    ĐM 2t/tuần
+                                  </span>
+                                )}
                               </span>
                             ))}
                           </div>
@@ -639,6 +692,8 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
                       <td className="p-2 border border-slate-300 text-left text-[10px] text-slate-500 print:hidden">
                         {t.isLeader ? (
                           <span>TT 28/2009 & TT 15/2017</span>
+                        ) : t.isTPT ? (
+                          <div>• TPT Đội: ĐM 2t/tuần (TT 28/2009 & TT 05/2025)</div>
                         ) : t.totalReduction > 0 ? (
                           <div className="space-y-0.5">
                             {t.isHomeroom && <div>• GVCN: TT 28/2009</div>}
