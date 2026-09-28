@@ -21,7 +21,7 @@ import {
   Info
 } from 'lucide-react';
 import { getTeacherDutiesList } from '../utils/workloadCalculator';
-import { exportConcurrentDutiesExcel } from '../utils/excelHelper';
+import { exportConcurrentDutiesExcel, cleanTeacherDisplay } from '../utils/excelHelper';
 
 interface ConcurrentDutiesViewProps {
   teachers: Teacher[];
@@ -554,13 +554,13 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
 
                       {/* Code */}
                       <td className="p-2 border border-slate-300 text-center font-bold text-slate-800 text-[11px]">
-                        <span className="font-mono text-indigo-950">{t.code}</span>
+                        <span className="font-mono text-indigo-950">{cleanTeacherDisplay(t.code)}</span>
                       </td>
 
                       {/* Name */}
                       <td className="p-2 border border-slate-300 text-left font-bold text-slate-900 text-xs">
                         <div className="flex items-center gap-1.5">
-                          <span>{t.name}</span>
+                          <span>{cleanTeacherDisplay(t.name)}</span>
                           {t.isLeader && (
                             <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-300">
                               {t.isHT ? 'Hiệu trưởng' : 'Phó HT'}

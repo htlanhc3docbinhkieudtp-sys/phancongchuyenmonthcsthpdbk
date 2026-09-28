@@ -52,9 +52,20 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
   const [printScope, setPrintScope] = useState<'ALL' | 'THPT' | 'THCS'>('ALL');
   const [showPrintMenu, setShowPrintMenu] = useState(false);
   const [printFontSize, setPrintFontSize] = useState<'6.8pt' | '7.2pt' | '7.8pt'>('7.2pt');
+  const [nameDisplayStyle, setNameDisplayStyle] = useState<'clean_code' | 'full_name'>('clean_code');
 
   const teacherMap = new Map<string, Teacher>(teachers.map(t => [t.id, t]));
   const lockedSet = new Set(lockedCells.map(lc => `${lc.classId}_${lc.subjectId}`));
+
+  /**
+   * Loại bỏ toàn bộ các đuôi trong ngoặc đơn như lớp chủ nhiệm (12CB3), (11CB1),
+   * chức vụ kiêm nhiệm (HT), (PHT), (TT), (TP), (TPT), (TP-9A7),...
+   * Giúp bảng tổng hợp phân công cực kỳ gọn gàng, thoáng mắt, dễ nhìn.
+   */
+  const cleanDisplayName = (text?: string): string => {
+    if (!text) return '';
+    return text.replace(/\s*\([^)]*\)/g, '').trim();
+  };
 
   const isThptView = selectedGrade === 'THPT' || selectedGrade === '10' || selectedGrade === '11' || selectedGrade === '12';
   const isThcsView = selectedGrade === 'THCS' || selectedGrade === '6' || selectedGrade === '7' || selectedGrade === '8' || selectedGrade === '9';
@@ -90,7 +101,11 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
 
   const getTeacherName = (teacherId?: string) => {
     const teacher = teacherId ? teacherMap.get(teacherId) : undefined;
-    return teacher ? (teacher.code || teacher.name) : '';
+    if (!teacher) return '';
+    if (nameDisplayStyle === 'full_name') {
+      return cleanDisplayName(teacher.name);
+    }
+    return cleanDisplayName(teacher.code) || cleanDisplayName(teacher.name);
   };
 
   const getAssignmentForSubject = (classId: string, subjectId: string) => {
@@ -163,6 +178,20 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
             <option value="8">Khối 8 THCS ({classes.filter(c => c.grade === '8').length} lớp)</option>
             <option value="9">Khối 9 THCS ({classes.filter(c => c.grade === '9').length} lớp)</option>
           </select>
+
+          {/* Name Display Style Selector (Clean without suffixes) */}
+          <div className="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-2 py-0.5 text-[11px] text-slate-600">
+            <span className="font-semibold text-slate-500">Tên GV:</span>
+            <select
+              value={nameDisplayStyle}
+              onChange={e => setNameDisplayStyle(e.target.value as any)}
+              className="bg-transparent font-bold text-slate-800 focus:outline-hidden cursor-pointer"
+              title="Đã loại bỏ toàn bộ đuôi lớp chủ nhiệm và đuôi kiêm nhiệm giúp bảng thoáng mắt, dễ nhìn nhất"
+            >
+              <option value="clean_code">Viết tắt gọn (Huy.TQ, Cường.LT)</option>
+              <option value="full_name">Họ và tên đầy đủ (Trần Quốc Huy, Lê Thanh Cường)</option>
+            </select>
+          </div>
         </div>
 
         {/* Action buttons */}
@@ -426,8 +455,14 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
                         <td className="p-1 border border-slate-300 text-left print:text-center">
                           {hrTeacher ? (
                             <span className="font-bold text-slate-900 print:text-black text-[10px] print:text-[var(--print-font-size)] print:whitespace-normal print:break-words">
-                              <span className="print:hidden">{hrTeacher.name}</span>
-                              <span className="hidden print:inline">{hrTeacher.code || hrTeacher.name}</span>
+                              <span className="print:hidden">
+                                {nameDisplayStyle === 'full_name'
+                                  ? cleanDisplayName(hrTeacher.name)
+                                  : (cleanDisplayName(hrTeacher.code) || cleanDisplayName(hrTeacher.name))}
+                              </span>
+                              <span className="hidden print:inline">
+                                {cleanDisplayName(hrTeacher.code) || cleanDisplayName(hrTeacher.name)}
+                              </span>
                             </span>
                           ) : (
                             <span className="text-slate-400 italic text-[9px] print:text-[6.5pt]">—</span>
@@ -482,16 +517,21 @@ export const ComprehensiveTableView: React.FC<ComprehensiveTableViewProps> = ({
                                     .filter(t => t.primarySubjectId === sub.id || t.departmentId === sub.departmentId)
                                     .map(t => (
                                       <option key={t.id} value={t.id}>
-                                        {t.name} ({t.code})
+                                        {cleanDisplayName(t.name)} ({cleanDisplayName(t.code)})
                                       </option>
                                     ))}
                                 </select>
                               ) : null}
 
-                              {/* Teacher Display */}
+                              {/* Teacher Display without any noisy suffixes */}
                               {displayedTeacher ? (
-                                <span className="font-bold text-indigo-950 print:text-black text-[10px] print:text-[var(--print-font-size)] block truncate print:whitespace-normal print:overflow-visible print:break-words leading-tight">
-                                  {displayedTeacher.code || displayedTeacher.name}
+                                <span
+                                  className="font-bold text-indigo-950 print:text-black text-[10px] print:text-[var(--print-font-size)] block truncate print:whitespace-normal print:overflow-visible print:break-words leading-tight"
+                                  title={cleanDisplayName(displayedTeacher.name)}
+                                >
+                                  {nameDisplayStyle === 'full_name'
+                                    ? cleanDisplayName(displayedTeacher.name)
+                                    : (cleanDisplayName(displayedTeacher.code) || cleanDisplayName(displayedTeacher.name))}
                                 </span>
                               ) : lockedSet.has(`${cls.id}_${sub.id}`) ? (
                                 <span className="text-amber-800/80 print:text-slate-500 font-medium text-[9px] print:text-[6.5pt]">

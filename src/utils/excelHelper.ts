@@ -9,6 +9,15 @@ import {
 } from '../types';
 import { getTeacherDutiesList } from './workloadCalculator';
 
+/**
+ * Loại bỏ toàn bộ các đuôi trong ngoặc đơn như lớp chủ nhiệm (12CB3), (11CB1),
+ * chức vụ kiêm nhiệm (HT), (PHT), (TT), (TP), (TPT), (TP-9A7),...
+ */
+export function cleanTeacherDisplay(text?: string): string {
+  if (!text) return '';
+  return text.replace(/\s*\([^)]*\)/g, '').trim();
+}
+
 export async function exportComprehensiveExcel(
   config: SchoolConfig,
   departments: Department[],
@@ -118,7 +127,7 @@ export async function exportComprehensiveExcel(
     levelClasses.forEach((cls, idx) => {
       totalStudents += cls.studentCount || 0;
       const hrTeacher = cls.homeroomTeacherId ? teacherMap.get(cls.homeroomTeacherId) : undefined;
-      const hrName = hrTeacher ? `${hrTeacher.name} (${hrTeacher.code})` : '—';
+      const hrName = hrTeacher ? cleanTeacherDisplay(hrTeacher.name) : '—';
 
       const row: any[] = [
         idx + 1,
@@ -144,7 +153,7 @@ export async function exportComprehensiveExcel(
         );
 
         if (displayedTeacher) {
-          row.push(displayedTeacher.name);
+          row.push(cleanTeacherDisplay(displayedTeacher.name));
         } else {
           row.push('—');
         }
@@ -155,7 +164,7 @@ export async function exportComprehensiveExcel(
           const topic = cls.specialTopics?.[key];
           if (topic) {
             const t = teacherMap.get(topic.teacherId);
-            row.push(`${topic.title} - ${t ? t.name : ''}`);
+            row.push(`${topic.title} - ${t ? cleanTeacherDisplay(t.name) : ''}`);
           } else {
             row.push('—');
           }
@@ -281,8 +290,8 @@ export async function exportComprehensiveExcel(
 
     statsData.push([
       idx + 1,
-      teacher?.code || '',
-      w.teacherName,
+      cleanTeacherDisplay(teacher?.code),
+      cleanTeacherDisplay(w.teacherName),
       w.departmentName,
       teacher?.campus === 'THPTDBK' ? 'THPT ĐBK' : teacher?.campus === 'THCSDBK' ? 'THCS ĐBK' : 'THCS Tân Kiều',
       dutiesStr,
@@ -785,8 +794,8 @@ export async function exportConcurrentDutiesExcel(
 
     excelRows.push([
       stt++,
-      t.code || '',
-      t.name,
+      cleanTeacherDisplay(t.code),
+      cleanTeacherDisplay(t.name),
       t.gender,
       deptMap.get(t.departmentId) || '',
       t.campus === 'THPTDBK' ? 'THPT Đốc Binh Kiều' : t.campus === 'THCSDBK' ? 'THCS Đốc Binh Kiều' : 'THCS Tân Kiều',
