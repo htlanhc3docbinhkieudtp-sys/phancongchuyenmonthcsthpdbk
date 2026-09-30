@@ -110,8 +110,8 @@ export const THPT_CURRICULUM: ThptSubjectItem[] = [
   },
   {
     stt: 6,
-    name: 'Lịch sử',
-    shortCode: 'Sử',
+    name: 'Lịch sử (Khối 10, 11)',
+    shortCode: 'Sử 10,11',
     category: 'bat_buoc',
     categoryLabel: 'Môn học bắt buộc',
     totalPeriods: 52,
@@ -121,7 +121,22 @@ export const THPT_CURRICULUM: ThptSubjectItem[] = [
     hk2Periods: 34,
     hk2Weeks: 17,
     hk2Rate: 2,
-    note: 'HK1 học 1 tiết/tuần (18 tiết), HK2 học 2 tiết/tuần (34 tiết)'
+    note: 'Khối 10, 11: HK1 học 1 tiết/tuần (18 tiết), HK2 học 2 tiết/tuần (34 tiết). Tổng cả năm: 52 tiết/lớp.'
+  },
+  {
+    stt: 7,
+    name: 'Lịch sử (Khối 12)',
+    shortCode: 'Sử 12',
+    category: 'bat_buoc',
+    categoryLabel: 'Môn học bắt buộc',
+    totalPeriods: 52,
+    hk1Periods: 36,
+    hk1Weeks: 18,
+    hk1Rate: 2,
+    hk2Periods: 16,
+    hk2Weeks: 16,
+    hk2Rate: 1,
+    note: 'Khối 12 (bố trí ngược lại): HK1 học 2 tiết/tuần (36 tiết), HK2 học 1 tiết/tuần (16 tiết thực học). Tổng cả năm: 52 tiết/lớp (+ 35t CĐ3).'
   },
 
   // Môn học lựa chọn (chọn 4 môn học từ 9 môn)

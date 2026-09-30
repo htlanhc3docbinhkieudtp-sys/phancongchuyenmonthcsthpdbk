@@ -408,7 +408,7 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
                     <td colSpan={thptSemesterFilter === 'all' ? 7 : 6} className="p-2.5 bg-indigo-50/60 text-indigo-900">
                       <div className="flex items-center gap-2">
                         <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600" />
-                        <span>I. CÁC MÔN HỌC BẮT BUỘC (6 môn)</span>
+                        <span>I. CÁC MÔN HỌC BẮT BUỘC (Mỗi học sinh học 6 môn bắt buộc • Môn Lịch sử phân bổ linh hoạt theo khối)</span>
                       </div>
                     </td>
                   </tr>

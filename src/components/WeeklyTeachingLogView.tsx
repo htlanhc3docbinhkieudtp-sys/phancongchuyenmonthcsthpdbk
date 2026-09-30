@@ -848,6 +848,32 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
           </button>
           {showCurriculumNotes && (
           <div id="curriculum-schedule-notes" className="space-y-2">
+          <div className="bg-indigo-50/70 border border-indigo-200/80 rounded-xl p-3 flex items-start gap-2.5 text-xs text-indigo-950">
+            <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+            <div className="flex-1 space-y-1">
+              <div className="font-semibold text-indigo-950 flex items-center gap-2">
+                <span>Đặc thù môn Lịch sử cấp THPT (52 tiết/năm theo Khung GDPT 2018):</span>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-indigo-200 text-indigo-900">
+                  Đã đồng bộ 52 tiết/năm
+                </span>
+              </div>
+              <div className="text-[11px] text-indigo-900 leading-relaxed space-y-0.5">
+                <p>
+                  • <strong>Khối 10, 11 (52t/năm)</strong>: <strong>Học kỳ 1 học 1 tiết/tuần</strong> (18 tuần = 18 tiết); <strong>Học kỳ 2 học 2 tiết/tuần</strong> (17 tuần = 34 tiết). Tổng cả năm = <strong>52 tiết/lớp</strong>.
+                  <br />
+                  - <em>Phân công Khối 10</em>: Cô <strong>Nguyễn Thị Bé Trang</strong> (10CB1, 10CB4, 10CB5); Thầy <strong>Trịnh Văn Sơn</strong> (10CB2, 10CB3).
+                  <br />
+                  - <em>Phân công Khối 11</em>: Thầy <strong>Trần Văn Rỡ</strong> (11CB1, 11CB2, 11CB3, 11CB4).
+                </p>
+                <p>
+                  • <strong>Khối 12 (52t/năm môn bắt buộc + 35t Cụm chuyên đề Lịch sử CĐ3)</strong>: Bố trí ngược lại: <strong>Học kỳ 1 học 2 tiết/tuần</strong> môn bắt buộc (18 tuần = 36 tiết) + 1 tiết CĐ3 Lịch sử (18 tuần = 18 tiết) = 3 tiết/tuần; <strong>Học kỳ 2 học 1 tiết/tuần</strong> môn bắt buộc (16 tuần = 16 tiết) + 1 tiết CĐ3 Lịch sử (17 tuần = 17 tiết) = 2 tiết/tuần. Tổng cả năm môn bắt buộc = <strong>52 tiết/lớp</strong>; Cụm chuyên đề = <strong>35 tiết/lớp</strong>.
+                  <br />
+                  - <em>Phân công Khối 12</em>: Thầy <strong>Trịnh Văn Sơn</strong> (12CB1, 12CB5); Cô <strong>Nguyễn Thị Bé Trang</strong> (12CB2, 12CB4); Thầy <strong>Trần Văn Rỡ</strong> (12CB3).
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-3 flex items-start gap-2.5 text-xs text-emerald-900">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <div className="flex-1 space-y-1">

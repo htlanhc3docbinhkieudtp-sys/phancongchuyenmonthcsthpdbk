@@ -438,6 +438,110 @@ export function adjustLsdlSlotsForWeek(
 }
 
 /**
+ * Danh sách phân công môn Lịch sử cấp THPT (14 lớp) và thời khóa biểu chuẩn GDPT 2018:
+ * - Khối 10 (5 lớp): 10CB1, 10CB4, 10CB5 (Cô Trang); 10CB2, 10CB3 (Thầy Sơn)
+ * - Khối 11 (4 lớp): 11CB1, 11CB2, 11CB3, 11CB4 (Thầy Rỡ)
+ * - Khối 12 (5 lớp): 12CB1, 12CB5 (Thầy Sơn); 12CB2, 12CB4 (Cô Trang); 12CB3 (Thầy Rỡ)
+ *
+ * Quy tắc phân phối chương trình GDPT 2018 môn Lịch sử THPT (52 tiết/năm):
+ * - Khối 10 & 11:
+ *   + HK1 (Tuần 1-18): 1 tiết/tuần (18 tuần x 1 = 18 tiết/lớp)
+ *   + HK2 (Tuần 19-35): 2 tiết/tuần (17 tuần x 2 = 34 tiết/lớp)
+ *   + Cả năm: 18 + 34 = 52 tiết/lớp.
+ * - Khối 12 (bố trí ngược lại):
+ *   + HK1 (Tuần 1-18): 2 tiết/tuần môn bắt buộc (18 tuần x 2 = 36 tiết) + 1 tiết CĐ3 Lịch sử (18 tuần = 18 tiết) -> 3 tiết/tuần
+ *   + HK2 (Tuần 19-35): 1 tiết/tuần môn bắt buộc (16 tuần thực học T19-T34 = 16 tiết; tuần 35 hoàn tất ôn thi) + 1 tiết CĐ3 Lịch sử (17 tuần = 17 tiết) -> 2 tiết/tuần
+ *   + Cả năm môn bắt buộc: 36 + 16 = 52 tiết/lớp! Cả năm chuyên đề CĐ3: 18 + 17 = 35 tiết/lớp!
+ */
+export const THPT_HISTORY_CLASSES = [
+  { classId: 'cls-10cb1', className: '10CB1', grade: '10', teacherId: 'tch-ls-4', teacherName: 'Nguyễn Thị Bé Trang', teacherCode: 'Trang.NTB' },
+  { classId: 'cls-10cb2', className: '10CB2', grade: '10', teacherId: 'tch-ls-2', teacherName: 'Trịnh Văn Sơn', teacherCode: 'Sơn.TV' },
+  { classId: 'cls-10cb3', className: '10CB3', grade: '10', teacherId: 'tch-ls-2', teacherName: 'Trịnh Văn Sơn', teacherCode: 'Sơn.TV' },
+  { classId: 'cls-10cb4', className: '10CB4', grade: '10', teacherId: 'tch-ls-4', teacherName: 'Nguyễn Thị Bé Trang', teacherCode: 'Trang.NTB' },
+  { classId: 'cls-10cb5', className: '10CB5', grade: '10', teacherId: 'tch-ls-4', teacherName: 'Nguyễn Thị Bé Trang', teacherCode: 'Trang.NTB' },
+  { classId: 'cls-11cb1', className: '11CB1', grade: '11', teacherId: 'tch-ls-5', teacherName: 'Trần Văn Rỡ', teacherCode: 'Rỡ.TV' },
+  { classId: 'cls-11cb2', className: '11CB2', grade: '11', teacherId: 'tch-ls-5', teacherName: 'Trần Văn Rỡ', teacherCode: 'Rỡ.TV' },
+  { classId: 'cls-11cb3', className: '11CB3', grade: '11', teacherId: 'tch-ls-5', teacherName: 'Trần Văn Rỡ', teacherCode: 'Rỡ.TV' },
+  { classId: 'cls-11cb4', className: '11CB4', grade: '11', teacherId: 'tch-ls-5', teacherName: 'Trần Văn Rỡ', teacherCode: 'Rỡ.TV' },
+  { classId: 'cls-12cb1', className: '12CB1', grade: '12', teacherId: 'tch-ls-2', teacherName: 'Trịnh Văn Sơn', teacherCode: 'Sơn.TV' },
+  { classId: 'cls-12cb2', className: '12CB2', grade: '12', teacherId: 'tch-ls-4', teacherName: 'Nguyễn Thị Bé Trang', teacherCode: 'Trang.NTB' },
+  { classId: 'cls-12cb3', className: '12CB3', grade: '12', teacherId: 'tch-ls-5', teacherName: 'Trần Văn Rỡ', teacherCode: 'Rỡ.TV' },
+  { classId: 'cls-12cb4', className: '12CB4', grade: '12', teacherId: 'tch-ls-4', teacherName: 'Nguyễn Thị Bé Trang', teacherCode: 'Trang.NTB' },
+  { classId: 'cls-12cb5', className: '12CB5', grade: '12', teacherId: 'tch-ls-2', teacherName: 'Trịnh Văn Sơn', teacherCode: 'Sơn.TV' },
+];
+
+export function adjustThptHistorySlotsForWeek(
+  baseSlots: TimetableSlot[],
+  weekNumber: number
+): TimetableSlot[] {
+  // Ở Học kỳ 1 (Tuần 1 - 18): Thời khóa biểu cơ sở đã có đầy đủ chuẩn xác 1t/w cho Khối 10, 11 và 3t/w (2 bắt buộc + 1 CĐ) cho Khối 12.
+  if (weekNumber <= 18) {
+    return baseSlots;
+  }
+
+  // Ở Học kỳ 2 (Tuần 19 - 35):
+  // Điều chỉnh phân phối số tiết:
+  // - Khối 10, 11: Học 2 tiết/tuần (tăng từ 1 lên 2 tiết/tuần)
+  // - Khối 12: Học 1 tiết/tuần môn bắt buộc + 1 tiết CĐ3 Lịch sử = 2 tiết/tuần (giảm môn bắt buộc từ 2 xuống 1 tiết/tuần)
+  const thptClassIds = new Set(THPT_HISTORY_CLASSES.map((c) => c.classId));
+  const thptClassNames = new Set(THPT_HISTORY_CLASSES.map((c) => c.className));
+
+  // Loại bỏ các slot Lịch sử THPT cũ từ baseSlots để tránh trùng lặp
+  const nonThptSuSlots = baseSlots.filter((s) => {
+    const isTarget = thptClassIds.has(s.classId) || thptClassNames.has(s.className);
+    if (!isTarget) return true;
+    const sub = (s.subjectId || '').toLowerCase();
+    const name = (s.subjectName || '').toLowerCase();
+    const isSu = sub === 'sub-su' || name.includes('lịch sử') || name.includes('sử');
+    return !isSu;
+  });
+
+  const adaptedSlots: TimetableSlot[] = [...nonThptSuSlots];
+
+  for (const c of THPT_HISTORY_CLASSES) {
+    if (c.grade === '10' || c.grade === '11') {
+      // Khối 10 & 11: 2 tiết/tuần trong suốt 17 tuần HK2 (Tuần 19 - 35) -> 34 tiết
+      for (let i = 0; i < 2; i++) {
+        adaptedSlots.push({
+          id: `slot-su-${c.classId}-w${weekNumber}-${i}`,
+          classId: c.classId,
+          className: c.className,
+          teacherId: c.teacherId,
+          teacherName: c.teacherName,
+          teacherCode: c.teacherCode,
+          subjectId: 'sub-su',
+          subjectName: 'Lịch sử',
+          dayOfWeek: 2 + i * 2,
+          session: 'SANG',
+          period: 3 + i,
+        });
+      }
+    } else if (c.grade === '12') {
+      // Khối 12: 1 tiết môn bắt buộc + 1 tiết CĐ3 Lịch sử = 2 tiết/tuần
+      // Tuần 19 đến 34: 1 tiết bắt buộc (16 tiết) + 1 tiết chuyên đề (16 tiết)
+      // Tuần 35: 1 tiết bắt buộc (ôn thi) + 1 tiết chuyên đề (tính đủ 17 tuần thực dạy theo TKB tuần)
+      for (let i = 0; i < 2; i++) {
+        adaptedSlots.push({
+          id: `slot-su12-${c.classId}-w${weekNumber}-${i}`,
+          classId: c.classId,
+          className: c.className,
+          teacherId: c.teacherId,
+          teacherName: c.teacherName,
+          teacherCode: c.teacherCode,
+          subjectId: 'sub-su',
+          subjectName: 'Lịch sử',
+          dayOfWeek: 3 + i * 2,
+          session: 'SANG',
+          period: 4,
+        });
+      }
+    }
+  }
+
+  return adaptedSlots;
+}
+
+/**
  * Adjust teacher assignments for specific weeks based on official school reassignments & study schedule:
  * 1. Phân công chuyên môn chính thức từ Tuần 4 của Thầy Thái Văn Tiến:
  *    - 4 lớp Sinh học Khối 8: 8A7, 8A8, 8A9, 8A10
@@ -578,7 +682,8 @@ export function getSlotsForWeek(
   const khtnAdjusted = adjustKhtnSlotsForWeek(baseSlots, weekNumber);
   const cnAdjusted = adjustCongNgheSlotsForWeek(khtnAdjusted, weekNumber);
   const lsdlAdjusted = adjustLsdlSlotsForWeek(cnAdjusted, weekNumber);
-  return adjustTeacherAssignmentsForWeek(lsdlAdjusted, weekNumber);
+  const suThptAdjusted = adjustThptHistorySlotsForWeek(lsdlAdjusted, weekNumber);
+  return adjustTeacherAssignmentsForWeek(suThptAdjusted, weekNumber);
 }
 
 /**
