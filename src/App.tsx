@@ -23,7 +23,7 @@ import {
   initialLockedCells
 } from './data/initialData';
 import { officialStaffList } from './data/schoolStaffData';
-import { loadOfficialWeek4Timetable } from './data/officialWeek4Timetable';
+import { buildOfficialWeek4Timetable, loadOfficialWeek4Timetable } from './data/officialWeek4Timetable';
 import {
   calculateTeacherWorkloads,
   auditAssignmentConflicts
@@ -417,6 +417,7 @@ export default function App() {
             parsed[2] = buildOfficialWeek2Timetable(initialSchoolConfig.academicYear);
           }
           parsed[3] = buildOfficialWeek3Timetable(initialSchoolConfig.academicYear);
+          parsed[4] = buildOfficialWeek4Timetable(initialSchoolConfig.academicYear);
 
           return parsed;
         }
@@ -432,6 +433,7 @@ export default function App() {
       ? exactW2Backup
       : buildOfficialWeek2Timetable(initialSchoolConfig.academicYear);
     const week3Tkb = buildOfficialWeek3Timetable(initialSchoolConfig.academicYear);
+    const week4Tkb = buildOfficialWeek4Timetable(initialSchoolConfig.academicYear);
 
     if (emergencyW1) {
       try {
@@ -440,7 +442,8 @@ export default function App() {
           return {
             1: pW1,
             2: week2Tkb,
-            3: week3Tkb
+            3: week3Tkb,
+            4: week4Tkb
           };
         }
       } catch { /* ignore */ }
@@ -451,7 +454,8 @@ export default function App() {
     return {
       1: week1Tkb,
       2: week2Tkb,
-      3: week3Tkb
+      3: week3Tkb,
+      4: week4Tkb
     };
   });
 
