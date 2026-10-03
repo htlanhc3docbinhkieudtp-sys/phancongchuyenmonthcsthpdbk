@@ -368,6 +368,67 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     }
   };
 
+  const displayVicePrincipal = useMemo(() => {
+    if (config.vicePrincipalName && config.vicePrincipalName.includes('-')) {
+      return config.vicePrincipalName.split('-')[0].trim();
+    }
+    return config.vicePrincipalName || 'Nguyễn Minh Trí';
+  }, [config.vicePrincipalName]);
+
+  // Build print groups by department for official administrative printouts
+  const printDepartmentGroups = useMemo(() => {
+    if (selectedDept !== 'ALL') {
+      const deptObj = availableDepartments.find((d) => d.id === selectedDept);
+      const deptLeader = teachers.find(
+        (t) => t.departmentId === selectedDept && t.role === 'ToTruong'
+      );
+      return [
+        {
+          deptId: selectedDept,
+          deptName: deptObj ? deptObj.name : 'Tổ chuyên môn',
+          leaderName: deptLeader ? deptLeader.name : '',
+          workloads: filteredWorkloads,
+        },
+      ];
+    }
+
+    // If 'ALL' is selected, group filtered workloads by department in official department order
+    const groups: {
+      deptId: string;
+      deptName: string;
+      leaderName: string;
+      workloads: TeacherActualWorkload[];
+    }[] = [];
+
+    availableDepartments.forEach((dept) => {
+      const deptWorkloads = filteredWorkloads.filter((w) => w.departmentId === dept.id);
+      if (deptWorkloads.length > 0) {
+        const deptLeader = teachers.find(
+          (t) => t.departmentId === dept.id && t.role === 'ToTruong'
+        );
+        groups.push({
+          deptId: dept.id,
+          deptName: dept.name,
+          leaderName: deptLeader ? deptLeader.name : '',
+          workloads: deptWorkloads,
+        });
+      }
+    });
+
+    const assignedIds = new Set(groups.flatMap((g) => g.workloads.map((w) => w.teacherId)));
+    const remaining = filteredWorkloads.filter((w) => !assignedIds.has(w.teacherId));
+    if (remaining.length > 0) {
+      groups.push({
+        deptId: 'other',
+        deptName: 'Các Giáo viên khác / Chưa phân tổ',
+        leaderName: '',
+        workloads: remaining,
+      });
+    }
+
+    return groups;
+  }, [selectedDept, availableDepartments, teachers, filteredWorkloads]);
+
   // Handle previous / next week
   const handlePrevWeek = () => {
     if (selectedPeriod === 'FULL_YEAR') {
@@ -415,11 +476,17 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
         semesterName
       );
     } else {
+      const currentDeptObj = availableDepartments.find((d) => d.id === selectedDept);
+      const currentDeptName = selectedDept === 'ALL'
+        ? 'Tất cả tổ chuyên môn'
+        : (currentDeptObj ? currentDeptObj.name : 'Tổ chuyên môn');
       exportActualWeeklyExcel(
         selectedWeekNum,
         filteredWorkloads,
         config,
-        useShortName
+        useShortName,
+        currentDeptName,
+        getScopeLabel(levelScope)
       );
     }
   };
@@ -660,11 +727,12 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
             </button>
 
             {/* Export & Print */}
-            <div className="flex items-center gap-1.5 ml-2 border-l border-slate-200 pl-2">
+            <div className="flex items-center gap-2 ml-2 border-l border-slate-200 pl-2">
               <button
                 id="btn-export-excel"
                 onClick={handleExportExcel}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm transition-colors"
+                title="Xuất file Excel chuẩn văn bản hành chính có cột Ký xác nhận"
               >
                 <FileSpreadsheet className="w-3.5 h-3.5" />
                 Xuất Excel
@@ -673,10 +741,15 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
               <button
                 id="btn-print-report"
                 onClick={handlePrint}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition-colors"
+                title={
+                  selectedDept !== 'ALL'
+                    ? `In biểu mẫu PDF ký nhận cho ${availableDepartments.find((d) => d.id === selectedDept)?.name || 'tổ này'}`
+                    : 'In trọn bộ biểu mẫu ký xác nhận theo từng tổ (mỗi tổ riêng 1 trang)'
+                }
               >
-                <Printer className="w-3.5 h-3.5 text-slate-500" />
-                In
+                <Printer className="w-3.5 h-3.5 text-white" />
+                {selectedDept !== 'ALL' ? 'In biểu mẫu tổ (PDF)' : 'In biểu mẫu ký (PDF)'}
               </button>
             </div>
           </div>
@@ -743,6 +816,25 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
               Định mức: THPT <strong>{config.standardThptPeriods || 17}t</strong>, THCS <strong>{config.standardThcsPeriods || 19}t</strong> (GVCN -4t, Tổ trưởng -3t, Tổ phó -1t, Phổ cập -4t, Con nhỏ -3t)
             </span>
           </div>
+
+          {/* Helpful Department Selection Banner */}
+          {selectedDept !== 'ALL' && (
+            <div className="col-span-full bg-indigo-50/80 border border-indigo-200 rounded-lg px-3 py-1.5 text-xs text-indigo-950 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />
+                <span>
+                  Đang lọc: <strong>{availableDepartments.find((d) => d.id === selectedDept)?.name}</strong> ({filteredWorkloads.length} giáo viên)
+                  • Tổ trưởng bấm <strong>"In biểu mẫu tổ (PDF)"</strong> để in phiếu ký xác nhận cho tổ mình.
+                </span>
+              </div>
+              <button
+                onClick={() => setSelectedDept('ALL')}
+                className="text-xs text-indigo-700 hover:text-indigo-900 underline font-semibold cursor-pointer"
+              >
+                Xem toàn trường
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -936,278 +1028,534 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
       {/* VIEW 1: WEEKLY DETAIL VIEW (EXCEL TEMPLATE) */}
       {viewMode === 'WEEKLY_DETAIL' && (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          {/* Header title for Print */}
-          <div className="p-4 border-b border-slate-200 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
-              <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
-                Bảng Số Tiết Thực Dạy • Tuần {selectedWeekNum} • {getScopeLabel(levelScope)}
-              </h2>
+        <>
+          {/* Screen Table Container (Hidden when Printing) */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden print:hidden">
+            {/* Header title for Screen */}
+            <div className="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
+                <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+                  Bảng Số Tiết Thực Dạy • Tuần {selectedWeekNum} • {getScopeLabel(levelScope)}
+                  {selectedDept !== 'ALL' && (
+                    <span className="ml-2 normal-case font-semibold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded text-xs border border-indigo-100">
+                      Tổ: {availableDepartments.find((d) => d.id === selectedDept)?.name}
+                    </span>
+                  )}
+                </h2>
+              </div>
+              <div className="text-xs text-slate-500">
+                Hiển thị {filteredWorkloads.length} giáo viên
+              </div>
             </div>
-            <div className="text-xs text-slate-500">
-              Hiển thị {filteredWorkloads.length} giáo viên
-            </div>
-          </div>
 
-          <div className="overflow-x-auto">
-            {/* The Excel-style Table */}
-            <table
-              id="actual-teaching-hours-table"
-              className="w-full border-collapse text-xs text-slate-800"
-              style={{ minWidth: '860px' }}
-            >
-              <thead>
-                <tr className="bg-[#FFFF00] text-black font-bold border-b border-black">
-                  <th
-                    className="border border-black px-3 py-2 text-center"
-                    style={{ width: '150px' }}
-                  >
-                    Họ và tên GV
-                  </th>
-                  <th
-                    className="border border-black px-3 py-2 text-left"
-                    style={{ width: '220px' }}
-                  >
-                    Lớp dạy
-                  </th>
-                  <th
-                    className="border border-black px-3 py-2 text-left"
-                    style={{ width: '280px' }}
-                  >
-                    Môn dạy
-                  </th>
-                  <th
-                    className="border border-black px-3 py-2 text-center"
-                    style={{ width: '85px' }}
-                  >
-                    Tiết dạy
-                  </th>
-                  <th
-                    className="border border-black px-3 py-2 text-center"
-                    style={{ width: '130px' }}
-                  >
-                    Kiêm nhiệm
-                  </th>
-                  <th
-                    className="border border-black px-3 py-2 text-center"
-                    style={{ width: '90px' }}
-                  >
-                    Tổng tiết
-                  </th>
-                  <th
-                    className="border border-black px-3 py-2 text-center"
-                    style={{ width: '140px' }}
-                  >
-                    Thừa/thiếu tiết đến tuần hiện tại
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredWorkloads.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={7}
-                      className="border border-slate-300 px-4 py-8 text-center text-slate-500"
+            <div className="overflow-x-auto">
+              {/* The Excel-style Table on Screen */}
+              <table
+                id="actual-teaching-hours-table"
+                className="w-full border-collapse text-xs text-slate-800"
+                style={{ minWidth: '960px' }}
+              >
+                <thead>
+                  <tr className="bg-[#FFFF00] text-black font-bold border-b border-black">
+                    <th
+                      className="border border-black px-2 py-2 text-center"
+                      style={{ width: '45px' }}
                     >
-                      Không tìm thấy giáo viên nào phù hợp với bộ lọc hiện tại.
+                      STT
+                    </th>
+                    <th
+                      className="border border-black px-3 py-2 text-center"
+                      style={{ width: '150px' }}
+                    >
+                      Họ và tên GV
+                    </th>
+                    <th
+                      className="border border-black px-3 py-2 text-left"
+                      style={{ width: '200px' }}
+                    >
+                      Lớp dạy
+                    </th>
+                    <th
+                      className="border border-black px-3 py-2 text-left"
+                      style={{ width: '250px' }}
+                    >
+                      Môn dạy
+                    </th>
+                    <th
+                      className="border border-black px-3 py-2 text-center"
+                      style={{ width: '75px' }}
+                    >
+                      Tiết dạy
+                    </th>
+                    <th
+                      className="border border-black px-3 py-2 text-center"
+                      style={{ width: '130px' }}
+                    >
+                      Kiêm nhiệm & Giảm trừ
+                    </th>
+                    <th
+                      className="border border-black px-3 py-2 text-center"
+                      style={{ width: '85px' }}
+                    >
+                      Tổng tiết
+                    </th>
+                    <th
+                      className="border border-black px-3 py-2 text-center"
+                      style={{ width: '135px' }}
+                    >
+                      Thừa/thiếu tiết đến tuần hiện tại
+                    </th>
+                    <th
+                      className="border border-black px-2 py-2 text-center bg-amber-300"
+                      style={{ width: '110px' }}
+                    >
+                      Ký xác nhận
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredWorkloads.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={9}
+                        className="border border-slate-300 px-4 py-8 text-center text-slate-500"
+                      >
+                        Không tìm thấy giáo viên nào phù hợp với bộ lọc hiện tại.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredWorkloads.map((teacherWorkload, tIdx) => {
+                      const rowCount =
+                        teacherWorkload.rows.length > 0
+                          ? teacherWorkload.rows.length
+                          : 1;
+                      const displayName = useShortName
+                        ? teacherWorkload.callingName
+                        : teacherWorkload.teacherName;
+
+                      const cumBalance = teacherWorkload.cumulativeBalance;
+                      const balanceColor =
+                        cumBalance > 0
+                          ? 'text-emerald-700 font-bold'
+                          : cumBalance < 0
+                          ? 'text-rose-700 font-bold'
+                          : 'text-slate-700 font-bold';
+
+                      const balanceDisplay =
+                        cumBalance > 0 ? `+${cumBalance}` : `${cumBalance}`;
+
+                      if (teacherWorkload.rows.length === 0) {
+                        return (
+                          <tr
+                            key={teacherWorkload.teacherId}
+                            className="hover:bg-amber-50/50 transition-colors"
+                          >
+                            <td className="border border-slate-300 px-2 py-2 text-center font-bold text-slate-700 bg-slate-50/40">
+                              {tIdx + 1}
+                            </td>
+                            <td className="border border-slate-300 px-3 py-2 text-center font-bold text-slate-900 bg-slate-50/40">
+                              {displayName}
+                            </td>
+                            <td className="border border-slate-300 px-3 py-2 text-slate-400 italic">
+                              —
+                            </td>
+                            <td className="border border-slate-300 px-3 py-2 text-slate-400 italic">
+                              —
+                            </td>
+                            <td className="border border-slate-300 px-3 py-2 text-center font-medium">
+                              0
+                            </td>
+                            <td className="border border-slate-300 px-3 py-2 text-center">
+                              {teacherWorkload.duties}
+                            </td>
+                            <td className="border border-slate-300 px-3 py-2 text-center font-bold text-slate-900">
+                              {teacherWorkload.totalPeriods}
+                            </td>
+                            <td
+                              className={`border border-slate-300 px-3 py-2 text-center ${balanceColor}`}
+                            >
+                              {balanceDisplay}
+                            </td>
+                            <td className="border border-slate-300 px-2 py-2 text-center align-middle bg-slate-50/20">
+                              <span className="text-[10px] text-slate-300 italic">Ký tên</span>
+                            </td>
+                          </tr>
+                        );
+                      }
+
+                      return teacherWorkload.rows.map((subRow, rIdx) => (
+                        <tr
+                          key={`${teacherWorkload.teacherId}_${rIdx}`}
+                          className="hover:bg-amber-50/40 transition-colors"
+                        >
+                          {/* Column 1: STT (Rowspanned) */}
+                          {rIdx === 0 && (
+                            <td
+                              rowSpan={rowCount}
+                              className="border border-slate-300 px-2 py-2 text-center font-bold text-slate-700 bg-slate-50/40 align-middle"
+                            >
+                              {tIdx + 1}
+                            </td>
+                          )}
+
+                          {/* Column 2: Tên GV (Rowspanned) */}
+                          {rIdx === 0 && (
+                            <td
+                              rowSpan={rowCount}
+                              className="border border-slate-300 px-3 py-2 text-center font-bold text-slate-900 bg-slate-50/40 align-middle"
+                            >
+                              <div className="font-bold text-sm text-slate-900">
+                                {displayName}
+                              </div>
+                              <div className="text-[10px] text-slate-500 font-normal">
+                                {teacherWorkload.departmentName}
+                              </div>
+                            </td>
+                          )}
+
+                          {/* Column 3: Lớp dạy */}
+                          <td className="border border-slate-300 px-3 py-2 text-left font-medium text-slate-800">
+                            {subRow.classes}
+                          </td>
+
+                          {/* Column 4: Môn dạy */}
+                          <td className="border border-slate-300 px-3 py-2 text-left font-medium text-slate-900">
+                            {subRow.subject}
+                          </td>
+
+                          {/* Column 5: Tiết dạy */}
+                          <td className="border border-slate-300 px-3 py-2 text-center font-semibold text-slate-900">
+                            {subRow.periods}
+                          </td>
+
+                          {/* Column 6: Kiêm nhiệm (Rowspanned) */}
+                          {rIdx === 0 && (
+                            <td
+                              rowSpan={rowCount}
+                              className="border border-slate-300 px-3 py-2 text-center text-slate-800 align-middle font-medium"
+                            >
+                              {teacherWorkload.duties !== '—' ? (
+                                <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-800 font-semibold">
+                                  {teacherWorkload.duties}
+                                </span>
+                              ) : (
+                                <span className="text-slate-400">—</span>
+                              )}
+                              {teacherWorkload.reductionPeriods > 0 && (
+                                <div className="text-[10px] text-slate-500 mt-0.5">
+                                  (+{teacherWorkload.reductionPeriods} tiết QĐ)
+                                </div>
+                              )}
+                            </td>
+                          )}
+
+                          {/* Column 7: Tổng tiết (Rowspanned) */}
+                          {rIdx === 0 && (
+                            <td
+                              rowSpan={rowCount}
+                              className="border border-slate-300 px-3 py-2 text-center font-bold text-base text-slate-900 align-middle bg-slate-50/20"
+                            >
+                              {teacherWorkload.totalPeriods}
+                              <div className="text-[10px] text-slate-500 font-normal">
+                                {teacherWorkload.teachingPeriods} dạy +{' '}
+                                {teacherWorkload.reductionPeriods} KN
+                              </div>
+                            </td>
+                          )}
+
+                          {/* Column 8: Thừa/thiếu tiết đến tuần hiện tại (Rowspanned) */}
+                          {rIdx === 0 && (
+                            <td
+                              rowSpan={rowCount}
+                              className={`border border-slate-300 px-3 py-2 text-center align-middle ${balanceColor}`}
+                            >
+                              <div className="inline-flex items-center gap-1">
+                                <span className="text-sm font-bold">
+                                  {balanceDisplay}
+                                </span>
+                                {isAdmin && (
+                                  <button
+                                    onClick={() => {
+                                      setAdjustModalTeacher(teacherWorkload);
+                                      setAdjustInputVal(
+                                        manualAdjustments[
+                                          teacherWorkload.teacherId
+                                        ] || 0
+                                      );
+                                    }}
+                                    className="text-[10px] text-slate-400 hover:text-slate-700 underline print:hidden ml-1"
+                                    title="Ghi nhận tiết bù / dạy thay"
+                                  >
+                                    [±]
+                                  </button>
+                                )}
+                              </div>
+                              <div className="text-[10px] text-slate-500 font-normal">
+                                {cumBalance > 0
+                                  ? 'Thừa tiết'
+                                  : cumBalance < 0
+                                  ? 'Thiếu tiết'
+                                  : 'Đủ chuẩn'}
+                              </div>
+                            </td>
+                          )}
+
+                          {/* Column 9: Ký xác nhận (Rowspanned) */}
+                          {rIdx === 0 && (
+                            <td
+                              rowSpan={rowCount}
+                              className="border border-slate-300 px-2 py-2 text-center align-middle bg-slate-50/20"
+                            >
+                              <div className="flex flex-col items-center justify-center min-h-[44px] h-full">
+                                <span className="text-[10px] text-slate-300 italic">Ký tên</span>
+                              </div>
+                            </td>
+                          )}
+                        </tr>
+                      ));
+                    })
+                  )}
+                </tbody>
+
+                {/* Table Footer Total Row */}
+                <tfoot>
+                  <tr className="bg-slate-100 font-bold border-t-2 border-slate-400 text-slate-900">
+                    <td className="border border-slate-300 px-2 py-2.5 text-center">
+                      #
+                    </td>
+                    <td
+                      colSpan={3}
+                      className="border border-slate-300 px-3 py-2.5 text-left text-slate-700"
+                    >
+                      TỔNG CỘNG: {filteredWorkloads.length} giáo viên • Quy đổi kiêm nhiệm: {stats.totalReductionPeriods} tiết
+                    </td>
+                    <td className="border border-slate-300 px-3 py-2.5 text-center text-blue-800">
+                      {stats.totalTeachingPeriods}
+                    </td>
+                    <td className="border border-slate-300 px-3 py-2.5 text-center text-slate-600">
+                      +{stats.totalReductionPeriods}
+                    </td>
+                    <td className="border border-slate-300 px-3 py-2.5 text-center text-emerald-800 text-base">
+                      {stats.totalConvertedPeriods}
+                    </td>
+                    <td className="border border-slate-300 px-3 py-2.5 text-center text-slate-800">
+                      {stats.surplusCount} thừa / {stats.deficitCount} thiếu
+                    </td>
+                    <td className="border border-slate-300 px-2 py-2.5 text-center text-slate-400 italic">
+                      Xác nhận
                     </td>
                   </tr>
-                ) : (
-                  filteredWorkloads.map((teacherWorkload) => {
-                    const rowCount =
-                      teacherWorkload.rows.length > 0
-                        ? teacherWorkload.rows.length
-                        : 1;
-                    const displayName = useShortName
-                      ? teacherWorkload.callingName
-                      : teacherWorkload.teacherName;
+                </tfoot>
+              </table>
+            </div>
+          </div>
 
-                    const cumBalance = teacherWorkload.cumulativeBalance;
-                    const balanceColor =
-                      cumBalance > 0
-                        ? 'text-emerald-700 font-bold'
-                        : cumBalance < 0
-                        ? 'text-rose-700 font-bold'
-                        : 'text-slate-700 font-bold';
+          {/* =========================================================================
+              DEDICATED PRINT / PDF DOCUMENT (Visible ONLY when Printing / PDF Export)
+              Strictly complies with Vietnamese Administrative Document Standards (Nghị định 30/2020/NĐ-CP)
+              ========================================================================= */}
+          <div className="hidden print:block font-['Times_New_Roman',Times,serif] text-black">
+            {printDepartmentGroups.map((group, gIdx) => {
+              const groupTeachingPeriods = group.workloads.reduce((s, w) => s + w.teachingPeriods, 0);
+              const groupReductionPeriods = group.workloads.reduce((s, w) => s + w.reductionPeriods, 0);
+              const groupConvertedPeriods = group.workloads.reduce((s, w) => s + w.totalPeriods, 0);
+              const groupSurplus = group.workloads.filter((w) => w.cumulativeBalance > 0).length;
+              const groupDeficit = group.workloads.filter((w) => w.cumulativeBalance < 0).length;
 
-                    const balanceDisplay =
-                      cumBalance > 0 ? `+${cumBalance}` : `${cumBalance}`;
+              return (
+                <div
+                  key={group.deptId}
+                  className={`weekly-teaching-print-container p-0 m-0 ${gIdx > 0 ? 'print-page-break' : ''}`}
+                >
+                  {/* Administrative Header according to Nghị định 30/2020/NĐ-CP */}
+                  <table className="w-full border-none mb-1 text-black" style={{ borderCollapse: 'collapse' }}>
+                    <tbody>
+                      <tr className="align-top">
+                        <td className="w-1/2 text-center p-0 border-none" style={{ border: 'none' }}>
+                          <div className="text-[10pt] uppercase tracking-normal" style={{ fontSize: '10pt' }}>
+                            SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP
+                          </div>
+                          <div className="text-[10pt] uppercase font-bold tracking-tight" style={{ fontSize: '10pt', fontWeight: 'bold' }}>
+                            {config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU'}
+                          </div>
+                          <div className="text-[10pt] uppercase font-bold text-slate-900 mt-0.5" style={{ fontSize: '10pt', fontWeight: 'bold' }}>
+                            TỔ CHUYÊN MÔN: {group.deptName.toUpperCase()}
+                          </div>
+                          <div className="w-32 mx-auto my-0.5 border-b border-black" style={{ width: '130px', margin: '3px auto', borderBottom: '1px solid black' }}></div>
+                        </td>
+                        <td className="w-1/2 text-center p-0 border-none" style={{ border: 'none' }}>
+                          <div className="text-[10pt] uppercase font-bold" style={{ fontSize: '10pt', fontWeight: 'bold' }}>
+                            CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+                          </div>
+                          <div className="text-[10pt] font-bold" style={{ fontSize: '10pt', fontWeight: 'bold' }}>
+                            Độc lập - Tự do - Hạnh phúc
+                          </div>
+                          <div className="w-40 mx-auto my-0.5 border-b border-black" style={{ width: '160px', margin: '3px auto', borderBottom: '1.2px solid black' }}></div>
+                          <div className="text-[9pt] italic font-normal mt-0.5" style={{ fontSize: '9pt', fontStyle: 'italic' }}>
+                            Đốc Binh Kiều, ngày ..... tháng ..... năm 2026
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
 
-                    if (teacherWorkload.rows.length === 0) {
-                      return (
-                        <tr
-                          key={teacherWorkload.teacherId}
-                          className="hover:bg-amber-50/50 transition-colors"
-                        >
-                          <td className="border border-slate-300 px-3 py-2 text-center font-bold text-slate-900 bg-slate-50/40">
-                            {displayName}
+                  {/* Document Title */}
+                  <div className="text-center my-2">
+                    <h1 className="text-[12.5pt] font-bold uppercase tracking-wide" style={{ fontSize: '12.5pt', fontWeight: 'bold' }}>
+                      BẢNG THỐNG KÊ CHI TIẾT SỐ TIẾT THỰC DẠY HÀNG TUẦN
+                    </h1>
+                    <div className="text-[10pt] font-bold uppercase mt-0.5" style={{ fontSize: '10pt', fontWeight: 'bold' }}>
+                      TUẦN {selectedWeekNum} • {config.semester || 'HỌC KỲ I'} • NĂM HỌC {config.academicYear || '2026 - 2027'}
+                    </div>
+                    <div className="text-[8.5pt] italic text-slate-700" style={{ fontSize: '8.5pt', fontStyle: 'italic' }}>
+                      (Biểu mẫu kê khai, đối soát định mức và ký nhận số tiết giảng dạy hàng tuần của giáo viên)
+                    </div>
+                  </div>
+
+                  {/* Data Table with Black Borders and Columns */}
+                  <div className="weekly-teaching-print-table-wrapper">
+                    <table className="weekly-teaching-print-table w-full">
+                      <thead>
+                        <tr className="bg-slate-100 font-bold border-b border-black">
+                          <th style={{ width: '4%' }} className="text-center">STT</th>
+                          <th style={{ width: '15%' }} className="text-center">Họ và tên GV</th>
+                          <th style={{ width: '16%' }} className="text-center">Lớp dạy</th>
+                          <th style={{ width: '18%' }} className="text-center">Môn dạy</th>
+                          <th style={{ width: '6.5%' }} className="text-center">Tiết dạy</th>
+                          <th style={{ width: '14%' }} className="text-center">Kiêm nhiệm & Giảm trừ</th>
+                          <th style={{ width: '8%' }} className="text-center">Tổng tiết</th>
+                          <th style={{ width: '8.5%' }} className="text-center">Thừa/thiếu</th>
+                          <th style={{ width: '10%' }} className="text-center">Ký xác nhận</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {group.workloads.map((teacherWorkload, tIdx) => {
+                          const rowCount = teacherWorkload.rows.length > 0 ? teacherWorkload.rows.length : 1;
+                          const displayName = teacherWorkload.teacherName;
+                          const cumBalance = teacherWorkload.cumulativeBalance;
+                          const balanceDisplay = cumBalance > 0 ? `+${cumBalance}` : `${cumBalance}`;
+
+                          if (teacherWorkload.rows.length === 0) {
+                            return (
+                              <tr key={teacherWorkload.teacherId}>
+                                <td className="text-center font-bold">{tIdx + 1}</td>
+                                <td className="text-left font-bold pl-1">{displayName}</td>
+                                <td className="text-center italic">—</td>
+                                <td className="text-center italic">—</td>
+                                <td className="text-center">0</td>
+                                <td className="text-center">{teacherWorkload.duties}</td>
+                                <td className="text-center font-bold">{teacherWorkload.totalPeriods}</td>
+                                <td className="text-center font-bold">{balanceDisplay}</td>
+                                <td className="text-center align-middle">
+                                  <div className="h-10 min-h-[38px] flex items-end justify-center pb-1">
+                                    <div className="w-14 border-b border-dotted border-black/40"></div>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          }
+
+                          return teacherWorkload.rows.map((subRow, rIdx) => (
+                            <tr key={`${teacherWorkload.teacherId}_${rIdx}`}>
+                              {rIdx === 0 && (
+                                <td rowSpan={rowCount} className="text-center font-bold">
+                                  {tIdx + 1}
+                                </td>
+                              )}
+                              {rIdx === 0 && (
+                                <td rowSpan={rowCount} className="text-left font-bold pl-1">
+                                  <div>{displayName}</div>
+                                  {selectedDept === 'ALL' && (
+                                    <div className="text-[7pt] font-normal text-slate-600">
+                                      {teacherWorkload.departmentName}
+                                    </div>
+                                  )}
+                                </td>
+                              )}
+                              <td className="text-left pl-1">{subRow.classes}</td>
+                              <td className="text-left pl-1">{subRow.subject}</td>
+                              <td className="text-center font-semibold">{subRow.periods}</td>
+                              {rIdx === 0 && (
+                                <td rowSpan={rowCount} className="text-center">
+                                  <div>{teacherWorkload.duties}</div>
+                                  {teacherWorkload.reductionPeriods > 0 && (
+                                    <div className="text-[7pt] text-slate-600">
+                                      (+{teacherWorkload.reductionPeriods}t QĐ)
+                                    </div>
+                                  )}
+                                </td>
+                              )}
+                              {rIdx === 0 && (
+                                <td rowSpan={rowCount} className="text-center font-bold">
+                                  {teacherWorkload.totalPeriods}
+                                </td>
+                              )}
+                              {rIdx === 0 && (
+                                <td rowSpan={rowCount} className="text-center font-bold">
+                                  {balanceDisplay}
+                                </td>
+                              )}
+                              {rIdx === 0 && (
+                                <td rowSpan={rowCount} className="text-center align-middle">
+                                  <div className="h-10 min-h-[38px] flex items-end justify-center pb-1">
+                                    <div className="w-14 border-b border-dotted border-black/40"></div>
+                                  </div>
+                                </td>
+                              )}
+                            </tr>
+                          ));
+                        })}
+                      </tbody>
+                      <tfoot>
+                        <tr className="bg-slate-100 font-bold border-t border-black text-black">
+                          <td colSpan={4} className="text-center">
+                            TỔNG CỘNG ({group.workloads.length} giáo viên • {group.deptName})
                           </td>
-                          <td className="border border-slate-300 px-3 py-2 text-slate-400 italic">
-                            —
+                          <td className="text-center">{groupTeachingPeriods}</td>
+                          <td className="text-center">+{groupReductionPeriods}t</td>
+                          <td className="text-center">{groupConvertedPeriods}</td>
+                          <td className="text-center text-[7.5pt]">
+                            {groupSurplus} thừa / {groupDeficit} thiếu
                           </td>
-                          <td className="border border-slate-300 px-3 py-2 text-slate-400 italic">
-                            —
+                          <td className="text-center italic text-[7pt]">Xác nhận</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+
+                  {/* Formal Signature Block according to Nghị định 30/2020/NĐ-CP */}
+                  <div className="mt-4 pt-2 text-black print-avoid-break">
+                    <table className="w-full border-none text-center" style={{ borderCollapse: 'collapse' }}>
+                      <tbody>
+                        <tr>
+                          <td className="w-1/3 p-0 border-none align-top" style={{ border: 'none' }}>
+                            <div className="font-bold uppercase text-[9.5pt]">NGƯỜI LẬP BẢNG</div>
+                            <div className="italic text-[8.5pt] mb-12">(Ký và ghi rõ họ tên)</div>
+                            <div className="font-bold text-[9.5pt]">{displayVicePrincipal}</div>
                           </td>
-                          <td className="border border-slate-300 px-3 py-2 text-center font-medium">
-                            0
+                          <td className="w-1/3 p-0 border-none align-top" style={{ border: 'none' }}>
+                            <div className="font-bold uppercase text-[9.5pt]">TỔ TRƯỞNG CHUYÊN MÔN</div>
+                            <div className="italic text-[8.5pt] mb-12">(Ký và ghi rõ họ tên)</div>
+                            <div className="font-bold text-[9.5pt]">{group.leaderName || '(Ký và ghi rõ họ tên)'}</div>
                           </td>
-                          <td className="border border-slate-300 px-3 py-2 text-center">
-                            {teacherWorkload.duties}
-                          </td>
-                          <td className="border border-slate-300 px-3 py-2 text-center font-bold text-slate-900">
-                            {teacherWorkload.totalPeriods}
-                          </td>
-                          <td
-                            className={`border border-slate-300 px-3 py-2 text-center ${balanceColor}`}
-                          >
-                            {balanceDisplay}
+                          <td className="w-1/3 p-0 border-none align-top" style={{ border: 'none' }}>
+                            <div className="italic text-[8.5pt] mb-0.5">
+                              Đốc Binh Kiều, ngày ..... tháng ..... năm 2026
+                            </div>
+                            <div className="font-bold uppercase text-[9.5pt]">HIỆU TRƯỞNG</div>
+                            <div className="italic text-[8.5pt] mb-12">(Ký, đóng dấu và ghi rõ họ tên)</div>
+                            <div className="font-bold text-[9.5pt]">{config.principalName || 'Lê Thành Cường'}</div>
                           </td>
                         </tr>
-                      );
-                    }
-
-                    return teacherWorkload.rows.map((subRow, rIdx) => (
-                      <tr
-                        key={`${teacherWorkload.teacherId}_${rIdx}`}
-                        className="hover:bg-amber-50/40 transition-colors"
-                      >
-                        {/* Column 1: Tên GV (Rowspanned) */}
-                        {rIdx === 0 && (
-                          <td
-                            rowSpan={rowCount}
-                            className="border border-slate-300 px-3 py-2 text-center font-bold text-slate-900 bg-slate-50/40 align-middle"
-                          >
-                            <div className="font-bold text-sm text-slate-900">
-                              {displayName}
-                            </div>
-                            <div className="text-[10px] text-slate-500 font-normal">
-                              {teacherWorkload.departmentName}
-                            </div>
-                          </td>
-                        )}
-
-                        {/* Column 2: Lớp dạy */}
-                        <td className="border border-slate-300 px-3 py-2 text-left font-medium text-slate-800">
-                          {subRow.classes}
-                        </td>
-
-                        {/* Column 3: Môn dạy */}
-                        <td className="border border-slate-300 px-3 py-2 text-left font-medium text-slate-900">
-                          {subRow.subject}
-                        </td>
-
-                        {/* Column 4: Tiết dạy */}
-                        <td className="border border-slate-300 px-3 py-2 text-center font-semibold text-slate-900">
-                          {subRow.periods}
-                        </td>
-
-                        {/* Column 5: Kiêm nhiệm (Rowspanned) */}
-                        {rIdx === 0 && (
-                          <td
-                            rowSpan={rowCount}
-                            className="border border-slate-300 px-3 py-2 text-center text-slate-800 align-middle font-medium"
-                          >
-                            {teacherWorkload.duties !== '—' ? (
-                              <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-800 font-semibold">
-                                {teacherWorkload.duties}
-                              </span>
-                            ) : (
-                              <span className="text-slate-400">—</span>
-                            )}
-                            {teacherWorkload.reductionPeriods > 0 && (
-                              <div className="text-[10px] text-slate-500 mt-0.5">
-                                (+{teacherWorkload.reductionPeriods} tiết QĐ)
-                              </div>
-                            )}
-                          </td>
-                        )}
-
-                        {/* Column 6: Tổng tiết (Rowspanned) */}
-                        {rIdx === 0 && (
-                          <td
-                            rowSpan={rowCount}
-                            className="border border-slate-300 px-3 py-2 text-center font-bold text-base text-slate-900 align-middle bg-slate-50/20"
-                          >
-                            {teacherWorkload.totalPeriods}
-                            <div className="text-[10px] text-slate-500 font-normal">
-                              {teacherWorkload.teachingPeriods} dạy +{' '}
-                              {teacherWorkload.reductionPeriods} KN
-                            </div>
-                          </td>
-                        )}
-
-                        {/* Column 7: Thừa/thiếu tiết đến tuần hiện tại (Rowspanned) */}
-                        {rIdx === 0 && (
-                          <td
-                            rowSpan={rowCount}
-                            className={`border border-slate-300 px-3 py-2 text-center align-middle ${balanceColor}`}
-                          >
-                            <div className="inline-flex items-center gap-1">
-                              <span className="text-sm font-bold">
-                                {balanceDisplay}
-                              </span>
-                              {isAdmin && (
-                                <button
-                                  onClick={() => {
-                                    setAdjustModalTeacher(teacherWorkload);
-                                    setAdjustInputVal(
-                                      manualAdjustments[
-                                        teacherWorkload.teacherId
-                                      ] || 0
-                                    );
-                                  }}
-                                  className="text-[10px] text-slate-400 hover:text-slate-700 underline print:hidden ml-1"
-                                  title="Ghi nhận tiết bù / dạy thay"
-                                >
-                                  [±]
-                                </button>
-                              )}
-                            </div>
-                            <div className="text-[10px] text-slate-500 font-normal">
-                              {cumBalance > 0
-                                ? 'Thừa tiết'
-                                : cumBalance < 0
-                                ? 'Thiếu tiết'
-                                : 'Đủ chuẩn'}
-                            </div>
-                          </td>
-                        )}
-                      </tr>
-                    ));
-                  })
-                )}
-              </tbody>
-
-              {/* Table Footer Total Row */}
-              <tfoot>
-                <tr className="bg-slate-100 font-bold border-t-2 border-slate-400 text-slate-900">
-                  <td className="border border-slate-300 px-3 py-2.5 text-center">
-                    TỔNG CỘNG
-                  </td>
-                  <td
-                    colSpan={2}
-                    className="border border-slate-300 px-3 py-2.5 text-left text-slate-700"
-                  >
-                    {filteredWorkloads.length} giáo viên • Quy đổi kiêm nhiệm: {stats.totalReductionPeriods} tiết
-                  </td>
-                  <td className="border border-slate-300 px-3 py-2.5 text-center text-blue-800">
-                    {stats.totalTeachingPeriods}
-                  </td>
-                  <td className="border border-slate-300 px-3 py-2.5 text-center text-slate-600">
-                    +{stats.totalReductionPeriods}
-                  </td>
-                  <td className="border border-slate-300 px-3 py-2.5 text-center text-emerald-800 text-base">
-                    {stats.totalConvertedPeriods}
-                  </td>
-                  <td className="border border-slate-300 px-3 py-2.5 text-center text-slate-800">
-                    {stats.surplusCount} thừa / {stats.deficitCount} thiếu
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        </div>
+        </>
       )}
 
       {/* VIEW 2: MULTI-WEEK MATRIX VIEW ("Tổng thể các tuần / Học kỳ") */}

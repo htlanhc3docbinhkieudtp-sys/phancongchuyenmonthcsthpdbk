@@ -1258,80 +1258,126 @@ export function calculateAllActualWorkloads(
 
 /**
  * Export Actual Teaching Hours table to Excel matching the exact visual format
+ * and formal Vietnamese administrative document structure (Nghị định 30/2020/NĐ-CP)
+ * including Department info, STT, "Ký xác nhận" column, and formal signature block.
  */
 export function exportActualWeeklyExcel(
   selectedWeek: number,
   workloads: TeacherActualWorkload[],
   config: SchoolConfig,
-  useShortName: boolean = true
+  useShortName: boolean = true,
+  deptName?: string,
+  scopeLabel?: string
 ) {
   import('xlsx').then((XLSX) => {
     const wb = XLSX.utils.book_new();
 
     const rows: (string | number)[][] = [];
+    const merges: { s: { r: number; c: number }; e: { r: number; c: number } }[] = [];
 
-    // Header info
-    rows.push([config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU']);
+    const displayDept = (deptName && deptName !== 'ALL' && deptName !== 'Tất cả tổ chuyên môn')
+      ? deptName.toUpperCase()
+      : 'TOÀN TRƯỜNG';
+
+    const displayVP = (config.vicePrincipalName && config.vicePrincipalName.includes('-'))
+      ? config.vicePrincipalName.split('-')[0].trim()
+      : (config.vicePrincipalName || 'Nguyễn Minh Trí');
+    const displayP = config.principalName || 'Lê Thành Cường';
+
+    // 1. Formal Vietnamese Administrative Header (Rows 0 - 2)
+    // Left: Sở GD&ĐT, Tên trường, Tổ chuyên môn
+    // Right: Quốc hiệu, Tiêu ngữ, Địa danh & ngày tháng năm
     rows.push([
-      `SỔ TIẾT THỰC DẠY - TUẦN ${selectedWeek} (${config.semester || 'HK1'} NĂM HỌC ${config.academicYear || '2026-2027'})`,
+      'SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP', '', '', '',
+      'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM', '', '', '', ''
     ]);
     rows.push([
-      `Nguồn dữ liệu: Phân công giảng dạy theo Thời Khóa Biểu thực tế (Định mức chuẩn THPT: ${config.standardThptPeriods || 17} tiết/tuần)`,
+      (config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU').toUpperCase(), '', '', '',
+      'Độc lập - Tự do - Hạnh phúc', '', '', '', ''
     ]);
-    rows.push([]);
-
-    // Table Header
-    const headerRowIndex = rows.length;
     rows.push([
+      `TỔ CHUYÊN MÔN: ${displayDept}`, '', '', '',
+      `Đốc Binh Kiều, ngày ..... tháng ..... năm 2026`, '', '', '', ''
+    ]);
+
+    // Merges for administrative header
+    merges.push({ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } });
+    merges.push({ s: { r: 0, c: 4 }, e: { r: 0, c: 8 } });
+    merges.push({ s: { r: 1, c: 0 }, e: { r: 1, c: 3 } });
+    merges.push({ s: { r: 1, c: 4 }, e: { r: 1, c: 8 } });
+    merges.push({ s: { r: 2, c: 0 }, e: { r: 2, c: 3 } });
+    merges.push({ s: { r: 2, c: 4 }, e: { r: 2, c: 8 } });
+
+    rows.push([]); // Row 3 empty
+
+    // 2. Document Title (Rows 4 - 5)
+    rows.push([
+      `BẢNG THỐNG KÊ CHI TIẾT SỐ TIẾT THỰC DẠY HÀNG TUẦN - TUẦN ${selectedWeek}`,
+      '', '', '', '', '', '', '', ''
+    ]);
+    rows.push([
+      `(Áp dụng theo Thời Khóa Biểu thực tế • ${scopeLabel || 'Toàn trường'} • Năm học ${config.academicYear || '2026-2027'} • Kèm ký xác nhận)`,
+      '', '', '', '', '', '', '', ''
+    ]);
+    merges.push({ s: { r: 4, c: 0 }, e: { r: 4, c: 8 } });
+    merges.push({ s: { r: 5, c: 0 }, e: { r: 5, c: 8 } });
+
+    rows.push([]); // Row 6 empty
+
+    // 3. Table Header (Row 7)
+    rows.push([
+      'STT',
       'Họ và tên GV',
       'Lớp dạy',
       'Môn dạy',
       'Tiết dạy',
-      'Kiêm nhiệm',
+      'Kiêm nhiệm & Giảm trừ',
       'Tổng tiết',
-      'Thừa/thiếu tiết đến tuần hiện tại',
+      'Thừa/thiếu đến tuần hiện tại',
+      'Ký xác nhận'
     ]);
 
-    const merges: { s: { r: number; c: number }; e: { r: number; c: number } }[] = [];
-
-    // Title merges
-    merges.push({ s: { r: 0, c: 0 }, e: { r: 0, c: 6 } });
-    merges.push({ s: { r: 1, c: 0 }, e: { r: 1, c: 6 } });
-    merges.push({ s: { r: 2, c: 0 }, e: { r: 2, c: 6 } });
-
-    workloads.forEach((t) => {
+    // 4. Data Rows
+    workloads.forEach((t, tIdx) => {
       const displayName = useShortName ? t.callingName : t.teacherName;
       const rowCount = t.rows.length > 0 ? t.rows.length : 1;
       const startRow = rows.length;
+      const dutiesText = t.duties !== '—'
+        ? (t.reductionPeriods > 0 ? `${t.duties} (+${t.reductionPeriods}t)` : t.duties)
+        : '—';
+      const balanceText = t.cumulativeBalance > 0
+        ? `+${t.cumulativeBalance}`
+        : `${t.cumulativeBalance}`;
 
       if (t.rows.length === 0) {
         rows.push([
+          tIdx + 1,
           displayName,
           '—',
           '—',
           0,
-          t.duties,
+          dutiesText,
           t.totalPeriods,
-          t.cumulativeBalance > 0
-            ? `+${t.cumulativeBalance}`
-            : t.cumulativeBalance,
+          balanceText,
+          '' // Ô để giáo viên ký tên trực tiếp
         ]);
       } else {
         t.rows.forEach((subRow, idx) => {
           if (idx === 0) {
             rows.push([
+              tIdx + 1,
               displayName,
               subRow.classes,
               subRow.subject,
               subRow.periods,
-              t.duties,
+              dutiesText,
               t.totalPeriods,
-              t.cumulativeBalance > 0
-                ? `+${t.cumulativeBalance}`
-                : t.cumulativeBalance,
+              balanceText,
+              '' // Ô để giáo viên ký tên trực tiếp
             ]);
           } else {
             rows.push([
+              '',
               '',
               subRow.classes,
               subRow.subject,
@@ -1339,36 +1385,29 @@ export function exportActualWeeklyExcel(
               '',
               '',
               '',
+              ''
             ]);
           }
         });
 
         if (rowCount > 1) {
-          // Merge Tên GV (col 0)
-          merges.push({
-            s: { r: startRow, c: 0 },
-            e: { r: startRow + rowCount - 1, c: 0 },
-          });
-          // Merge Kiêm nhiệm (col 4)
-          merges.push({
-            s: { r: startRow, c: 4 },
-            e: { r: startRow + rowCount - 1, c: 4 },
-          });
-          // Merge Tổng tiết (col 5)
-          merges.push({
-            s: { r: startRow, c: 5 },
-            e: { r: startRow + rowCount - 1, c: 5 },
-          });
-          // Merge Thừa/thiếu (col 6)
-          merges.push({
-            s: { r: startRow, c: 6 },
-            e: { r: startRow + rowCount - 1, c: 6 },
-          });
+          // Merge STT (col 0)
+          merges.push({ s: { r: startRow, c: 0 }, e: { r: startRow + rowCount - 1, c: 0 } });
+          // Merge Tên GV (col 1)
+          merges.push({ s: { r: startRow, c: 1 }, e: { r: startRow + rowCount - 1, c: 1 } });
+          // Merge Kiêm nhiệm (col 5)
+          merges.push({ s: { r: startRow, c: 5 }, e: { r: startRow + rowCount - 1, c: 5 } });
+          // Merge Tổng tiết (col 6)
+          merges.push({ s: { r: startRow, c: 6 }, e: { r: startRow + rowCount - 1, c: 6 } });
+          // Merge Thừa/thiếu (col 7)
+          merges.push({ s: { r: startRow, c: 7 }, e: { r: startRow + rowCount - 1, c: 7 } });
+          // Merge Ký xác nhận (col 8)
+          merges.push({ s: { r: startRow, c: 8 }, e: { r: startRow + rowCount - 1, c: 8 } });
         }
       }
     });
 
-    // Summary row
+    // 5. Summary Total Row
     const totalTeachingAll = workloads.reduce(
       (sum, w) => sum + w.teachingPeriods,
       0
@@ -1378,34 +1417,83 @@ export function exportActualWeeklyExcel(
       0
     );
     const totalPeriodsAll = workloads.reduce((sum, w) => sum + w.totalPeriods, 0);
+    const surplusCount = workloads.filter((w) => w.cumulativeBalance > 0).length;
+    const deficitCount = workloads.filter((w) => w.cumulativeBalance < 0).length;
 
     const summaryRowIdx = rows.length;
     rows.push([
       'TỔNG CỘNG',
       `${workloads.length} giáo viên`,
+      '',
       `Quy đổi kiêm nhiệm: ${totalReductionAll} tiết`,
       totalTeachingAll,
-      '',
+      `+${totalReductionAll} tiết KN`,
       totalPeriodsAll,
-      '',
+      `${surplusCount} thừa / ${deficitCount} thiếu`,
+      ''
     ]);
+    merges.push({ s: { r: summaryRowIdx, c: 0 }, e: { r: summaryRowIdx, c: 1 } });
 
+    // 6. Formal Administrative Signature Block (3 Cột Chuẩn Nghị định 30)
+    rows.push([]);
+    rows.push([]);
+
+    const signHeaderRow = rows.length;
+    rows.push([
+      'NGƯỜI LẬP BẢNG', '',
+      'TỔ TRƯỞNG CHUYÊN MÔN', '', '',
+      'HIỆU TRƯỞNG / PHÓ HIỆU TRƯỞNG DUYỆT', '', '', ''
+    ]);
+    rows.push([
+      '(Ký và ghi rõ họ tên)', '',
+      '(Ký và ghi rõ họ tên)', '', '',
+      '(Ký, đóng dấu và ghi rõ họ tên)', '', '', ''
+    ]);
+    merges.push({ s: { r: signHeaderRow, c: 0 }, e: { r: signHeaderRow, c: 1 } });
+    merges.push({ s: { r: signHeaderRow + 1, c: 0 }, e: { r: signHeaderRow + 1, c: 1 } });
+    merges.push({ s: { r: signHeaderRow, c: 2 }, e: { r: signHeaderRow, c: 4 } });
+    merges.push({ s: { r: signHeaderRow + 1, c: 2 }, e: { r: signHeaderRow + 1, c: 4 } });
+    merges.push({ s: { r: signHeaderRow, c: 5 }, e: { r: signHeaderRow, c: 8 } });
+    merges.push({ s: { r: signHeaderRow + 1, c: 5 }, e: { r: signHeaderRow + 1, c: 8 } });
+
+    // Blank rows for physical ink signature
+    rows.push([]);
+    rows.push([]);
+    rows.push([]);
+    rows.push([]);
+
+    const signNameRow = rows.length;
+    rows.push([
+      displayVP, '',
+      '', '', '',
+      displayP, '', '', ''
+    ]);
+    merges.push({ s: { r: signNameRow, c: 0 }, e: { r: signNameRow, c: 1 } });
+    merges.push({ s: { r: signNameRow, c: 2 }, e: { r: signNameRow, c: 4 } });
+    merges.push({ s: { r: signNameRow, c: 5 }, e: { r: signNameRow, c: 8 } });
+
+    // 7. Sheet Construction & Column Widths
     const ws = XLSX.utils.aoa_to_sheet(rows);
     ws['!merges'] = merges;
     ws['!cols'] = [
-      { wch: 14 }, // Tên GV
-      { wch: 32 }, // Lớp dạy
-      { wch: 36 }, // Môn dạy
-      { wch: 10 }, // Tiết dạy
-      { wch: 18 }, // Kiêm nhiệm
-      { wch: 12 }, // Tổng tiết
-      { wch: 22 }, // Thừa/thiếu
+      { wch: 6 },  // 0: STT
+      { wch: 22 }, // 1: Họ và tên GV
+      { wch: 24 }, // 2: Lớp dạy
+      { wch: 30 }, // 3: Môn dạy
+      { wch: 10 }, // 4: Tiết dạy
+      { wch: 24 }, // 5: Kiêm nhiệm & Giảm trừ
+      { wch: 12 }, // 6: Tổng tiết
+      { wch: 16 }, // 7: Thừa/thiếu
+      { wch: 18 }, // 8: Ký xác nhận
     ];
 
-    XLSX.utils.book_append_sheet(wb, ws, `TietThucDay_Tuan_${selectedWeek}`);
+    const cleanDept = displayDept.toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_');
+    const academicYearStr = config.academicYear ? config.academicYear.replace(/\s+/g, '_') : '2026_2027';
+
+    XLSX.utils.book_append_sheet(wb, ws, `Tuan_${selectedWeek}_${cleanDept.substring(0, 15)}`);
     XLSX.writeFile(
       wb,
-      `So_Tiet_Thuc_Day_THPT_Tuan_${selectedWeek}_${config.academicYear.replace(/\s+/g, '_')}.xlsx`
+      `So_Tiet_Thuc_Day_Tuan_${selectedWeek}_${cleanDept}_${academicYearStr}.xlsx`
     );
   });
 }
