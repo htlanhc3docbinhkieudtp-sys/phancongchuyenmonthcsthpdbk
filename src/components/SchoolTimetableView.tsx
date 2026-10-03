@@ -55,6 +55,7 @@ import { TimetableImportModal } from './TimetableImportModal';
 import { CopyTimetableModal } from './CopyTimetableModal';
 import { TeacherCollisionModal, TeacherCollisionDetail } from './TeacherCollisionModal';
 import { TimetableBackupModal } from './TimetableBackupModal';
+import { TimetableQualityAuditModal } from './TimetableQualityAuditModal';
 
 type CampusFilter = 'ALL' | 'THPT' | 'DBK' | 'TK';
 type ViewMode = 'BY_CLASS' | 'BY_TEACHER' | 'MASTER_GRID';
@@ -124,6 +125,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   const [filterOnlyConflicts, setFilterOnlyConflicts] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteAllSubsequentWeeks, setDeleteAllSubsequentWeeks] = useState(false);
+  const [isQualityModalOpen, setIsQualityModalOpen] = useState(false);
 
 
   // Selected single class for focused view in BY_CLASS
@@ -685,6 +687,17 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
 
             {/* Right: Week Actions */}
             <div className="flex flex-wrap items-center gap-2">
+              {/* Audit Quality Button (Always available for viewing) */}
+              <button
+                type="button"
+                onClick={() => setIsQualityModalOpen(true)}
+                className="px-3.5 py-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-indigo-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer ring-1 ring-purple-400/40"
+                title="Đánh giá tính thuận tiện, kiểm tra tiết lủng và nhận xét TKB hàng tuần"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-yellow-300 animate-pulse" />
+                <span>Đánh Giá Chất Lượng TKB Tuần {currentWeek}</span>
+              </button>
+
               {isAdmin ? (
                 <>
                   {currentWeek === 1 && activeSlots.length > 0 && (!weeklyTimetables[2] || !weeklyTimetables[2].slots || weeklyTimetables[2].slots.length === 0) && (
@@ -2094,6 +2107,26 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* Timetable Quality Audit Modal */}
+      <TimetableQualityAuditModal
+        isOpen={isQualityModalOpen}
+        onClose={() => setIsQualityModalOpen(false)}
+        currentWeek={currentWeek}
+        onSelectWeek={onSelectWeek}
+        weeklyTimetables={weeklyTimetables}
+        activeSlots={activeSlots}
+        teachers={teachers}
+        classes={classes}
+        subjects={subjects}
+        config={config}
+        onNavigateToTeacherSchedule={(tId) => {
+          setViewMode('BY_TEACHER');
+          setSelectedTeacherId(tId);
+          setSelectedCampus('ALL');
+          setSelectedSession('ALL');
+        }}
+      />
     </div>
   );
 };
