@@ -1267,7 +1267,8 @@ export function exportActualWeeklyExcel(
   config: SchoolConfig,
   useShortName: boolean = true,
   deptName?: string,
-  scopeLabel?: string
+  scopeLabel?: string,
+  leaderName?: string
 ) {
   import('xlsx').then((XLSX) => {
     const wb = XLSX.utils.book_new();
@@ -1279,14 +1280,13 @@ export function exportActualWeeklyExcel(
       ? deptName.toUpperCase()
       : 'TOÀN TRƯỜNG';
 
-    const displayVP = (config.vicePrincipalName && config.vicePrincipalName.includes('-'))
-      ? config.vicePrincipalName.split('-')[0].trim()
-      : (config.vicePrincipalName || 'Nguyễn Minh Trí');
-    const displayP = config.principalName || 'Lê Thành Cường';
+    // Auto-generate dynamic date string
+    const now = new Date();
+    const currentDateStr = `Đốc Binh Kiều, ngày ${now.getDate().toString().padStart(2, '0')} tháng ${(now.getMonth() + 1).toString().padStart(2, '0')} năm ${now.getFullYear()}`;
 
     // 1. Formal Vietnamese Administrative Header (Rows 0 - 2)
     // Left: Sở GD&ĐT, Tên trường, Tổ chuyên môn
-    // Right: Quốc hiệu, Tiêu ngữ, Địa danh & ngày tháng năm
+    // Right: Quốc hiệu, Tiêu ngữ (đã xóa ngày tháng ở trên vì chuyển xuống phần ký tên ở dưới)
     rows.push([
       'SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP', '', '', '',
       'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM', '', '', '', ''
@@ -1296,8 +1296,7 @@ export function exportActualWeeklyExcel(
       'Độc lập - Tự do - Hạnh phúc', '', '', '', ''
     ]);
     rows.push([
-      `TỔ CHUYÊN MÔN: ${displayDept}`, '', '', '',
-      `Đốc Binh Kiều, ngày ..... tháng ..... năm 2026`, '', '', '', ''
+      `TỔ CHUYÊN MÔN: ${displayDept}`, '', '', '', '', '', '', '', ''
     ]);
 
     // Merges for administrative header
@@ -1305,8 +1304,7 @@ export function exportActualWeeklyExcel(
     merges.push({ s: { r: 0, c: 4 }, e: { r: 0, c: 8 } });
     merges.push({ s: { r: 1, c: 0 }, e: { r: 1, c: 3 } });
     merges.push({ s: { r: 1, c: 4 }, e: { r: 1, c: 8 } });
-    merges.push({ s: { r: 2, c: 0 }, e: { r: 2, c: 3 } });
-    merges.push({ s: { r: 2, c: 4 }, e: { r: 2, c: 8 } });
+    merges.push({ s: { r: 2, c: 0 }, e: { r: 2, c: 8 } });
 
     rows.push([]); // Row 3 empty
 
@@ -1333,7 +1331,7 @@ export function exportActualWeeklyExcel(
       'Tiết dạy',
       'Kiêm nhiệm & Giảm trừ',
       'Tổng tiết',
-      'Thừa/thiếu đến tuần hiện tại',
+      `Thừa/thiếu đến tuần ${selectedWeek}`,
       'Ký xác nhận'
     ]);
 
@@ -1434,42 +1432,46 @@ export function exportActualWeeklyExcel(
     ]);
     merges.push({ s: { r: summaryRowIdx, c: 0 }, e: { r: summaryRowIdx, c: 1 } });
 
-    // 6. Formal Administrative Signature Block (3 Cột Chuẩn Nghị định 30)
+    // 6. Formal Administrative Signature Block (2 Cột Cân Đối, Cùng Hàng Ngang)
     rows.push([]);
     rows.push([]);
 
+    // Dòng ngày tháng năm tự động bên phải
+    const dateRow = rows.length;
+    rows.push([
+      '', '', '', '',
+      '', currentDateStr, '', '', ''
+    ]);
+    merges.push({ s: { r: dateRow, c: 5 }, e: { r: dateRow, c: 8 } });
+
+    // Dòng chức danh: TỔ TRƯỞNG CHUYÊN MÔN và PHÓ HIỆU TRƯỞNG ngang hàng nhau
     const signHeaderRow = rows.length;
     rows.push([
-      'NGƯỜI LẬP BẢNG', '',
-      'TỔ TRƯỞNG CHUYÊN MÔN', '', '',
-      'HIỆU TRƯỞNG / PHÓ HIỆU TRƯỞNG DUYỆT', '', '', ''
+      'TỔ TRƯỞNG CHUYÊN MÔN', '', '', '',
+      '', 'PHÓ HIỆU TRƯỞNG', '', '', ''
     ]);
     rows.push([
-      '(Ký và ghi rõ họ tên)', '',
-      '(Ký và ghi rõ họ tên)', '', '',
-      '(Ký, đóng dấu và ghi rõ họ tên)', '', '', ''
+      '(Ký và ghi rõ họ tên)', '', '', '',
+      '', '(Ký và ghi rõ họ tên)', '', '', ''
     ]);
-    merges.push({ s: { r: signHeaderRow, c: 0 }, e: { r: signHeaderRow, c: 1 } });
-    merges.push({ s: { r: signHeaderRow + 1, c: 0 }, e: { r: signHeaderRow + 1, c: 1 } });
-    merges.push({ s: { r: signHeaderRow, c: 2 }, e: { r: signHeaderRow, c: 4 } });
-    merges.push({ s: { r: signHeaderRow + 1, c: 2 }, e: { r: signHeaderRow + 1, c: 4 } });
+    merges.push({ s: { r: signHeaderRow, c: 0 }, e: { r: signHeaderRow, c: 3 } });
     merges.push({ s: { r: signHeaderRow, c: 5 }, e: { r: signHeaderRow, c: 8 } });
+    merges.push({ s: { r: signHeaderRow + 1, c: 0 }, e: { r: signHeaderRow + 1, c: 3 } });
     merges.push({ s: { r: signHeaderRow + 1, c: 5 }, e: { r: signHeaderRow + 1, c: 8 } });
 
-    // Blank rows for physical ink signature
+    // Các dòng trống để ký tay
     rows.push([]);
     rows.push([]);
     rows.push([]);
     rows.push([]);
 
+    // Dòng họ và tên
     const signNameRow = rows.length;
     rows.push([
-      displayVP, '',
-      '', '', '',
-      displayP, '', '', ''
+      leaderName || '', '', '', '',
+      '', 'Nguyễn Minh Trí', '', '', ''
     ]);
-    merges.push({ s: { r: signNameRow, c: 0 }, e: { r: signNameRow, c: 1 } });
-    merges.push({ s: { r: signNameRow, c: 2 }, e: { r: signNameRow, c: 4 } });
+    merges.push({ s: { r: signNameRow, c: 0 }, e: { r: signNameRow, c: 3 } });
     merges.push({ s: { r: signNameRow, c: 5 }, e: { r: signNameRow, c: 8 } });
 
     // 7. Sheet Construction & Column Widths

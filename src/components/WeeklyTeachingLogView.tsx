@@ -375,6 +375,15 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     return config.vicePrincipalName || 'Nguyễn Minh Trí';
   }, [config.vicePrincipalName]);
 
+  // Dynamic current date string for Vietnamese administrative documents: "Đốc Binh Kiều, ngày DD tháng MM năm YYYY"
+  const currentDateString = useMemo(() => {
+    const now = new Date();
+    const day = now.getDate().toString().padStart(2, '0');
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const year = now.getFullYear();
+    return `Đốc Binh Kiều, ngày ${day} tháng ${month} năm ${year}`;
+  }, []);
+
   // Build print groups by department for official administrative printouts
   const printDepartmentGroups = useMemo(() => {
     if (selectedDept !== 'ALL') {
@@ -480,13 +489,17 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
       const currentDeptName = selectedDept === 'ALL'
         ? 'Tất cả tổ chuyên môn'
         : (currentDeptObj ? currentDeptObj.name : 'Tổ chuyên môn');
+      const deptLeader = selectedDept !== 'ALL'
+        ? teachers.find((t) => t.departmentId === selectedDept && t.role === 'ToTruong')
+        : undefined;
       exportActualWeeklyExcel(
         selectedWeekNum,
         filteredWorkloads,
         config,
         useShortName,
         currentDeptName,
-        getScopeLabel(levelScope)
+        getScopeLabel(levelScope),
+        deptLeader ? deptLeader.name : ''
       );
     }
   };
@@ -1104,7 +1117,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                       className="border border-black px-3 py-2 text-center"
                       style={{ width: '135px' }}
                     >
-                      Thừa/thiếu tiết đến tuần hiện tại
+                      Thừa/thiếu đến tuần {selectedWeekNum}
                     </th>
                     <th
                       className="border border-black px-2 py-2 text-center bg-amber-300"
@@ -1349,6 +1362,42 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                 </tfoot>
               </table>
             </div>
+
+            {/* On-screen preview of signature block matching print/export */}
+            <div className="p-6 bg-slate-50/60 border-t border-slate-200 print:hidden">
+              <div className="max-w-3xl ml-auto mr-4">
+                <div className="grid grid-cols-2 text-center text-slate-800">
+                  <div></div>
+                  <div className="italic text-xs text-slate-600 mb-1.5 font-['Times_New_Roman',serif]">
+                    {currentDateString}
+                  </div>
+                  <div>
+                    <div className="font-bold text-xs uppercase tracking-wide text-slate-900 font-['Times_New_Roman',serif]">
+                      TỔ TRƯỞNG CHUYÊN MÔN
+                    </div>
+                    <div className="text-[11px] text-slate-500 italic mb-12 font-['Times_New_Roman',serif]">
+                      (Ký và ghi rõ họ tên)
+                    </div>
+                    <div className="font-bold text-xs text-slate-800 font-['Times_New_Roman',serif]">
+                      {selectedDept !== 'ALL'
+                        ? teachers.find((t) => t.departmentId === selectedDept && t.role === 'ToTruong')?.name || ''
+                        : ''}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-bold text-xs uppercase tracking-wide text-slate-900 font-['Times_New_Roman',serif]">
+                      PHÓ HIỆU TRƯỞNG
+                    </div>
+                    <div className="text-[11px] text-slate-500 italic mb-12 font-['Times_New_Roman',serif]">
+                      (Ký và ghi rõ họ tên)
+                    </div>
+                    <div className="font-bold text-xs text-slate-800 font-['Times_New_Roman',serif]">
+                      Nguyễn Minh Trí
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* =========================================================================
@@ -1392,9 +1441,6 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                             Độc lập - Tự do - Hạnh phúc
                           </div>
                           <div className="w-40 mx-auto my-0.5 border-b border-black" style={{ width: '160px', margin: '3px auto', borderBottom: '1.2px solid black' }}></div>
-                          <div className="text-[9pt] italic font-normal mt-0.5" style={{ fontSize: '9pt', fontStyle: 'italic' }}>
-                            Đốc Binh Kiều, ngày ..... tháng ..... năm 2026
-                          </div>
                         </td>
                       </tr>
                     </tbody>
@@ -1424,8 +1470,8 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                           <th style={{ width: '18%' }} className="text-center">Môn dạy</th>
                           <th style={{ width: '6.5%' }} className="text-center">Tiết dạy</th>
                           <th style={{ width: '14%' }} className="text-center">Kiêm nhiệm & Giảm trừ</th>
-                          <th style={{ width: '8%' }} className="text-center">Tổng tiết</th>
-                          <th style={{ width: '8.5%' }} className="text-center">Thừa/thiếu</th>
+                          <th style={{ width: '7.5%' }} className="text-center">Tổng tiết</th>
+                          <th style={{ width: '9%' }} className="text-center">Thừa/thiếu đến tuần {selectedWeekNum}</th>
                           <th style={{ width: '10%' }} className="text-center">Ký xác nhận</th>
                         </tr>
                       </thead>
@@ -1528,24 +1574,26 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                   <div className="mt-4 pt-2 text-black print-avoid-break">
                     <table className="w-full border-none text-center" style={{ borderCollapse: 'collapse' }}>
                       <tbody>
+                        {/* Dòng ngày tháng năm tự động - Nằm bên phải phía trên PHÓ HIỆU TRƯỞNG */}
                         <tr>
-                          <td className="w-1/3 p-0 border-none align-top" style={{ border: 'none' }}>
-                            <div className="font-bold uppercase text-[9.5pt]">NGƯỜI LẬP BẢNG</div>
-                            <div className="italic text-[8.5pt] mb-12">(Ký và ghi rõ họ tên)</div>
-                            <div className="font-bold text-[9.5pt]">{displayVicePrincipal}</div>
+                          <td className="w-1/2 p-0 border-none" style={{ border: 'none' }}></td>
+                          <td className="w-1/2 p-0 border-none" style={{ border: 'none' }}>
+                            <div className="italic text-[9pt] mb-1">
+                              {currentDateString}
+                            </div>
                           </td>
-                          <td className="w-1/3 p-0 border-none align-top" style={{ border: 'none' }}>
+                        </tr>
+                        {/* Dòng chức vụ: TỔ TRƯỞNG CHUYÊN MÔN và PHÓ HIỆU TRƯỞNG - Cùng 1 hàng ngang tuyệt đối */}
+                        <tr>
+                          <td className="w-1/2 p-0 border-none align-top" style={{ border: 'none' }}>
                             <div className="font-bold uppercase text-[9.5pt]">TỔ TRƯỞNG CHUYÊN MÔN</div>
                             <div className="italic text-[8.5pt] mb-12">(Ký và ghi rõ họ tên)</div>
-                            <div className="font-bold text-[9.5pt]">{group.leaderName || '(Ký và ghi rõ họ tên)'}</div>
+                            <div className="font-bold text-[9.5pt]">{group.leaderName || ''}</div>
                           </td>
-                          <td className="w-1/3 p-0 border-none align-top" style={{ border: 'none' }}>
-                            <div className="italic text-[8.5pt] mb-0.5">
-                              Đốc Binh Kiều, ngày ..... tháng ..... năm 2026
-                            </div>
-                            <div className="font-bold uppercase text-[9.5pt]">HIỆU TRƯỞNG</div>
-                            <div className="italic text-[8.5pt] mb-12">(Ký, đóng dấu và ghi rõ họ tên)</div>
-                            <div className="font-bold text-[9.5pt]">{config.principalName || 'Lê Thành Cường'}</div>
+                          <td className="w-1/2 p-0 border-none align-top" style={{ border: 'none' }}>
+                            <div className="font-bold uppercase text-[9.5pt]">PHÓ HIỆU TRƯỞNG</div>
+                            <div className="italic text-[8.5pt] mb-12">(Ký và ghi rõ họ tên)</div>
+                            <div className="font-bold text-[9.5pt]">Nguyễn Minh Trí</div>
                           </td>
                         </tr>
                       </tbody>
