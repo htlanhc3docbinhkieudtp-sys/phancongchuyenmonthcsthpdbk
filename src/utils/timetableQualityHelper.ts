@@ -311,45 +311,62 @@ export function analyzeTimetableQuality(
 
     const isCrossCampus = campusesSet.size > 1;
 
-    // TÍNH ĐIỂM CHẤT LƯỢNG (QUALITY SCORE) TRÊN THANG 100
-    // Điểm gốc = 100
-    // - Trừ 12 điểm cho mỗi tiết lủng (tiết chờ đợi giữa buổi)
-    // - Trừ 8 điểm cho mỗi buổi chỉ lên trường dạy đúng 1 tiết
-    // - Trừ 6 điểm cho mỗi ngày phải dạy cả Sáng + Chiều
-    // - Trừ 6 điểm nếu dạy liên 2 điểm trường
-    // - Điểm thưởng nhỏ nếu tiết xếp thành khối liền mạch (0 gap) và có ngày nghỉ trọn vẹn
-    let score = 100;
-    score -= totalGaps * 12;
-    score -= singlePeriodSessions * 8;
-    score -= splitShiftDays * 6;
-    if (isCrossCampus) score -= 6;
+    // TÍNH ĐIỂM CHẤT LƯỢNG THEO 3 TIÊU CHÍ CỐT LÕI (Thang 100):
+    // 1. Số ngày nghỉ (trọn ngày T2-T7): tối đa 40 điểm
+    let daysScore = 0;
+    if (freeDays >= 4) daysScore = 40;
+    else if (freeDays === 3) daysScore = 35;
+    else if (freeDays === 2) daysScore = 25;
+    else if (freeDays === 1) daysScore = 12;
+    else daysScore = 0;
 
-    // Thưởng nhẹ cho TKB gọn gàng
-    if (totalGaps === 0) score += 3;
-    if (freeDays >= 2) score += 2;
+    // 2. Số buổi nghỉ (trên 12 buổi): tối đa 35 điểm
+    let halfDaysScore = 0;
+    if (freeHalfDays >= 8) halfDaysScore = 35;
+    else if (freeHalfDays === 7) halfDaysScore = 30;
+    else if (freeHalfDays === 6) halfDaysScore = 25;
+    else if (freeHalfDays === 5) halfDaysScore = 18;
+    else if (freeHalfDays === 4) halfDaysScore = 12;
+    else halfDaysScore = 5;
+
+    // 3. Tiết lủng (trống giữa ca): tối đa 25 điểm
+    let gapsScore = 0;
+    if (totalGaps === 0) gapsScore = 25;
+    else if (totalGaps === 1) gapsScore = 18;
+    else if (totalGaps === 2) gapsScore = 10;
+    else if (totalGaps === 3) gapsScore = 4;
+    else gapsScore = 0;
+
+    let score = daysScore + halfDaysScore + gapsScore;
+
+    // Trừ phụ trợ rất nhẹ nếu có buổi chỉ dạy 1 tiết đơn độc (tối đa -4đ)
+    if (singlePeriodSessions > 0) {
+      score -= Math.min(4, singlePeriodSessions * 2);
+    }
 
     score = Math.max(5, Math.min(100, Math.round(score)));
 
-    // Xếp loại TKB
+    // Xếp loại TKB theo 3 tiêu chí cốt lõi:
+    // Tuyệt đối không xếp là xấu nếu có nhiều ngày nghỉ (>= 2 ngày), nhiều buổi nghỉ (>= 6 buổi) và ít tiết lủng!
     let tier: QualityTier = 'GOOD';
-    let tierLabel = 'Thuận lợi';
+    let tierLabel = 'Thuận lợi / Đẹp';
     let tierColor = 'text-blue-700 bg-blue-50 border-blue-200';
 
-    if (score >= 90) {
+    if (freeDays >= 3 || (freeDays >= 2 && freeHalfDays >= 6 && totalGaps <= 1)) {
       tier = 'EXCELLENT';
       tierLabel = 'Rất đẹp / Tối ưu';
       tierColor = 'text-emerald-700 bg-emerald-50 border-emerald-300';
-    } else if (score >= 75) {
+    } else if (freeDays >= 2 && totalGaps <= 2) {
       tier = 'GOOD';
       tierLabel = 'Thuận lợi / Đẹp';
       tierColor = 'text-blue-700 bg-blue-50 border-blue-200';
-    } else if (score >= 60) {
+    } else if (freeDays >= 1 && totalGaps <= 2 && freeHalfDays >= 4) {
       tier = 'AVERAGE';
       tierLabel = 'Bình thường';
       tierColor = 'text-amber-700 bg-amber-50 border-amber-200';
     } else {
       tier = 'POOR';
-      tierLabel = 'Bất tiện / Cần tối ưu';
+      tierLabel = 'Bất tiện / Cần cân đối';
       tierColor = 'text-rose-700 bg-rose-50 border-rose-200';
     }
 
@@ -427,11 +444,27 @@ export function analyzeTimetableQuality(
     });
   });
 
-  // Sắp xếp
-  metrics.sort((a, b) => b.score - a.score);
+  // Sắp xếp danh sách toàn trường theo đúng 3 tiêu chí chỉ đạo:
+  // 1/ Số ngày nghỉ (trọn ngày) từ CAO xuống THẤP
+  // 2/ Số buổi nghỉ (buổi không có tiết nào) từ CAO xuống THẤP
+  // 3/ Số tiết lủng (tiết trống) từ THẤP lên CAO (ít lủng hơn xếp trước)
+  metrics.sort((a, b) => {
+    if (b.freeDays !== a.freeDays) return b.freeDays - a.freeDays;
+    if (b.freeHalfDays !== a.freeHalfDays) return b.freeHalfDays - a.freeHalfDays;
+    if (a.totalGaps !== b.totalGaps) return a.totalGaps - b.totalGaps;
+    return b.score - a.score;
+  });
 
-  const topConvenientTeachers = metrics.filter(m => m.score >= 85).slice(0, 15);
-  const topInconvenientTeachers = [...metrics].reverse().filter(m => m.score <= 70).slice(0, 15);
+  // Top thuận lợi (TKB đẹp nhất theo 3 tiêu chí)
+  const topConvenientTeachers = metrics.slice(0, 15);
+
+  // Top bất tiện nhất (cần cân đối): sắp xếp từ người bị xấu nhất (ít ngày nghỉ nhất, ít buổi nghỉ nhất, nhiều tiết lủng nhất)
+  const topInconvenientTeachers = [...metrics].sort((a, b) => {
+    if (a.freeDays !== b.freeDays) return a.freeDays - b.freeDays;
+    if (a.freeHalfDays !== b.freeHalfDays) return a.freeHalfDays - b.freeHalfDays;
+    if (b.totalGaps !== a.totalGaps) return b.totalGaps - a.totalGaps;
+    return a.score - b.score;
+  }).slice(0, 15);
 
   const totalGapsInSchool = metrics.reduce((s, m) => s + m.totalGaps, 0);
   const averageScore = Math.round(metrics.reduce((s, m) => s + m.score, 0) / (metrics.length || 1));
@@ -682,32 +715,54 @@ export function analyzeSemesterQuality(
     const avgFreeHalfDays = Math.round((sumFreeHalfDays / evaluatedCount) * 10) / 10;
     const avgGaps = Math.round((sumGaps / evaluatedCount) * 10) / 10;
 
-    // Determine if teacher is frequently disadvantaged / frequently bad
-    // Criteria for "Thường xuyên bị TKB xấu":
-    // 1. badWeeksCount >= 40% số tuần đã xếp
-    // 2. OR avgScore < 68
-    // 3. OR (avgFreeDays <= 1.2 && avgPeriods <= 17 && sumGaps >= 5)
-    // 4. OR sumGaps >= evaluatedCount * 1.8
-    const isFrequentlyBad = (badCount >= Math.ceil(evaluatedCount * 0.4)) ||
-      (avgScore < 68) ||
-      (avgFreeDays <= 1.2 && avgPeriods <= 17 && sumGaps >= 4) ||
-      (sumGaps >= evaluatedCount * 1.6);
+    // Điểm chất lượng trung bình học kỳ theo 3 tiêu chí cốt lõi:
+    let daysScore = 0;
+    if (avgFreeDays >= 3.5) daysScore = 40;
+    else if (avgFreeDays >= 2.5) daysScore = 35;
+    else if (avgFreeDays >= 1.8) daysScore = 25;
+    else if (avgFreeDays >= 0.8) daysScore = 12;
+    else daysScore = 0;
+
+    let halfDaysScore = 0;
+    if (avgFreeHalfDays >= 7.5) halfDaysScore = 35;
+    else if (avgFreeHalfDays >= 6.5) halfDaysScore = 30;
+    else if (avgFreeHalfDays >= 5.5) halfDaysScore = 25;
+    else if (avgFreeHalfDays >= 4.5) halfDaysScore = 18;
+    else if (avgFreeHalfDays >= 3.5) halfDaysScore = 12;
+    else halfDaysScore = 5;
+
+    let gapsScore = 0;
+    if (avgGaps <= 0.3) gapsScore = 25;
+    else if (avgGaps <= 1.0) gapsScore = 18;
+    else if (avgGaps <= 1.8) gapsScore = 10;
+    else if (avgGaps <= 2.5) gapsScore = 4;
+    else gapsScore = 0;
+
+    const semesterScore = Math.max(5, Math.min(100, Math.round(daysScore + halfDaysScore + gapsScore)));
+
+    // Xác định giáo viên thực sự thường xuyên bị TKB xấu theo 3 tiêu chí:
+    // Tuyệt đối không xếp là xấu nếu có nhiều ngày nghỉ (>= 2 ngày) và ít tiết lủng!
+    const isFrequentlyBad = 
+      (avgFreeDays < 1.0 && avgPeriods <= 22) ||
+      (avgFreeDays <= 1.2 && avgGaps >= 1.5) ||
+      (avgGaps >= 2.2) ||
+      (semesterScore < 50 && avgFreeDays < 2.0);
 
     let overallStatus: TeacherSemesterQualityMetric['overallStatus'] = 'GOOD';
-    let statusLabel = 'TKB Tương đối thuận lợi';
+    let statusLabel = 'TKB Thuận Lợi / Đẹp';
     let statusColor = 'text-blue-700 bg-blue-50 border-blue-200';
 
     if (isFrequentlyBad) {
       overallStatus = 'FREQUENTLY_BAD';
       statusLabel = 'Thường xuyên bị xấu (Cần cân đối)';
       statusColor = 'text-rose-700 bg-rose-50 border-rose-300 font-black';
-    } else if (avgScore >= 85 && avgFreeDays >= 2 && avgGaps <= 0.8) {
+    } else if (avgFreeDays >= 2.5 || (avgFreeDays >= 1.8 && avgFreeHalfDays >= 6.0 && avgGaps <= 1.0)) {
       overallStatus = 'EXCELLENT';
       statusLabel = 'TKB Rất Đẹp & Tối Ưu';
       statusColor = 'text-emerald-700 bg-emerald-50 border-emerald-300';
-    } else if (avgScore >= 75) {
+    } else if (avgFreeDays >= 1.8 && avgGaps <= 2.0) {
       overallStatus = 'GOOD';
-      statusLabel = 'TKB Thuận Lợi';
+      statusLabel = 'TKB Thuận Lợi / Đẹp';
       statusColor = 'text-blue-700 bg-blue-50 border-blue-200';
     } else {
       overallStatus = 'AVERAGE';
@@ -776,14 +831,25 @@ export function analyzeSemesterQuality(
     });
   });
 
-  // Sort teachers: frequently bad teachers first (lowest avgScore, highest gaps, lowest free days)
+  // Sắp xếp danh sách toàn trường theo đúng 3 tiêu chí chỉ đạo:
+  // 1/ Số ngày nghỉ TB/tuần: từ CAO xuống THẤP
+  // 2/ Số buổi nghỉ TB/tuần: từ CAO xuống THẤP
+  // 3/ Số tiết lủng: từ THẤP lên CAO (ít lủng hơn xếp trước)
   teacherMetrics.sort((a, b) => {
-    if (a.isFrequentlyBad && !b.isFrequentlyBad) return -1;
-    if (!a.isFrequentlyBad && b.isFrequentlyBad) return 1;
-    return a.avgScore - b.avgScore;
+    if (b.avgFreeDaysPerWeek !== a.avgFreeDaysPerWeek) return b.avgFreeDaysPerWeek - a.avgFreeDaysPerWeek;
+    if (b.avgFreeHalfDaysPerWeek !== a.avgFreeHalfDaysPerWeek) return b.avgFreeHalfDaysPerWeek - a.avgFreeHalfDaysPerWeek;
+    if (a.totalGaps !== b.totalGaps) return a.totalGaps - b.totalGaps;
+    return b.avgScore - a.avgScore;
   });
 
-  const frequentlyBadTeachers = teacherMetrics.filter(t => t.isFrequentlyBad);
+  // Frequently bad teachers (cần cân đối): sắp xếp từ người bị xấu nhất (ít ngày nghỉ nhất, ít buổi nghỉ nhất, nhiều tiết lủng nhất)
+  const frequentlyBadTeachers = teacherMetrics
+    .filter(t => t.isFrequentlyBad)
+    .sort((a, b) => {
+      if (a.avgFreeDaysPerWeek !== b.avgFreeDaysPerWeek) return a.avgFreeDaysPerWeek - b.avgFreeDaysPerWeek;
+      if (a.avgFreeHalfDaysPerWeek !== b.avgFreeHalfDaysPerWeek) return a.avgFreeHalfDaysPerWeek - b.avgFreeHalfDaysPerWeek;
+      return b.totalGaps - a.totalGaps;
+    });
   const totalGapsInSemester = teacherMetrics.reduce((s, t) => s + t.totalGaps, 0);
   const avgScore = Math.round(teacherMetrics.reduce((s, t) => s + t.avgScore, 0) / (teacherMetrics.length || 1));
 

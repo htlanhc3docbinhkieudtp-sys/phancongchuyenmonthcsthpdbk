@@ -168,6 +168,14 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
         if (!matchName && !matchCode && !matchSub) return false;
       }
       return true;
+    }).sort((a, b) => {
+      // 1/ Số ngày nghỉ (trọn ngày) từ CAO xuống THẤP
+      if (b.freeDays !== a.freeDays) return b.freeDays - a.freeDays;
+      // 2/ Số buổi nghỉ từ CAO xuống THẤP
+      if (b.freeHalfDays !== a.freeHalfDays) return b.freeHalfDays - a.freeHalfDays;
+      // 3/ Số tiết lủng từ THẤP lên CAO (ít lủng hơn xếp trước)
+      if (a.totalGaps !== b.totalGaps) return a.totalGaps - b.totalGaps;
+      return b.score - a.score;
     });
   }, [weeklySummary.allTeachers, selectedDeptFilter, selectedTierFilter, selectedWorkloadFilter, searchTerm, teachers]);
 
@@ -193,27 +201,50 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
         if (!matchName && !matchCode && !matchSub) return false;
       }
       return true;
+    }).sort((a, b) => {
+      // 1/ Số ngày nghỉ TB/tuần từ CAO xuống THẤP
+      if (b.avgFreeDaysPerWeek !== a.avgFreeDaysPerWeek) return b.avgFreeDaysPerWeek - a.avgFreeDaysPerWeek;
+      // 2/ Số buổi nghỉ TB/tuần từ CAO xuống THẤP
+      if (b.avgFreeHalfDaysPerWeek !== a.avgFreeHalfDaysPerWeek) return b.avgFreeHalfDaysPerWeek - a.avgFreeHalfDaysPerWeek;
+      // 3/ Số tiết lủng từ THẤP lên CAO (ít lủng hơn xếp trước)
+      if (a.totalGaps !== b.totalGaps) return a.totalGaps - b.totalGaps;
+      return b.avgScore - a.avgScore;
     });
   }, [semesterSummary.allTeachers, selectedDeptFilter, selectedTierFilter, selectedWorkloadFilter, searchTerm, teachers]);
 
-  // Frequently bad teachers list for Tab BALANCING
+  // Frequently bad teachers list for Tab BALANCING (Những người có TKB xấu nhất cần cân đối)
   const balancingList = useMemo(() => {
     if (auditScope === 'WEEK') {
       return weeklySummary.allTeachers
         .filter(t => {
           const teacherObj = teachers.find(tch => tch.id === t.teacherId);
           if (teacherObj && isSchoolLeader(teacherObj)) return false;
-          return t.score <= 74 || t.totalGaps >= 2 || (t.totalPeriods <= 16 && t.freeDays <= 1) || t.singlePeriodSessions > 0;
+          // Tuyệt đối không xếp là xấu nếu được nghỉ nhiều ngày (>= 2 ngày) và nhiều buổi (>= 6 buổi) và ít tiết lủng (<= 1)
+          if (t.freeDays >= 2 && t.freeHalfDays >= 6 && t.totalGaps <= 1) return false;
+          // Thực sự bị xấu: 0 ngày nghỉ (phải dạy 6 ngày) HOẶC ít ngày & ít buổi (<=1 ngày & <=4 buổi) HOẶC dính >= 3 tiết lủng HOẶC ít tiết mà rải nhiều ngày
+          return t.freeDays === 0 || (t.freeDays <= 1 && t.freeHalfDays <= 4) || t.totalGaps >= 3 || (t.totalPeriods <= 16 && t.freeDays <= 1) || t.score < 50;
         })
-        .sort((a, b) => a.score - b.score);
+        .sort((a, b) => {
+          // Xếp người bị xấu nhất lên đầu: 1. Ít ngày nghỉ nhất -> 2. Ít buổi nghỉ nhất -> 3. Nhiều tiết lủng nhất
+          if (a.freeDays !== b.freeDays) return a.freeDays - b.freeDays;
+          if (a.freeHalfDays !== b.freeHalfDays) return a.freeHalfDays - b.freeHalfDays;
+          return b.totalGaps - a.totalGaps;
+        });
     } else {
       return semesterSummary.allTeachers
         .filter(t => {
           const teacherObj = teachers.find(tch => tch.id === t.teacherId);
           if (teacherObj && isSchoolLeader(teacherObj)) return false;
-          return t.isFrequentlyBad || t.avgScore <= 74 || t.avgGapsPerWeek >= 1.5 || t.badWeeksCount >= 1;
+          // Tuyệt đối không xếp là xấu nếu được nghỉ nhiều ngày và ít tiết lủng
+          if (t.avgFreeDaysPerWeek >= 2.0 && t.totalGaps <= 3) return false;
+          return t.isFrequentlyBad || t.avgFreeDaysPerWeek < 1.0 || (t.avgFreeDaysPerWeek <= 1.2 && t.avgGapsPerWeek >= 1.5) || t.avgGapsPerWeek >= 2.2;
         })
-        .sort((a, b) => a.avgScore - b.avgScore);
+        .sort((a, b) => {
+          // Xếp người bị xấu nhất lên đầu: 1. Ít ngày nghỉ nhất -> 2. Ít buổi nghỉ nhất -> 3. Nhiều tiết lủng nhất
+          if (a.avgFreeDaysPerWeek !== b.avgFreeDaysPerWeek) return a.avgFreeDaysPerWeek - b.avgFreeDaysPerWeek;
+          if (a.avgFreeHalfDaysPerWeek !== b.avgFreeHalfDaysPerWeek) return a.avgFreeHalfDaysPerWeek - b.avgFreeHalfDaysPerWeek;
+          return b.totalGaps - a.totalGaps;
+        });
     }
   }, [auditScope, weeklySummary.allTeachers, semesterSummary.allTeachers, teachers]);
 
@@ -1031,6 +1062,28 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                 </select>
               </div>
 
+              {/* 3-Criteria Sorting Order Guidance Banner */}
+              <div className="bg-gradient-to-r from-emerald-50 via-blue-50 to-amber-50 border border-slate-200 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2.5 text-xs shadow-2xs">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-black text-slate-900 flex items-center gap-1.5 text-xs">
+                    <Scale className="w-4 h-4 text-indigo-600" />
+                    <span>Thứ tự sắp xếp chuẩn hóa:</span>
+                  </span>
+                  <span className="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-900 font-extrabold text-[11px] border border-emerald-300 flex items-center gap-1">
+                    <span>1️⃣</span> <span>Số ngày nghỉ (Cao &rarr; Thấp)</span>
+                  </span>
+                  <span className="px-2.5 py-1 rounded-xl bg-blue-100 text-blue-900 font-extrabold text-[11px] border border-blue-300 flex items-center gap-1">
+                    <span>2️⃣</span> <span>Số buổi nghỉ (Cao &rarr; Thấp)</span>
+                  </span>
+                  <span className="px-2.5 py-1 rounded-xl bg-amber-100 text-amber-900 font-extrabold text-[11px] border border-amber-300 flex items-center gap-1">
+                    <span>3️⃣</span> <span>Số tiết lủng (Thấp &rarr; Cao)</span>
+                  </span>
+                </div>
+                <span className="text-[11px] text-slate-600 italic">
+                  *Giáo viên nghỉ nhiều ngày, nhiều buổi và ít tiết lủng được xếp đầu danh sách (TKB tốt nhất)
+                </span>
+              </div>
+
               {/* Data Table */}
               <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
                 <div className="overflow-x-auto max-h-[480px]">
@@ -1046,14 +1099,23 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                         <th className="py-2.5 px-3 text-center bg-indigo-50/70 text-indigo-950 font-black border-r border-indigo-200">
                           Số Lớp
                         </th>
-                        <th className="py-2.5 px-3 text-center bg-emerald-50 text-emerald-950 border-x border-emerald-200">
-                          1. Số Ngày Nghỉ
+                        <th className="py-2.5 px-3 text-center bg-emerald-100/70 text-emerald-950 border-x border-emerald-300">
+                          <div className="flex flex-col items-center">
+                            <span>1. Số Ngày Nghỉ</span>
+                            <span className="text-[9px] font-black text-emerald-700 uppercase">(Cao &rarr; Thấp)</span>
+                          </div>
                         </th>
-                        <th className="py-2.5 px-3 text-center bg-blue-50 text-blue-950 border-x border-blue-200">
-                          2. Số Buổi Nghỉ
+                        <th className="py-2.5 px-3 text-center bg-blue-100/70 text-blue-950 border-x border-blue-300">
+                          <div className="flex flex-col items-center">
+                            <span>2. Số Buổi Nghỉ</span>
+                            <span className="text-[9px] font-black text-blue-700 uppercase">(Cao &rarr; Thấp)</span>
+                          </div>
                         </th>
-                        <th className="py-2.5 px-3 text-center bg-amber-50 text-amber-950 border-x border-amber-200">
-                          3. Tiết Lủng (Trống)
+                        <th className="py-2.5 px-3 text-center bg-amber-100/70 text-amber-950 border-x border-amber-300">
+                          <div className="flex flex-col items-center">
+                            <span>3. Tiết Lủng (Trống)</span>
+                            <span className="text-[9px] font-black text-amber-700 uppercase">(Thấp &rarr; Cao)</span>
+                          </div>
                         </th>
                         <th className="py-2.5 px-2 text-center">Buổi 1 Tiết</th>
                         <th className="py-2.5 px-3 text-center">Điểm & Xếp Loại</th>
