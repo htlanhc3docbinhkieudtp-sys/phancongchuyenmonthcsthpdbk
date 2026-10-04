@@ -40,6 +40,16 @@ export interface TeacherQualityMetric {
   freeDays: number; // Số ngày nghỉ hoàn toàn trong tuần (Thứ 2 -> Thứ 7)
   freeHalfDays: number; // Số buổi nghỉ trọn vẹn (trong tổng số 12 buổi sáng/chiều)
 
+  // Days off details
+  taughtDayList: number[];
+  offDayList: number[];
+  offDayNames: string[];
+  isMondayOff: boolean;
+  isSaturdayOff: boolean;
+  isFridayOff: boolean;
+  hasWeekendCombo: boolean;
+  hasDoubleCombo: boolean;
+
   // Quality issues (Khuyết tật TKB)
   totalGaps: number; // Tổng số tiết lủng (tiết trống chờ giữa buổi)
   gapDetails: GapDetail[]; // Chi tiết từng tiết lủng
@@ -96,6 +106,12 @@ export interface SchoolQualitySummary {
   topConvenientTeachers: TeacherQualityMetric[];
   topInconvenientTeachers: TeacherQualityMetric[];
   allTeachers: TeacherQualityMetric[];
+
+  // Days off audit lists
+  mondayOffTeachers: TeacherQualityMetric[];
+  saturdayOffTeachers: TeacherQualityMetric[];
+  bothMondaySaturdayOffTeachers: TeacherQualityMetric[];
+  zeroOffDayTeachers: TeacherQualityMetric[];
 }
 
 const DAY_NAMES: Record<number, string> = {
@@ -256,6 +272,16 @@ export function analyzeTimetableQuality(
     const freeDays = Math.max(0, 6 - daysWithTeaching); // Thứ 2 đến Thứ 7 (6 ngày)
     const freeHalfDays = Math.max(0, 12 - sessionCount); // 12 buổi
 
+    const taughtDayList = Object.keys(daySessionsMap).map(d => parseInt(d, 10)).sort((a, b) => a - b);
+    const allDays = [2, 3, 4, 5, 6, 7];
+    const offDayList = allDays.filter(d => !taughtDayList.includes(d));
+    const offDayNames = offDayList.map(d => DAY_NAMES[d]);
+    const isMondayOff = offDayList.includes(2);
+    const isSaturdayOff = offDayList.includes(7);
+    const isFridayOff = offDayList.includes(6);
+    const hasWeekendCombo = isSaturdayOff || isMondayOff;
+    const hasDoubleCombo = isSaturdayOff && isMondayOff;
+
     const isCrossCampus = campusesSet.size > 1;
 
     // TÍNH ĐIỂM CHẤT LƯỢNG (QUALITY SCORE) TRÊN THANG 100
@@ -341,6 +367,14 @@ export function analyzeTimetableQuality(
       daysWithTeaching,
       freeDays,
       freeHalfDays,
+      taughtDayList,
+      offDayList,
+      offDayNames,
+      isMondayOff,
+      isSaturdayOff,
+      isFridayOff,
+      hasWeekendCombo,
+      hasDoubleCombo,
       totalGaps,
       gapDetails,
       singlePeriodSessions,
@@ -402,7 +436,160 @@ export function analyzeTimetableQuality(
     departmentStats,
     topConvenientTeachers,
     topInconvenientTeachers,
-    allTeachers: metrics
+    allTeachers: metrics,
+
+    // Days off audit lists
+    mondayOffTeachers: metrics.filter(m => m.isMondayOff),
+    saturdayOffTeachers: metrics.filter(m => m.isSaturdayOff),
+    bothMondaySaturdayOffTeachers: metrics.filter(m => m.hasDoubleCombo),
+    zeroOffDayTeachers: metrics.filter(m => m.freeDays === 0)
+  };
+}
+
+export interface TeacherMultiWeekDaysOffRecord {
+  teacherId: string;
+  teacherName: string;
+  teacherCode: string;
+  departmentName: string;
+  mainSubjectName: string;
+  totalPeriods: number;
+  mondayOffWeeks: number[];
+  saturdayOffWeeks: number[];
+  bothOffWeeks: number[];
+  zeroOffWeeks: number[];
+  avgOffDays: number;
+  streakPattern: 'ALWAYS_MONDAY_OFF' | 'ALWAYS_SATURDAY_OFF' | 'ALWAYS_BOTH_OFF' | 'NEVER_OFF' | 'BALANCED';
+  streakDescription: string;
+  notes: string;
+}
+
+export interface MultiWeekDaysOffSummary {
+  checkedWeeks: number[];
+  records: TeacherMultiWeekDaysOffRecord[];
+  alwaysMondayOffCount: number;
+  alwaysSaturdayOffCount: number;
+  alwaysBothOffCount: number;
+  neverOffCount: number;
+}
+
+/**
+ * Phân tích đối soát ngày nghỉ Thứ Hai, Thứ Bảy và số ngày nghỉ qua nhiều tuần liên tiếp
+ */
+export function analyzeMultiWeekDaysOff(
+  weeklyTimetables: Record<number, { slots?: TimetableSlot[] }>,
+  teachers: Teacher[],
+  classes: ClassGroup[],
+  subjects: Subject[],
+  weeksToCheck: number[] = [1, 2, 3, 4, 5]
+): MultiWeekDaysOffSummary {
+  const teacherMap = new Map<string, Teacher>(teachers.map(t => [t.id, t]));
+  const subjectMap = new Map<string, Subject>(subjects.map(s => [s.id, s]));
+
+  const deptMap: Record<string, string> = {
+    'dept-toan': 'Tổ Toán',
+    'dept-ngu-van': 'Tổ Ngữ Văn',
+    'dept-khxh': 'Tổ Lịch sử - Địa lý - GDCD',
+    'dept-khtn': 'Tổ Lý - Hóa - Sinh - Công nghệ',
+    'dept-tieng-anh-tin': 'Tổ Tiếng Anh - Tin học',
+    'dept-gdtc-qpan-nt': 'Tổ GDTC - QPAN - Nghệ thuật',
+    'dept-bgh': 'Ban Giám Hiệu'
+  };
+
+  const records: TeacherMultiWeekDaysOffRecord[] = [];
+
+  teachers.forEach(teacher => {
+    // Check if teacher has teaching periods in any of the checked weeks
+    let hasAnySlots = false;
+    let totalPeriodsW1 = 0;
+    const mondayOffWeeks: number[] = [];
+    const saturdayOffWeeks: number[] = [];
+    const bothOffWeeks: number[] = [];
+    const zeroOffWeeks: number[] = [];
+    let totalOffDaysSum = 0;
+    let weeksWithSlotsCount = 0;
+
+    weeksToCheck.forEach(w => {
+      const slots = weeklyTimetables[w]?.slots || [];
+      const tSlots = slots.filter(s => s.teacherId === teacher.id);
+      if (tSlots.length > 0) {
+        hasAnySlots = true;
+        weeksWithSlotsCount++;
+        if (w === 1) totalPeriodsW1 = tSlots.length;
+
+        const taughtDays = new Set(tSlots.map(s => s.dayOfWeek));
+        const allDays = [2, 3, 4, 5, 6, 7];
+        const offDays = allDays.filter(d => !taughtDays.has(d));
+        totalOffDaysSum += offDays.length;
+
+        const isMonOff = !taughtDays.has(2);
+        const isSatOff = !taughtDays.has(7);
+
+        if (isMonOff) mondayOffWeeks.push(w);
+        if (isSatOff) saturdayOffWeeks.push(w);
+        if (isMonOff && isSatOff) bothOffWeeks.push(w);
+        if (offDays.length === 0) zeroOffWeeks.push(w);
+      }
+    });
+
+    if (!hasAnySlots) return;
+
+    const avgOffDays = weeksWithSlotsCount > 0 ? Math.round((totalOffDaysSum / weeksWithSlotsCount) * 10) / 10 : 0;
+    const totalChecked = weeksWithSlotsCount || 1;
+
+    let streakPattern: 'ALWAYS_MONDAY_OFF' | 'ALWAYS_SATURDAY_OFF' | 'ALWAYS_BOTH_OFF' | 'NEVER_OFF' | 'BALANCED' = 'BALANCED';
+    let streakDescription = `Nghỉ bình thường (trung bình ${avgOffDays} ngày/tuần)`;
+
+    if (bothOffWeeks.length >= Math.ceil(totalChecked * 0.8)) {
+      streakPattern = 'ALWAYS_BOTH_OFF';
+      streakDescription = `Nghỉ cả Thứ 2 & Thứ 7 liên tục (${bothOffWeeks.length}/${totalChecked} tuần)`;
+    } else if (mondayOffWeeks.length >= Math.ceil(totalChecked * 0.8)) {
+      streakPattern = 'ALWAYS_MONDAY_OFF';
+      streakDescription = `Nghỉ Thứ 2 liên tục (${mondayOffWeeks.length}/${totalChecked} tuần)`;
+    } else if (saturdayOffWeeks.length >= Math.ceil(totalChecked * 0.8)) {
+      streakPattern = 'ALWAYS_SATURDAY_OFF';
+      streakDescription = `Nghỉ Thứ 7 liên tục (${saturdayOffWeeks.length}/${totalChecked} tuần)`;
+    } else if (zeroOffWeeks.length >= Math.ceil(totalChecked * 0.8)) {
+      streakPattern = 'NEVER_OFF';
+      streakDescription = `Đi dạy cả 6 ngày, không có ngày nghỉ (${zeroOffWeeks.length}/${totalChecked} tuần)`;
+    }
+
+    records.push({
+      teacherId: teacher.id,
+      teacherName: teacher.name,
+      teacherCode: teacher.code || '',
+      departmentName: deptMap[teacher.departmentId] || teacher.departmentId,
+      mainSubjectName: teacher.notes?.split('-')?.[1]?.trim() || 'Chuyên môn',
+      totalPeriods: totalPeriodsW1 || 0,
+      mondayOffWeeks,
+      saturdayOffWeeks,
+      bothOffWeeks,
+      zeroOffWeeks,
+      avgOffDays,
+      streakPattern,
+      streakDescription,
+      notes: teacher.notes || ''
+    });
+  });
+
+  records.sort((a, b) => {
+    // Sort: both off first, then never off, then sat off, then mon off, then avg off days
+    const orderScore = (r: TeacherMultiWeekDaysOffRecord) => {
+      if (r.streakPattern === 'ALWAYS_BOTH_OFF') return 100;
+      if (r.streakPattern === 'NEVER_OFF') return 90;
+      if (r.streakPattern === 'ALWAYS_SATURDAY_OFF') return 80;
+      if (r.streakPattern === 'ALWAYS_MONDAY_OFF') return 70;
+      return r.avgOffDays;
+    };
+    return orderScore(b) - orderScore(a);
+  });
+
+  return {
+    checkedWeeks: weeksToCheck,
+    records,
+    alwaysMondayOffCount: records.filter(r => r.streakPattern === 'ALWAYS_MONDAY_OFF').length,
+    alwaysSaturdayOffCount: records.filter(r => r.streakPattern === 'ALWAYS_SATURDAY_OFF').length,
+    alwaysBothOffCount: records.filter(r => r.streakPattern === 'ALWAYS_BOTH_OFF').length,
+    neverOffCount: records.filter(r => r.streakPattern === 'NEVER_OFF').length
   };
 }
 

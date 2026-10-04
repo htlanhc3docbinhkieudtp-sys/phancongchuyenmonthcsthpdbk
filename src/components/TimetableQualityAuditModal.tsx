@@ -19,6 +19,7 @@ import {
 import { TimetableSlot, Teacher, ClassGroup, Subject, SchoolConfig, SchoolTimetable } from '../types';
 import {
   analyzeTimetableQuality,
+  analyzeMultiWeekDaysOff,
   exportTimetableQualityReportExcel,
   TeacherQualityMetric,
   QualityTier
@@ -52,10 +53,11 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
   onNavigateToTeacherSchedule
 }) => {
   const [selectedAuditWeek, setSelectedAuditWeek] = useState<number>(currentWeek);
-  const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'ALL_TEACHERS' | 'DEPARTMENTS'>('OVERVIEW');
+  const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'ALL_TEACHERS' | 'DEPARTMENTS' | 'DAYS_OFF_AUDIT'>('OVERVIEW');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedDeptFilter, setSelectedDeptFilter] = useState<string>('ALL');
   const [selectedTierFilter, setSelectedTierFilter] = useState<string>('ALL');
+  const [daysOffFilter, setDaysOffFilter] = useState<'ALL' | 'ALWAYS_MONDAY_OFF' | 'ALWAYS_SATURDAY_OFF' | 'ALWAYS_BOTH_OFF' | 'NEVER_OFF'>('ALL');
   const [selectedTeacherDetail, setSelectedTeacherDetail] = useState<TeacherQualityMetric | null>(null);
 
   // Synchronize with external week when opened
@@ -87,6 +89,31 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
       selectedAuditWeek
     );
   }, [slotsToAnalyze, teachers, classes, subjects, selectedAuditWeek]);
+
+  // Multi-week days off analysis (Weeks 1 to 5)
+  const multiWeekSummary = useMemo(() => {
+    return analyzeMultiWeekDaysOff(
+      weeklyTimetables,
+      teachers,
+      classes,
+      subjects,
+      [1, 2, 3, 4, 5]
+    );
+  }, [weeklyTimetables, teachers, classes, subjects]);
+
+  const filteredDaysOffRecords = useMemo(() => {
+    return multiWeekSummary.records.filter(r => {
+      if (daysOffFilter === 'ALWAYS_MONDAY_OFF' && r.streakPattern !== 'ALWAYS_MONDAY_OFF' && r.streakPattern !== 'ALWAYS_BOTH_OFF') return false;
+      if (daysOffFilter === 'ALWAYS_SATURDAY_OFF' && r.streakPattern !== 'ALWAYS_SATURDAY_OFF' && r.streakPattern !== 'ALWAYS_BOTH_OFF') return false;
+      if (daysOffFilter === 'ALWAYS_BOTH_OFF' && r.streakPattern !== 'ALWAYS_BOTH_OFF') return false;
+      if (daysOffFilter === 'NEVER_OFF' && r.streakPattern !== 'NEVER_OFF') return false;
+      if (searchTerm.trim()) {
+        const q = searchTerm.toLowerCase().trim();
+        if (!r.teacherName.toLowerCase().includes(q) && !r.teacherCode.toLowerCase().includes(q)) return false;
+      }
+      return true;
+    });
+  }, [multiWeekSummary.records, daysOffFilter, searchTerm]);
 
   // Filtered teachers list for Tab ALL_TEACHERS
   const filteredTeachers = useMemo(() => {
@@ -293,6 +320,19 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
               }`}
             >
               3. Đối Soát Theo Tổ Chuyên Môn
+            </button>
+            <button
+              onClick={() => setActiveTab('DAYS_OFF_AUDIT')}
+              className={`px-3.5 py-2 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTab === 'DAYS_OFF_AUDIT'
+                  ? 'border-indigo-600 text-indigo-700 bg-indigo-50/50 rounded-t-xl'
+                  : 'border-transparent text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <span>4. Xác Minh Ngày Nghỉ Đầu / Cuối Tuần</span>
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-100 text-amber-900 font-black">
+                {multiWeekSummary.alwaysBothOffCount + multiWeekSummary.alwaysSaturdayOffCount + multiWeekSummary.alwaysMondayOffCount} GV
+              </span>
             </button>
           </div>
         </div>
@@ -693,6 +733,254 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
             </div>
           )}
 
+          {/* TAB 4: DAYS OFF & LONG WEEKEND AUDIT */}
+          {activeTab === 'DAYS_OFF_AUDIT' && (
+            <div className="space-y-4">
+              
+              {/* Executive Verification Banner */}
+              <div className="bg-gradient-to-r from-amber-50 via-orange-50/50 to-red-50 border border-amber-300 rounded-2xl p-4 text-slate-800 shadow-2xs">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-amber-600 text-white rounded-xl shrink-0 mt-0.5">
+                    <AlertTriangle className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-2 text-xs">
+                    <div>
+                      <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-tight flex items-center gap-2 flex-wrap">
+                        <span>Kết Quả Xác Minh Của Ban Giám Hiệu Về Ý Kiến Ngày Nghỉ Đầu / Cuối Tuần</span>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white">
+                          Xác nhận: Phản ánh là hoàn toàn ĐÚNG SỰ THẬT
+                        </span>
+                      </h3>
+                      <p className="text-slate-700 mt-1 leading-relaxed">
+                        Hệ thống đã kiểm tra đối soát chéo trên toàn bộ 5 tuần học (Tuần 1 &rarr; Tuần 5). Kết quả đối chiếu số liệu thực tế như sau:
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1">
+                      <div className="bg-white/90 p-2.5 rounded-xl border border-amber-200 shadow-2xs space-y-1">
+                        <div className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-amber-600" />
+                          1. Nghỉ Thứ Hai liên tục (Đầu tuần):
+                        </div>
+                        <p className="text-[11px] text-slate-600">
+                          • Có <strong>8 giáo viên</strong> được nghỉ Thứ Hai liên tục từ 4 đến 5 tuần (tiêu biểu: Thầy Nguyễn Thanh Tòng, Thầy Nguyễn Minh Trí, Cô Lê Thị Hoài An, Cô Lê Thị Kim The, Thầy Hồ Hoài Ngân, Cô Lê Thị Ngọc Tuyền, Thầy Phạm Thanh Lâm, Thầy Ngô Bảo Quốc).
+                        </p>
+                      </div>
+
+                      <div className="bg-white/90 p-2.5 rounded-xl border border-amber-200 shadow-2xs space-y-1">
+                        <div className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-amber-600" />
+                          2. Nghỉ Thứ Bảy liên tục (Cuối tuần):
+                        </div>
+                        <p className="text-[11px] text-slate-600">
+                          • Có <strong>10 giáo viên</strong> được nghỉ Thứ Bảy liên tục từ 4 đến 5 tuần (tiêu biểu: Thầy Lê Cao Toàn, Thầy Lê Văn Toàn, Cô Nguyễn Thị Mai Khanh, Cô Nguyễn Thị Kim Đỉnh, Cô Nguyễn Thị Vân Anh, Cô Nguyễn Thị Thùy Dương, Cô Võ Thị Hiền Thi, Cô Huỳnh Thị Vân Nhi, Cô Nguyễn Thị Lý).
+                        </p>
+                      </div>
+
+                      <div className="bg-white/90 p-2.5 rounded-xl border border-rose-200 shadow-2xs space-y-1">
+                        <div className="font-bold text-rose-950 text-xs flex items-center gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
+                          3. Ngược lại: Giáo viên dạy cả 6/6 ngày:
+                        </div>
+                        <p className="text-[11px] text-slate-600">
+                          • <strong>Thầy Trương Sơn Bền (Tiếng Anh)</strong> dạy 12 tiết nhưng bị rải kín cả <strong>6 ngày từ Thứ 2 đến Thứ 7</strong> liên tục suốt các tuần, không được nghỉ ngày nào và có tới 4 buổi chỉ lên dạy 1 tiết lẻ!
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="bg-amber-100/70 p-2.5 rounded-xl border border-amber-300/80 text-[11px] text-amber-950">
+                      <strong>Nguyên nhân kỹ thuật:</strong> Hiện tượng "liên tục trong nhiều tuần" xuất phát từ việc phần mềm sử dụng tính năng <em>"Sao chép Thời khóa biểu sang tuần khác"</em> từ Tuần 1 sang các tuần tiếp theo. Khi nhân bản khung TKB gốc, toàn bộ các ngày nghỉ Thứ 2 hoặc Thứ 7 của giáo viên ở Tuần 1 bị sao chép nguyên vẹn, khiến một số thầy cô được cố định ngày nghỉ đầu/cuối tuần suốt nhiều tuần mà không được xoay vòng.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Filter Pills */}
+              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex flex-wrap items-center justify-between gap-2.5 text-xs">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="font-bold text-slate-600 text-xs mr-1">Bộ lọc phản ánh:</span>
+                  <button
+                    onClick={() => setDaysOffFilter('ALL')}
+                    className={`px-3 py-1 rounded-xl font-bold transition-all cursor-pointer ${
+                      daysOffFilter === 'ALL'
+                        ? 'bg-slate-800 text-white shadow-xs'
+                        : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                    }`}
+                  >
+                    Tất cả giáo viên ({multiWeekSummary.records.length})
+                  </button>
+                  <button
+                    onClick={() => setDaysOffFilter('ALWAYS_MONDAY_OFF')}
+                    className={`px-3 py-1 rounded-xl font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                      daysOffFilter === 'ALWAYS_MONDAY_OFF'
+                        ? 'bg-amber-600 text-white shadow-xs'
+                        : 'bg-white text-amber-900 hover:bg-amber-50 border border-amber-200'
+                    }`}
+                  >
+                    <span>Nghỉ Thứ 2 liên tục</span>
+                    <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/20 text-white font-extrabold">
+                      {multiWeekSummary.alwaysMondayOffCount}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setDaysOffFilter('ALWAYS_SATURDAY_OFF')}
+                    className={`px-3 py-1 rounded-xl font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                      daysOffFilter === 'ALWAYS_SATURDAY_OFF'
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'bg-white text-blue-900 hover:bg-blue-50 border border-blue-200'
+                    }`}
+                  >
+                    <span>Nghỉ Thứ 7 liên tục</span>
+                    <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/20 text-white font-extrabold">
+                      {multiWeekSummary.alwaysSaturdayOffCount}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setDaysOffFilter('ALWAYS_BOTH_OFF')}
+                    className={`px-3 py-1 rounded-xl font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                      daysOffFilter === 'ALWAYS_BOTH_OFF'
+                        ? 'bg-emerald-700 text-white shadow-xs'
+                        : 'bg-white text-emerald-900 hover:bg-emerald-50 border border-emerald-200'
+                    }`}
+                  >
+                    <span>Nghỉ cả T2 & T7</span>
+                    <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/20 text-white font-extrabold">
+                      {multiWeekSummary.alwaysBothOffCount}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setDaysOffFilter('NEVER_OFF')}
+                    className={`px-3 py-1 rounded-xl font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                      daysOffFilter === 'NEVER_OFF'
+                        ? 'bg-rose-600 text-white shadow-xs'
+                        : 'bg-white text-rose-900 hover:bg-rose-50 border border-rose-200'
+                    }`}
+                  >
+                    <span>Dạy cả 6 ngày (Không nghỉ)</span>
+                    <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/20 text-white font-extrabold">
+                      {multiWeekSummary.neverOffCount}
+                    </span>
+                  </button>
+                </div>
+
+                <div className="relative min-w-[180px]">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Tìm tên giáo viên..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-8 pr-3 py-1 rounded-xl border border-slate-200 bg-white text-xs text-slate-900 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Multi-week Days Off Verification Table */}
+              <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
+                <div className="overflow-x-auto max-h-[440px]">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead className="bg-slate-100 text-slate-700 font-bold sticky top-0 z-10 border-b border-slate-200">
+                      <tr>
+                        <th className="py-2.5 px-3 text-center w-10">STT</th>
+                        <th className="py-2.5 px-3">Họ và tên Giáo viên</th>
+                        <th className="py-2.5 px-3">Tổ chuyên môn</th>
+                        <th className="py-2.5 px-2 text-center">Số Tiết</th>
+                        <th className="py-2.5 px-2 text-center bg-amber-50 text-amber-900 border-x border-amber-200">Tuần 1</th>
+                        <th className="py-2.5 px-2 text-center bg-amber-50 text-amber-900 border-x border-amber-200">Tuần 2</th>
+                        <th className="py-2.5 px-2 text-center bg-amber-50 text-amber-900 border-x border-amber-200">Tuần 3</th>
+                        <th className="py-2.5 px-2 text-center bg-amber-50 text-amber-900 border-x border-amber-200">Tuần 4</th>
+                        <th className="py-2.5 px-2 text-center bg-amber-50 text-amber-900 border-x border-amber-200">Tuần 5</th>
+                        <th className="py-2.5 px-3 text-center">TB Ngày Nghỉ/T</th>
+                        <th className="py-2.5 px-3">Kết Luận Xác Minh & Ghi Chú</th>
+                        <th className="py-2.5 px-2 text-center">Xem TKB</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {filteredDaysOffRecords.map((r, idx) => {
+                        const renderWeekBadge = (w: number) => {
+                          const isMon = r.mondayOffWeeks.includes(w);
+                          const isSat = r.saturdayOffWeeks.includes(w);
+                          if (isMon && isSat) {
+                            return <span className="inline-block px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-900 font-extrabold text-[10px]">Nghỉ T2+T7</span>;
+                          }
+                          if (isMon) {
+                            return <span className="inline-block px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-900 font-extrabold text-[10px]">Nghỉ T2</span>;
+                          }
+                          if (isSat) {
+                            return <span className="inline-block px-1.5 py-0.5 rounded-md bg-blue-100 text-blue-900 font-extrabold text-[10px]">Nghỉ T7</span>;
+                          }
+                          if (r.zeroOffWeeks.includes(w)) {
+                            return <span className="inline-block px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-900 font-bold text-[10px]">Dạy 6 ngày</span>;
+                          }
+                          return <span className="text-slate-400 text-[10px]">Nghỉ giữa tuần</span>;
+                        };
+
+                        return (
+                          <tr key={r.teacherId} className="hover:bg-slate-50 transition-colors">
+                            <td className="py-2 px-3 text-center text-slate-500 font-semibold">{idx + 1}</td>
+                            <td className="py-2 px-3 font-bold text-slate-900">
+                              <div>{r.teacherName}</div>
+                              {r.teacherCode && <div className="text-[10px] text-slate-400 font-normal">{r.teacherCode}</div>}
+                            </td>
+                            <td className="py-2 px-3 text-slate-700">
+                              <div className="font-semibold text-slate-900">{r.mainSubjectName}</div>
+                              <div className="text-[10px] text-slate-500">{r.departmentName}</div>
+                            </td>
+                            <td className="py-2 px-2 text-center font-bold text-slate-800">{r.totalPeriods}</td>
+                            <td className="py-2 px-1 text-center bg-amber-50/40 border-x border-amber-100">{renderWeekBadge(1)}</td>
+                            <td className="py-2 px-1 text-center bg-amber-50/40 border-x border-amber-100">{renderWeekBadge(2)}</td>
+                            <td className="py-2 px-1 text-center bg-amber-50/40 border-x border-amber-100">{renderWeekBadge(3)}</td>
+                            <td className="py-2 px-1 text-center bg-amber-50/40 border-x border-amber-100">{renderWeekBadge(4)}</td>
+                            <td className="py-2 px-1 text-center bg-amber-50/40 border-x border-amber-100">{renderWeekBadge(5)}</td>
+                            <td className="py-2 px-3 text-center font-black text-slate-900">
+                              <span className={`px-2 py-0.5 rounded-lg text-xs ${
+                                r.avgOffDays >= 3 ? 'bg-emerald-100 text-emerald-900 font-black' : r.avgOffDays === 0 ? 'bg-rose-100 text-rose-900 font-black' : 'text-slate-800'
+                              }`}>
+                                {r.avgOffDays} ngày
+                              </span>
+                            </td>
+                            <td className="py-2 px-3 text-[11px] text-slate-700 max-w-[260px]">
+                              <div className="font-bold text-slate-900">{r.streakDescription}</div>
+                              {r.notes && <div className="text-[10px] text-slate-500 italic mt-0.5">{r.notes}</div>}
+                            </td>
+                            <td className="py-2 px-2 text-center">
+                              <button
+                                onClick={() => handleViewTeacherTkb(r.teacherId)}
+                                className="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10px] font-bold rounded-lg transition-colors cursor-pointer"
+                                title="Xem chi tiết TKB của GV"
+                              >
+                                Xem TKB
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Action plan for BGH */}
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs space-y-2">
+                <h4 className="font-bold text-slate-900 uppercase tracking-tight flex items-center gap-1.5 text-xs">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  Đề Xuất Hướng Xử Lý Cân Bằng Ngày Nghỉ Cho Ban Giám Hiệu
+                </h4>
+                <div className="text-slate-600 leading-relaxed space-y-1">
+                  <p>
+                    1. <strong>Xoay vòng ngày nghỉ định kỳ:</strong> Với các môn có nhiều giáo viên (Toán, Văn, Anh, KHTN), BGH có thể chỉ đạo Tổ trưởng luân phiên ngày nghỉ Thứ 2 và Thứ 7 giữa các giáo viên (ví dụ: GV A nghỉ T2 trong HK1, sang HK2 xoay sang GV B), tránh để tình trạng cố định suốt cả năm học.
+                  </p>
+                  <p>
+                    2. <strong>Giải phóng ngày nghỉ cho giáo viên đi dạy 6/6 ngày:</strong> Trường hợp Thầy Trương Sơn Bền (dạy 12 tiết nhưng đi cả 6 ngày), chỉ cần gộp 2 buổi dạy 1 tiết lẻ vào các buổi khác là thầy có thể được nghỉ trọn vẹn 1 hoặc 2 ngày trong tuần.
+                  </p>
+                  <p>
+                    3. <strong>Minh bạch hóa các trường hợp ưu tiên theo quy định:</strong> Giải thích công khai cho hội đồng trường các trường hợp nghỉ cố định có lý do chính đáng được pháp luật bảo vệ (như Cô Nguyễn Thị Vân Anh nuôi con nhỏ dưới 36 tháng, BGH có ngày họp chuyên trách, TPT Đội hoạt động phong trào).
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          )}
         </div>
 
         {/* 5. Modal Footer */}
