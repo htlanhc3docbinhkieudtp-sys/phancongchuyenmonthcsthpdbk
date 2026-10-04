@@ -21,7 +21,8 @@ import {
   Check,
   RotateCcw,
   SlidersHorizontal,
-  ChevronRight
+  ChevronRight,
+  Printer
 } from 'lucide-react';
 import { TimetableSlot, Teacher, ClassGroup, Subject, SchoolConfig, SchoolTimetable } from '../types';
 import {
@@ -70,7 +71,8 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
 }) => {
   const [auditScope, setAuditScope] = useState<'WEEK' | 'HK1' | 'HK2' | 'ALL_YEAR'>('WEEK');
   const [selectedAuditWeek, setSelectedAuditWeek] = useState<number>(currentWeek);
-  const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'BALANCING' | 'ALL_TEACHERS' | 'DEPARTMENTS' | 'DAYS_OFF_AUDIT'>('OVERVIEW');
+  const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'BALANCING' | 'ALL_TEACHERS' | 'DEPARTMENTS' | 'DAYS_OFF_AUDIT' | 'ADMIN_REPORT'>('OVERVIEW');
+  const [printFontSize, setPrintFontSize] = useState<'6.8pt' | '7.2pt' | '7.8pt' | '8.5pt'>('7.2pt');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedDeptFilter, setSelectedDeptFilter] = useState<string>('ALL');
   const [selectedTierFilter, setSelectedTierFilter] = useState<string>('ALL');
@@ -266,11 +268,11 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-7xl max-h-[94vh] rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200 print:static print:p-0 print:m-0 print:bg-transparent print:backdrop-blur-none print:block">
+      <div className="bg-white w-full max-w-7xl max-h-[94vh] rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden print:max-w-none print:max-h-none print:rounded-none print:shadow-none print:border-none print:overflow-visible">
         
         {/* 1. Modal Header with Scope Switcher */}
-        <div className="p-4 sm:p-5 border-b border-slate-200 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex flex-col lg:flex-row lg:items-center justify-between gap-4 shrink-0">
+        <div className="p-4 sm:p-5 border-b border-slate-200 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex flex-col lg:flex-row lg:items-center justify-between gap-4 shrink-0 print:hidden">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-gradient-to-br from-amber-500 to-indigo-600 border border-amber-400/40 rounded-2xl text-white shadow-md">
               <Scale className="w-6 h-6 text-yellow-200" />
@@ -390,6 +392,20 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
             </button>
 
             <button
+              onClick={() => {
+                setActiveTab('ADMIN_REPORT');
+                setTimeout(() => {
+                  window.print();
+                }, 250);
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm transition-all cursor-pointer active:scale-95"
+              title="In hoặc Lưu PDF theo chuẩn văn bản hành chính (Nghị định 30/2020/NĐ-CP)"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>In / Xuất PDF</span>
+            </button>
+
+            <button
               onClick={onClose}
               className="p-1.5 text-slate-300 hover:text-white hover:bg-white/10 rounded-xl transition-colors cursor-pointer"
               title="Đóng cửa sổ"
@@ -400,7 +416,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
         </div>
 
         {/* 2. Top Summary: 3 CORE EVALUATION CRITERIA BANNER */}
-        <div className="bg-slate-50 p-3 sm:p-4 border-b border-slate-200 shrink-0">
+        <div className="bg-slate-50 p-3 sm:p-4 border-b border-slate-200 shrink-0 print:hidden">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             {/* Criteria 1: Số Ngày Nghỉ */}
             <div className="bg-white p-3 rounded-2xl border-2 border-emerald-200 shadow-2xs relative overflow-hidden">
@@ -514,7 +530,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
         </div>
 
         {/* 3. Navigation Tabs */}
-        <div className="px-4 border-b border-slate-200 bg-white flex items-center justify-between shrink-0 overflow-x-auto">
+        <div className="px-4 border-b border-slate-200 bg-white flex items-center justify-between shrink-0 overflow-x-auto print:hidden">
           <div className="flex items-center gap-2 pt-2">
             <button
               onClick={() => setActiveTab('OVERVIEW')}
@@ -580,11 +596,26 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                 {multiWeekSummary.alwaysBothOffCount + multiWeekSummary.alwaysSaturdayOffCount + multiWeekSummary.alwaysMondayOffCount} GV
               </span>
             </button>
+
+            <button
+              onClick={() => setActiveTab('ADMIN_REPORT')}
+              className={`px-3.5 py-2 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                activeTab === 'ADMIN_REPORT'
+                  ? 'border-indigo-600 text-indigo-700 bg-indigo-50/50 rounded-t-xl font-extrabold'
+                  : 'border-transparent text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Printer className="w-3.5 h-3.5 text-indigo-600" />
+              <span>6. Văn Bản Hành Chính (In / PDF)</span>
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-indigo-100 text-indigo-800 font-extrabold">
+                NĐ 30/2020
+              </span>
+            </button>
           </div>
         </div>
 
         {/* 4. Tab Contents */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 print:overflow-visible print:p-0 print:m-0 print:space-y-0">
           
           {/* TAB 1: OVERVIEW & COMPARISON */}
           {activeTab === 'OVERVIEW' && (
@@ -1645,10 +1676,274 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
 
             </div>
           )}
+
+          {/* TAB 6: OFFICIAL ADMINISTRATIVE REPORT (CHỈNH CHU THEO NGHỊ ĐỊNH 30/2020/NĐ-CP) */}
+          {activeTab === 'ADMIN_REPORT' && (
+            <div className="space-y-4">
+              {/* Screen toolbar (hidden when printing) */}
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 print:hidden">
+                <div className="flex items-center gap-2.5">
+                  <span className="p-2 rounded-xl bg-indigo-100 text-indigo-700">
+                    <Printer className="w-5 h-5" />
+                  </span>
+                  <div>
+                    <h3 className="text-xs sm:text-sm font-extrabold text-slate-800 uppercase tracking-tight flex items-center gap-2">
+                      <span>Văn Bản Báo Cáo Hành Chính Đánh Giá TKB</span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-black">
+                        Nghị định 30/2020/NĐ-CP
+                      </span>
+                    </h3>
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      Thiết kế khung bảng hoàn chỉnh, đầy đủ Quốc hiệu - Tiêu ngữ, Căn cứ 3 tiêu chí cốt lõi và Chữ ký 3 bên để in ấn hoặc lưu PDF.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-white border border-slate-300 rounded-xl px-2.5 py-1.5 shadow-2xs">
+                    <span className="font-semibold text-[11px]">Cỡ chữ in:</span>
+                    <select
+                      value={printFontSize}
+                      onChange={(e) => setPrintFontSize(e.target.value as any)}
+                      className="text-xs font-bold bg-transparent border-none focus:outline-none cursor-pointer text-indigo-900"
+                    >
+                      <option value="6.8pt">Nhỏ (6.8pt - Gọn nhất)</option>
+                      <option value="7.2pt">Chuẩn (7.2pt - Đẹp mắt)</option>
+                      <option value="7.8pt">Vừa (7.8pt)</option>
+                      <option value="8.5pt">Lớn (8.5pt)</option>
+                    </select>
+                  </div>
+
+                  <button
+                    onClick={handleExportExcel}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xs transition-all cursor-pointer"
+                    title="Xuất file Excel báo cáo chuẩn văn bản hành chính"
+                  >
+                    <FileSpreadsheet className="w-3.5 h-3.5" />
+                    <span>Xuất Excel</span>
+                  </button>
+
+                  <button
+                    onClick={() => window.print()}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm transition-all cursor-pointer active:scale-95"
+                    title="Mở hộp thoại In hoặc Lưu dưới dạng PDF (Ctrl + P)"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>In Ngay / Lưu PDF</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Administrative Document Preview & Print Container */}
+              <div
+                style={{ ['--print-font-size' as any]: printFontSize }}
+                className="bg-white rounded-2xl border border-slate-300 shadow-sm p-6 sm:p-8 space-y-6 quality-audit-print-container print:p-0 print:border-none print:shadow-none print:m-0 font-['Times_New_Roman',serif] text-black"
+              >
+                {/* 1. Quốc hiệu - Tiêu ngữ & Đơn vị chủ quản */}
+                <table className="w-full border-none mb-3">
+                  <tbody>
+                    <tr className="align-top">
+                      <td className="w-1/2 text-center p-0 border-none">
+                        <div className="text-[10pt] uppercase tracking-normal">
+                          SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP
+                        </div>
+                        <div className="text-[10.5pt] uppercase font-bold tracking-tight">
+                          {config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU'}
+                        </div>
+                        <div className="w-28 mx-auto my-1 border-b-2 border-black"></div>
+                        <div className="text-[9pt] italic font-normal text-slate-700">
+                          Số: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /BC-TKB-DBK
+                        </div>
+                      </td>
+                      <td className="w-1/2 text-center p-0 border-none">
+                        <div className="text-[10pt] uppercase font-bold">
+                          CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+                        </div>
+                        <div className="text-[10.5pt] font-bold">
+                          Độc lập - Tự do - Hạnh phúc
+                        </div>
+                        <div className="w-36 mx-auto my-1 border-b-2 border-black"></div>
+                        <div className="text-[9pt] italic font-normal mt-0.5">
+                          Đồng Tháp, ngày ..... tháng ..... năm 2026
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                {/* 2. Tiêu đề báo cáo */}
+                <div className="text-center my-3">
+                  <h1 className="text-[13pt] sm:text-[14pt] font-bold uppercase tracking-wide">
+                    {auditScope === 'WEEK'
+                      ? `BÁO CÁO ĐÁNH GIÁ CHẤT LƯỢNG & TÍNH THUẬN TIỆN THỜI KHÓA BIỂU - TUẦN ${selectedAuditWeek}`
+                      : `BÁO CÁO TỔNG HỢP ĐÁNH GIÁ CHẤT LƯỢNG THỜI KHÓA BIỂU (${semesterSummary.semesterLabel.toUpperCase()})`
+                    }
+                  </h1>
+                  <div className="text-[10pt] italic mt-0.5 font-semibold text-slate-800">
+                    Năm học {config.academicYear || '2026 - 2027'} &bull; Áp dụng đánh giá cho toàn thể đội ngũ giáo viên
+                  </div>
+                  <div className="text-[9pt] italic mt-1.5 text-slate-700 bg-slate-50 py-1 px-3 border border-slate-300 inline-block rounded-md">
+                    * Căn cứ xếp hạng công bằng theo 3 tiêu chí cốt lõi: <strong>1/ Số ngày nghỉ trọn ngày</strong> (từ cao xuống thấp) &bull; <strong>2/ Số buổi nghỉ</strong> (từ cao xuống thấp) &bull; <strong>3/ Số tiết lủng</strong> (từ thấp lên cao)
+                  </div>
+                </div>
+
+                {/* 3. Phần I: Số liệu tổng hợp */}
+                <div className="space-y-1.5 text-[9.5pt]">
+                  <div className="font-bold uppercase text-[10pt]">
+                    I. SỐ LIỆU TỔNG HỢP TOÀN TRƯỜNG
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 border border-black p-2.5 bg-slate-50/70 text-[9pt]">
+                    <div>
+                      &bull; Tổng số GV tham gia: <strong>{auditScope === 'WEEK' ? weeklySummary.totalTeachersTeaching : semesterSummary.totalTeachers} GV</strong>
+                    </div>
+                    <div>
+                      &bull; Điểm trung bình: <strong>{auditScope === 'WEEK' ? weeklySummary.averageScore : semesterSummary.avgScore}/100</strong>
+                    </div>
+                    <div>
+                      &bull; Tổng số tiết lủng: <strong>{auditScope === 'WEEK' ? weeklySummary.totalGapsInSchool : semesterSummary.totalGapsInSemester} tiết</strong>
+                    </div>
+                    <div>
+                      &bull; Số GV cần cân đối lại: <strong className="text-rose-800">{balancingList.length} GV</strong>
+                    </div>
+                    <div className="col-span-2 sm:col-span-4 text-[8.5pt] text-slate-700 border-t border-slate-300 pt-1 mt-1">
+                      Cơ cấu phân loại: Rất đẹp/Tối ưu: <strong>{auditScope === 'WEEK' ? weeklySummary.tierCounts.EXCELLENT : semesterSummary.allTeachers.filter(t => t.overallStatus === 'EXCELLENT').length} GV</strong> &bull; Thuận lợi/Đẹp: <strong>{auditScope === 'WEEK' ? weeklySummary.tierCounts.GOOD : semesterSummary.allTeachers.filter(t => t.overallStatus === 'GOOD').length} GV</strong> &bull; Bình thường: <strong>{auditScope === 'WEEK' ? weeklySummary.tierCounts.AVERAGE : semesterSummary.allTeachers.filter(t => t.overallStatus === 'AVERAGE').length} GV</strong> &bull; Cần cân đối: <strong>{auditScope === 'WEEK' ? weeklySummary.tierCounts.POOR : semesterSummary.frequentlyBadTeachersCount} GV</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. Phần II: Bảng phân loại chi tiết có đóng khung kẻ bảng chuẩn hành chính */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between font-bold uppercase text-[10pt]">
+                    <span>II. BẢNG ĐÁNH GIÁ CHI TIẾT TỪNG GIÁO VIÊN THEO 3 TIÊU CHÍ</span>
+                    <span className="text-[8.5pt] normal-case italic font-normal text-slate-600">
+                      (Sắp xếp theo thứ tự: 1. Số ngày nghỉ &rarr; 2. Số buổi nghỉ &rarr; 3. Số tiết lủng)
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto print:overflow-visible quality-audit-print-table-wrapper">
+                    <table className="w-full border-collapse border border-black quality-audit-print-table text-[8pt]">
+                      <thead>
+                        <tr className="bg-slate-100 font-bold border-b border-black text-center">
+                          <th className="border border-black p-1 w-8">STT</th>
+                          <th className="border border-black p-1 w-14">Mã GV</th>
+                          <th className="border border-black p-1 text-left min-w-[130px]">Họ và Tên</th>
+                          <th className="border border-black p-1 text-left min-w-[105px]">Tổ CM</th>
+                          <th className="border border-black p-1 min-w-[65px]">Môn</th>
+                          <th className="border border-black p-1 w-14" title="Số tiết định mức">Tiết/T</th>
+                          <th className="border border-black p-1 w-12" title="Số lớp dạy">Lớp</th>
+                          <th className="border border-black p-1 min-w-[90px] bg-emerald-50 text-emerald-950 font-black">
+                            1. Ngày Nghỉ
+                          </th>
+                          <th className="border border-black p-1 min-w-[65px] bg-blue-50 text-blue-950 font-black">
+                            2. Buổi Nghỉ
+                          </th>
+                          <th className="border border-black p-1 min-w-[60px] bg-amber-50 text-amber-950 font-black">
+                            3. Tiết Lủng
+                          </th>
+                          <th className="border border-black p-1 w-12">Điểm</th>
+                          <th className="border border-black p-1 min-w-[100px]">Xếp Loại</th>
+                          <th className="border border-black p-1 text-left min-w-[180px]">Đề Xuất & Ghi Chú</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {auditScope === 'WEEK' ? (
+                          weeklySummary.allTeachers.map((t, idx) => (
+                            <tr key={t.teacherId} className="border-b border-black/40 hover:bg-slate-50">
+                              <td className="border border-black p-1 text-center font-medium">{idx + 1}</td>
+                              <td className="border border-black p-1 text-center font-mono font-bold text-[7.5pt]">{t.teacherCode || '-'}</td>
+                              <td className="border border-black p-1 font-bold text-left">{t.teacherName}</td>
+                              <td className="border border-black p-1 text-left">{t.departmentName}</td>
+                              <td className="border border-black p-1 text-center">{t.mainSubjectName}</td>
+                              <td className="border border-black p-1 text-center font-bold">{t.totalPeriods}t</td>
+                              <td className="border border-black p-1 text-center">{t.assignedClassesCount} lớp</td>
+                              <td className="border border-black p-1 text-center bg-emerald-50/50 font-bold">
+                                {t.freeDays} ngày
+                                {t.offDayNames.length > 0 && (
+                                  <div className="text-[7pt] font-normal text-slate-600">({t.offDayNames.join(', ')})</div>
+                                )}
+                              </td>
+                              <td className="border border-black p-1 text-center bg-blue-50/50 font-bold">{t.freeHalfDays} buổi</td>
+                              <td className="border border-black p-1 text-center bg-amber-50/50 font-bold">
+                                {t.totalGaps > 0 ? `${t.totalGaps} tiết` : '-'}
+                              </td>
+                              <td className="border border-black p-1 text-center font-bold">{t.score}</td>
+                              <td className="border border-black p-1 text-center font-bold text-[7.5pt]">
+                                {t.tierLabel}
+                              </td>
+                              <td className="border border-black p-1 text-left text-[7pt] leading-tight">
+                                {t.diagnosisNotes[0] || t.suggestedAction || '-'}
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          semesterSummary.allTeachers.map((t, idx) => (
+                            <tr key={t.teacherId} className="border-b border-black/40 hover:bg-slate-50">
+                              <td className="border border-black p-1 text-center font-medium">{idx + 1}</td>
+                              <td className="border border-black p-1 text-center font-mono font-bold text-[7.5pt]">{t.teacherCode || '-'}</td>
+                              <td className="border border-black p-1 font-bold text-left">{t.teacherName}</td>
+                              <td className="border border-black p-1 text-left">{t.departmentName}</td>
+                              <td className="border border-black p-1 text-center">{t.mainSubjectName}</td>
+                              <td className="border border-black p-1 text-center font-bold">{t.avgPeriodsPerWeek}t/t</td>
+                              <td className="border border-black p-1 text-center">{t.assignedClassesCount} lớp</td>
+                              <td className="border border-black p-1 text-center bg-emerald-50/50 font-bold">
+                                {t.avgFreeDaysPerWeek} ng/t
+                              </td>
+                              <td className="border border-black p-1 text-center bg-blue-50/50 font-bold">{t.avgFreeHalfDaysPerWeek} b/t</td>
+                              <td className="border border-black p-1 text-center bg-amber-50/50 font-bold">
+                                {t.totalGaps > 0 ? `${t.totalGaps}t (${t.avgGapsPerWeek}/t)` : '-'}
+                              </td>
+                              <td className="border border-black p-1 text-center font-bold">{t.avgScore}</td>
+                              <td className="border border-black p-1 text-center font-bold text-[7.5pt]">
+                                {t.statusLabel}
+                              </td>
+                              <td className="border border-black p-1 text-left text-[7pt] leading-tight">
+                                {t.balancingSuggestions[0] || '-'}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* 5. Phần III: Chữ ký hành chính 3 bên */}
+                <div className="pt-4 border-t border-black text-black">
+                  <table className="w-full border-none">
+                    <tbody>
+                      <tr>
+                        <td colSpan={2}></td>
+                        <td className="text-center p-0 border-none pb-2 text-[9.5pt] italic">
+                          Đồng Tháp, ngày ..... tháng ..... năm 2026
+                        </td>
+                      </tr>
+                      <tr className="align-top font-bold text-[9.5pt]">
+                        <td className="w-1/3 text-center p-0 border-none">
+                          <div>NGƯỜI LẬP BIỂU</div>
+                          <div className="font-normal italic text-[8.5pt] mt-0.5">(Ký và ghi rõ họ tên)</div>
+                          <div className="h-16"></div>
+                        </td>
+                        <td className="w-1/3 text-center p-0 border-none">
+                          <div>TỔ TRƯỞNG CHUYÊN MÔN</div>
+                          <div className="font-normal italic text-[8.5pt] mt-0.5">(Ký và ghi rõ họ tên)</div>
+                          <div className="h-16"></div>
+                        </td>
+                        <td className="w-1/3 text-center p-0 border-none">
+                          <div>HIỆU TRƯỞNG / BAN GIÁM HIỆU</div>
+                          <div className="font-normal italic text-[8.5pt] mt-0.5">(Ký, đóng dấu và ghi rõ họ tên)</div>
+                          <div className="h-16"></div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 5. Modal Footer */}
-        <div className="p-3 sm:p-4 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0 text-xs">
+        <div className="p-3 sm:p-4 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0 text-xs print:hidden">
           <div className="flex items-center gap-2 text-slate-500">
             <Info className="w-4 h-4 text-blue-500 shrink-0" />
             <span>
@@ -1657,6 +1952,19 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
           </div>
 
           <div className="flex items-center gap-2 self-end sm:self-center">
+            <button
+              onClick={() => {
+                setActiveTab('ADMIN_REPORT');
+                setTimeout(() => {
+                  window.print();
+                }, 250);
+              }}
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95"
+              title="In hoặc Lưu PDF theo chuẩn văn bản hành chính (NĐ 30/2020)"
+            >
+              <Printer className="w-4 h-4" />
+              <span>In / Xuất PDF Hành Chính</span>
+            </button>
             <button
               onClick={handleExportExcel}
               className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95"

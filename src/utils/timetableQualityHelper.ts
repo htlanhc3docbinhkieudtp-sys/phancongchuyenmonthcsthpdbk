@@ -346,25 +346,42 @@ export function analyzeTimetableQuality(
 
     score = Math.max(5, Math.min(100, Math.round(score)));
 
-    // Xếp loại TKB theo 3 tiêu chí cốt lõi:
-    // Tuyệt đối không xếp là xấu nếu có nhiều ngày nghỉ (>= 2 ngày), nhiều buổi nghỉ (>= 6 buổi) và ít tiết lủng!
+    // Xếp loại TKB theo đúng 3 tiêu chí cốt lõi chỉ đạo:
+    // 1/ Số ngày nghỉ (trọn ngày) từ cao xuống thấp
+    // 2/ Số buổi nghỉ (buổi không có tiết nào) từ cao xuống thấp
+    // 3/ Số tiết lủng (tiết trống) từ thấp lên cao (ít lủng hơn là đẹp)
+    // Tuyệt đối không xếp là xấu nếu được nghỉ nhiều ngày hoặc nhiều buổi và ít tiết lủng!
     let tier: QualityTier = 'GOOD';
     let tierLabel = 'Thuận lợi / Đẹp';
     let tierColor = 'text-blue-700 bg-blue-50 border-blue-200';
 
-    if (freeDays >= 3 || (freeDays >= 2 && freeHalfDays >= 6 && totalGaps <= 1)) {
+    if (
+      freeDays >= 3 ||
+      (freeDays >= 2 && freeHalfDays >= 5 && totalGaps <= 1) ||
+      (freeHalfDays >= 7 && totalGaps === 0)
+    ) {
       tier = 'EXCELLENT';
       tierLabel = 'Rất đẹp / Tối ưu';
       tierColor = 'text-emerald-700 bg-emerald-50 border-emerald-300';
-    } else if (freeDays >= 2 && totalGaps <= 2) {
+    } else if (
+      freeDays >= 2 ||
+      (freeDays >= 1 && totalGaps <= 2) ||
+      (freeHalfDays >= 5 && totalGaps <= 2) ||
+      (freeHalfDays >= 4 && totalGaps <= 1)
+    ) {
       tier = 'GOOD';
       tierLabel = 'Thuận lợi / Đẹp';
       tierColor = 'text-blue-700 bg-blue-50 border-blue-200';
-    } else if (freeDays >= 1 && totalGaps <= 2 && freeHalfDays >= 4) {
+    } else if (
+      freeDays >= 1 ||
+      freeHalfDays >= 3 ||
+      totalGaps <= 1
+    ) {
       tier = 'AVERAGE';
       tierLabel = 'Bình thường';
       tierColor = 'text-amber-700 bg-amber-50 border-amber-200';
     } else {
+      // Chỉ khi: 0 ngày nghỉ trọn ngày, dưới 3 buổi nghỉ, và có từ 2 tiết lủng trở lên hoặc nhiều ca chéo
       tier = 'POOR';
       tierLabel = 'Bất tiện / Cần cân đối';
       tierColor = 'text-rose-700 bg-rose-50 border-rose-200';
@@ -740,13 +757,15 @@ export function analyzeSemesterQuality(
 
     const semesterScore = Math.max(5, Math.min(100, Math.round(daysScore + halfDaysScore + gapsScore)));
 
-    // Xác định giáo viên thực sự thường xuyên bị TKB xấu theo 3 tiêu chí:
-    // Tuyệt đối không xếp là xấu nếu có nhiều ngày nghỉ (>= 2 ngày) và ít tiết lủng!
+    // Xác định giáo viên thực sự thường xuyên bị TKB xấu theo 3 tiêu chí cốt lõi:
+    // 1/ Số ngày nghỉ TB: từ cao xuống thấp
+    // 2/ Số buổi nghỉ TB: từ cao xuống thấp
+    // 3/ Tiết lủng: từ thấp lên cao (ít lủng hơn là đẹp)
+    // Tuyệt đối không xếp là xấu nếu có nhiều ngày nghỉ (avgFreeDays >= 1.0) hoặc nhiều buổi nghỉ (avgFreeHalfDays >= 4.0) và ít tiết lủng (avgGaps <= 1.5)!
     const isFrequentlyBad = 
-      (avgFreeDays < 1.0 && avgPeriods <= 22) ||
-      (avgFreeDays <= 1.2 && avgGaps >= 1.5) ||
-      (avgGaps >= 2.2) ||
-      (semesterScore < 50 && avgFreeDays < 2.0);
+      (avgFreeDays < 0.8 && avgFreeHalfDays < 3.0 && avgGaps >= 1.5 && avgPeriods <= 22) ||
+      (avgFreeDays < 0.5 && avgGaps >= 2.0) ||
+      (avgGaps >= 3.0);
 
     let overallStatus: TeacherSemesterQualityMetric['overallStatus'] = 'GOOD';
     let statusLabel = 'TKB Thuận Lợi / Đẹp';
@@ -756,18 +775,31 @@ export function analyzeSemesterQuality(
       overallStatus = 'FREQUENTLY_BAD';
       statusLabel = 'Thường xuyên bị xấu (Cần cân đối)';
       statusColor = 'text-rose-700 bg-rose-50 border-rose-300 font-black';
-    } else if (avgFreeDays >= 2.5 || (avgFreeDays >= 1.8 && avgFreeHalfDays >= 6.0 && avgGaps <= 1.0)) {
+    } else if (
+      avgFreeDays >= 2.2 ||
+      (avgFreeDays >= 1.5 && avgFreeHalfDays >= 5.0 && avgGaps <= 1.0) ||
+      (avgFreeHalfDays >= 6.5 && avgGaps === 0)
+    ) {
       overallStatus = 'EXCELLENT';
       statusLabel = 'TKB Rất Đẹp & Tối Ưu';
       statusColor = 'text-emerald-700 bg-emerald-50 border-emerald-300';
-    } else if (avgFreeDays >= 1.8 && avgGaps <= 2.0) {
+    } else if (
+      avgFreeDays >= 1.2 ||
+      (avgFreeDays >= 0.8 && avgFreeHalfDays >= 4.0 && avgGaps <= 1.5) ||
+      (avgFreeHalfDays >= 5.0 && avgGaps <= 2.0) ||
+      (avgFreeDays >= 0.8 && avgGaps <= 1.0)
+    ) {
       overallStatus = 'GOOD';
       statusLabel = 'TKB Thuận Lợi / Đẹp';
       statusColor = 'text-blue-700 bg-blue-50 border-blue-200';
-    } else {
+    } else if (avgFreeDays >= 0.5 || avgFreeHalfDays >= 2.5 || avgGaps <= 1.5) {
       overallStatus = 'AVERAGE';
-      statusLabel = 'TKB Trung bình';
+      statusLabel = 'TKB Bình thường';
       statusColor = 'text-amber-700 bg-amber-50 border-amber-200';
+    } else {
+      overallStatus = 'FREQUENTLY_BAD';
+      statusLabel = 'TKB Cần Cân Đối Lại';
+      statusColor = 'text-rose-700 bg-rose-50 border-rose-300';
     }
 
     // Generate balancing suggestions for scheduler
@@ -886,7 +918,7 @@ export function analyzeSemesterQuality(
 }
 
 /**
- * Xuất file Excel báo cáo tổng hợp chất lượng TKB Học kỳ
+ * Xuất file Excel báo cáo tổng hợp chất lượng TKB Học kỳ chuẩn văn bản hành chính
  */
 export function exportSemesterQualityReportExcel(
   summary: SemesterQualitySummary,
@@ -896,24 +928,29 @@ export function exportSemesterQualityReportExcel(
     const wb = XLSX.utils.book_new();
     const rows: (string | number)[][] = [];
 
-    // Header
-    rows.push(['SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP', '', '', 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM']);
-    rows.push(['TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU', '', '', 'Độc lập - Tự do - Hạnh phúc']);
+    // Header chuẩn văn bản hành chính (Nghị định 30/2020/NĐ-CP)
+    rows.push(['SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP', '', '', '', '', '', '', '', 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM']);
+    rows.push(['TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU', '', '', '', '', '', '', '', 'Độc lập - Tự do - Hạnh phúc']);
+    rows.push(['Số: ..... /BC-TKB-DBK', '', '', '', '', '', '', '', 'Đồng Tháp, ngày ..... tháng ..... năm 2026']);
     rows.push([]);
-    rows.push([`BÁO CÁO TỔNG HỢP ĐÁNH GIÁ TỐT - XẤU THỜI KHÓA BIỂU (${summary.semesterLabel.toUpperCase()})`]);
-    rows.push([`Năm học: ${academicYear} • Các tuần đã đánh giá: Tuần ${summary.evaluatedWeeks.join(', ')} • Tổng số GV: ${summary.totalTeachers}`]);
-    rows.push([`Số GV thường xuyên bị TKB xấu cần cân đối: ${summary.frequentlyBadTeachersCount} người • Điểm trung bình: ${summary.avgScore}/100 • Tổng tiết lủng: ${summary.totalGapsInSemester} tiết`]);
+    rows.push([`BÁO CÁO TỔNG HỢP ĐÁNH GIÁ CHẤT LƯỢNG & TÍNH THUẬN TIỆN THỜI KHÓA BIỂU`]);
+    rows.push([`(${summary.semesterLabel.toUpperCase()} - NĂM HỌC ${academicYear})`]);
+    rows.push([`* Căn cứ xếp loại theo 3 tiêu chí cốt lõi: 1/ Số ngày nghỉ trọn ngày (từ cao xuống thấp); 2/ Số buổi nghỉ; 3/ Số tiết lủng`]);
+    rows.push([]);
+    rows.push([`Các tuần đã đánh giá: Tuần ${summary.evaluatedWeeks.join(', ')} • Tổng số giáo viên: ${summary.totalTeachers} người`]);
+    rows.push([`Điểm trung bình toàn trường: ${summary.avgScore}/100 • Tổng số tiết lủng toàn học kỳ: ${summary.totalGapsInSemester} tiết • Số GV cần cân đối: ${summary.frequentlyBadTeachersCount} người`]);
     rows.push([]);
 
-    // Table Header
+    // Table Header chuẩn hành chính
     rows.push([
       'STT',
-      'Họ và tên GV',
+      'Mã GV',
+      'Họ và tên giáo viên',
       'Tổ chuyên môn',
       'Môn chính',
       'Số tiết TB/Tuần',
       'Số lớp dạy',
-      'Danh sách lớp',
+      'Danh sách lớp phụ trách',
       '1. Số ngày nghỉ TB/Tuần',
       '2. Số buổi nghỉ TB/Tuần',
       '3. Tổng tiết lủng HK',
@@ -921,15 +958,16 @@ export function exportSemesterQualityReportExcel(
       'Buổi 1 tiết',
       'Nghỉ Thứ 2 (tuần)',
       'Nghỉ Thứ 7 (tuần)',
-      'Số tuần bị xấu',
+      'Số tuần cần chỉnh',
       'Điểm TB (100)',
-      'Đánh giá chất lượng',
+      'Xếp loại chất lượng',
       'Khuyến nghị cân đối chủ động khi xếp TKB'
     ]);
 
     summary.allTeachers.forEach((m, idx) => {
       rows.push([
         idx + 1,
+        m.teacherCode || '',
         m.teacherName,
         m.departmentName,
         m.mainSubjectName,
@@ -950,30 +988,72 @@ export function exportSemesterQualityReportExcel(
       ]);
     });
 
+    // Khoảng trống và Khung chữ ký hành chính 3 bên
+    rows.push([]);
+    rows.push([]);
+    rows.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Đồng Tháp, ngày ..... tháng ..... năm 2026']);
+    rows.push([
+      'NGƯỜI LẬP BIỂU',
+      '',
+      '',
+      'TỔ TRƯỞNG CHUYÊN MÔN',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      'HIỆU TRƯỞNG / BAN GIÁM HIỆU'
+    ]);
+    rows.push([
+      '(Ký và ghi rõ họ tên)',
+      '',
+      '',
+      '(Ký và ghi rõ họ tên)',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '(Ký, đóng dấu và ghi rõ họ tên)'
+    ]);
+
     const ws = XLSX.utils.aoa_to_sheet(rows);
     ws['!cols'] = [
       { wch: 6 },
-      { wch: 24 },
+      { wch: 10 },
+      { wch: 25 },
       { wch: 22 },
       { wch: 18 },
+      { wch: 14 },
+      { wch: 11 },
+      { wch: 30 },
+      { wch: 20 },
+      { wch: 20 },
+      { wch: 16 },
+      { wch: 15 },
       { wch: 12 },
-      { wch: 10 },
-      { wch: 28 },
-      { wch: 18 },
-      { wch: 18 },
+      { wch: 16 },
+      { wch: 16 },
       { wch: 16 },
       { wch: 14 },
-      { wch: 12 },
-      { wch: 14 },
-      { wch: 14 },
-      { wch: 14 },
-      { wch: 14 },
-      { wch: 28 },
-      { wch: 45 }
+      { wch: 26 },
+      { wch: 50 }
     ];
 
     XLSX.utils.book_append_sheet(wb, ws, `Danh_Gia_TKB_${summary.semester}`);
-    XLSX.writeFile(wb, `Danh_Gia_TKB_${summary.semester}_${academicYear.replace(/\s+/g, '_')}.xlsx`);
+    XLSX.writeFile(wb, `Bao_Cao_Danh_Gia_TKB_${summary.semester}_${academicYear.replace(/\s+/g, '_')}.xlsx`);
   });
 }
 
@@ -1135,7 +1215,7 @@ export function analyzeMultiWeekDaysOff(
 }
 
 /**
- * Xuất file Excel báo cáo chi tiết đánh giá chất lượng TKB
+ * Xuất file Excel báo cáo chi tiết đánh giá chất lượng TKB Tuần chuẩn văn bản hành chính
  */
 export function exportTimetableQualityReportExcel(
   summary: SchoolQualitySummary,
@@ -1145,12 +1225,14 @@ export function exportTimetableQualityReportExcel(
     const wb = XLSX.utils.book_new();
     const rows: (string | number)[][] = [];
 
-    // Header
-    rows.push(['SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP', '', '', 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM']);
-    rows.push(['TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU', '', '', 'Độc lập - Tự do - Hạnh phúc']);
+    // Header chuẩn văn bản hành chính (Nghị định 30/2020/NĐ-CP)
+    rows.push(['SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP', '', '', '', '', '', '', '', 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM']);
+    rows.push(['TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU', '', '', '', '', '', '', '', 'Độc lập - Tự do - Hạnh phúc']);
+    rows.push(['Số: ..... /BC-TKB-DBK', '', '', '', '', '', '', '', 'Đồng Tháp, ngày ..... tháng ..... năm 2026']);
     rows.push([]);
     rows.push([`BÁO CÁO ĐÁNH GIÁ CHẤT LƯỢNG & TÍNH THUẬN TIỆN THỜI KHÓA BIỂU - TUẦN ${summary.weekNumber}`]);
     rows.push([`Năm học: ${academicYear} • Tổng số GV giảng dạy: ${summary.totalTeachersTeaching} • Điểm trung bình toàn trường: ${summary.averageScore}/100`]);
+    rows.push([`* Căn cứ xếp loại theo 3 tiêu chí cốt lõi: 1/ Số ngày nghỉ trọn ngày (từ cao xuống thấp); 2/ Số buổi nghỉ; 3/ Số tiết lủng`]);
     rows.push([]);
 
     // Tổng hợp chung
@@ -1158,42 +1240,46 @@ export function exportTimetableQualityReportExcel(
     rows.push(['- Tổng số tiết lủng (tiết trống chờ):', summary.totalGapsInSchool, 'tiết']);
     rows.push(['- Số giáo viên có tiết lủng:', summary.teachersWithGapsCount, 'giáo viên']);
     rows.push(['- Số giáo viên dạy cả 2 ca (Sáng + Chiều):', summary.teachersWithSplitShiftsCount, 'giáo viên']);
-    rows.push(['- Phân loại TKB Rất đẹp (90-100đ):', summary.tierCounts.EXCELLENT, 'giáo viên']);
-    rows.push(['- Phân loại TKB Thuận lợi (75-89đ):', summary.tierCounts.GOOD, 'giáo viên']);
-    rows.push(['- Phân loại TKB Bình thường (60-74đ):', summary.tierCounts.AVERAGE, 'giáo viên']);
-    rows.push(['- Phân loại TKB Bất tiện / Cần tối ưu (< 60đ):', summary.tierCounts.POOR, 'giáo viên']);
+    rows.push(['- Phân loại TKB Rất đẹp (Tối ưu):', summary.tierCounts.EXCELLENT, 'giáo viên']);
+    rows.push(['- Phân loại TKB Thuận lợi / Đẹp:', summary.tierCounts.GOOD, 'giáo viên']);
+    rows.push(['- Phân loại TKB Bình thường:', summary.tierCounts.AVERAGE, 'giáo viên']);
+    rows.push(['- Phân loại TKB Bất tiện / Cần cân đối:', summary.tierCounts.POOR, 'giáo viên']);
     rows.push([]);
 
-    // Table Header
+    // Table Header chuẩn hành chính
     rows.push([
       'STT',
-      'Họ và tên GV',
+      'Mã GV',
+      'Họ và tên giáo viên',
       'Tổ chuyên môn',
       'Môn chính',
-      'Số tiết/T',
+      'Số tiết dạy/T',
       'Số lớp dạy',
-      'Danh sách lớp',
-      'Số buổi',
-      'Số ngày',
-      'Tiết lủng',
+      'Danh sách lớp phụ trách',
+      '1. Số ngày nghỉ (trọn ngày)',
+      'Chi tiết thứ nghỉ',
+      '2. Số buổi nghỉ (không tiết)',
+      '3. Số tiết lủng (tiết trống)',
       'Buổi 1 tiết',
       'Ngày 2 ca',
       'Điểm tiện lợi (100)',
-      'Xếp loại',
-      'Nguyên nhân chính & Nhận xét khách quan'
+      'Xếp loại chất lượng',
+      'Nguyên nhân chính & Khuyến nghị điều chỉnh TKB'
     ]);
 
     summary.allTeachers.forEach((m, idx) => {
       rows.push([
         idx + 1,
+        m.teacherCode || '',
         m.teacherName,
         m.departmentName,
         m.mainSubjectName,
         m.totalPeriods,
         m.assignedClassesCount,
         m.assignedClassesList.join(', '),
-        m.sessionCount,
-        m.daysWithTeaching,
+        m.freeDays,
+        m.offDayNames.length > 0 ? m.offDayNames.join(', ') : 'Không',
+        m.freeHalfDays,
         m.totalGaps,
         m.singlePeriodSessions,
         m.splitShiftDays,
@@ -1203,26 +1289,67 @@ export function exportTimetableQualityReportExcel(
       ]);
     });
 
+    // Khoảng trống và Khung chữ ký hành chính 3 bên
+    rows.push([]);
+    rows.push([]);
+    rows.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Đồng Tháp, ngày ..... tháng ..... năm 2026']);
+    rows.push([
+      'NGƯỜI LẬP BIỂU',
+      '',
+      '',
+      'TỔ TRƯỞNG CHUYÊN MÔN',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      'HIỆU TRƯỞNG / BAN GIÁM HIỆU'
+    ]);
+    rows.push([
+      '(Ký và ghi rõ họ tên)',
+      '',
+      '',
+      '(Ký và ghi rõ họ tên)',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '(Ký, đóng dấu và ghi rõ họ tên)'
+    ]);
+
     const ws = XLSX.utils.aoa_to_sheet(rows);
     ws['!cols'] = [
       { wch: 6 },
-      { wch: 24 },
+      { wch: 10 },
+      { wch: 25 },
       { wch: 22 },
       { wch: 18 },
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 28 },
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 12 },
+      { wch: 14 },
+      { wch: 11 },
+      { wch: 30 },
+      { wch: 18 },
+      { wch: 18 },
+      { wch: 18 },
+      { wch: 16 },
       { wch: 12 },
       { wch: 12 },
       { wch: 16 },
-      { wch: 20 },
-      { wch: 45 }
+      { wch: 24 },
+      { wch: 50 }
     ];
 
     XLSX.utils.book_append_sheet(wb, ws, `Danh_Gia_TKB_Tuan_${summary.weekNumber}`);
-    XLSX.writeFile(wb, `Danh_Gia_Chat_Luong_TKB_Tuan_${summary.weekNumber}_${academicYear.replace(/\s+/g, '_')}.xlsx`);
+    XLSX.writeFile(wb, `Bao_Cao_Danh_Gia_TKB_Tuan_${summary.weekNumber}_${academicYear.replace(/\s+/g, '_')}.xlsx`);
   });
 }

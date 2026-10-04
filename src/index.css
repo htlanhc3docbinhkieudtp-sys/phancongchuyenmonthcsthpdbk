@@ -170,10 +170,65 @@
     line-height: 1.1 !important;
   }
 
+  /* Quality Audit Administrative Document Printing */
+  .quality-audit-print-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #000000 !important;
+  }
+
+  .quality-audit-print-table-wrapper {
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .quality-audit-print-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    font-size: var(--print-font-size, 7.2pt) !important;
+    line-height: 1.12 !important;
+    font-family: 'Times New Roman', Times, serif !important;
+  }
+
+  .quality-audit-print-table th,
+  .quality-audit-print-table td {
+    padding: 2.5px 3px !important;
+    border: 0.5pt solid #000000 !important;
+    color: #000000 !important;
+    vertical-align: middle !important;
+    word-break: break-word !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    text-overflow: clip !important;
+    font-size: inherit !important;
+  }
+
+  .quality-audit-print-table th {
+    font-weight: bold !important;
+    background-color: #f1f5f9 !important;
+    -webkit-print-color-adjust: exact !important;
+    text-align: center !important;
+    font-size: 7.5pt !important;
+    line-height: 1.1 !important;
+  }
+
   /* Prevent any child element from hiding or truncating text during printing */
   .comprehensive-print-table *,
   .concurrent-print-table *,
-  .weekly-teaching-print-table * {
+  .weekly-teaching-print-table *,
+  .quality-audit-print-table * {
     overflow: visible !important;
     text-overflow: clip !important;
     white-space: normal !important;
