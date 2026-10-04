@@ -446,6 +446,426 @@ export function analyzeTimetableQuality(
   };
 }
 
+export interface TeacherSemesterQualityMetric {
+  teacherId: string;
+  teacherName: string;
+  teacherCode: string;
+  departmentId: string;
+  departmentName: string;
+  campus?: string;
+  mainSubjectName: string;
+  assignedClassesList: string[];
+  
+  // Aggregate stats across weeks in semester
+  totalWeeksEvaluated: number;
+  avgPeriodsPerWeek: number;
+  
+  // Core 3 Criteria (3 Tiêu chí cốt lõi)
+  totalFreeDays: number;          // Tổng số ngày nghỉ (Thứ 2 -> Thứ 7)
+  avgFreeDaysPerWeek: number;     // Số ngày nghỉ TB / tuần
+  
+  totalFreeHalfDays: number;      // Tổng số buổi nghỉ (trong tổng số tuần * 12 buổi)
+  avgFreeHalfDaysPerWeek: number; // Số buổi nghỉ TB / tuần
+  
+  totalGaps: number;              // Tổng số tiết bị lủng (trống)
+  avgGapsPerWeek: number;         // Số tiết lủng TB / tuần
+  
+  // Single period sessions
+  totalSinglePeriodSessions: number;
+  
+  // Weekend combo counts
+  mondayOffCount: number;
+  saturdayOffCount: number;
+  bothOffCount: number;
+  zeroOffDayWeeksCount: number;
+  
+  // Quality classification
+  badWeeksCount: number;
+  averageWeeksCount: number;
+  goodWeeksCount: number;
+  
+  avgScore: number;
+  overallStatus: 'EXCELLENT' | 'GOOD' | 'AVERAGE' | 'FREQUENTLY_BAD';
+  statusLabel: string;
+  statusColor: string;
+  
+  // Balancing suggestion for scheduler
+  isFrequentlyBad: boolean;
+  balancingSuggestions: string[];
+  weeklyHistory: {
+    week: number;
+    score: number;
+    tier: QualityTier;
+    freeDays: number;
+    freeHalfDays: number;
+    gaps: number;
+    singleSessions: number;
+  }[];
+}
+
+export interface SemesterQualitySummary {
+  semester: 'HK1' | 'HK2' | 'ALL_YEAR';
+  semesterLabel: string;
+  weeksCount: number;
+  evaluatedWeeks: number[];
+  totalTeachers: number;
+  frequentlyBadTeachersCount: number;
+  avgScore: number;
+  totalGapsInSemester: number;
+  
+  // Ranked lists
+  frequentlyBadTeachers: TeacherSemesterQualityMetric[];
+  allTeachers: TeacherSemesterQualityMetric[];
+  departmentStats: {
+    deptId: string;
+    deptName: string;
+    teacherCount: number;
+    avgScore: number;
+    totalGaps: number;
+    avgFreeDays: number;
+    frequentlyBadCount: number;
+  }[];
+}
+
+/**
+ * Phân tích tổng hợp chất lượng TKB theo Học kỳ 1, Học kỳ 2 hoặc Cả năm
+ * Dựa trên 3 tiêu chí cốt lõi: Số ngày nghỉ, Số buổi nghỉ, Số tiết lủng
+ */
+export function analyzeSemesterQuality(
+  weeklyTimetables: Record<number, any>,
+  teachers: Teacher[],
+  classes: ClassGroup[],
+  subjects: Subject[],
+  targetScope: 'HK1' | 'HK2' | 'ALL_YEAR' = 'HK1'
+): SemesterQualitySummary {
+  const deptMap: Record<string, string> = {
+    'dept-toan': 'Tổ Toán',
+    'dept-ngu-van': 'Tổ Ngữ Văn',
+    'dept-khxh': 'Tổ Lịch sử - Địa lý - GDCD',
+    'dept-khtn': 'Tổ Lý - Hóa - Sinh - Công nghệ',
+    'dept-tieng-anh-tin': 'Tổ Tiếng Anh - Tin học',
+    'dept-gdtc-qpan-nt': 'Tổ GDTC - QPAN - Nghệ thuật',
+    'dept-bgh': 'Ban Giám Hiệu'
+  };
+
+  // Determine weeks to evaluate
+  let candidateWeeks: number[] = [];
+  let semesterLabel = 'Học kỳ 1 (Tuần 1 - Tuần 18)';
+  if (targetScope === 'HK1') {
+    candidateWeeks = Array.from({ length: 18 }, (_, i) => i + 1);
+    semesterLabel = 'Học kỳ 1 (Tuần 1 - Tuần 18)';
+  } else if (targetScope === 'HK2') {
+    candidateWeeks = Array.from({ length: 17 }, (_, i) => i + 19);
+    semesterLabel = 'Học kỳ 2 (Tuần 19 - Tuần 35)';
+  } else {
+    candidateWeeks = Array.from({ length: 35 }, (_, i) => i + 1);
+    semesterLabel = 'Cả năm học (Tuần 1 - Tuần 35)';
+  }
+
+  // Filter weeks that actually have timetable slots
+  const evaluatedWeeks = candidateWeeks.filter(
+    w => weeklyTimetables[w]?.slots && weeklyTimetables[w].slots.length > 0
+  );
+
+  // If no weeks found, fall back to whatever is available (e.g. at least week 1)
+  const finalWeeks = evaluatedWeeks.length > 0 ? evaluatedWeeks : [1];
+
+  // Pre-calculate weekly quality summaries for each active week
+  const weeklySummaries = new Map<number, SchoolQualitySummary>();
+  finalWeeks.forEach(w => {
+    const slots = weeklyTimetables[w]?.slots || [];
+    if (slots.length > 0) {
+      weeklySummaries.set(w, analyzeTimetableQuality(slots, teachers, classes, subjects, w));
+    }
+  });
+
+  const teacherMetrics: TeacherSemesterQualityMetric[] = [];
+
+  teachers.forEach(tch => {
+    const history: TeacherSemesterQualityMetric['weeklyHistory'] = [];
+    let sumScore = 0;
+    let sumPeriods = 0;
+    let sumFreeDays = 0;
+    let sumFreeHalfDays = 0;
+    let sumGaps = 0;
+    let sumSingleSessions = 0;
+    let monOff = 0;
+    let satOff = 0;
+    let bothOff = 0;
+    let zeroOff = 0;
+    let badCount = 0;
+    let avgCount = 0;
+    let goodCount = 0;
+    let mainSub = tch.notes?.split('-')?.[1]?.trim() || 'Chuyên môn';
+    const assignedClasses = new Set<string>();
+
+    finalWeeks.forEach(w => {
+      const q = weeklySummaries.get(w);
+      if (!q) return;
+      const m = q.allTeachers.find(x => x.teacherId === tch.id);
+      if (m) {
+        history.push({
+          week: w,
+          score: m.score,
+          tier: m.tier,
+          freeDays: m.freeDays,
+          freeHalfDays: m.freeHalfDays,
+          gaps: m.totalGaps,
+          singleSessions: m.singlePeriodSessions
+        });
+
+        sumScore += m.score;
+        sumPeriods += m.totalPeriods;
+        sumFreeDays += m.freeDays;
+        sumFreeHalfDays += m.freeHalfDays;
+        sumGaps += m.totalGaps;
+        sumSingleSessions += m.singlePeriodSessions;
+        mainSub = m.mainSubjectName || mainSub;
+        m.assignedClassesList.forEach(c => assignedClasses.add(c));
+
+        if (m.isMondayOff) monOff++;
+        if (m.isSaturdayOff) satOff++;
+        if (m.hasDoubleCombo) bothOff++;
+        if (m.freeDays === 0) zeroOff++;
+
+        if (m.tier === 'POOR' || m.score < 65) {
+          badCount++;
+        } else if (m.tier === 'AVERAGE') {
+          avgCount++;
+        } else {
+          goodCount++;
+        }
+      }
+    });
+
+    const evaluatedCount = history.length;
+    if (evaluatedCount === 0) return;
+
+    const avgScore = Math.round(sumScore / evaluatedCount);
+    const avgPeriods = Math.round((sumPeriods / evaluatedCount) * 10) / 10;
+    const avgFreeDays = Math.round((sumFreeDays / evaluatedCount) * 10) / 10;
+    const avgFreeHalfDays = Math.round((sumFreeHalfDays / evaluatedCount) * 10) / 10;
+    const avgGaps = Math.round((sumGaps / evaluatedCount) * 10) / 10;
+
+    // Determine if teacher is frequently disadvantaged / frequently bad
+    // Criteria for "Thường xuyên bị TKB xấu":
+    // 1. badWeeksCount >= 40% số tuần đã xếp
+    // 2. OR avgScore < 68
+    // 3. OR (avgFreeDays <= 1.2 && avgPeriods <= 17 && sumGaps >= 5)
+    // 4. OR sumGaps >= evaluatedCount * 1.8
+    const isFrequentlyBad = (badCount >= Math.ceil(evaluatedCount * 0.4)) ||
+      (avgScore < 68) ||
+      (avgFreeDays <= 1.2 && avgPeriods <= 17 && sumGaps >= 4) ||
+      (sumGaps >= evaluatedCount * 1.6);
+
+    let overallStatus: TeacherSemesterQualityMetric['overallStatus'] = 'GOOD';
+    let statusLabel = 'TKB Tương đối thuận lợi';
+    let statusColor = 'text-blue-700 bg-blue-50 border-blue-200';
+
+    if (isFrequentlyBad) {
+      overallStatus = 'FREQUENTLY_BAD';
+      statusLabel = 'Thường xuyên bị xấu (Cần cân đối)';
+      statusColor = 'text-rose-700 bg-rose-50 border-rose-300 font-black';
+    } else if (avgScore >= 85 && avgFreeDays >= 2 && avgGaps <= 0.8) {
+      overallStatus = 'EXCELLENT';
+      statusLabel = 'TKB Rất Đẹp & Tối Ưu';
+      statusColor = 'text-emerald-700 bg-emerald-50 border-emerald-300';
+    } else if (avgScore >= 75) {
+      overallStatus = 'GOOD';
+      statusLabel = 'TKB Thuận Lợi';
+      statusColor = 'text-blue-700 bg-blue-50 border-blue-200';
+    } else {
+      overallStatus = 'AVERAGE';
+      statusLabel = 'TKB Trung bình';
+      statusColor = 'text-amber-700 bg-amber-50 border-amber-200';
+    }
+
+    // Generate balancing suggestions for scheduler
+    const balancingSuggestions: string[] = [];
+    if (tch.name.includes('Lê Thái Phương') || (mainSub.includes('Hóa') && assignedClasses.has('7A5'))) {
+      balancingSuggestions.push('Rà soát tiết HĐTNHN lớp 7A5: Điều chuyển sang GV khối 7 hoặc khóa cố định vào buổi có sẵn để giảm từ 5 ngày xuống 3-4 ngày dạy/tuần.');
+    }
+    if (sumGaps >= 6) {
+      balancingSuggestions.push(`Bị lủng tổng cộng ${sumGaps} tiết (TB ${avgGaps} tiết/tuần). Cần ưu tiên đảo tiết với GV cùng tổ để triệt tiêu các khoảng trống.`);
+    }
+    if (avgFreeDays <= 1.2 && avgPeriods <= 17) {
+      balancingSuggestions.push(`Số tiết chỉ ${avgPeriods} nhưng phải đi dạy ${Math.round((6 - avgFreeDays)*10)/10} ngày/tuần. Cần gom tiết lại trong 3-4 buổi để tăng ngày nghỉ.`);
+    }
+    if (sumSingleSessions >= 2) {
+      balancingSuggestions.push(`Có ${sumSingleSessions} buổi chỉ lên trường dạy 1 tiết đơn độc. Cần chuyển các tiết đơn độc sang buổi khác.`);
+    }
+    if (monOff === 0 && satOff === 0 && evaluatedCount >= 3) {
+      balancingSuggestions.push(`Chưa từng được nghỉ Thứ Hai hoặc Thứ Bảy (${evaluatedCount} tuần qua). Cần luân phiên bố trí 1 ngày nghỉ đầu/cuối tuần.`);
+    }
+
+    if (balancingSuggestions.length === 0) {
+      balancingSuggestions.push('Lịch hiện tại phân bổ hợp lý, tiếp tục duy trì mức độ cân đối.');
+    }
+
+    teacherMetrics.push({
+      teacherId: tch.id,
+      teacherName: tch.name,
+      teacherCode: tch.code || '',
+      departmentId: tch.departmentId,
+      departmentName: deptMap[tch.departmentId] || tch.departmentId,
+      campus: tch.campus,
+      mainSubjectName: mainSub,
+      assignedClassesList: Array.from(assignedClasses),
+      totalWeeksEvaluated: evaluatedCount,
+      avgPeriodsPerWeek: avgPeriods,
+      totalFreeDays: sumFreeDays,
+      avgFreeDaysPerWeek: avgFreeDays,
+      totalFreeHalfDays: sumFreeHalfDays,
+      avgFreeHalfDaysPerWeek: avgFreeHalfDays,
+      totalGaps: sumGaps,
+      avgGapsPerWeek: avgGaps,
+      totalSinglePeriodSessions: sumSingleSessions,
+      mondayOffCount: monOff,
+      saturdayOffCount: satOff,
+      bothOffCount: bothOff,
+      zeroOffDayWeeksCount: zeroOff,
+      badWeeksCount: badCount,
+      averageWeeksCount: avgCount,
+      goodWeeksCount: goodCount,
+      avgScore,
+      overallStatus,
+      statusLabel,
+      statusColor,
+      isFrequentlyBad,
+      balancingSuggestions,
+      weeklyHistory: history
+    });
+  });
+
+  // Sort teachers: frequently bad teachers first (lowest avgScore, highest gaps, lowest free days)
+  teacherMetrics.sort((a, b) => {
+    if (a.isFrequentlyBad && !b.isFrequentlyBad) return -1;
+    if (!a.isFrequentlyBad && b.isFrequentlyBad) return 1;
+    return a.avgScore - b.avgScore;
+  });
+
+  const frequentlyBadTeachers = teacherMetrics.filter(t => t.isFrequentlyBad);
+  const totalGapsInSemester = teacherMetrics.reduce((s, t) => s + t.totalGaps, 0);
+  const avgScore = Math.round(teacherMetrics.reduce((s, t) => s + t.avgScore, 0) / (teacherMetrics.length || 1));
+
+  // Department Breakdown
+  const deptGroups: Record<string, TeacherSemesterQualityMetric[]> = {};
+  teacherMetrics.forEach(m => {
+    if (!deptGroups[m.departmentId]) deptGroups[m.departmentId] = [];
+    deptGroups[m.departmentId].push(m);
+  });
+
+  const departmentStats = Object.entries(deptGroups).map(([deptId, list]) => ({
+    deptId,
+    deptName: deptMap[deptId] || deptId,
+    teacherCount: list.length,
+    avgScore: Math.round(list.reduce((s, m) => s + m.avgScore, 0) / (list.length || 1)),
+    totalGaps: list.reduce((s, m) => s + m.totalGaps, 0),
+    avgFreeDays: Math.round((list.reduce((s, m) => s + m.avgFreeDaysPerWeek, 0) / (list.length || 1)) * 10) / 10,
+    frequentlyBadCount: list.filter(m => m.isFrequentlyBad).length
+  })).sort((a, b) => a.avgScore - b.avgScore);
+
+  return {
+    semester: targetScope,
+    semesterLabel,
+    weeksCount: finalWeeks.length,
+    evaluatedWeeks: finalWeeks,
+    totalTeachers: teacherMetrics.length,
+    frequentlyBadTeachersCount: frequentlyBadTeachers.length,
+    avgScore,
+    totalGapsInSemester,
+    frequentlyBadTeachers,
+    allTeachers: teacherMetrics,
+    departmentStats
+  };
+}
+
+/**
+ * Xuất file Excel báo cáo tổng hợp chất lượng TKB Học kỳ
+ */
+export function exportSemesterQualityReportExcel(
+  summary: SemesterQualitySummary,
+  academicYear: string = '2026 - 2027'
+) {
+  import('xlsx').then((XLSX) => {
+    const wb = XLSX.utils.book_new();
+    const rows: (string | number)[][] = [];
+
+    // Header
+    rows.push(['SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP', '', '', 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM']);
+    rows.push(['TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU', '', '', 'Độc lập - Tự do - Hạnh phúc']);
+    rows.push([]);
+    rows.push([`BÁO CÁO TỔNG HỢP ĐÁNH GIÁ TỐT - XẤU THỜI KHÓA BIỂU (${summary.semesterLabel.toUpperCase()})`]);
+    rows.push([`Năm học: ${academicYear} • Các tuần đã đánh giá: Tuần ${summary.evaluatedWeeks.join(', ')} • Tổng số GV: ${summary.totalTeachers}`]);
+    rows.push([`Số GV thường xuyên bị TKB xấu cần cân đối: ${summary.frequentlyBadTeachersCount} người • Điểm trung bình: ${summary.avgScore}/100 • Tổng tiết lủng: ${summary.totalGapsInSemester} tiết`]);
+    rows.push([]);
+
+    // Table Header
+    rows.push([
+      'STT',
+      'Họ và tên GV',
+      'Tổ chuyên môn',
+      'Môn chính',
+      'Số tiết TB/Tuần',
+      '1. Số ngày nghỉ TB/Tuần',
+      '2. Số buổi nghỉ TB/Tuần',
+      '3. Tổng tiết lủng HK',
+      'Tiết lủng TB/Tuần',
+      'Buổi 1 tiết',
+      'Nghỉ Thứ 2 (tuần)',
+      'Nghỉ Thứ 7 (tuần)',
+      'Số tuần bị xấu',
+      'Điểm TB (100)',
+      'Đánh giá chất lượng',
+      'Khuyến nghị cân đối chủ động khi xếp TKB'
+    ]);
+
+    summary.allTeachers.forEach((m, idx) => {
+      rows.push([
+        idx + 1,
+        m.teacherName,
+        m.departmentName,
+        m.mainSubjectName,
+        m.avgPeriodsPerWeek,
+        m.avgFreeDaysPerWeek,
+        m.avgFreeHalfDaysPerWeek,
+        m.totalGaps,
+        m.avgGapsPerWeek,
+        m.totalSinglePeriodSessions,
+        `${m.mondayOffCount}/${m.totalWeeksEvaluated}`,
+        `${m.saturdayOffCount}/${m.totalWeeksEvaluated}`,
+        `${m.badWeeksCount}/${m.totalWeeksEvaluated}`,
+        m.avgScore,
+        m.statusLabel,
+        m.balancingSuggestions.join(' | ')
+      ]);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [
+      { wch: 6 },
+      { wch: 24 },
+      { wch: 22 },
+      { wch: 18 },
+      { wch: 12 },
+      { wch: 18 },
+      { wch: 18 },
+      { wch: 16 },
+      { wch: 14 },
+      { wch: 12 },
+      { wch: 14 },
+      { wch: 14 },
+      { wch: 14 },
+      { wch: 14 },
+      { wch: 28 },
+      { wch: 45 }
+    ];
+
+    XLSX.utils.book_append_sheet(wb, ws, `Danh_Gia_TKB_${summary.semester}`);
+    XLSX.writeFile(wb, `Danh_Gia_TKB_${summary.semester}_${academicYear.replace(/\s+/g, '_')}.xlsx`);
+  });
+}
+
 export interface TeacherMultiWeekDaysOffRecord {
   teacherId: string;
   teacherName: string;

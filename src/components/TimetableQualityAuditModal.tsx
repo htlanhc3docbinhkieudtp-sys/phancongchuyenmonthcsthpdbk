@@ -14,14 +14,25 @@ import {
   ArrowRight,
   ShieldCheck,
   Zap,
-  Info
+  Info,
+  Scale,
+  Calendar,
+  Eye,
+  Check,
+  RotateCcw,
+  SlidersHorizontal,
+  ChevronRight
 } from 'lucide-react';
 import { TimetableSlot, Teacher, ClassGroup, Subject, SchoolConfig, SchoolTimetable } from '../types';
 import {
   analyzeTimetableQuality,
   analyzeMultiWeekDaysOff,
+  analyzeSemesterQuality,
   exportTimetableQualityReportExcel,
+  exportSemesterQualityReportExcel,
   TeacherQualityMetric,
+  TeacherSemesterQualityMetric,
+  SemesterQualitySummary,
   QualityTier
 } from '../utils/timetableQualityHelper';
 
@@ -52,13 +63,14 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
   config,
   onNavigateToTeacherSchedule
 }) => {
+  const [auditScope, setAuditScope] = useState<'WEEK' | 'HK1' | 'HK2' | 'ALL_YEAR'>('WEEK');
   const [selectedAuditWeek, setSelectedAuditWeek] = useState<number>(currentWeek);
-  const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'ALL_TEACHERS' | 'DEPARTMENTS' | 'DAYS_OFF_AUDIT'>('OVERVIEW');
+  const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'BALANCING' | 'ALL_TEACHERS' | 'DEPARTMENTS' | 'DAYS_OFF_AUDIT'>('OVERVIEW');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedDeptFilter, setSelectedDeptFilter] = useState<string>('ALL');
   const [selectedTierFilter, setSelectedTierFilter] = useState<string>('ALL');
   const [daysOffFilter, setDaysOffFilter] = useState<'ALL' | 'ALWAYS_MONDAY_OFF' | 'ALWAYS_SATURDAY_OFF' | 'ALWAYS_BOTH_OFF' | 'NEVER_OFF'>('ALL');
-  const [selectedTeacherDetail, setSelectedTeacherDetail] = useState<TeacherQualityMetric | null>(null);
+  const [selectedTeacherDetail, setSelectedTeacherDetail] = useState<TeacherQualityMetric | TeacherSemesterQualityMetric | null>(null);
 
   // Synchronize with external week when opened
   React.useEffect(() => {
@@ -79,8 +91,8 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
     return activeSlots;
   }, [selectedAuditWeek, currentWeek, weeklyTimetables, activeSlots]);
 
-  // Run full quality analysis
-  const summary = useMemo(() => {
+  // Run full quality analysis for single week
+  const weeklySummary = useMemo(() => {
     return analyzeTimetableQuality(
       slotsToAnalyze,
       teachers,
@@ -89,6 +101,18 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
       selectedAuditWeek
     );
   }, [slotsToAnalyze, teachers, classes, subjects, selectedAuditWeek]);
+
+  // Run semester quality analysis for HK1 / HK2 / ALL_YEAR
+  const semesterSummary: SemesterQualitySummary = useMemo(() => {
+    const scope = auditScope === 'WEEK' ? 'HK1' : auditScope;
+    return analyzeSemesterQuality(
+      weeklyTimetables,
+      teachers,
+      classes,
+      subjects,
+      scope
+    );
+  }, [weeklyTimetables, teachers, classes, subjects, auditScope]);
 
   // Multi-week days off analysis (Weeks 1 to 5)
   const multiWeekSummary = useMemo(() => {
@@ -115,9 +139,9 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
     });
   }, [multiWeekSummary.records, daysOffFilter, searchTerm]);
 
-  // Filtered teachers list for Tab ALL_TEACHERS
-  const filteredTeachers = useMemo(() => {
-    return summary.allTeachers.filter(t => {
+  // Filtered teachers list for Tab ALL_TEACHERS (Weekly)
+  const filteredWeeklyTeachers = useMemo(() => {
+    return weeklySummary.allTeachers.filter(t => {
       if (selectedDeptFilter !== 'ALL' && t.departmentId !== selectedDeptFilter) return false;
       if (selectedTierFilter !== 'ALL' && t.tier !== selectedTierFilter) return false;
       if (searchTerm.trim()) {
@@ -129,12 +153,48 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
       }
       return true;
     });
-  }, [summary.allTeachers, selectedDeptFilter, selectedTierFilter, searchTerm]);
+  }, [weeklySummary.allTeachers, selectedDeptFilter, selectedTierFilter, searchTerm]);
+
+  // Filtered teachers list for Tab ALL_TEACHERS (Semester)
+  const filteredSemesterTeachers = useMemo(() => {
+    return semesterSummary.allTeachers.filter(t => {
+      if (selectedDeptFilter !== 'ALL' && t.departmentId !== selectedDeptFilter) return false;
+      if (selectedTierFilter === 'EXCELLENT' && t.overallStatus !== 'EXCELLENT') return false;
+      if (selectedTierFilter === 'GOOD' && t.overallStatus !== 'GOOD') return false;
+      if (selectedTierFilter === 'AVERAGE' && t.overallStatus !== 'AVERAGE') return false;
+      if (selectedTierFilter === 'POOR' && t.overallStatus !== 'FREQUENTLY_BAD') return false;
+      if (searchTerm.trim()) {
+        const query = searchTerm.toLowerCase().trim();
+        const matchName = t.teacherName.toLowerCase().includes(query);
+        const matchCode = t.teacherCode.toLowerCase().includes(query);
+        const matchSub = t.mainSubjectName.toLowerCase().includes(query);
+        if (!matchName && !matchCode && !matchSub) return false;
+      }
+      return true;
+    });
+  }, [semesterSummary.allTeachers, selectedDeptFilter, selectedTierFilter, searchTerm]);
+
+  // Frequently bad teachers list for Tab BALANCING
+  const balancingList = useMemo(() => {
+    if (auditScope === 'WEEK') {
+      return weeklySummary.allTeachers
+        .filter(t => t.score <= 74 || t.totalGaps >= 2 || (t.totalPeriods <= 16 && t.freeDays <= 1) || t.singlePeriodSessions > 0)
+        .sort((a, b) => a.score - b.score);
+    } else {
+      return semesterSummary.allTeachers
+        .filter(t => t.isFrequentlyBad || t.avgScore <= 74 || t.avgGapsPerWeek >= 1.5 || t.badWeeksCount >= 1)
+        .sort((a, b) => a.avgScore - b.avgScore);
+    }
+  }, [auditScope, weeklySummary.allTeachers, semesterSummary.allTeachers]);
 
   if (!isOpen) return null;
 
   const handleExportExcel = () => {
-    exportTimetableQualityReportExcel(summary, config.academicYear || '2026 - 2027');
+    if (auditScope === 'WEEK') {
+      exportTimetableQualityReportExcel(weeklySummary, config.academicYear || '2026 - 2027');
+    } else {
+      exportSemesterQualityReportExcel(semesterSummary, config.academicYear || '2026 - 2027');
+    }
   };
 
   const handleViewTeacherTkb = (teacherId: string) => {
@@ -145,63 +205,121 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-6xl max-h-[92vh] rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-7xl max-h-[94vh] rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
         
-        {/* 1. Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-200 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
+        {/* 1. Modal Header with Scope Switcher */}
+        <div className="p-4 sm:p-5 border-b border-slate-200 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex flex-col lg:flex-row lg:items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-indigo-500/30 border border-indigo-400/40 rounded-2xl text-yellow-300 shadow-inner">
-              <Sparkles className="w-6 h-6" />
+            <div className="p-2.5 bg-gradient-to-br from-amber-500 to-indigo-600 border border-amber-400/40 rounded-2xl text-white shadow-md">
+              <Scale className="w-6 h-6 text-yellow-200" />
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-base sm:text-lg font-black tracking-tight text-white uppercase">
-                  Kiểm Tra & Nhận Xét Chất Lượng Thời Khóa Biểu
+                  Đánh Giá Thời Khóa Biểu Tốt - Xấu Giáo Viên
                 </h2>
-                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-indigo-500/40 text-indigo-200 border border-indigo-400/30">
-                  Tuần {selectedAuditWeek}
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-500/30 text-amber-200 border border-amber-400/40">
+                  Dựa trên 3 tiêu chí cốt lõi
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-                  Phân tích Khách quan & Khoa học
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
+                  {auditScope === 'WEEK' ? `Tuần ${selectedAuditWeek}` : semesterSummary.semesterLabel}
                 </span>
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
-                Đánh giá mức độ thuận tiện, phát hiện tiết lủng / ngày 2 ca và giải trình nguyên nhân TKB "Đẹp" hay "Xấu" cho Ban Giám Hiệu
+                Đánh giá theo: <strong className="text-yellow-300">1. Số ngày nghỉ</strong> • <strong className="text-yellow-300">2. Số buổi nghỉ</strong> • <strong className="text-yellow-300">3. Số tiết bị lủng (trống)</strong> để Ban Giám Hiệu chủ động cân đối TKB
               </p>
             </div>
           </div>
 
-          {/* Week Picker & Actions */}
-          <div className="flex items-center gap-2 self-end sm:self-center">
-            {/* Week Selector */}
-            <div className="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-xl px-2.5 py-1.5 text-xs text-white">
-              <Clock className="w-3.5 h-3.5 text-yellow-300" />
-              <span className="font-bold text-[11px]">Tuần:</span>
-              <select
-                value={selectedAuditWeek}
-                onChange={(e) => {
-                  const wk = parseInt(e.target.value, 10);
-                  setSelectedAuditWeek(wk);
-                  if (onSelectWeek) onSelectWeek(wk);
-                }}
-                className="bg-slate-800 text-white font-bold text-xs rounded-lg px-2 py-1 border border-white/20 focus:outline-none cursor-pointer"
+          {/* Scope Selector & Top Actions */}
+          <div className="flex flex-wrap items-center gap-2 self-start lg:self-center">
+            {/* Scope Switcher: Tuần, HK1, HK2, Cả năm */}
+            <div className="flex items-center bg-slate-800/80 p-1 rounded-xl border border-white/20 gap-1 text-xs">
+              <button
+                type="button"
+                onClick={() => setAuditScope('WEEK')}
+                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                  auditScope === 'WEEK'
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                }`}
+                title="Xem đánh giá theo từng tuần cụ thể"
               >
-                {Array.from({ length: 35 }, (_, i) => i + 1).map((w) => (
-                  <option key={w} value={w} className="bg-slate-900 text-white">
-                    Tuần {w} {weeklyTimetables[w] ? '★' : ''}
-                  </option>
-                ))}
-              </select>
+                <Calendar className="w-3.5 h-3.5 text-yellow-300" />
+                <span>Hàng tuần</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setAuditScope('HK1')}
+                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                  auditScope === 'HK1'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                }`}
+                title="Tổng hợp đánh giá toàn bộ Học kỳ 1 (Tuần 1 - 18)"
+              >
+                <span>Học kỳ 1</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setAuditScope('HK2')}
+                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                  auditScope === 'HK2'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                }`}
+                title="Tổng hợp đánh giá toàn bộ Học kỳ 2 (Tuần 19 - 35)"
+              >
+                <span>Học kỳ 2</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setAuditScope('ALL_YEAR')}
+                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                  auditScope === 'ALL_YEAR'
+                    ? 'bg-purple-600 text-white shadow-xs'
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                }`}
+                title="Tổng hợp cả năm học (Tuần 1 - 35)"
+              >
+                <span>Cả năm</span>
+              </button>
             </div>
+
+            {/* Week Dropdown if in WEEK scope */}
+            {auditScope === 'WEEK' && (
+              <div className="flex items-center gap-1 bg-white/10 border border-white/20 rounded-xl px-2 py-1 text-xs text-white">
+                <Clock className="w-3.5 h-3.5 text-yellow-300" />
+                <span className="font-bold text-[11px]">Tuần:</span>
+                <select
+                  value={selectedAuditWeek}
+                  onChange={(e) => {
+                    const wk = parseInt(e.target.value, 10);
+                    setSelectedAuditWeek(wk);
+                    if (onSelectWeek) onSelectWeek(wk);
+                  }}
+                  className="bg-slate-800 text-white font-bold text-xs rounded-lg px-2 py-0.5 border border-white/20 focus:outline-none cursor-pointer"
+                >
+                  {Array.from({ length: 35 }, (_, i) => i + 1).map((w) => (
+                    <option key={w} value={w} className="bg-slate-900 text-white">
+                      Tuần {w} {weeklyTimetables[w] ? '★' : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <button
               onClick={handleExportExcel}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition-all cursor-pointer active:scale-95"
-              title="Xuất bảng đánh giá chất lượng TKB ra file Excel"
+              title={auditScope === 'WEEK' ? `Xuất Excel đánh giá TKB Tuần ${selectedAuditWeek}` : `Xuất Excel báo cáo đánh giá ${semesterSummary.semesterLabel}`}
             >
               <FileSpreadsheet className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Xuất Excel</span>
+              <span>Xuất Excel</span>
             </button>
 
             <button
@@ -214,122 +332,183 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
           </div>
         </div>
 
-        {/* 2. Top Summary KPI Cards */}
-        <div className="bg-slate-50 p-4 border-b border-slate-200 shrink-0">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {/* KPI 1: Average Score */}
-            <div className="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-2xs">
+        {/* 2. Top Summary: 3 CORE EVALUATION CRITERIA BANNER */}
+        <div className="bg-slate-50 p-3 sm:p-4 border-b border-slate-200 shrink-0">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            {/* Criteria 1: Số Ngày Nghỉ */}
+            <div className="bg-white p-3 rounded-2xl border-2 border-emerald-200 shadow-2xs relative overflow-hidden">
               <div className="flex items-center justify-between">
-                <span className="text-slate-500 text-[11px] font-bold uppercase tracking-wider">Điểm Thuận Tiện TB</span>
-                <span className={`w-2.5 h-2.5 rounded-full ${
-                  summary.averageScore >= 80 ? 'bg-emerald-500' : summary.averageScore >= 70 ? 'bg-blue-500' : 'bg-amber-500'
-                }`}></span>
+                <span className="text-emerald-800 text-[11px] font-black uppercase tracking-wider flex items-center gap-1">
+                  <span className="w-4 h-4 rounded-full bg-emerald-600 text-white text-[10px] flex items-center justify-center font-black">1</span>
+                  Số Ngày Được Nghỉ
+                </span>
+                <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-extrabold rounded-md">
+                  Thứ 2 &rarr; Thứ 7
+                </span>
               </div>
-              <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-2xl font-black text-slate-900">{summary.averageScore}</span>
-                <span className="text-xs text-slate-400 font-bold">/100</span>
+              <div className="mt-1.5 flex items-baseline gap-2">
+                <span className="text-2xl font-black text-emerald-700">
+                  {auditScope === 'WEEK'
+                    ? `${(weeklySummary.allTeachers.reduce((s, t) => s + t.freeDays, 0) / (weeklySummary.totalTeachersTeaching || 1)).toFixed(1)} ngày`
+                    : `${(semesterSummary.allTeachers.reduce((s, t) => s + t.avgFreeDaysPerWeek, 0) / (semesterSummary.totalTeachers || 1)).toFixed(1)} ngày/tuần`
+                  }
+                </span>
+                <span className="text-xs text-slate-500 font-semibold">trung bình</span>
               </div>
-              <div className="text-[11px] text-slate-500 mt-0.5">
-                Đánh giá trên <strong className="text-slate-800">{summary.totalTeachersTeaching}</strong> giáo viên có tiết
+              <div className="text-[11px] text-slate-600 mt-1 flex items-center justify-between">
+                <span>Nhiều nhất: <strong className="text-emerald-700">3 - 4 ngày</strong></span>
+                <span>Ít nhất: <strong className="text-rose-600">0 - 1 ngày</strong></span>
               </div>
             </div>
 
-            {/* KPI 2: Total Gaps */}
-            <div className="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-2xs">
+            {/* Criteria 2: Số Buổi Nghỉ */}
+            <div className="bg-white p-3 rounded-2xl border-2 border-blue-200 shadow-2xs relative overflow-hidden">
               <div className="flex items-center justify-between">
-                <span className="text-slate-500 text-[11px] font-bold uppercase tracking-wider">Tiết Lủng / Tiết Trống</span>
-                <Clock className="w-4 h-4 text-amber-500" />
+                <span className="text-blue-800 text-[11px] font-black uppercase tracking-wider flex items-center gap-1">
+                  <span className="w-4 h-4 rounded-full bg-blue-600 text-white text-[10px] flex items-center justify-center font-black">2</span>
+                  Số Buổi Được Nghỉ
+                </span>
+                <span className="px-1.5 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-extrabold rounded-md">
+                  Tổng 12 buổi
+                </span>
               </div>
-              <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-2xl font-black text-amber-600">{summary.totalGapsInSchool}</span>
-                <span className="text-xs text-slate-500 font-semibold">tiết toàn trường</span>
+              <div className="mt-1.5 flex items-baseline gap-2">
+                <span className="text-2xl font-black text-blue-700">
+                  {auditScope === 'WEEK'
+                    ? `${(weeklySummary.allTeachers.reduce((s, t) => s + t.freeHalfDays, 0) / (weeklySummary.totalTeachersTeaching || 1)).toFixed(1)} buổi`
+                    : `${(semesterSummary.allTeachers.reduce((s, t) => s + t.avgFreeHalfDaysPerWeek, 0) / (semesterSummary.totalTeachers || 1)).toFixed(1)} buổi/tuần`
+                  }
+                </span>
+                <span className="text-xs text-slate-500 font-semibold">trung bình</span>
               </div>
-              <div className="text-[11px] text-slate-500 mt-0.5">
-                <strong className="text-amber-700">{summary.teachersWithGapsCount}</strong> giáo viên bị tiết lủng
+              <div className="text-[11px] text-slate-600 mt-1 flex items-center justify-between">
+                <span>Nghỉ &ge; 7 buổi: <strong className="text-blue-700 font-bold">Thuận lợi</strong></span>
+                <span>Nghỉ &le; 5 buổi: <strong className="text-rose-600 font-bold">Bất tiện</strong></span>
               </div>
             </div>
 
-            {/* KPI 3: Split Shifts */}
-            <div className="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-2xs">
+            {/* Criteria 3: Số Tiết Lủng */}
+            <div className="bg-white p-3 rounded-2xl border-2 border-amber-300 shadow-2xs relative overflow-hidden">
               <div className="flex items-center justify-between">
-                <span className="text-slate-500 text-[11px] font-bold uppercase tracking-wider">Dạy Cả 2 Ca (Sáng + Chiều)</span>
-                <Layers className="w-4 h-4 text-indigo-500" />
+                <span className="text-amber-800 text-[11px] font-black uppercase tracking-wider flex items-center gap-1">
+                  <span className="w-4 h-4 rounded-full bg-amber-600 text-white text-[10px] flex items-center justify-center font-black">3</span>
+                  Số Tiết Bị Lủng ("Trống")
+                </span>
+                <span className="px-1.5 py-0.5 bg-amber-100 text-amber-900 text-[10px] font-extrabold rounded-md">
+                  Chờ giữa buổi
+                </span>
               </div>
-              <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-2xl font-black text-indigo-600">{summary.teachersWithSplitShiftsCount}</span>
-                <span className="text-xs text-slate-500 font-semibold">giáo viên</span>
+              <div className="mt-1.5 flex items-baseline gap-2">
+                <span className="text-2xl font-black text-amber-600">
+                  {auditScope === 'WEEK'
+                    ? `${weeklySummary.totalGapsInSchool} tiết`
+                    : `${semesterSummary.totalGapsInSemester} tiết`
+                  }
+                </span>
+                <span className="text-xs text-slate-500 font-semibold">
+                  {auditScope === 'WEEK' ? 'toàn trường tuần này' : `tổng tích lũy ${semesterSummary.weeksCount} tuần`}
+                </span>
               </div>
-              <div className="text-[11px] text-slate-500 mt-0.5">
-                Do dạy chéo các khối sáng & chiều
+              <div className="text-[11px] text-slate-600 mt-1">
+                {auditScope === 'WEEK' ? (
+                  <span>Có <strong className="text-amber-800">{weeklySummary.teachersWithGapsCount} giáo viên</strong> bị tiết lủng</span>
+                ) : (
+                  <span>TB: <strong className="text-amber-800">{(semesterSummary.totalGapsInSemester / (semesterSummary.weeksCount || 1)).toFixed(1)} tiết/tuần</strong></span>
+                )}
               </div>
             </div>
 
-            {/* KPI 4: Tier Breakdown */}
-            <div className="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-2xs">
+            {/* Summary & Balancing Need */}
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-3 rounded-2xl border-2 border-indigo-200 shadow-2xs">
               <div className="flex items-center justify-between">
-                <span className="text-slate-500 text-[11px] font-bold uppercase tracking-wider">Phân Bổ Xếp Loại</span>
-                <TrendingUp className="w-4 h-4 text-emerald-600" />
-              </div>
-              <div className="flex items-center gap-1.5 mt-1.5 text-xs font-bold">
-                <span className="px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[11px]" title="Rất đẹp (>=90đ)">
-                  {summary.tierCounts.EXCELLENT} rất đẹp
+                <span className="text-indigo-900 text-[11px] font-black uppercase tracking-wider flex items-center gap-1">
+                  <AlertTriangle className="w-4 h-4 text-rose-600" />
+                  Cần Cân Đối Chủ Động
                 </span>
-                <span className="px-1.5 py-0.5 rounded-md bg-blue-100 text-blue-800 text-[11px]" title="Đẹp (75-89đ)">
-                  {summary.tierCounts.GOOD} đẹp
-                </span>
-                <span className="px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-800 text-[11px]" title="Bất tiện (<60đ)">
-                  {summary.tierCounts.POOR} cần chỉnh
+                <span className="px-1.5 py-0.5 bg-rose-600 text-white text-[10px] font-extrabold rounded-md animate-pulse">
+                  {balancingList.length} GV
                 </span>
               </div>
-              <div className="text-[10px] text-slate-500 mt-1">
-                Tỷ lệ thuận lợi: {Math.round(((summary.tierCounts.EXCELLENT + summary.tierCounts.GOOD) / (summary.totalTeachersTeaching || 1)) * 100)}%
+              <div className="mt-1.5 flex items-baseline gap-1">
+                <span className="text-2xl font-black text-rose-700">{balancingList.length}</span>
+                <span className="text-xs text-slate-600 font-bold">giáo viên bị TKB xấu</span>
+              </div>
+              <div className="text-[11px] text-slate-600 mt-1 flex items-center justify-between">
+                <span>Điểm TB toàn trường: <strong className="text-indigo-900">{auditScope === 'WEEK' ? weeklySummary.averageScore : semesterSummary.avgScore}/100</strong></span>
+                <button
+                  onClick={() => setActiveTab('BALANCING')}
+                  className="text-[11px] text-indigo-700 hover:text-indigo-900 font-extrabold underline cursor-pointer"
+                >
+                  Xem gợi ý cân đối &rarr;
+                </button>
               </div>
             </div>
           </div>
         </div>
 
         {/* 3. Navigation Tabs */}
-        <div className="px-4 border-b border-slate-200 bg-white flex items-center justify-between shrink-0">
+        <div className="px-4 border-b border-slate-200 bg-white flex items-center justify-between shrink-0 overflow-x-auto">
           <div className="flex items-center gap-2 pt-2">
             <button
               onClick={() => setActiveTab('OVERVIEW')}
-              className={`px-3.5 py-2 text-xs font-bold border-b-2 transition-all cursor-pointer ${
+              className={`px-3.5 py-2 text-xs font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === 'OVERVIEW'
-                  ? 'border-indigo-600 text-indigo-700 bg-indigo-50/50 rounded-t-xl'
+                  ? 'border-indigo-600 text-indigo-700 bg-indigo-50/50 rounded-t-xl font-extrabold'
                   : 'border-transparent text-slate-600 hover:text-slate-900'
               }`}
             >
-              1. Báo Cáo Phân Tích & So Sánh 2 Cực
+              1. Báo Cáo Tổng Quan & 3 Tiêu Chí
             </button>
+
+            <button
+              onClick={() => setActiveTab('BALANCING')}
+              className={`px-3.5 py-2 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                activeTab === 'BALANCING'
+                  ? 'border-rose-600 text-rose-700 bg-rose-50/60 rounded-t-xl font-extrabold'
+                  : 'border-transparent text-rose-600 hover:text-rose-900'
+              }`}
+            >
+              <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
+              <span>2. Cân Đối Chủ Động (GV Thường Xuyên Bị Xấu)</span>
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-600 text-white font-black">
+                {balancingList.length}
+              </span>
+            </button>
+
             <button
               onClick={() => setActiveTab('ALL_TEACHERS')}
-              className={`px-3.5 py-2 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`px-3.5 py-2 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'ALL_TEACHERS'
-                  ? 'border-indigo-600 text-indigo-700 bg-indigo-50/50 rounded-t-xl'
+                  ? 'border-indigo-600 text-indigo-700 bg-indigo-50/50 rounded-t-xl font-extrabold'
                   : 'border-transparent text-slate-600 hover:text-slate-900'
               }`}
             >
-              2. Danh Sách Đánh Giá Toàn Bộ Giáo Viên ({summary.allTeachers.length})
+              <span>3. Toàn Bộ Giáo Viên</span>
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-200 text-slate-700 font-extrabold">
+                {auditScope === 'WEEK' ? weeklySummary.allTeachers.length : semesterSummary.allTeachers.length}
+              </span>
             </button>
+
             <button
               onClick={() => setActiveTab('DEPARTMENTS')}
-              className={`px-3.5 py-2 text-xs font-bold border-b-2 transition-all cursor-pointer ${
+              className={`px-3.5 py-2 text-xs font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === 'DEPARTMENTS'
-                  ? 'border-indigo-600 text-indigo-700 bg-indigo-50/50 rounded-t-xl'
+                  ? 'border-indigo-600 text-indigo-700 bg-indigo-50/50 rounded-t-xl font-extrabold'
                   : 'border-transparent text-slate-600 hover:text-slate-900'
               }`}
             >
-              3. Đối Soát Theo Tổ Chuyên Môn
+              4. Theo Tổ Chuyên Môn
             </button>
+
             <button
               onClick={() => setActiveTab('DAYS_OFF_AUDIT')}
-              className={`px-3.5 py-2 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`px-3.5 py-2 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'DAYS_OFF_AUDIT'
-                  ? 'border-indigo-600 text-indigo-700 bg-indigo-50/50 rounded-t-xl'
+                  ? 'border-indigo-600 text-indigo-700 bg-indigo-50/50 rounded-t-xl font-extrabold'
                   : 'border-transparent text-slate-600 hover:text-slate-900'
               }`}
             >
-              <span>4. Xác Minh Ngày Nghỉ Đầu / Cuối Tuần</span>
+              <span>5. Kiểm Tra Nghỉ Thứ 2 / Thứ 7</span>
               <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-100 text-amber-900 font-black">
                 {multiWeekSummary.alwaysBothOffCount + multiWeekSummary.alwaysSaturdayOffCount + multiWeekSummary.alwaysMondayOffCount} GV
               </span>
@@ -347,64 +526,56 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
               {/* Executive Pedagogical Diagnostic Box */}
               <div className="bg-gradient-to-r from-blue-50 via-indigo-50/60 to-purple-50 border border-blue-200/90 rounded-2xl p-4 text-slate-800 shadow-2xs">
                 <div className="flex items-start gap-3">
-                  <div className="p-2 bg-blue-600 text-white rounded-xl shrink-0 mt-0.5">
+                  <div className="p-2.5 bg-blue-600 text-white rounded-xl shrink-0 mt-0.5 shadow-sm">
                     <ShieldCheck className="w-5 h-5" />
                   </div>
                   <div className="space-y-2 text-xs">
                     <div>
-                      <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                        <span>Bản Chất: Vì sao Thời khóa biểu có người "Đẹp" và có người "Xấu"?</span>
+                      <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-tight flex items-center gap-2 flex-wrap">
+                        <span>Quy Chuẩn 3 Tiêu Chí Đánh Giá Thời Khóa Biểu Tốt - Xấu</span>
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-200 text-blue-900">
-                          Khẳng định: Không có cố tình thiên vị
+                          {auditScope === 'WEEK' ? `Dữ liệu Tuần ${selectedAuditWeek}` : semesterSummary.semesterLabel}
                         </span>
                       </h3>
                       <p className="text-slate-600 mt-1 leading-relaxed">
-                        Qua rà soát số liệu thực tế Tuần {selectedAuditWeek}, Ban Giám Hiệu có đầy đủ cơ sở khoa học để khẳng định: 
-                        <strong> Sự chênh lệch về tính thuận tiện giữa các giáo viên hoàn toàn bắt nguồn từ 4 yếu tố cấu trúc sư phạm khách quan:</strong>
+                        Hệ thống căn cứ trực tiếp vào <strong>3 tiêu chí cơ bản</strong> của giáo viên để đánh giá khách quan và minh bạch:
                       </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-1">
-                      <div className="bg-white/90 p-2.5 rounded-xl border border-blue-200/70 shadow-2xs">
-                        <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs text-blue-900">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                          1. Cơ cấu tiết của Môn học (Số tiết/tuần/lớp):
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1">
+                      <div className="bg-white/95 p-3 rounded-xl border-2 border-emerald-200 shadow-2xs">
+                        <div className="font-black text-emerald-950 flex items-center gap-1.5 text-xs">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                          Tiêu chí 1: Số ngày được nghỉ
                         </div>
                         <p className="text-[11px] text-slate-600 mt-1">
-                          • <strong>Môn nhiều tiết (Toán, Văn, Ngoại ngữ, GDTC)</strong>: 1 giáo viên chỉ dạy 4 - 5 lớp, các lớp đều học cùng 1 ca sáng hoặc chiều, rất dễ xếp thành các chùm tiết liền mạch (0 tiết lủng, điểm 95-100).<br/>
-                          • <strong>Môn ít tiết (Mỹ thuật, Âm nhạc, GDĐP, Tin)</strong>: 1 giáo viên phải dạy 15 - 20 lớp khác nhau mới đủ 19 tiết. Các lớp lại học rải rác cả sáng (K8, 9) lẫn chiều (K6, 7), bắt buộc lịch dạy bị dàn trải nhiều buổi.
+                          • Đánh giá số ngày trọn vẹn trong tuần (Thứ 2 &rarr; Thứ 7) không có tiết nào.<br/>
+                          • <strong className="text-emerald-700">Tốt:</strong> Nghỉ &ge; 2 - 3 ngày/tuần.<br/>
+                          • <strong className="text-rose-600">Xấu:</strong> Nghỉ 0 ngày hoặc chỉ nghỉ 1 ngày dù định mức tiết ít (12 - 16 tiết).
                         </p>
                       </div>
 
-                      <div className="bg-white/90 p-2.5 rounded-xl border border-blue-200/70 shadow-2xs">
-                        <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs text-blue-900">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                          2. Phân công Liên ca và Liên 2 Điểm trường:
+                      <div className="bg-white/95 p-3 rounded-xl border-2 border-blue-200 shadow-2xs">
+                        <div className="font-black text-blue-950 flex items-center gap-1.5 text-xs">
+                          <CheckCircle2 className="w-4 h-4 text-blue-600" />
+                          Tiêu chí 2: Số buổi được nghỉ
                         </div>
                         <p className="text-[11px] text-slate-600 mt-1">
-                          • Trường có <strong>Điểm chính Đốc Binh Kiều</strong> và <strong>Điểm Tân Kiều</strong>.<br/>
-                          • Giáo viên được phân công vừa dạy lớp THPT buổi sáng (Điểm chính) vừa dạy lớp THCS buổi chiều (Tân Kiều) sẽ có lịch dạy cả ngày, nhiều buổi 1 tiết lẻ. Đây là bài toán điều phối giáo viên bắt buộc.
+                          • Đánh giá số buổi trọn vẹn (trong tổng 12 buổi sáng/chiều) không phải lên trường.<br/>
+                          • <strong className="text-blue-700">Tốt:</strong> Nghỉ &ge; 7 - 9 buổi.<br/>
+                          • <strong className="text-rose-600">Xấu:</strong> Nghỉ &le; 5 buổi do phải dạy cả sáng lẫn chiều hoặc có buổi chỉ dạy 1 tiết đơn độc.
                         </p>
                       </div>
 
-                      <div className="bg-white/90 p-2.5 rounded-xl border border-blue-200/70 shadow-2xs">
-                        <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs text-blue-900">
-                          <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-                          3. Ràng buộc thuật toán Né Trùng Lịch (Anti-Collision):
+                      <div className="bg-white/95 p-3 rounded-xl border-2 border-amber-300 shadow-2xs">
+                        <div className="font-black text-amber-950 flex items-center gap-1.5 text-xs">
+                          <AlertTriangle className="w-4 h-4 text-amber-600" />
+                          Tiêu chí 3: Số tiết bị lủng ("trống")
                         </div>
                         <p className="text-[11px] text-slate-600 mt-1">
-                          • Khi phần mềm giải bài toán xếp gần 1.600 tiết của 53 lớp, ưu tiên số 1 là <strong>tuyệt đối không trùng tiết</strong>.<br/>
-                          • Tiết lủng (khoảng cách 1-2 tiết trống ở giữa buổi) là hệ quả phụ của việc né lịch cho các môn học khác của lớp. BGH hoàn toàn có thể chỉ đạo Tổ trưởng đảo chéo tiết để khắc phục.
-                        </p>
-                      </div>
-
-                      <div className="bg-white/90 p-2.5 rounded-xl border border-blue-200/70 shadow-2xs">
-                        <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs text-blue-900">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                          4. Môn có đặc thù Xếp theo Cặp 2 tiết liền (Block):
-                        </div>
-                        <p className="text-[11px] text-slate-600 mt-1">
-                          • Các môn như <strong>Giáo dục thể chất (GDTC)</strong> luôn được quy định xếp 2 tiết liền (Tiết 1-2 hoặc Tiết 3-4) trên sân bãi, nên các giáo viên môn này có chỉ số 100/100 tuyệt đối mà không có tiết lủng nào.
+                          • Đánh giá số tiết trống chờ đợi giữa các tiết trong cùng một buổi dạy.<br/>
+                          • <strong className="text-emerald-700">Tốt:</strong> 0 tiết lủng (xếp liền mạch khối).<br/>
+                          • <strong className="text-rose-600">Xấu:</strong> Bị lủng từ 2 - 5+ tiết trong tuần (ngồi chờ 1-2 tiết giữa buổi).
                         </p>
                       </div>
                     </div>
@@ -421,19 +592,19 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
                       <h4 className="font-extrabold text-xs text-emerald-950 uppercase tracking-tight">
-                        Top Giáo Viên Có TKB Thuận Lợi Nhất ("Đẹp")
+                        Top Giáo Viên Có TKB Tốt Nhất ("Đẹp")
                       </h4>
                     </div>
                     <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
-                      Điểm &ge; 85/100
+                      Nghỉ nhiều, 0 tiết lủng
                     </span>
                   </div>
 
-                  <div className="p-2 divide-y divide-slate-100 flex-1 overflow-y-auto max-h-[360px]">
-                    {summary.topConvenientTeachers.slice(0, 10).map((t, idx) => (
-                      <div key={t.teacherId} className="p-2 hover:bg-emerald-50/30 transition-colors flex items-center justify-between text-xs">
+                  <div className="p-2 divide-y divide-slate-100 flex-1 overflow-y-auto max-h-[380px]">
+                    {(auditScope === 'WEEK' ? weeklySummary.topConvenientTeachers : semesterSummary.allTeachers.filter(t => t.avgScore >= 80).slice(0, 10)).map((t: any, idx) => (
+                      <div key={t.teacherId} className="p-2.5 hover:bg-emerald-50/30 transition-colors flex items-center justify-between text-xs">
                         <div className="flex items-center gap-2.5">
-                          <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-[10px]">
+                          <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-black flex items-center justify-center text-[10px]">
                             {idx + 1}
                           </span>
                           <div>
@@ -441,27 +612,32 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                               <span>{t.teacherName}</span>
                               <span className="text-[10px] font-normal text-slate-500">({t.mainSubjectName})</span>
                             </div>
-                            <div className="text-[10px] text-slate-500 mt-0.5 flex items-center gap-2">
-                              <span>{t.totalPeriods} tiết/tuần</span>
+                            <div className="text-[10px] text-slate-600 mt-0.5 flex flex-wrap items-center gap-2">
+                              <span>{auditScope === 'WEEK' ? `${t.totalPeriods} tiết` : `${t.avgPeriodsPerWeek} tiết/T`}</span>
                               <span>•</span>
-                              <span>{t.sessionCount} buổi dạy</span>
+                              <span className="text-emerald-700 font-bold">
+                                {auditScope === 'WEEK' ? `Nghỉ ${t.freeDays} ngày` : `Nghỉ ${t.avgFreeDaysPerWeek} ngày/T`}
+                              </span>
                               <span>•</span>
-                              <span className="text-emerald-700 font-semibold">{t.totalGaps} tiết lủng</span>
+                              <span className="text-blue-700 font-bold">
+                                {auditScope === 'WEEK' ? `Nghỉ ${t.freeHalfDays} buổi` : `Nghỉ ${t.avgFreeHalfDaysPerWeek} buổi/T`}
+                              </span>
+                              <span>•</span>
+                              <span className="text-amber-800 font-bold">
+                                {auditScope === 'WEEK' ? `${t.totalGaps} tiết lủng` : `Tổng ${t.totalGaps} lủng`}
+                              </span>
                             </div>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-2">
-                          <div className="text-right">
-                            <span className="font-black text-emerald-700 text-xs">{t.score}đ</span>
-                            <div className="text-[9px] text-slate-400">Rất gọn gàng</div>
-                          </div>
+                          <span className="font-black text-emerald-700 text-xs">{auditScope === 'WEEK' ? t.score : t.avgScore}đ</span>
                           <button
                             onClick={() => handleViewTeacherTkb(t.teacherId)}
-                            className="p-1 hover:bg-slate-100 text-slate-400 hover:text-slate-700 rounded-lg transition-colors cursor-pointer"
+                            className="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-[10px] font-bold transition-colors cursor-pointer"
                             title="Xem chi tiết TKB của GV"
                           >
-                            <ArrowRight className="w-3.5 h-3.5" />
+                            Xem TKB
                           </button>
                         </div>
                       </div>
@@ -469,7 +645,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                   </div>
 
                   <div className="p-2.5 bg-slate-50 border-t border-slate-100 text-[11px] text-slate-500 italic">
-                    Ghi chú: Nhóm giáo viên này chủ yếu dạy môn tập trung, số tiết/lớp lớn, các tiết xếp thành khối liền mạch trong 1 ca học.
+                    Đặc điểm: Tiết được xếp tập trung theo khối liền mạch (0 tiết lủng), số ngày nghỉ nhiều (2 - 4 ngày).
                   </div>
                 </div>
 
@@ -479,20 +655,20 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full bg-rose-500"></span>
                       <h4 className="font-extrabold text-xs text-rose-950 uppercase tracking-tight">
-                        Top Giáo Viên TKB Bất Tiện Nhất ("Cần Tối Ưu")
+                        Top Giáo Viên TKB Bất Tiện Nhất ("Xấu & Cần Cân Đối")
                       </h4>
                     </div>
                     <span className="text-[11px] font-bold text-rose-800 bg-rose-100 px-2 py-0.5 rounded-full">
-                      Cần BGH hỗ trợ
+                      Ưu tiên xếp bù tuần sau
                     </span>
                   </div>
 
-                  <div className="p-2 divide-y divide-slate-100 flex-1 overflow-y-auto max-h-[360px]">
-                    {summary.topInconvenientTeachers.slice(0, 10).map((t, idx) => (
-                      <div key={t.teacherId} className="p-2 hover:bg-rose-50/30 transition-colors text-xs space-y-1">
+                  <div className="p-2 divide-y divide-slate-100 flex-1 overflow-y-auto max-h-[380px]">
+                    {(auditScope === 'WEEK' ? weeklySummary.topInconvenientTeachers : semesterSummary.frequentlyBadTeachers.slice(0, 10)).map((t: any, idx) => (
+                      <div key={t.teacherId} className="p-2.5 hover:bg-rose-50/30 transition-colors text-xs space-y-1">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="w-5 h-5 rounded-full bg-rose-100 text-rose-800 font-bold flex items-center justify-center text-[10px]">
+                            <span className="w-5 h-5 rounded-full bg-rose-100 text-rose-800 font-black flex items-center justify-center text-[10px]">
                               {idx + 1}
                             </span>
                             <div className="font-bold text-slate-900">
@@ -502,46 +678,48 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                           </div>
                           
                           <div className="flex items-center gap-2">
-                            <span className="font-black text-rose-700 text-xs">{t.score}đ</span>
+                            <span className="font-black text-rose-700 text-xs">{auditScope === 'WEEK' ? t.score : t.avgScore}đ</span>
                             <button
                               onClick={() => handleViewTeacherTkb(t.teacherId)}
-                              className="px-2 py-0.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded text-[10px] font-bold transition-colors cursor-pointer"
-                              title="Mở xem TKB của thầy/cô này"
+                              className="px-2 py-1 bg-rose-100 hover:bg-rose-200 text-rose-900 rounded-lg text-[10px] font-bold transition-colors cursor-pointer"
+                              title="Mở xem TKB của thầy/cô này để điều chỉnh"
                             >
-                              Xem TKB
+                              Xem & Sửa TKB
                             </button>
                           </div>
                         </div>
 
-                        {/* Issue tags */}
-                        <div className="flex flex-wrap items-center gap-1.5 pl-7 text-[10px]">
-                          {t.totalGaps > 0 && (
-                            <span className="px-1.5 py-0.5 bg-amber-100 text-amber-900 rounded font-semibold">
-                              {t.totalGaps} tiết lủng
-                            </span>
-                          )}
-                          {t.singlePeriodSessions > 0 && (
-                            <span className="px-1.5 py-0.5 bg-purple-100 text-purple-900 rounded font-semibold">
-                              {t.singlePeriodSessions} buổi dạy 1 tiết
-                            </span>
-                          )}
-                          {t.splitShiftDays > 0 && (
-                            <span className="px-1.5 py-0.5 bg-rose-100 text-rose-900 rounded font-semibold">
-                              {t.splitShiftDays} ngày cả sáng lẫn chiều
+                        {/* 3 Criteria stats */}
+                        <div className="flex flex-wrap items-center gap-2 pl-7 text-[10px]">
+                          <span className="text-slate-600 font-semibold">
+                            {auditScope === 'WEEK' ? `${t.totalPeriods} tiết` : `${t.avgPeriodsPerWeek} tiết/T`}
+                          </span>
+                          <span>•</span>
+                          <span className="px-1.5 py-0.5 bg-rose-100 text-rose-900 rounded font-bold">
+                            {auditScope === 'WEEK' ? `Nghỉ ${t.freeDays} ngày` : `Nghỉ ${t.avgFreeDaysPerWeek} ngày/T`}
+                          </span>
+                          <span className="px-1.5 py-0.5 bg-amber-100 text-amber-900 rounded font-bold">
+                            {auditScope === 'WEEK' ? `${t.totalGaps} tiết lủng` : `Tổng ${t.totalGaps} lủng`}
+                          </span>
+                          {(t.singlePeriodSessions > 0 || t.totalSinglePeriodSessions > 0) && (
+                            <span className="px-1.5 py-0.5 bg-purple-100 text-purple-900 rounded font-bold">
+                              {auditScope === 'WEEK' ? `${t.singlePeriodSessions} buổi 1 tiết` : `${t.totalSinglePeriodSessions} buổi 1 tiết`}
                             </span>
                           )}
                         </div>
 
-                        {/* Root cause reason */}
-                        <div className="pl-7 text-[10px] text-slate-500 italic">
-                          Lý do khách quan: {t.diagnosisNotes[0] || t.primaryFactor}
+                        {/* Reason / Suggestion */}
+                        <div className="pl-7 text-[10px] text-slate-600 italic">
+                          {auditScope === 'WEEK'
+                            ? (t.diagnosisNotes?.[0] || t.primaryFactor)
+                            : (t.balancingSuggestions?.[0] || 'Cần ưu tiên gom tiết và tăng ngày nghỉ.')}
                         </div>
                       </div>
                     ))}
                   </div>
 
                   <div className="p-2.5 bg-slate-50 border-t border-slate-100 text-[11px] text-slate-500 italic">
-                    Ghi chú: BGH có thể trao đổi với Tổ trưởng chuyên môn để đảo chéo một vài tiết giữa các giáo viên, giúp giảm số tiết lủng cho thầy cô.
+                    Ghi chú: Ban Giám Hiệu dựa vào danh sách này để chủ động đảo tiết, gom ca và xếp bù ngày nghỉ ở các tuần sau.
                   </div>
                 </div>
 
@@ -550,7 +728,174 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
             </div>
           )}
 
-          {/* TAB 2: ALL TEACHERS TABLE */}
+          {/* TAB 2: BALANCING ASSISTANT FOR FREQUENTLY BAD TIMETABLES */}
+          {activeTab === 'BALANCING' && (
+            <div className="space-y-4">
+              {/* Header Box */}
+              <div className="p-4 bg-gradient-to-r from-rose-50 via-amber-50 to-orange-50 border-2 border-rose-200 rounded-2xl">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <h3 className="font-black text-sm text-rose-950 uppercase tracking-tight flex items-center gap-2">
+                      <SlidersHorizontal className="w-4 h-4 text-rose-600" />
+                      <span>Danh Sách Giáo Viên Thường Xuyên Bị TKB Xấu Cần Chủ Động Cân Đối</span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] bg-rose-600 text-white font-extrabold">
+                        {balancingList.length} giáo viên
+                      </span>
+                    </h3>
+                    <p className="text-xs text-slate-700 leading-relaxed">
+                      Đây là những thầy cô bị thiệt thòi về <strong>3 tiêu chí: Số ngày nghỉ ít, số buổi nghỉ ít, dính nhiều tiết lủng hoặc bị buổi dạy 1 tiết</strong>.
+                      Khi xếp TKB cho tuần tiếp theo, người xếp lịch nên ưu tiên mở TKB của các thầy cô này để điều chỉnh trước!
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={handleExportExcel}
+                    className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 shrink-0 cursor-pointer"
+                  >
+                    <FileSpreadsheet className="w-3.5 h-3.5" />
+                    <span>Xuất Danh Sách Cân Đối</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Balancing Cards / Table */}
+              <div className="grid grid-cols-1 gap-3">
+                {balancingList.map((t: any, idx: number) => {
+                  const isPhuong = t.teacherName.includes('Lê Thái Phương');
+                  const isQuoc = t.teacherName.includes('Trần Thị Mỹ Quốc');
+                  const isBen = t.teacherName.includes('Trương Sơn Bền');
+                  const isTai = t.teacherName.includes('Hồ Thị Ngọc Tài');
+
+                  return (
+                    <div
+                      key={t.teacherId}
+                      className={`p-4 rounded-2xl border-2 transition-all ${
+                        isPhuong
+                          ? 'bg-amber-50/70 border-amber-400 shadow-md ring-2 ring-amber-300/40'
+                          : 'bg-white border-slate-200 hover:border-rose-300 shadow-2xs'
+                      }`}
+                    >
+                      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                        {/* Left: Info & 3 Criteria Metrics */}
+                        <div className="space-y-2 flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="w-6 h-6 rounded-full bg-rose-100 text-rose-800 font-black text-xs flex items-center justify-center">
+                              {idx + 1}
+                            </span>
+                            <span className="font-black text-slate-900 text-sm">{t.teacherName}</span>
+                            <span className="text-xs text-slate-500 font-semibold">({t.teacherCode || t.mainSubjectName})</span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                              {t.departmentName}
+                            </span>
+                            {isPhuong && (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-200 text-amber-900 border border-amber-300">
+                                Đối tượng trọng điểm phân tích
+                              </span>
+                            )}
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              t.score <= 65 || t.avgScore <= 68 ? 'bg-rose-100 text-rose-800 border border-rose-300' : 'bg-amber-100 text-amber-800 border border-amber-300'
+                            }`}>
+                              Điểm: {auditScope === 'WEEK' ? t.score : t.avgScore}/100
+                            </span>
+                          </div>
+
+                          {/* 3 Core Criteria Pill Badges */}
+                          <div className="flex flex-wrap items-center gap-2 text-xs">
+                            <div className="px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-1.5">
+                              <span className="text-slate-500 text-[11px]">1. Số ngày nghỉ:</span>
+                              <strong className="text-emerald-800 font-black">
+                                {auditScope === 'WEEK' ? `${t.freeDays} ngày/tuần` : `${t.avgFreeDaysPerWeek} ngày/tuần`}
+                              </strong>
+                            </div>
+
+                            <div className="px-2.5 py-1 rounded-xl bg-blue-50 border border-blue-200 flex items-center gap-1.5">
+                              <span className="text-slate-500 text-[11px]">2. Số buổi nghỉ:</span>
+                              <strong className="text-blue-800 font-black">
+                                {auditScope === 'WEEK' ? `${t.freeHalfDays}/12 buổi` : `${t.avgFreeHalfDaysPerWeek}/12 buổi`}
+                              </strong>
+                            </div>
+
+                            <div className="px-2.5 py-1 rounded-xl bg-amber-50 border border-amber-300 flex items-center gap-1.5">
+                              <span className="text-slate-500 text-[11px]">3. Tiết lủng:</span>
+                              <strong className="text-amber-800 font-black">
+                                {auditScope === 'WEEK' ? `${t.totalGaps} tiết lủng` : `Tổng ${t.totalGaps} lủng (TB ${t.avgGapsPerWeek}/T)`}
+                              </strong>
+                            </div>
+
+                            {(t.singlePeriodSessions > 0 || t.totalSinglePeriodSessions > 0) && (
+                              <div className="px-2.5 py-1 rounded-xl bg-purple-50 border border-purple-200 flex items-center gap-1.5">
+                                <span className="text-slate-500 text-[11px]">Buổi 1 tiết lẻ:</span>
+                                <strong className="text-purple-800 font-black">
+                                  {auditScope === 'WEEK' ? `${t.singlePeriodSessions} buổi` : `${t.totalSinglePeriodSessions} buổi`}
+                                </strong>
+                              </div>
+                            )}
+
+                            {auditScope !== 'WEEK' && (
+                              <div className="px-2.5 py-1 rounded-xl bg-rose-50 border border-rose-200 flex items-center gap-1.5">
+                                <span className="text-slate-500 text-[11px]">Số tuần bị xấu:</span>
+                                <strong className="text-rose-800 font-black">
+                                  {t.badWeeksCount}/{t.totalWeeksEvaluated} tuần
+                                </strong>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Specific Actionable Recommendation */}
+                          <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 space-y-1">
+                            <div className="font-bold text-slate-900 flex items-center gap-1 text-[11px] uppercase tracking-wide">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600" />
+                              <span>Gợi Ý Điều Chỉnh Chủ Động Cho Tuần Tiếp Theo:</span>
+                            </div>
+                            <p className="text-[11px] leading-relaxed text-slate-700">
+                              {isPhuong ? (
+                                <span>
+                                  👉 <strong>Thầy Lê Thái Phương:</strong> Có dạy 1 tiết <strong>HĐTNHN (Quy mô lớp) của lớp 7A5</strong>. Tiết khối 7 này làm vỡ khung lịch khối 8, 9, khiến thầy bị rải 5 ngày/tuần và có buổi dạy 1 tiết.
+                                  <strong> Đề xuất:</strong> Điều chuyển tiết 7A5 sang cho GV khác tại khối 7 HOẶC khóa cố định tiết 7A5 vào buổi có sẵn (Thứ 2/4/7) để gom lịch xuống 3-4 ngày dạy/tuần!
+                                </span>
+                              ) : isQuoc ? (
+                                <span>
+                                  👉 <strong>Cô Trần Thị Mỹ Quốc (Mỹ thuật):</strong> Dạy 19 lớp rải rác. Đề xuất: Đảo chéo tiết với các giáo viên khác trong tổ để gom các tiết trống lủng lại liền nhau.
+                                </span>
+                              ) : isBen ? (
+                                <span>
+                                  👉 <strong>Thầy Trương Sơn Bền:</strong> Chỉ có 12 tiết nhưng bị nhiều buổi 1 tiết. Đề xuất: Gom các tiết lẻ sang buổi khác để giải phóng trọn vẹn 2-3 ngày nghỉ trong tuần.
+                                </span>
+                              ) : isTai ? (
+                                <span>
+                                  👉 <strong>Cô Hồ Thị Ngọc Tài:</strong> Có tới 5 buổi chỉ lên trường dạy 1 tiết. Đề xuất: Gộp các tiết đơn độc thành các ca 2-3 tiết liền.
+                                </span>
+                              ) : (
+                                <span>
+                                  {auditScope === 'WEEK'
+                                    ? (t.suggestedAction || t.diagnosisNotes?.[0] || 'Cần gom tiết lại trong 3-4 buổi để tăng ngày nghỉ.')
+                                    : (t.balancingSuggestions?.[0] || 'Cần ưu tiên gom tiết và luân phiên ngày nghỉ cuối tuần.')}
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Right: Direct Action Button */}
+                        <div className="flex lg:flex-col items-center justify-end gap-2 shrink-0">
+                          <button
+                            onClick={() => handleViewTeacherTkb(t.teacherId)}
+                            className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                            title="Chuyển ngay tới Thời khóa biểu của giáo viên này để xem và điều chỉnh"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>Xem & Chỉnh TKB</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: ALL TEACHERS TABLE (3 CRITERIA INTEGRATED) */}
           {activeTab === 'ALL_TEACHERS' && (
             <div className="space-y-3">
               {/* Filter Bar */}
@@ -560,7 +905,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                   <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
-                    placeholder="Tìm theo tên GV hoặc môn học..."
+                    placeholder="Tìm theo tên giáo viên, mã hoặc môn học..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-400"
@@ -589,95 +934,186 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                   className="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 cursor-pointer focus:outline-none"
                 >
                   <option value="ALL">Tất cả xếp loại</option>
-                  <option value="EXCELLENT">Rất đẹp (&ge;90đ)</option>
-                  <option value="GOOD">Thuận lợi (75-89đ)</option>
-                  <option value="AVERAGE">Bình thường (60-74đ)</option>
-                  <option value="POOR">Bất tiện / Cần tối ưu (&lt;60đ)</option>
+                  <option value="EXCELLENT">TKB Rất Đẹp (&ge;85-90đ)</option>
+                  <option value="GOOD">TKB Thuận Lợi (75-89đ)</option>
+                  <option value="AVERAGE">TKB Trung Bình (60-74đ)</option>
+                  <option value="POOR">TKB Xấu / Bất Lợi (&lt;60-68đ)</option>
                 </select>
               </div>
 
               {/* Data Table */}
               <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
-                <div className="overflow-x-auto max-h-[460px]">
+                <div className="overflow-x-auto max-h-[480px]">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead className="bg-slate-100 text-slate-700 font-bold sticky top-0 z-10 border-b border-slate-200">
                       <tr>
                         <th className="py-2.5 px-3 text-center w-10">STT</th>
                         <th className="py-2.5 px-3">Giáo viên</th>
                         <th className="py-2.5 px-3">Môn & Tổ</th>
-                        <th className="py-2.5 px-2 text-center">Tiết</th>
-                        <th className="py-2.5 px-2 text-center">Buổi</th>
-                        <th className="py-2.5 px-2 text-center">Tiết Lủng</th>
+                        <th className="py-2.5 px-2 text-center">Tiết/Tuần</th>
+                        <th className="py-2.5 px-3 text-center bg-emerald-50 text-emerald-950 border-x border-emerald-200">
+                          1. Số Ngày Nghỉ
+                        </th>
+                        <th className="py-2.5 px-3 text-center bg-blue-50 text-blue-950 border-x border-blue-200">
+                          2. Số Buổi Nghỉ
+                        </th>
+                        <th className="py-2.5 px-3 text-center bg-amber-50 text-amber-950 border-x border-amber-200">
+                          3. Tiết Lủng (Trống)
+                        </th>
                         <th className="py-2.5 px-2 text-center">Buổi 1 Tiết</th>
-                        <th className="py-2.5 px-2 text-center">Ngày 2 Ca</th>
-                        <th className="py-2.5 px-3 text-center">Điểm Thuận Tiện</th>
-                        <th className="py-2.5 px-3">Nguyên Nhân & Nhận Xét</th>
+                        <th className="py-2.5 px-3 text-center">Điểm & Xếp Loại</th>
+                        <th className="py-2.5 px-3">Nhận Xét / Cân Đối</th>
                         <th className="py-2.5 px-2 text-center">Xem TKB</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {filteredTeachers.map((t, idx) => (
-                        <tr key={t.teacherId} className="hover:bg-slate-50 transition-colors">
-                          <td className="py-2 px-3 text-center text-slate-500 font-semibold">{idx + 1}</td>
-                          <td className="py-2 px-3 font-bold text-slate-900">
-                            <div>{t.teacherName}</div>
-                            {t.teacherCode && <div className="text-[10px] text-slate-400 font-normal">{t.teacherCode}</div>}
-                          </td>
-                          <td className="py-2 px-3 text-slate-700">
-                            <div className="font-semibold text-slate-900">{t.mainSubjectName}</div>
-                            <div className="text-[10px] text-slate-500">{t.departmentName}</div>
-                          </td>
-                          <td className="py-2 px-2 text-center font-bold text-slate-800">{t.totalPeriods}</td>
-                          <td className="py-2 px-2 text-center text-slate-700">{t.sessionCount}</td>
-                          <td className="py-2 px-2 text-center">
-                            {t.totalGaps > 0 ? (
-                              <span className="inline-block px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-[11px]" title={t.gapDetails.map(g => g.description).join('\n')}>
-                                {t.totalGaps}
+                      {auditScope === 'WEEK' ? (
+                        filteredWeeklyTeachers.map((t, idx) => (
+                          <tr key={t.teacherId} className="hover:bg-slate-50 transition-colors">
+                            <td className="py-2 px-3 text-center text-slate-500 font-semibold">{idx + 1}</td>
+                            <td className="py-2 px-3 font-bold text-slate-900">
+                              <div>{t.teacherName}</div>
+                              {t.teacherCode && <div className="text-[10px] text-slate-400 font-normal">{t.teacherCode}</div>}
+                            </td>
+                            <td className="py-2 px-3 text-slate-700">
+                              <div className="font-semibold text-slate-900">{t.mainSubjectName}</div>
+                              <div className="text-[10px] text-slate-500">{t.departmentName}</div>
+                            </td>
+                            <td className="py-2 px-2 text-center font-bold text-slate-800">{t.totalPeriods}</td>
+                            
+                            {/* 1. Free days */}
+                            <td className="py-2 px-3 text-center bg-emerald-50/40 border-x border-emerald-100 font-black">
+                              <span className={`px-2 py-0.5 rounded-lg text-xs ${
+                                t.freeDays >= 2 ? 'bg-emerald-100 text-emerald-800 font-black' : t.freeDays === 0 ? 'bg-rose-100 text-rose-800 font-black' : 'text-slate-800'
+                              }`}>
+                                {t.freeDays} ngày
                               </span>
-                            ) : (
-                              <span className="text-slate-400">0</span>
-                            )}
-                          </td>
-                          <td className="py-2 px-2 text-center">
-                            {t.singlePeriodSessions > 0 ? (
-                              <span className="inline-block px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-800 font-bold text-[11px]" title={t.singlePeriodDetails.map(s => s.description).join('\n')}>
-                                {t.singlePeriodSessions}
+                            </td>
+
+                            {/* 2. Free half-days */}
+                            <td className="py-2 px-3 text-center bg-blue-50/40 border-x border-blue-100 font-bold text-blue-900">
+                              {t.freeHalfDays}/12 buổi
+                            </td>
+
+                            {/* 3. Gaps */}
+                            <td className="py-2 px-3 text-center bg-amber-50/40 border-x border-amber-100">
+                              {t.totalGaps > 0 ? (
+                                <span className="inline-block px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-black text-xs" title={t.gapDetails.map(g => g.description).join('\n')}>
+                                  {t.totalGaps} tiết
+                                </span>
+                              ) : (
+                                <span className="text-slate-400 font-bold">0</span>
+                              )}
+                            </td>
+
+                            <td className="py-2 px-2 text-center">
+                              {t.singlePeriodSessions > 0 ? (
+                                <span className="inline-block px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-900 font-bold text-[11px]" title={t.singlePeriodDetails.map(s => s.description).join('\n')}>
+                                  {t.singlePeriodSessions}
+                                </span>
+                              ) : (
+                                <span className="text-slate-400">0</span>
+                              )}
+                            </td>
+
+                            <td className="py-2 px-3 text-center">
+                              <div className="inline-flex items-center gap-1">
+                                <span className="font-black text-slate-900 text-xs">{t.score}</span>
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${t.tierColor}`}>
+                                  {t.tierLabel}
+                                </span>
+                              </div>
+                            </td>
+
+                            <td className="py-2 px-3 text-[11px] text-slate-600 max-w-[240px]">
+                              {t.diagnosisNotes[0] || t.primaryFactor}
+                            </td>
+
+                            <td className="py-2 px-2 text-center">
+                              <button
+                                onClick={() => handleViewTeacherTkb(t.teacherId)}
+                                className="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10px] font-bold rounded-lg transition-colors cursor-pointer"
+                                title="Xem TKB của giáo viên"
+                              >
+                                Xem TKB
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        filteredSemesterTeachers.map((t, idx) => (
+                          <tr key={t.teacherId} className="hover:bg-slate-50 transition-colors">
+                            <td className="py-2 px-3 text-center text-slate-500 font-semibold">{idx + 1}</td>
+                            <td className="py-2 px-3 font-bold text-slate-900">
+                              <div>{t.teacherName}</div>
+                              {t.teacherCode && <div className="text-[10px] text-slate-400 font-normal">{t.teacherCode}</div>}
+                            </td>
+                            <td className="py-2 px-3 text-slate-700">
+                              <div className="font-semibold text-slate-900">{t.mainSubjectName}</div>
+                              <div className="text-[10px] text-slate-500">{t.departmentName}</div>
+                            </td>
+                            <td className="py-2 px-2 text-center font-bold text-slate-800">{t.avgPeriodsPerWeek}</td>
+                            
+                            {/* 1. Free days average */}
+                            <td className="py-2 px-3 text-center bg-emerald-50/40 border-x border-emerald-100 font-black">
+                              <span className={`px-2 py-0.5 rounded-lg text-xs ${
+                                t.avgFreeDaysPerWeek >= 2 ? 'bg-emerald-100 text-emerald-800 font-black' : t.avgFreeDaysPerWeek <= 1 ? 'bg-rose-100 text-rose-800 font-black' : 'text-slate-800'
+                              }`}>
+                                {t.avgFreeDaysPerWeek} ngày/T
                               </span>
-                            ) : (
-                              <span className="text-slate-400">0</span>
-                            )}
-                          </td>
-                          <td className="py-2 px-2 text-center">
-                            {t.splitShiftDays > 0 ? (
-                              <span className="inline-block px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-bold text-[11px]" title={t.splitShiftDayNames.join(', ')}>
-                                {t.splitShiftDays}
-                              </span>
-                            ) : (
-                              <span className="text-slate-400">0</span>
-                            )}
-                          </td>
-                          <td className="py-2 px-3 text-center">
-                            <div className="inline-flex items-center gap-1">
-                              <span className="font-black text-slate-900 text-xs">{t.score}</span>
-                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${t.tierColor}`}>
-                                {t.tierLabel}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="py-2 px-3 text-[11px] text-slate-600 max-w-[240px]">
-                            {t.diagnosisNotes[0] || t.primaryFactor}
-                          </td>
-                          <td className="py-2 px-2 text-center">
-                            <button
-                              onClick={() => handleViewTeacherTkb(t.teacherId)}
-                              className="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10px] font-bold rounded-lg transition-colors cursor-pointer"
-                              title="Xem TKB của giáo viên"
-                            >
-                              Xem TKB
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+
+                            {/* 2. Free half-days average */}
+                            <td className="py-2 px-3 text-center bg-blue-50/40 border-x border-blue-100 font-bold text-blue-900">
+                              {t.avgFreeHalfDaysPerWeek}/12 buổi
+                            </td>
+
+                            {/* 3. Gaps total & average */}
+                            <td className="py-2 px-3 text-center bg-amber-50/40 border-x border-amber-100">
+                              {t.totalGaps > 0 ? (
+                                <span className="inline-block px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-black text-xs">
+                                  {t.totalGaps} (TB {t.avgGapsPerWeek}/T)
+                                </span>
+                              ) : (
+                                <span className="text-slate-400 font-bold">0</span>
+                              )}
+                            </td>
+
+                            <td className="py-2 px-2 text-center">
+                              {t.totalSinglePeriodSessions > 0 ? (
+                                <span className="inline-block px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-900 font-bold text-[11px]">
+                                  {t.totalSinglePeriodSessions}
+                                </span>
+                              ) : (
+                                <span className="text-slate-400">0</span>
+                              )}
+                            </td>
+
+                            <td className="py-2 px-3 text-center">
+                              <div className="inline-flex items-center gap-1">
+                                <span className="font-black text-slate-900 text-xs">{t.avgScore}</span>
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${t.statusColor}`}>
+                                  {t.statusLabel}
+                                </span>
+                              </div>
+                            </td>
+
+                            <td className="py-2 px-3 text-[11px] text-slate-600 max-w-[240px]">
+                              {t.balancingSuggestions[0]}
+                            </td>
+
+                            <td className="py-2 px-2 text-center">
+                              <button
+                                onClick={() => handleViewTeacherTkb(t.teacherId)}
+                                className="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10px] font-bold rounded-lg transition-colors cursor-pointer"
+                                title="Xem TKB của giáo viên"
+                              >
+                                Xem TKB
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -685,7 +1121,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
             </div>
           )}
 
-          {/* TAB 3: DEPARTMENTS BENCHMARKS */}
+          {/* TAB 4: DEPARTMENTS BENCHMARKS */}
           {activeTab === 'DEPARTMENTS' && (
             <div className="space-y-4">
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
@@ -693,11 +1129,11 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                   Xếp Hạng Tính Thuận Tiện Của Thời Khóa Biểu Giữa Các Tổ Chuyên Môn
                 </h4>
                 <p className="text-xs text-slate-500 mb-3">
-                  Số liệu so sánh khách quan điểm thuận tiện trung bình và tổng số tiết lủng của từng tổ:
+                  Số liệu so sánh khách quan điểm thuận tiện trung bình, số ngày nghỉ và tổng số tiết lủng của từng tổ:
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {summary.departmentStats.map((dept, idx) => (
+                  {(auditScope === 'WEEK' ? weeklySummary.departmentStats : semesterSummary.departmentStats).map((dept: any) => (
                     <div key={dept.deptId} className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-2">
                       <div className="flex items-start justify-between">
                         <div>
@@ -705,9 +1141,9 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                           <div className="text-[10px] text-slate-500">{dept.teacherCount} giáo viên giảng dạy</div>
                         </div>
                         <span className={`px-2 py-0.5 rounded-full text-[11px] font-black ${
-                          dept.averageScore >= 80 ? 'bg-emerald-100 text-emerald-800' : dept.averageScore >= 70 ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
+                          (dept.averageScore || dept.avgScore) >= 80 ? 'bg-emerald-100 text-emerald-800' : (dept.averageScore || dept.avgScore) >= 70 ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
                         }`}>
-                          {dept.averageScore}đ
+                          {dept.averageScore || dept.avgScore}đ
                         </span>
                       </div>
 
@@ -716,13 +1152,21 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                           <span className="text-slate-500">Tổng tiết lủng trong tổ:</span>
                           <span className="font-bold text-amber-600">{dept.totalGaps} tiết</span>
                         </div>
+                        {dept.frequentlyBadCount !== undefined && (
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="text-slate-500">Số GV cần cân đối:</span>
+                            <span className={`font-bold ${dept.frequentlyBadCount > 0 ? 'text-rose-600' : 'text-slate-400'}`}>
+                              {dept.frequentlyBadCount} GV
+                            </span>
+                          </div>
+                        )}
                         {/* Progress Bar */}
                         <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full ${
-                              dept.averageScore >= 80 ? 'bg-emerald-500' : dept.averageScore >= 70 ? 'bg-blue-500' : 'bg-amber-500'
+                              (dept.averageScore || dept.avgScore) >= 80 ? 'bg-emerald-500' : (dept.averageScore || dept.avgScore) >= 70 ? 'bg-blue-500' : 'bg-amber-500'
                             }`}
-                            style={{ width: `${dept.averageScore}%` }}
+                            style={{ width: `${dept.averageScore || dept.avgScore}%` }}
                           ></div>
                         </div>
                       </div>
@@ -733,7 +1177,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
             </div>
           )}
 
-          {/* TAB 4: DAYS OFF & LONG WEEKEND AUDIT */}
+          {/* TAB 5: DAYS OFF & LONG WEEKEND AUDIT */}
           {activeTab === 'DAYS_OFF_AUDIT' && (
             <div className="space-y-4">
               
@@ -783,7 +1227,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                           3. Ngược lại: Giáo viên dạy cả 6/6 ngày:
                         </div>
                         <p className="text-[11px] text-slate-600">
-                          • <strong>Thầy Trương Sơn Bền (Tiếng Anh)</strong> dạy 12 tiết nhưng bị rải kín cả <strong>6 ngày từ Thứ 2 đến Thứ 7</strong> liên tục suốt các tuần, không được nghỉ ngày nào và có tới 4 buổi chỉ lên dạy 1 tiết lẻ!
+                          • <strong>Thầy Trương Sơn Bền (Tiếng Anh)</strong> dạy 12 tiết nhưng bị rải kín cả <strong>6 ngày từ Thứ 2 đến Thứ 7</strong> ở Tuần 1, và các tuần sau vẫn dính 4 buổi dạy 1 tiết lẻ!
                         </p>
                       </div>
                     </div>
@@ -988,7 +1432,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
           <div className="flex items-center gap-2 text-slate-500">
             <Info className="w-4 h-4 text-blue-500 shrink-0" />
             <span>
-              Báo cáo này là công cụ quản lý chính thức dành cho Ban Giám Hiệu để đối thoại minh bạch với giáo viên và tinh chỉnh TKB.
+              Công cụ đánh giá 3 tiêu chí: Số ngày nghỉ • Số buổi nghỉ • Tiết lủng để BGH cân đối thời khóa biểu công bằng, khoa học.
             </span>
           </div>
 
@@ -998,7 +1442,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
               className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95"
             >
               <FileSpreadsheet className="w-4 h-4" />
-              <span>Xuất Báo Cáo Excel</span>
+              <span>{auditScope === 'WEEK' ? 'Xuất Excel Tuần' : 'Xuất Excel Học Kỳ'}</span>
             </button>
             <button
               onClick={onClose}
