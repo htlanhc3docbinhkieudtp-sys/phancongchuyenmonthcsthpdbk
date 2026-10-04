@@ -30,6 +30,7 @@ import {
   analyzeSemesterQuality,
   exportTimetableQualityReportExcel,
   exportSemesterQualityReportExcel,
+  isSchoolLeader,
   TeacherQualityMetric,
   TeacherSemesterQualityMetric,
   SemesterQualitySummary,
@@ -39,6 +40,7 @@ import {
 interface TimetableQualityAuditModalProps {
   isOpen: boolean;
   onClose: () => void;
+  isAdmin?: boolean;
   currentWeek: number;
   onSelectWeek?: (week: number) => void;
   weeklyTimetables?: Record<number, SchoolTimetable>;
@@ -46,6 +48,7 @@ interface TimetableQualityAuditModalProps {
   teachers: Teacher[];
   classes: ClassGroup[];
   subjects: Subject[];
+  assignments?: any[];
   config: SchoolConfig;
   onNavigateToTeacherSchedule?: (teacherId: string) => void;
 }
@@ -53,6 +56,7 @@ interface TimetableQualityAuditModalProps {
 export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProps> = ({
   isOpen,
   onClose,
+  isAdmin = false,
   currentWeek,
   onSelectWeek,
   weeklyTimetables = {},
@@ -60,6 +64,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
   teachers,
   classes,
   subjects,
+  assignments,
   config,
   onNavigateToTeacherSchedule
 }) => {
@@ -69,6 +74,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedDeptFilter, setSelectedDeptFilter] = useState<string>('ALL');
   const [selectedTierFilter, setSelectedTierFilter] = useState<string>('ALL');
+  const [selectedWorkloadFilter, setSelectedWorkloadFilter] = useState<'ALL' | 'HIGH' | 'MEDIUM' | 'LIGHT'>('ALL');
   const [daysOffFilter, setDaysOffFilter] = useState<'ALL' | 'ALWAYS_MONDAY_OFF' | 'ALWAYS_SATURDAY_OFF' | 'ALWAYS_BOTH_OFF' | 'NEVER_OFF'>('ALL');
   const [selectedTeacherDetail, setSelectedTeacherDetail] = useState<TeacherQualityMetric | TeacherSemesterQualityMetric | null>(null);
 
@@ -125,8 +131,12 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
     );
   }, [weeklyTimetables, teachers, classes, subjects]);
 
+  // Filtered days off records
   const filteredDaysOffRecords = useMemo(() => {
     return multiWeekSummary.records.filter(r => {
+      // Exclude school leaders completely
+      const teacherObj = teachers.find(t => t.id === r.teacherId);
+      if (teacherObj && isSchoolLeader(teacherObj)) return false;
       if (daysOffFilter === 'ALWAYS_MONDAY_OFF' && r.streakPattern !== 'ALWAYS_MONDAY_OFF' && r.streakPattern !== 'ALWAYS_BOTH_OFF') return false;
       if (daysOffFilter === 'ALWAYS_SATURDAY_OFF' && r.streakPattern !== 'ALWAYS_SATURDAY_OFF' && r.streakPattern !== 'ALWAYS_BOTH_OFF') return false;
       if (daysOffFilter === 'ALWAYS_BOTH_OFF' && r.streakPattern !== 'ALWAYS_BOTH_OFF') return false;
@@ -137,13 +147,19 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
       }
       return true;
     });
-  }, [multiWeekSummary.records, daysOffFilter, searchTerm]);
+  }, [multiWeekSummary.records, daysOffFilter, searchTerm, teachers]);
 
   // Filtered teachers list for Tab ALL_TEACHERS (Weekly)
   const filteredWeeklyTeachers = useMemo(() => {
     return weeklySummary.allTeachers.filter(t => {
+      // Exclude school leaders completely
+      const teacherObj = teachers.find(tch => tch.id === t.teacherId);
+      if (teacherObj && isSchoolLeader(teacherObj)) return false;
       if (selectedDeptFilter !== 'ALL' && t.departmentId !== selectedDeptFilter) return false;
       if (selectedTierFilter !== 'ALL' && t.tier !== selectedTierFilter) return false;
+      if (selectedWorkloadFilter === 'HIGH' && t.totalPeriods < 20) return false;
+      if (selectedWorkloadFilter === 'MEDIUM' && (t.totalPeriods < 15 || t.totalPeriods >= 20)) return false;
+      if (selectedWorkloadFilter === 'LIGHT' && t.totalPeriods >= 15) return false;
       if (searchTerm.trim()) {
         const query = searchTerm.toLowerCase().trim();
         const matchName = t.teacherName.toLowerCase().includes(query);
@@ -153,16 +169,22 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
       }
       return true;
     });
-  }, [weeklySummary.allTeachers, selectedDeptFilter, selectedTierFilter, searchTerm]);
+  }, [weeklySummary.allTeachers, selectedDeptFilter, selectedTierFilter, selectedWorkloadFilter, searchTerm, teachers]);
 
   // Filtered teachers list for Tab ALL_TEACHERS (Semester)
   const filteredSemesterTeachers = useMemo(() => {
     return semesterSummary.allTeachers.filter(t => {
+      // Exclude school leaders completely
+      const teacherObj = teachers.find(tch => tch.id === t.teacherId);
+      if (teacherObj && isSchoolLeader(teacherObj)) return false;
       if (selectedDeptFilter !== 'ALL' && t.departmentId !== selectedDeptFilter) return false;
       if (selectedTierFilter === 'EXCELLENT' && t.overallStatus !== 'EXCELLENT') return false;
       if (selectedTierFilter === 'GOOD' && t.overallStatus !== 'GOOD') return false;
       if (selectedTierFilter === 'AVERAGE' && t.overallStatus !== 'AVERAGE') return false;
       if (selectedTierFilter === 'POOR' && t.overallStatus !== 'FREQUENTLY_BAD') return false;
+      if (selectedWorkloadFilter === 'HIGH' && t.avgPeriodsPerWeek < 20) return false;
+      if (selectedWorkloadFilter === 'MEDIUM' && (t.avgPeriodsPerWeek < 15 || t.avgPeriodsPerWeek >= 20)) return false;
+      if (selectedWorkloadFilter === 'LIGHT' && t.avgPeriodsPerWeek >= 15) return false;
       if (searchTerm.trim()) {
         const query = searchTerm.toLowerCase().trim();
         const matchName = t.teacherName.toLowerCase().includes(query);
@@ -172,22 +194,30 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
       }
       return true;
     });
-  }, [semesterSummary.allTeachers, selectedDeptFilter, selectedTierFilter, searchTerm]);
+  }, [semesterSummary.allTeachers, selectedDeptFilter, selectedTierFilter, selectedWorkloadFilter, searchTerm, teachers]);
 
   // Frequently bad teachers list for Tab BALANCING
   const balancingList = useMemo(() => {
     if (auditScope === 'WEEK') {
       return weeklySummary.allTeachers
-        .filter(t => t.score <= 74 || t.totalGaps >= 2 || (t.totalPeriods <= 16 && t.freeDays <= 1) || t.singlePeriodSessions > 0)
+        .filter(t => {
+          const teacherObj = teachers.find(tch => tch.id === t.teacherId);
+          if (teacherObj && isSchoolLeader(teacherObj)) return false;
+          return t.score <= 74 || t.totalGaps >= 2 || (t.totalPeriods <= 16 && t.freeDays <= 1) || t.singlePeriodSessions > 0;
+        })
         .sort((a, b) => a.score - b.score);
     } else {
       return semesterSummary.allTeachers
-        .filter(t => t.isFrequentlyBad || t.avgScore <= 74 || t.avgGapsPerWeek >= 1.5 || t.badWeeksCount >= 1)
+        .filter(t => {
+          const teacherObj = teachers.find(tch => tch.id === t.teacherId);
+          if (teacherObj && isSchoolLeader(teacherObj)) return false;
+          return t.isFrequentlyBad || t.avgScore <= 74 || t.avgGapsPerWeek >= 1.5 || t.badWeeksCount >= 1;
+        })
         .sort((a, b) => a.avgScore - b.avgScore);
     }
-  }, [auditScope, weeklySummary.allTeachers, semesterSummary.allTeachers]);
+  }, [auditScope, weeklySummary.allTeachers, semesterSummary.allTeachers, teachers]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !isAdmin) return null;
 
   const handleExportExcel = () => {
     if (auditScope === 'WEEK') {
@@ -219,15 +249,21 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                 <h2 className="text-base sm:text-lg font-black tracking-tight text-white uppercase">
                   Đánh Giá Thời Khóa Biểu Tốt - Xấu Giáo Viên
                 </h2>
-                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-500/30 text-amber-200 border border-amber-400/40">
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-600 text-white shadow-xs">
+                  Chỉ Quản trị viên
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/30 text-amber-200 border border-amber-400/40">
                   Dựa trên 3 tiêu chí cốt lõi
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                  Đã loại trừ Ban Giám Hiệu
                 </span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
                   {auditScope === 'WEEK' ? `Tuần ${selectedAuditWeek}` : semesterSummary.semesterLabel}
                 </span>
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
-                Đánh giá theo: <strong className="text-yellow-300">1. Số ngày nghỉ</strong> • <strong className="text-yellow-300">2. Số buổi nghỉ</strong> • <strong className="text-yellow-300">3. Số tiết bị lủng (trống)</strong> để Ban Giám Hiệu chủ động cân đối TKB
+                Đánh giá theo: <strong className="text-yellow-300">1. Số ngày nghỉ</strong> • <strong className="text-yellow-300">2. Số buổi nghỉ</strong> • <strong className="text-yellow-300">3. Số tiết bị lủng (trống)</strong>. Đã gắn kèm <strong className="text-cyan-300">Số tiết & Số lớp</strong> để có cái nhìn tổng thể (GV dạy ~27 tiết/tuần ít buổi nghỉ là bình thường).
               </p>
             </div>
           </div>
@@ -613,7 +649,14 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                               <span className="text-[10px] font-normal text-slate-500">({t.mainSubjectName})</span>
                             </div>
                             <div className="text-[10px] text-slate-600 mt-0.5 flex flex-wrap items-center gap-2">
-                              <span>{auditScope === 'WEEK' ? `${t.totalPeriods} tiết` : `${t.avgPeriodsPerWeek} tiết/T`}</span>
+                              <span className="font-extrabold text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                                {auditScope === 'WEEK' ? `${t.totalPeriods} tiết` : `${t.avgPeriodsPerWeek} tiết/T`} • {t.assignedClassesCount} lớp
+                              </span>
+                              {t.assignedClassesList?.length > 0 && (
+                                <span className="text-[10px] text-slate-500 max-w-[140px] truncate" title={t.assignedClassesList.join(', ')}>
+                                  ({t.assignedClassesList.join(', ')})
+                                </span>
+                              )}
                               <span>•</span>
                               <span className="text-emerald-700 font-bold">
                                 {auditScope === 'WEEK' ? `Nghỉ ${t.freeDays} ngày` : `Nghỉ ${t.avgFreeDaysPerWeek} ngày/T`}
@@ -689,11 +732,16 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                           </div>
                         </div>
 
-                        {/* 3 Criteria stats */}
+                        {/* 3 Criteria stats & Workload */}
                         <div className="flex flex-wrap items-center gap-2 pl-7 text-[10px]">
-                          <span className="text-slate-600 font-semibold">
-                            {auditScope === 'WEEK' ? `${t.totalPeriods} tiết` : `${t.avgPeriodsPerWeek} tiết/T`}
+                          <span className="text-slate-900 font-extrabold bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                            {auditScope === 'WEEK' ? `${t.totalPeriods} tiết` : `${t.avgPeriodsPerWeek} tiết/T`} • {t.assignedClassesCount} lớp
                           </span>
+                          {t.assignedClassesList?.length > 0 && (
+                            <span className="text-slate-500 max-w-[140px] truncate" title={t.assignedClassesList.join(', ')}>
+                              ({t.assignedClassesList.join(', ')})
+                            </span>
+                          )}
                           <span>•</span>
                           <span className="px-1.5 py-0.5 bg-rose-100 text-rose-900 rounded font-bold">
                             {auditScope === 'WEEK' ? `Nghỉ ${t.freeDays} ngày` : `Nghỉ ${t.avgFreeDaysPerWeek} ngày/T`}
@@ -799,8 +847,28 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                             </span>
                           </div>
 
-                          {/* 3 Core Criteria Pill Badges */}
+                          {/* Khối lượng phân công & 3 Core Criteria Pill Badges */}
                           <div className="flex flex-wrap items-center gap-2 text-xs">
+                            {/* Workload: Số tiết & Số lớp */}
+                            <div className="px-2.5 py-1 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center gap-1.5 shadow-2xs">
+                              <span className="text-slate-500 text-[11px] font-medium">Khối lượng:</span>
+                              <strong className="text-indigo-950 font-black">
+                                {auditScope === 'WEEK' ? `${t.totalPeriods} tiết` : `${t.avgPeriodsPerWeek} tiết/tuần`} • {t.assignedClassesCount} lớp
+                              </strong>
+                              {t.assignedClassesList?.length > 0 && (
+                                <span className="text-[10px] text-indigo-700 font-semibold max-w-[220px] truncate" title={t.assignedClassesList.join(', ')}>
+                                  ({t.assignedClassesList.join(', ')})
+                                </span>
+                              )}
+                            </div>
+
+                            {/* High workload flag */}
+                            {(t.totalPeriods >= 20 || t.avgPeriodsPerWeek >= 20) && (
+                              <span className="px-2 py-0.5 rounded-xl text-[10px] font-black bg-blue-100 text-blue-900 border border-blue-300">
+                                ⚖️ Tải cao (~27 tiết)
+                              </span>
+                            )}
+
                             <div className="px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-1.5">
                               <span className="text-slate-500 text-[11px]">1. Số ngày nghỉ:</span>
                               <strong className="text-emerald-800 font-black">
@@ -840,6 +908,16 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                               </div>
                             )}
                           </div>
+
+                          {/* High workload contextual explanation banner */}
+                          {(t.totalPeriods >= 20 || t.avgPeriodsPerWeek >= 20) && (
+                            <div className="px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-[11px] text-blue-950 flex items-center gap-1.5">
+                              <Info className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                              <span>
+                                <strong>Góc nhìn tổng thể:</strong> Giáo viên dạy tải cao ({auditScope === 'WEEK' ? t.totalPeriods : t.avgPeriodsPerWeek} tiết trên {t.assignedClassesCount} lớp). Với số tiết nhiều (~27 tiết/tuần), việc được nghỉ ít buổi/ngày hơn các giáo viên ít tiết là hoàn toàn bình thường. Nhà trường chỉ cần tập trung <strong>triệt tiêu tiết lủng</strong> và <strong>gom tiết tránh buổi 1 tiết</strong>.
+                              </span>
+                            </div>
+                          )}
 
                           {/* Specific Actionable Recommendation */}
                           <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 space-y-1">
@@ -939,6 +1017,18 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                   <option value="AVERAGE">TKB Trung Bình (60-74đ)</option>
                   <option value="POOR">TKB Xấu / Bất Lợi (&lt;60-68đ)</option>
                 </select>
+
+                {/* Workload Filter */}
+                <select
+                  value={selectedWorkloadFilter}
+                  onChange={(e) => setSelectedWorkloadFilter(e.target.value as any)}
+                  className="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 cursor-pointer focus:outline-none"
+                >
+                  <option value="ALL">Tất cả định mức số tiết</option>
+                  <option value="HIGH">Dạy tải cao (~27 tiết / &ge;20t)</option>
+                  <option value="MEDIUM">Định mức vừa (15 - 19t)</option>
+                  <option value="LIGHT">Ít tiết (&lt;15t)</option>
+                </select>
               </div>
 
               {/* Data Table */}
@@ -950,7 +1040,12 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                         <th className="py-2.5 px-3 text-center w-10">STT</th>
                         <th className="py-2.5 px-3">Giáo viên</th>
                         <th className="py-2.5 px-3">Môn & Tổ</th>
-                        <th className="py-2.5 px-2 text-center">Tiết/Tuần</th>
+                        <th className="py-2.5 px-2 text-center bg-indigo-50/70 text-indigo-950 font-black border-l border-indigo-200">
+                          Số Tiết
+                        </th>
+                        <th className="py-2.5 px-3 text-center bg-indigo-50/70 text-indigo-950 font-black border-r border-indigo-200">
+                          Số Lớp
+                        </th>
                         <th className="py-2.5 px-3 text-center bg-emerald-50 text-emerald-950 border-x border-emerald-200">
                           1. Số Ngày Nghỉ
                         </th>
@@ -979,7 +1074,26 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                               <div className="font-semibold text-slate-900">{t.mainSubjectName}</div>
                               <div className="text-[10px] text-slate-500">{t.departmentName}</div>
                             </td>
-                            <td className="py-2 px-2 text-center font-bold text-slate-800">{t.totalPeriods}</td>
+
+                            {/* Số tiết */}
+                            <td className="py-2 px-2 text-center bg-indigo-50/20 border-l border-indigo-100">
+                              <span className="font-black text-slate-900 text-xs">{t.totalPeriods} tiết</span>
+                              {t.totalPeriods >= 20 && (
+                                <div className="text-[9px] font-black text-blue-800 bg-blue-100/80 rounded px-1 mt-0.5 whitespace-nowrap">
+                                  Tải cao
+                                </div>
+                              )}
+                            </td>
+
+                            {/* Số lớp */}
+                            <td className="py-2 px-2 text-center bg-indigo-50/20 border-r border-indigo-100">
+                              <span className="px-2 py-0.5 rounded-lg bg-white border border-indigo-200 font-extrabold text-indigo-950 text-xs shadow-2xs" title={t.assignedClassesList.join(', ')}>
+                                {t.assignedClassesCount} lớp
+                              </span>
+                              <div className="text-[10px] text-slate-500 max-w-[120px] truncate mx-auto mt-0.5" title={t.assignedClassesList.join(', ')}>
+                                {t.assignedClassesList.join(', ')}
+                              </div>
+                            </td>
                             
                             {/* 1. Free days */}
                             <td className="py-2 px-3 text-center bg-emerald-50/40 border-x border-emerald-100 font-black">
@@ -1052,7 +1166,26 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                               <div className="font-semibold text-slate-900">{t.mainSubjectName}</div>
                               <div className="text-[10px] text-slate-500">{t.departmentName}</div>
                             </td>
-                            <td className="py-2 px-2 text-center font-bold text-slate-800">{t.avgPeriodsPerWeek}</td>
+
+                            {/* Số tiết TB */}
+                            <td className="py-2 px-2 text-center bg-indigo-50/20 border-l border-indigo-100">
+                              <span className="font-black text-slate-900 text-xs">{t.avgPeriodsPerWeek} tiết/T</span>
+                              {t.avgPeriodsPerWeek >= 20 && (
+                                <div className="text-[9px] font-black text-blue-800 bg-blue-100/80 rounded px-1 mt-0.5 whitespace-nowrap">
+                                  Tải cao
+                                </div>
+                              )}
+                            </td>
+
+                            {/* Số lớp */}
+                            <td className="py-2 px-2 text-center bg-indigo-50/20 border-r border-indigo-100">
+                              <span className="px-2 py-0.5 rounded-lg bg-white border border-indigo-200 font-extrabold text-indigo-950 text-xs shadow-2xs" title={t.assignedClassesList.join(', ')}>
+                                {t.assignedClassesCount} lớp
+                              </span>
+                              <div className="text-[10px] text-slate-500 max-w-[120px] truncate mx-auto mt-0.5" title={t.assignedClassesList.join(', ')}>
+                                {t.assignedClassesList.join(', ')}
+                              </div>
+                            </td>
                             
                             {/* 1. Free days average */}
                             <td className="py-2 px-3 text-center bg-emerald-50/40 border-x border-emerald-100 font-black">
@@ -1207,7 +1340,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                           1. Nghỉ Thứ Hai liên tục (Đầu tuần):
                         </div>
                         <p className="text-[11px] text-slate-600">
-                          • Có <strong>8 giáo viên</strong> được nghỉ Thứ Hai liên tục từ 4 đến 5 tuần (tiêu biểu: Thầy Nguyễn Thanh Tòng, Thầy Nguyễn Minh Trí, Cô Lê Thị Hoài An, Cô Lê Thị Kim The, Thầy Hồ Hoài Ngân, Cô Lê Thị Ngọc Tuyền, Thầy Phạm Thanh Lâm, Thầy Ngô Bảo Quốc).
+                          • Có <strong>6 giáo viên giảng dạy</strong> được nghỉ Thứ Hai liên tục từ 4 đến 5 tuần (tiêu biểu: Cô Lê Thị Hoài An, Cô Lê Thị Kim The, Thầy Hồ Hoài Ngân, Cô Lê Thị Ngọc Tuyền, Thầy Phạm Thanh Lâm, Thầy Ngô Bảo Quốc).
                         </p>
                       </div>
 
@@ -1328,7 +1461,12 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                         <th className="py-2.5 px-3 text-center w-10">STT</th>
                         <th className="py-2.5 px-3">Họ và tên Giáo viên</th>
                         <th className="py-2.5 px-3">Tổ chuyên môn</th>
-                        <th className="py-2.5 px-2 text-center">Số Tiết</th>
+                        <th className="py-2.5 px-2 text-center bg-indigo-50/70 text-indigo-950 font-black border-l border-indigo-200">
+                          Số Tiết
+                        </th>
+                        <th className="py-2.5 px-2 text-center bg-indigo-50/70 text-indigo-950 font-black border-r border-indigo-200">
+                          Số Lớp
+                        </th>
                         <th className="py-2.5 px-2 text-center bg-amber-50 text-amber-900 border-x border-amber-200">Tuần 1</th>
                         <th className="py-2.5 px-2 text-center bg-amber-50 text-amber-900 border-x border-amber-200">Tuần 2</th>
                         <th className="py-2.5 px-2 text-center bg-amber-50 text-amber-900 border-x border-amber-200">Tuần 3</th>
@@ -1370,7 +1508,27 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                               <div className="font-semibold text-slate-900">{r.mainSubjectName}</div>
                               <div className="text-[10px] text-slate-500">{r.departmentName}</div>
                             </td>
-                            <td className="py-2 px-2 text-center font-bold text-slate-800">{r.totalPeriods}</td>
+
+                            {/* Số tiết */}
+                            <td className="py-2 px-2 text-center bg-indigo-50/20 border-l border-indigo-100">
+                              <span className="font-black text-slate-900 text-xs">{r.totalPeriods} tiết</span>
+                              {r.totalPeriods >= 20 && (
+                                <div className="text-[9px] font-black text-blue-800 bg-blue-100/80 rounded px-1 mt-0.5 whitespace-nowrap">
+                                  Tải cao
+                                </div>
+                              )}
+                            </td>
+
+                            {/* Số lớp */}
+                            <td className="py-2 px-2 text-center bg-indigo-50/20 border-r border-indigo-100">
+                              <span className="px-2 py-0.5 rounded-lg bg-white border border-indigo-200 font-extrabold text-indigo-950 text-xs shadow-2xs" title={r.assignedClassesList?.join(', ')}>
+                                {r.assignedClassesCount} lớp
+                              </span>
+                              <div className="text-[10px] text-slate-500 max-w-[110px] truncate mx-auto mt-0.5" title={r.assignedClassesList?.join(', ')}>
+                                {r.assignedClassesList?.join(', ')}
+                              </div>
+                            </td>
+
                             <td className="py-2 px-1 text-center bg-amber-50/40 border-x border-amber-100">{renderWeekBadge(1)}</td>
                             <td className="py-2 px-1 text-center bg-amber-50/40 border-x border-amber-100">{renderWeekBadge(2)}</td>
                             <td className="py-2 px-1 text-center bg-amber-50/40 border-x border-amber-100">{renderWeekBadge(3)}</td>

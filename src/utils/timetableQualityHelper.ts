@@ -123,6 +123,31 @@ const DAY_NAMES: Record<number, string> = {
   7: 'Thứ Bảy'
 };
 
+export const isSchoolLeader = (t: Teacher): boolean => {
+  if (!t) return false;
+  const name = (t.name || '').trim();
+  const role = (t.role as string) || '';
+  const code = t.code || '';
+  const dept = t.departmentId || '';
+  const notes = t.notes || '';
+
+  return (
+    dept === 'dept-bgh' ||
+    role === 'HieuTruong' ||
+    role === 'PhoHieuTruong' ||
+    role === 'HT' ||
+    role === 'PHT' ||
+    code.includes('(HT)') ||
+    code.includes('(PHT)') ||
+    notes.includes('Hiệu trưởng') ||
+    notes.includes('Phó Hiệu trưởng') ||
+    name === 'Lê Thanh Cường' ||
+    name === 'Nguyễn Minh Trí' ||
+    name === 'Phan Thanh Thảo' ||
+    name === 'Nguyễn Thanh Tòng'
+  );
+};
+
 /**
  * Phân tích và chấm điểm chất lượng TKB của từng giáo viên và toàn trường
  */
@@ -133,7 +158,9 @@ export function analyzeTimetableQuality(
   subjects: Subject[],
   weekNumber: number = 1
 ): SchoolQualitySummary {
-  const teacherMap = new Map<string, Teacher>(teachers.map(t => [t.id, t]));
+  // Loại trừ Ban Giám Hiệu vì dạy rất ít tiết (theo yêu cầu chỉ đạo)
+  const eligibleTeachers = teachers.filter(t => !isSchoolLeader(t));
+  const teacherMap = new Map<string, Teacher>(eligibleTeachers.map(t => [t.id, t]));
   const classMap = new Map<string, ClassGroup>(classes.map(c => [c.id, c]));
   const subjectMap = new Map<string, Subject>(subjects.map(s => [s.id, s]));
 
@@ -150,7 +177,7 @@ export function analyzeTimetableQuality(
 
   const metrics: TeacherQualityMetric[] = [];
 
-  teachers.forEach(teacher => {
+  eligibleTeachers.forEach(teacher => {
     const tSlots = slots.filter(s => s.teacherId === teacher.id);
     if (tSlots.length === 0) return; // Không có tiết trong tuần
 
@@ -351,6 +378,11 @@ export function analyzeTimetableQuality(
 
     const assignedClassesList = Array.from(classesSet).map(cId => classMap.get(cId)?.name || cId);
 
+    // Bổ sung chẩn đoán tải cao (nhiều tiết, nhiều lớp)
+    if (tSlots.length >= 21 || classesSet.size >= 8) {
+      diagnosisNotes.unshift(`Dạy tải cao (${tSlots.length} tiết/tuần trên ${classesSet.size} lớp: ${assignedClassesList.join(', ')}). Với định mức lớn, việc có ít buổi nghỉ hơn giáo viên ít tiết là bình thường.`);
+    }
+
     metrics.push({
       teacherId: teacher.id,
       teacherName: teacher.name,
@@ -454,6 +486,7 @@ export interface TeacherSemesterQualityMetric {
   departmentName: string;
   campus?: string;
   mainSubjectName: string;
+  assignedClassesCount: number;
   assignedClassesList: string[];
   
   // Aggregate stats across weeks in semester
@@ -579,9 +612,11 @@ export function analyzeSemesterQuality(
     }
   });
 
+  // Loại trừ Ban Giám Hiệu vì dạy rất ít tiết (theo chỉ đạo)
+  const eligibleTeachers = teachers.filter(t => !isSchoolLeader(t));
   const teacherMetrics: TeacherSemesterQualityMetric[] = [];
 
-  teachers.forEach(tch => {
+  eligibleTeachers.forEach(tch => {
     const history: TeacherSemesterQualityMetric['weeklyHistory'] = [];
     let sumScore = 0;
     let sumPeriods = 0;
@@ -682,6 +717,9 @@ export function analyzeSemesterQuality(
 
     // Generate balancing suggestions for scheduler
     const balancingSuggestions: string[] = [];
+    if (avgPeriods >= 21 || assignedClasses.size >= 8) {
+      balancingSuggestions.push(`Định mức dạy rất cao (TB ${avgPeriods} tiết/tuần trên ${assignedClasses.size} lớp: ${Array.from(assignedClasses).join(', ')}). Với quy mô gần 27 tiết/tuần, việc ít buổi nghỉ hơn giáo viên ít tiết là hoàn toàn bình thường do khối lượng chuyên môn lớn, ưu tiên giảm tiết lủng thay vì ép thêm ngày nghỉ.`);
+    }
     if (tch.name.includes('Lê Thái Phương') || (mainSub.includes('Hóa') && assignedClasses.has('7A5'))) {
       balancingSuggestions.push('Rà soát tiết HĐTNHN lớp 7A5: Điều chuyển sang GV khối 7 hoặc khóa cố định vào buổi có sẵn để giảm từ 5 ngày xuống 3-4 ngày dạy/tuần.');
     }
@@ -689,7 +727,7 @@ export function analyzeSemesterQuality(
       balancingSuggestions.push(`Bị lủng tổng cộng ${sumGaps} tiết (TB ${avgGaps} tiết/tuần). Cần ưu tiên đảo tiết với GV cùng tổ để triệt tiêu các khoảng trống.`);
     }
     if (avgFreeDays <= 1.2 && avgPeriods <= 17) {
-      balancingSuggestions.push(`Số tiết chỉ ${avgPeriods} nhưng phải đi dạy ${Math.round((6 - avgFreeDays)*10)/10} ngày/tuần. Cần gom tiết lại trong 3-4 buổi để tăng ngày nghỉ.`);
+      balancingSuggestions.push(`Số tiết ít (chỉ ${avgPeriods} tiết/tuần trên ${assignedClasses.size} lớp) nhưng phải đi dạy ${Math.round((6 - avgFreeDays)*10)/10} ngày/tuần. Đây là TKB thực sự bị dàn trải, cần gom tiết lại trong 3-4 buổi để tăng ngày nghỉ.`);
     }
     if (sumSingleSessions >= 2) {
       balancingSuggestions.push(`Có ${sumSingleSessions} buổi chỉ lên trường dạy 1 tiết đơn độc. Cần chuyển các tiết đơn độc sang buổi khác.`);
@@ -710,6 +748,7 @@ export function analyzeSemesterQuality(
       departmentName: deptMap[tch.departmentId] || tch.departmentId,
       campus: tch.campus,
       mainSubjectName: mainSub,
+      assignedClassesCount: assignedClasses.size,
       assignedClassesList: Array.from(assignedClasses),
       totalWeeksEvaluated: evaluatedCount,
       avgPeriodsPerWeek: avgPeriods,
@@ -807,6 +846,8 @@ export function exportSemesterQualityReportExcel(
       'Tổ chuyên môn',
       'Môn chính',
       'Số tiết TB/Tuần',
+      'Số lớp dạy',
+      'Danh sách lớp',
       '1. Số ngày nghỉ TB/Tuần',
       '2. Số buổi nghỉ TB/Tuần',
       '3. Tổng tiết lủng HK',
@@ -827,6 +868,8 @@ export function exportSemesterQualityReportExcel(
         m.departmentName,
         m.mainSubjectName,
         m.avgPeriodsPerWeek,
+        m.assignedClassesCount,
+        m.assignedClassesList.join(', '),
         m.avgFreeDaysPerWeek,
         m.avgFreeHalfDaysPerWeek,
         m.totalGaps,
@@ -848,6 +891,8 @@ export function exportSemesterQualityReportExcel(
       { wch: 22 },
       { wch: 18 },
       { wch: 12 },
+      { wch: 10 },
+      { wch: 28 },
       { wch: 18 },
       { wch: 18 },
       { wch: 16 },
@@ -873,6 +918,8 @@ export interface TeacherMultiWeekDaysOffRecord {
   departmentName: string;
   mainSubjectName: string;
   totalPeriods: number;
+  assignedClassesCount: number;
+  assignedClassesList: string[];
   mondayOffWeeks: number[];
   saturdayOffWeeks: number[];
   bothOffWeeks: number[];
@@ -903,6 +950,7 @@ export function analyzeMultiWeekDaysOff(
   weeksToCheck: number[] = [1, 2, 3, 4, 5]
 ): MultiWeekDaysOffSummary {
   const teacherMap = new Map<string, Teacher>(teachers.map(t => [t.id, t]));
+  const classMap = new Map<string, ClassGroup>(classes.map(c => [c.id, c]));
   const subjectMap = new Map<string, Subject>(subjects.map(s => [s.id, s]));
 
   const deptMap: Record<string, string> = {
@@ -916,11 +964,13 @@ export function analyzeMultiWeekDaysOff(
   };
 
   const records: TeacherMultiWeekDaysOffRecord[] = [];
+  const eligibleTeachers = teachers.filter(t => !isSchoolLeader(t));
 
-  teachers.forEach(teacher => {
+  eligibleTeachers.forEach(teacher => {
     // Check if teacher has teaching periods in any of the checked weeks
     let hasAnySlots = false;
     let totalPeriodsW1 = 0;
+    const classesSet = new Set<string>();
     const mondayOffWeeks: number[] = [];
     const saturdayOffWeeks: number[] = [];
     const bothOffWeeks: number[] = [];
@@ -934,7 +984,8 @@ export function analyzeMultiWeekDaysOff(
       if (tSlots.length > 0) {
         hasAnySlots = true;
         weeksWithSlotsCount++;
-        if (w === 1) totalPeriodsW1 = tSlots.length;
+        tSlots.forEach(s => classesSet.add(s.classId));
+        if (w === 1 || totalPeriodsW1 === 0) totalPeriodsW1 = tSlots.length;
 
         const taughtDays = new Set(tSlots.map(s => s.dayOfWeek));
         const allDays = [2, 3, 4, 5, 6, 7];
@@ -973,6 +1024,8 @@ export function analyzeMultiWeekDaysOff(
       streakDescription = `Đi dạy cả 6 ngày, không có ngày nghỉ (${zeroOffWeeks.length}/${totalChecked} tuần)`;
     }
 
+    const assignedClassesList = Array.from(classesSet).map(cId => classMap.get(cId)?.name || cId);
+
     records.push({
       teacherId: teacher.id,
       teacherName: teacher.name,
@@ -980,6 +1033,8 @@ export function analyzeMultiWeekDaysOff(
       departmentName: deptMap[teacher.departmentId] || teacher.departmentId,
       mainSubjectName: teacher.notes?.split('-')?.[1]?.trim() || 'Chuyên môn',
       totalPeriods: totalPeriodsW1 || 0,
+      assignedClassesCount: classesSet.size,
+      assignedClassesList,
       mondayOffWeeks,
       saturdayOffWeeks,
       bothOffWeeks,
@@ -1050,6 +1105,8 @@ export function exportTimetableQualityReportExcel(
       'Tổ chuyên môn',
       'Môn chính',
       'Số tiết/T',
+      'Số lớp dạy',
+      'Danh sách lớp',
       'Số buổi',
       'Số ngày',
       'Tiết lủng',
@@ -1067,6 +1124,8 @@ export function exportTimetableQualityReportExcel(
         m.departmentName,
         m.mainSubjectName,
         m.totalPeriods,
+        m.assignedClassesCount,
+        m.assignedClassesList.join(', '),
         m.sessionCount,
         m.daysWithTeaching,
         m.totalGaps,
@@ -1085,6 +1144,8 @@ export function exportTimetableQualityReportExcel(
       { wch: 22 },
       { wch: 18 },
       { wch: 10 },
+      { wch: 10 },
+      { wch: 28 },
       { wch: 10 },
       { wch: 10 },
       { wch: 12 },

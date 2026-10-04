@@ -688,16 +688,18 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
 
             {/* Right: Week Actions */}
             <div className="flex flex-wrap items-center gap-2">
-              {/* Audit Quality Button (Always available for viewing) */}
-              <button
-                type="button"
-                onClick={() => setIsQualityModalOpen(true)}
-                className="px-3.5 py-2 bg-gradient-to-r from-amber-500 via-rose-600 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 active:scale-95 text-white text-xs font-black rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer ring-2 ring-amber-300/40"
-                title="Đánh giá thời khóa biểu tốt - xấu dựa trên 3 tiêu chí: Số ngày nghỉ, Số buổi nghỉ, Số tiết lủng (Hàng tuần & Học kỳ 1, Học kỳ 2)"
-              >
-                <Scale className="w-4 h-4 text-yellow-200 animate-pulse" />
-                <span>Đánh Giá TKB Tốt - Xấu (3 Tiêu Chí)</span>
-              </button>
+              {/* Audit Quality Button (Only available for Admin) */}
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => setIsQualityModalOpen(true)}
+                  className="px-3.5 py-2 bg-gradient-to-r from-amber-500 via-rose-600 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 active:scale-95 text-white text-xs font-black rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer ring-2 ring-amber-300/40"
+                  title="Chỉ Quản trị viên: Đánh giá thời khóa biểu tốt - xấu dựa trên 3 tiêu chí: Số ngày nghỉ, Số buổi nghỉ, Số tiết lủng (Hàng tuần & Học kỳ 1, Học kỳ 2)"
+                >
+                  <Scale className="w-4 h-4 text-yellow-200 animate-pulse" />
+                  <span>Đánh Giá TKB Tốt - Xấu (Quản trị)</span>
+                </button>
+              )}
 
               {isAdmin ? (
                 <>
@@ -882,19 +884,21 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 </button>
               </div>
 
-              {/* Dedicated Quality Evaluation Button */}
-              <button
-                type="button"
-                onClick={() => setIsQualityModalOpen(true)}
-                className="px-3.5 py-2 bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 active:scale-95 text-white text-xs font-black rounded-xl shadow-md border border-amber-300/40 transition-all flex items-center gap-2 cursor-pointer ring-2 ring-amber-300/30"
-                title="Nhấn vào xem đánh giá TKB Tốt - Xấu dựa trên 3 tiêu chí: Số ngày nghỉ, Số buổi nghỉ, Số tiết lủng (Hàng tuần, Học kỳ 1, Học kỳ 2)"
-              >
-                <Scale className="w-4 h-4 text-yellow-200 animate-pulse" />
-                <span>Đánh Giá TKB Tốt - Xấu (3 Tiêu Chí)</span>
-                <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-white/20 text-white font-extrabold">
-                  Tuần & Học kỳ
-                </span>
-              </button>
+              {/* Dedicated Quality Evaluation Button (Only for Admin) */}
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => setIsQualityModalOpen(true)}
+                  className="px-3.5 py-2 bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 active:scale-95 text-white text-xs font-black rounded-xl shadow-md border border-amber-300/40 transition-all flex items-center gap-2 cursor-pointer ring-2 ring-amber-300/30"
+                  title="Chỉ Quản trị viên: Nhấn vào xem đánh giá TKB Tốt - Xấu dựa trên 3 tiêu chí: Số ngày nghỉ, Số buổi nghỉ, Số tiết lủng (Hàng tuần, Học kỳ 1, Học kỳ 2)"
+                >
+                  <Scale className="w-4 h-4 text-yellow-200 animate-pulse" />
+                  <span>Đánh Giá TKB Tốt - Xấu (Quản trị)</span>
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-white/20 text-white font-extrabold">
+                    Tuần & Học kỳ
+                  </span>
+                </button>
+              )}
             </div>
 
             {/* Campus Buttons */}
@@ -1528,15 +1532,17 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                         <span className="px-2.5 py-1 bg-white/10 rounded-lg font-bold text-white ml-1">
                           Định mức: {teacher.baseStandardPeriods}t
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => setIsQualityModalOpen(true)}
-                          className="px-2.5 py-1 bg-amber-500/30 hover:bg-amber-500/50 border border-amber-400/40 text-amber-200 text-xs font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer print:hidden ml-1 shadow-2xs"
-                          title="Xem đánh giá 3 tiêu chí tốt/xấu của giáo viên này"
-                        >
-                          <Scale className="w-3.5 h-3.5 text-yellow-300" />
-                          <span>Đánh giá 3 tiêu chí</span>
-                        </button>
+                        {isAdmin && (
+                          <button
+                            type="button"
+                            onClick={() => setIsQualityModalOpen(true)}
+                            className="px-2.5 py-1 bg-amber-500/30 hover:bg-amber-500/50 border border-amber-400/40 text-amber-200 text-xs font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer print:hidden ml-1 shadow-2xs"
+                            title="Chỉ Quản trị viên: Xem đánh giá 3 tiêu chí tốt/xấu của giáo viên này"
+                          >
+                            <Scale className="w-3.5 h-3.5 text-yellow-300" />
+                            <span>Đánh giá 3 tiêu chí</span>
+                          </button>
+                        )}
                       </div>
                     </div>
 
@@ -2134,10 +2140,11 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         </div>
       )}
 
-      {/* Timetable Quality Audit Modal */}
+      {/* Timetable Quality Audit Modal (Admin Only) */}
       <TimetableQualityAuditModal
-        isOpen={isQualityModalOpen}
+        isOpen={isQualityModalOpen && isAdmin}
         onClose={() => setIsQualityModalOpen(false)}
+        isAdmin={isAdmin}
         currentWeek={currentWeek}
         onSelectWeek={onSelectWeek}
         weeklyTimetables={weeklyTimetables}
@@ -2145,6 +2152,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         teachers={teachers}
         classes={classes}
         subjects={subjects}
+        assignments={assignments}
         config={config}
         onNavigateToTeacherSchedule={(tId) => {
           setViewMode('BY_TEACHER');
