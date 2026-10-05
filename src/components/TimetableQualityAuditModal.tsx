@@ -171,13 +171,15 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
       }
       return true;
     }).sort((a, b) => {
-      // 1/ Số ngày nghỉ (trọn ngày) từ CAO xuống THẤP
+      // 1/ TIÊU CHÍ VÀNG CỐT LÕI (CHỈ ĐẠO BGH): Tỷ lệ số tiết thực dạy / số buổi đi dạy (Không tính kiêm nhiệm): từ CAO xuống THẤP
+      if (b.periodsPerSession !== a.periodsPerSession) return b.periodsPerSession - a.periodsPerSession;
+      // 2/ Số ngày nghỉ (trọn ngày) từ CAO xuống THẤP
       if (b.freeDays !== a.freeDays) return b.freeDays - a.freeDays;
-      // 2/ Số buổi nghỉ từ CAO xuống THẤP
+      // 3/ Số buổi nghỉ từ CAO xuống THẤP
       if (b.freeHalfDays !== a.freeHalfDays) return b.freeHalfDays - a.freeHalfDays;
-      // 3/ Số tiết lủng từ THẤP lên CAO (ít lủng hơn xếp trước)
+      // 4/ Số tiết lủng từ THẤP lên CAO (ít lủng hơn xếp trước)
       if (a.totalGaps !== b.totalGaps) return a.totalGaps - b.totalGaps;
-      return b.score - a.score;
+      return b.totalPeriods - a.totalPeriods;
     });
   }, [weeklySummary.allTeachers, selectedDeptFilter, selectedTierFilter, selectedWorkloadFilter, searchTerm, teachers]);
 
@@ -204,30 +206,33 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
       }
       return true;
     }).sort((a, b) => {
-      // 1/ Số ngày nghỉ TB/tuần từ CAO xuống THẤP
+      // 1/ TIÊU CHÍ VÀNG CỐT LÕI (CHỈ ĐẠO BGH): Tỷ lệ số tiết thực dạy TB / số buổi đi dạy TB: từ CAO xuống THẤP
+      if (b.periodsPerSession !== a.periodsPerSession) return b.periodsPerSession - a.periodsPerSession;
+      // 2/ Số ngày nghỉ TB/tuần từ CAO xuống THẤP
       if (b.avgFreeDaysPerWeek !== a.avgFreeDaysPerWeek) return b.avgFreeDaysPerWeek - a.avgFreeDaysPerWeek;
-      // 2/ Số buổi nghỉ TB/tuần từ CAO xuống THẤP
+      // 3/ Số buổi nghỉ TB/tuần từ CAO xuống THẤP
       if (b.avgFreeHalfDaysPerWeek !== a.avgFreeHalfDaysPerWeek) return b.avgFreeHalfDaysPerWeek - a.avgFreeHalfDaysPerWeek;
-      // 3/ Số tiết lủng từ THẤP lên CAO (ít lủng hơn xếp trước)
+      // 4/ Số tiết lủng từ THẤP lên CAO (ít lủng hơn xếp trước)
       if (a.totalGaps !== b.totalGaps) return a.totalGaps - b.totalGaps;
-      return b.avgScore - a.avgScore;
+      return b.avgPeriodsPerWeek - a.avgPeriodsPerWeek;
     });
   }, [semesterSummary.allTeachers, selectedDeptFilter, selectedTierFilter, selectedWorkloadFilter, searchTerm, teachers]);
 
-  // Frequently bad teachers list for Tab BALANCING (Những người có TKB xấu nhất cần cân đối)
+  // Frequently bad teachers list for Tab BALANCING (Những người có TKB xấu nhất cần cân đối: Tỷ lệ tiết/buổi thấp nhất)
   const balancingList = useMemo(() => {
     if (auditScope === 'WEEK') {
       return weeklySummary.allTeachers
         .filter(t => {
           const teacherObj = teachers.find(tch => tch.id === t.teacherId);
           if (teacherObj && isSchoolLeader(teacherObj)) return false;
-          // Tuyệt đối không xếp là xấu nếu được nghỉ nhiều ngày (>= 2 ngày) và nhiều buổi (>= 6 buổi) và ít tiết lủng (<= 1)
-          if (t.freeDays >= 2 && t.freeHalfDays >= 6 && t.totalGaps <= 1) return false;
-          // Thực sự bị xấu: 0 ngày nghỉ (phải dạy 6 ngày) HOẶC ít ngày & ít buổi (<=1 ngày & <=4 buổi) HOẶC dính >= 3 tiết lủng HOẶC ít tiết mà rải nhiều ngày
-          return t.freeDays === 0 || (t.freeDays <= 1 && t.freeHalfDays <= 4) || t.totalGaps >= 3 || (t.totalPeriods <= 16 && t.freeDays <= 1) || t.score < 50;
+          // Tuyệt đối không xếp là xấu nếu đạt tỷ lệ cao (>= 3.4 tiết/buổi) và ít tiết lủng (<= 1)
+          if (t.periodsPerSession >= 3.4 && t.totalGaps <= 1) return false;
+          // Thực sự bị xấu: Tỷ lệ thấp < 2.5 tiết/buổi HOẶC 0 ngày nghỉ HOẶC dính >= 3 tiết lủng HOẶC điểm < 55
+          return t.periodsPerSession < 2.5 || t.freeDays === 0 || (t.freeDays <= 1 && t.freeHalfDays <= 4) || t.totalGaps >= 3 || t.score < 55;
         })
         .sort((a, b) => {
-          // Xếp người bị xấu nhất lên đầu: 1. Ít ngày nghỉ nhất -> 2. Ít buổi nghỉ nhất -> 3. Nhiều tiết lủng nhất
+          // Xếp người bị xấu nhất lên đầu: 1. Tỷ lệ Tiết/Buổi thấp nhất (dàn trải nhất) -> 2. Ít ngày nghỉ nhất -> 3. Nhiều tiết lủng nhất
+          if (a.periodsPerSession !== b.periodsPerSession) return a.periodsPerSession - b.periodsPerSession;
           if (a.freeDays !== b.freeDays) return a.freeDays - b.freeDays;
           if (a.freeHalfDays !== b.freeHalfDays) return a.freeHalfDays - b.freeHalfDays;
           return b.totalGaps - a.totalGaps;
@@ -237,14 +242,14 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
         .filter(t => {
           const teacherObj = teachers.find(tch => tch.id === t.teacherId);
           if (teacherObj && isSchoolLeader(teacherObj)) return false;
-          // Tuyệt đối không xếp là xấu nếu được nghỉ nhiều ngày và ít tiết lủng
-          if (t.avgFreeDaysPerWeek >= 2.0 && t.totalGaps <= 3) return false;
-          return t.isFrequentlyBad || t.avgFreeDaysPerWeek < 1.0 || (t.avgFreeDaysPerWeek <= 1.2 && t.avgGapsPerWeek >= 1.5) || t.avgGapsPerWeek >= 2.2;
+          // Tuyệt đối không xếp là xấu nếu đạt tỷ lệ cao và ít tiết lủng
+          if (t.periodsPerSession >= 3.4 && t.totalGaps <= 2) return false;
+          return t.isFrequentlyBad || t.periodsPerSession < 2.5 || t.avgFreeDaysPerWeek < 1.0 || t.avgGapsPerWeek >= 2.0;
         })
         .sort((a, b) => {
-          // Xếp người bị xấu nhất lên đầu: 1. Ít ngày nghỉ nhất -> 2. Ít buổi nghỉ nhất -> 3. Nhiều tiết lủng nhất
+          // Xếp người bị xấu nhất lên đầu: 1. Tỷ lệ Tiết/Buổi TB thấp nhất -> 2. Ít ngày nghỉ TB -> 3. Nhiều tiết lủng
+          if (a.periodsPerSession !== b.periodsPerSession) return a.periodsPerSession - b.periodsPerSession;
           if (a.avgFreeDaysPerWeek !== b.avgFreeDaysPerWeek) return a.avgFreeDaysPerWeek - b.avgFreeDaysPerWeek;
-          if (a.avgFreeHalfDaysPerWeek !== b.avgFreeHalfDaysPerWeek) return a.avgFreeHalfDaysPerWeek - b.avgFreeHalfDaysPerWeek;
           return b.totalGaps - a.totalGaps;
         });
     }
@@ -252,11 +257,20 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
 
   if (!isOpen || !isAdmin) return null;
 
-  const handleExportExcel = () => {
-    if (auditScope === 'WEEK') {
-      exportTimetableQualityReportExcel(weeklySummary, config.academicYear || '2026 - 2027');
-    } else {
-      exportSemesterQualityReportExcel(semesterSummary, config.academicYear || '2026 - 2027');
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportExcel = async () => {
+    try {
+      setIsExporting(true);
+      if (auditScope === 'WEEK') {
+        await exportTimetableQualityReportExcel(weeklySummary, config.academicYear || '2026 - 2027');
+      } else {
+        await exportSemesterQualityReportExcel(semesterSummary, config.academicYear || '2026 - 2027');
+      }
+    } catch (err) {
+      console.error('Lỗi xuất file Excel:', err);
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -1093,25 +1107,28 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                 </select>
               </div>
 
-              {/* 3-Criteria Sorting Order Guidance Banner */}
-              <div className="bg-gradient-to-r from-emerald-50 via-blue-50 to-amber-50 border border-slate-200 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2.5 text-xs shadow-2xs">
+              {/* Golden Ratio Guidance Banner */}
+              <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border border-emerald-200 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2.5 text-xs shadow-2xs">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-black text-slate-900 flex items-center gap-1.5 text-xs">
-                    <Scale className="w-4 h-4 text-indigo-600" />
-                    <span>Thứ tự sắp xếp chuẩn hóa:</span>
+                    <Scale className="w-4 h-4 text-emerald-700" />
+                    <span>Căn cứ xếp hạng TKB chuẩn hóa:</span>
                   </span>
-                  <span className="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-900 font-extrabold text-[11px] border border-emerald-300 flex items-center gap-1">
-                    <span>1️⃣</span> <span>Số ngày nghỉ (Cao &rarr; Thấp)</span>
+                  <span className="px-2.5 py-1 rounded-xl bg-emerald-600 text-white font-black text-[11px] shadow-2xs flex items-center gap-1">
+                    <span>⭐</span> <span>Tiêu chí cốt lõi: Tiết thực dạy / Số buổi đi dạy (Cao &rarr; Thấp)</span>
                   </span>
-                  <span className="px-2.5 py-1 rounded-xl bg-blue-100 text-blue-900 font-extrabold text-[11px] border border-blue-300 flex items-center gap-1">
-                    <span>2️⃣</span> <span>Số buổi nghỉ (Cao &rarr; Thấp)</span>
+                  <span className="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 font-extrabold text-[11px] border border-emerald-300">
+                    1️⃣ Số ngày nghỉ
                   </span>
-                  <span className="px-2.5 py-1 rounded-xl bg-amber-100 text-amber-900 font-extrabold text-[11px] border border-amber-300 flex items-center gap-1">
-                    <span>3️⃣</span> <span>Số tiết lủng (Thấp &rarr; Cao)</span>
+                  <span className="px-2 py-0.5 rounded-lg bg-blue-100 text-blue-900 font-extrabold text-[11px] border border-blue-300">
+                    2️⃣ Số buổi nghỉ
+                  </span>
+                  <span className="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 font-extrabold text-[11px] border border-amber-300">
+                    3️⃣ Số tiết lủng (Thấp &rarr; Cao)
                   </span>
                 </div>
-                <span className="text-[11px] text-slate-600 italic">
-                  *Giáo viên nghỉ nhiều ngày, nhiều buổi và ít tiết lủng được xếp đầu danh sách (TKB tốt nhất)
+                <span className="text-[11px] text-emerald-800 font-medium italic">
+                  *Chỉ tính tiết thực tế trên TKB, không tính kiêm nhiệm. Tỷ lệ cao (4-5 t/b) nghĩa là TKB rất đẹp, gọn gàng, ít buổi phải đến trường.
                 </span>
               </div>
 
@@ -1121,36 +1138,38 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                   <table className="w-full text-left text-xs border-collapse">
                     <thead className="bg-slate-100 text-slate-700 font-bold sticky top-0 z-10 border-b border-slate-200">
                       <tr>
-                        <th className="py-2.5 px-3 text-center w-10">STT</th>
-                        <th className="py-2.5 px-3">Giáo viên</th>
-                        <th className="py-2.5 px-3">Môn & Tổ</th>
-                        <th className="py-2.5 px-2 text-center bg-indigo-50/70 text-indigo-950 font-black border-l border-indigo-200">
-                          Số Tiết
+                        <th className="py-2.5 px-2 text-center w-12 font-black text-indigo-950 bg-indigo-100/60">
+                          Hạng
                         </th>
-                        <th className="py-2.5 px-3 text-center bg-indigo-50/70 text-indigo-950 font-black border-r border-indigo-200">
-                          Số Lớp
+                        <th className="py-2.5 px-3 min-w-[130px]">Giáo viên</th>
+                        <th className="py-2.5 px-3 min-w-[110px]">Môn & Tổ</th>
+                        <th className="py-2.5 px-2 text-center bg-indigo-50/70 text-indigo-950 font-black border-l border-indigo-200" title="Số tiết thực tế trên TKB (Không tính kiêm nhiệm)">
+                          Tiết TKB
                         </th>
-                        <th className="py-2.5 px-3 text-center bg-emerald-100/70 text-emerald-950 border-x border-emerald-300">
+                        <th className="py-2.5 px-2 text-center bg-indigo-50/70 text-indigo-950 font-black" title="Số buổi có giờ dạy trong tuần">
+                          Buổi Dạy
+                        </th>
+                        <th className="py-2.5 px-3 text-center bg-emerald-100/90 text-emerald-950 font-black border-x border-emerald-300 shadow-xs" title="Tiêu chí vàng cốt lõi: Số tiết thực dạy chia cho số buổi đi dạy">
                           <div className="flex flex-col items-center">
-                            <span>1. Số Ngày Nghỉ</span>
+                            <span className="flex items-center gap-1 text-[11px] text-emerald-950">
+                              <span>⭐</span> Tiết / Buổi
+                            </span>
                             <span className="text-[9px] font-black text-emerald-700 uppercase">(Cao &rarr; Thấp)</span>
                           </div>
                         </th>
-                        <th className="py-2.5 px-3 text-center bg-blue-100/70 text-blue-950 border-x border-blue-300">
-                          <div className="flex flex-col items-center">
-                            <span>2. Số Buổi Nghỉ</span>
-                            <span className="text-[9px] font-black text-blue-700 uppercase">(Cao &rarr; Thấp)</span>
-                          </div>
+                        <th className="py-2.5 px-3 text-center">Xếp Loại TKB</th>
+                        <th className="py-2.5 px-3 text-center bg-emerald-50/50 text-emerald-900 border-x border-emerald-200">
+                          1. Ngày Nghỉ
                         </th>
-                        <th className="py-2.5 px-3 text-center bg-amber-100/70 text-amber-950 border-x border-amber-300">
-                          <div className="flex flex-col items-center">
-                            <span>3. Tiết Lủng (Trống)</span>
-                            <span className="text-[9px] font-black text-amber-700 uppercase">(Thấp &rarr; Cao)</span>
-                          </div>
+                        <th className="py-2.5 px-3 text-center bg-blue-50/50 text-blue-900 border-x border-blue-200">
+                          2. Buổi Nghỉ
+                        </th>
+                        <th className="py-2.5 px-3 text-center bg-amber-50/50 text-amber-900 border-x border-amber-200">
+                          3. Tiết Lủng
                         </th>
                         <th className="py-2.5 px-2 text-center">Buổi 1 Tiết</th>
-                        <th className="py-2.5 px-3 text-center">Điểm & Xếp Loại</th>
-                        <th className="py-2.5 px-3">Nhận Xét / Cân Đối</th>
+                        <th className="py-2.5 px-2 text-center">Số Lớp</th>
+                        <th className="py-2.5 px-3 min-w-[160px]">Nhận Xét / Cân Đối</th>
                         <th className="py-2.5 px-2 text-center">Xem TKB</th>
                       </tr>
                     </thead>
@@ -1158,7 +1177,10 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                       {auditScope === 'WEEK' ? (
                         filteredWeeklyTeachers.map((t, idx) => (
                           <tr key={t.teacherId} className="hover:bg-slate-50 transition-colors">
-                            <td className="py-2 px-3 text-center text-slate-500 font-semibold">{idx + 1}</td>
+                            {/* Hạng TKB */}
+                            <td className="py-2 px-2 text-center font-black text-indigo-700 bg-indigo-50/30">
+                              #{idx + 1}
+                            </td>
                             <td className="py-2 px-3 font-bold text-slate-900">
                               <div>{t.teacherName}</div>
                               {t.teacherCode && <div className="text-[10px] text-slate-400 font-normal">{t.teacherCode}</div>}
@@ -1168,9 +1190,9 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                               <div className="text-[10px] text-slate-500">{t.departmentName}</div>
                             </td>
 
-                            {/* Số tiết */}
+                            {/* Số tiết thực tế TKB (không tính kiêm nhiệm) */}
                             <td className="py-2 px-2 text-center bg-indigo-50/20 border-l border-indigo-100">
-                              <span className="font-black text-slate-900 text-xs">{t.totalPeriods} tiết</span>
+                              <span className="font-black text-slate-900 text-xs">{t.totalPeriods}t</span>
                               {t.totalPeriods >= 20 && (
                                 <div className="text-[9px] font-black text-blue-800 bg-blue-100/80 rounded px-1 mt-0.5 whitespace-nowrap">
                                   Tải cao
@@ -1178,18 +1200,35 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                               )}
                             </td>
 
-                            {/* Số lớp */}
-                            <td className="py-2 px-2 text-center bg-indigo-50/20 border-r border-indigo-100">
-                              <span className="px-2 py-0.5 rounded-lg bg-white border border-indigo-200 font-extrabold text-indigo-950 text-xs shadow-2xs" title={t.assignedClassesList.join(', ')}>
-                                {t.assignedClassesCount} lớp
+                            {/* Số buổi đi dạy */}
+                            <td className="py-2 px-2 text-center bg-indigo-50/20">
+                              <span className="font-bold text-slate-800 text-xs">{t.sessionCount} buổi</span>
+                            </td>
+
+                            {/* TIÊU CHÍ VÀNG: TỶ LỆ TIẾT / BUỔI */}
+                            <td className="py-2 px-3 text-center bg-emerald-50/50 border-x border-emerald-200">
+                              <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-black shadow-2xs border ${
+                                t.periodsPerSession >= 4.0
+                                  ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                                  : t.periodsPerSession >= 3.2
+                                  ? 'bg-blue-100 text-blue-900 border-blue-300'
+                                  : t.periodsPerSession >= 2.4
+                                  ? 'bg-amber-100 text-amber-900 border-amber-300'
+                                  : 'bg-rose-100 text-rose-900 border-rose-300'
+                              }`}>
+                                {t.periodsPerSession.toFixed(2)} t/b
                               </span>
-                              <div className="text-[10px] text-slate-500 max-w-[120px] truncate mx-auto mt-0.5" title={t.assignedClassesList.join(', ')}>
-                                {t.assignedClassesList.join(', ')}
-                              </div>
+                            </td>
+
+                            {/* Xếp loại TKB */}
+                            <td className="py-2 px-3 text-center">
+                              <span className={`px-2 py-0.5 rounded-full text-[10.5px] font-bold border ${t.tierColor}`}>
+                                {t.tierLabel}
+                              </span>
                             </td>
                             
                             {/* 1. Free days */}
-                            <td className="py-2 px-3 text-center bg-emerald-50/40 border-x border-emerald-100 font-black">
+                            <td className="py-2 px-3 text-center bg-emerald-50/30 border-x border-emerald-100 font-black">
                               <span className={`px-2 py-0.5 rounded-lg text-xs ${
                                 t.freeDays >= 2 ? 'bg-emerald-100 text-emerald-800 font-black' : t.freeDays === 0 ? 'bg-rose-100 text-rose-800 font-black' : 'text-slate-800'
                               }`}>
@@ -1198,12 +1237,12 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                             </td>
 
                             {/* 2. Free half-days */}
-                            <td className="py-2 px-3 text-center bg-blue-50/40 border-x border-blue-100 font-bold text-blue-900">
+                            <td className="py-2 px-3 text-center bg-blue-50/30 border-x border-blue-100 font-bold text-blue-900">
                               {t.freeHalfDays}/12 buổi
                             </td>
 
                             {/* 3. Gaps */}
-                            <td className="py-2 px-3 text-center bg-amber-50/40 border-x border-amber-100">
+                            <td className="py-2 px-3 text-center bg-amber-50/30 border-x border-amber-100">
                               {t.totalGaps > 0 ? (
                                 <span className="inline-block px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-black text-xs" title={t.gapDetails.map(g => g.description).join('\n')}>
                                   {t.totalGaps} tiết
@@ -1223,16 +1262,14 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                               )}
                             </td>
 
-                            <td className="py-2 px-3 text-center">
-                              <div className="inline-flex items-center gap-1">
-                                <span className="font-black text-slate-900 text-xs">{t.score}</span>
-                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${t.tierColor}`}>
-                                  {t.tierLabel}
-                                </span>
-                              </div>
+                            {/* Số lớp */}
+                            <td className="py-2 px-2 text-center">
+                              <span className="px-2 py-0.5 rounded-lg bg-white border border-slate-200 font-bold text-slate-800 text-[11px]" title={t.assignedClassesList.join(', ')}>
+                                {t.assignedClassesCount}
+                              </span>
                             </td>
 
-                            <td className="py-2 px-3 text-[11px] text-slate-600 max-w-[240px]">
+                            <td className="py-2 px-3 text-[11px] text-slate-600 max-w-[200px]">
                               {t.diagnosisNotes[0] || t.primaryFactor}
                             </td>
 
@@ -1250,7 +1287,10 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                       ) : (
                         filteredSemesterTeachers.map((t, idx) => (
                           <tr key={t.teacherId} className="hover:bg-slate-50 transition-colors">
-                            <td className="py-2 px-3 text-center text-slate-500 font-semibold">{idx + 1}</td>
+                            {/* Hạng TKB */}
+                            <td className="py-2 px-2 text-center font-black text-indigo-700 bg-indigo-50/30">
+                              #{idx + 1}
+                            </td>
                             <td className="py-2 px-3 font-bold text-slate-900">
                               <div>{t.teacherName}</div>
                               {t.teacherCode && <div className="text-[10px] text-slate-400 font-normal">{t.teacherCode}</div>}
@@ -1262,7 +1302,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
 
                             {/* Số tiết TB */}
                             <td className="py-2 px-2 text-center bg-indigo-50/20 border-l border-indigo-100">
-                              <span className="font-black text-slate-900 text-xs">{t.avgPeriodsPerWeek} tiết/T</span>
+                              <span className="font-black text-slate-900 text-xs">{t.avgPeriodsPerWeek}t/t</span>
                               {t.avgPeriodsPerWeek >= 20 && (
                                 <div className="text-[9px] font-black text-blue-800 bg-blue-100/80 rounded px-1 mt-0.5 whitespace-nowrap">
                                   Tải cao
@@ -1270,35 +1310,52 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                               )}
                             </td>
 
-                            {/* Số lớp */}
-                            <td className="py-2 px-2 text-center bg-indigo-50/20 border-r border-indigo-100">
-                              <span className="px-2 py-0.5 rounded-lg bg-white border border-indigo-200 font-extrabold text-indigo-950 text-xs shadow-2xs" title={t.assignedClassesList.join(', ')}>
-                                {t.assignedClassesCount} lớp
+                            {/* Số buổi đi dạy TB */}
+                            <td className="py-2 px-2 text-center bg-indigo-50/20">
+                              <span className="font-bold text-slate-800 text-xs">{t.avgSessionsPerWeek} b/t</span>
+                            </td>
+
+                            {/* TIÊU CHÍ VÀNG: TỶ LỆ TIẾT / BUỔI */}
+                            <td className="py-2 px-3 text-center bg-emerald-50/50 border-x border-emerald-200">
+                              <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-black shadow-2xs border ${
+                                t.periodsPerSession >= 4.0
+                                  ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                                  : t.periodsPerSession >= 3.2
+                                  ? 'bg-blue-100 text-blue-900 border-blue-300'
+                                  : t.periodsPerSession >= 2.4
+                                  ? 'bg-amber-100 text-amber-900 border-amber-300'
+                                  : 'bg-rose-100 text-rose-900 border-rose-300'
+                              }`}>
+                                {t.periodsPerSession.toFixed(2)} t/b
                               </span>
-                              <div className="text-[10px] text-slate-500 max-w-[120px] truncate mx-auto mt-0.5" title={t.assignedClassesList.join(', ')}>
-                                {t.assignedClassesList.join(', ')}
-                              </div>
+                            </td>
+
+                            {/* Xếp loại chất lượng HK */}
+                            <td className="py-2 px-3 text-center">
+                              <span className={`px-2 py-0.5 rounded-full text-[10.5px] font-bold border ${t.statusColor}`}>
+                                {t.statusLabel}
+                              </span>
                             </td>
                             
                             {/* 1. Free days average */}
-                            <td className="py-2 px-3 text-center bg-emerald-50/40 border-x border-emerald-100 font-black">
+                            <td className="py-2 px-3 text-center bg-emerald-50/30 border-x border-emerald-100 font-black">
                               <span className={`px-2 py-0.5 rounded-lg text-xs ${
                                 t.avgFreeDaysPerWeek >= 2 ? 'bg-emerald-100 text-emerald-800 font-black' : t.avgFreeDaysPerWeek <= 1 ? 'bg-rose-100 text-rose-800 font-black' : 'text-slate-800'
                               }`}>
-                                {t.avgFreeDaysPerWeek} ngày/T
+                                {t.avgFreeDaysPerWeek} ng/t
                               </span>
                             </td>
 
                             {/* 2. Free half-days average */}
-                            <td className="py-2 px-3 text-center bg-blue-50/40 border-x border-blue-100 font-bold text-blue-900">
+                            <td className="py-2 px-3 text-center bg-blue-50/30 border-x border-blue-100 font-bold text-blue-900">
                               {t.avgFreeHalfDaysPerWeek}/12 buổi
                             </td>
 
                             {/* 3. Gaps total & average */}
-                            <td className="py-2 px-3 text-center bg-amber-50/40 border-x border-amber-100">
+                            <td className="py-2 px-3 text-center bg-amber-50/30 border-x border-amber-100">
                               {t.totalGaps > 0 ? (
                                 <span className="inline-block px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-black text-xs">
-                                  {t.totalGaps} (TB {t.avgGapsPerWeek}/T)
+                                  {t.totalGaps} (TB {t.avgGapsPerWeek}/t)
                                 </span>
                               ) : (
                                 <span className="text-slate-400 font-bold">0</span>
@@ -1315,16 +1372,14 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                               )}
                             </td>
 
-                            <td className="py-2 px-3 text-center">
-                              <div className="inline-flex items-center gap-1">
-                                <span className="font-black text-slate-900 text-xs">{t.avgScore}</span>
-                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${t.statusColor}`}>
-                                  {t.statusLabel}
-                                </span>
-                              </div>
+                            {/* Số lớp */}
+                            <td className="py-2 px-2 text-center">
+                              <span className="px-2 py-0.5 rounded-lg bg-white border border-slate-200 font-bold text-slate-800 text-[11px]" title={t.assignedClassesList.join(', ')}>
+                                {t.assignedClassesCount}
+                              </span>
                             </td>
 
-                            <td className="py-2 px-3 text-[11px] text-slate-600 max-w-[240px]">
+                            <td className="py-2 px-3 text-[11px] text-slate-600 max-w-[200px]">
                               {t.balancingSuggestions[0]}
                             </td>
 
@@ -1782,8 +1837,8 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                   <div className="text-[10pt] italic mt-0.5 font-semibold text-slate-800">
                     Năm học {config.academicYear || '2026 - 2027'} &bull; Áp dụng đánh giá cho toàn thể đội ngũ giáo viên
                   </div>
-                  <div className="text-[9pt] italic mt-1.5 text-slate-700 bg-slate-50 py-1 px-3 border border-slate-300 inline-block rounded-md">
-                    * Căn cứ xếp hạng công bằng theo 3 tiêu chí cốt lõi: <strong>1/ Số ngày nghỉ trọn ngày</strong> (từ cao xuống thấp) &bull; <strong>2/ Số buổi nghỉ</strong> (từ cao xuống thấp) &bull; <strong>3/ Số tiết lủng</strong> (từ thấp lên cao)
+                  <div className="text-[9pt] italic mt-1.5 text-slate-700 bg-slate-50 py-1.5 px-3 border border-slate-300 inline-block rounded-md">
+                    * Căn cứ xếp hạng TKB Đẹp/Xấu theo chỉ đạo: <strong>Tỷ lệ số tiết thực dạy trên TKB / Số buổi đi dạy</strong> (không tính kiêm nhiệm). Hạng 1 là TKB đẹp nhất (tập trung 4-5 tiết/buổi, ít buổi đến trường).
                   </div>
                 </div>
 
@@ -1800,6 +1855,9 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                       &bull; Điểm trung bình: <strong>{auditScope === 'WEEK' ? weeklySummary.averageScore : semesterSummary.avgScore}/100</strong>
                     </div>
                     <div>
+                      &bull; Hiệu suất bình quân: <strong>{auditScope === 'WEEK' ? weeklySummary.avgPeriodsPerSession : semesterSummary.avgPeriodsPerSession} tiết/buổi</strong>
+                    </div>
+                    <div>
                       &bull; Tổng số tiết lủng: <strong>{auditScope === 'WEEK' ? weeklySummary.totalGapsInSchool : semesterSummary.totalGapsInSemester} tiết</strong>
                     </div>
                     <div>
@@ -1814,9 +1872,9 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                 {/* 4. Phần II: Bảng phân loại chi tiết có đóng khung kẻ bảng chuẩn hành chính */}
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between font-bold uppercase text-[10pt]">
-                    <span>II. BẢNG ĐÁNH GIÁ CHI TIẾT TỪNG GIÁO VIÊN THEO 3 TIÊU CHÍ</span>
+                    <span>II. BẢNG XẾP HẠNG & ĐÁNH GIÁ CHI TIẾT TỪNG GIÁO VIÊN</span>
                     <span className="text-[8.5pt] normal-case italic font-normal text-slate-600">
-                      (Sắp xếp theo thứ tự: 1. Số ngày nghỉ &rarr; 2. Số buổi nghỉ &rarr; 3. Số tiết lủng)
+                      (Xếp hạng theo Tỷ lệ Tiết thực dạy / Buổi đi dạy &rarr; Ngày nghỉ &rarr; Buổi nghỉ &rarr; Tiết lủng)
                     </span>
                   </div>
 
@@ -1824,52 +1882,52 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                     <table className="w-full border-collapse border border-black quality-audit-print-table text-[8pt]">
                       <thead>
                         <tr className="bg-slate-100 font-bold border-b border-black text-center">
-                          <th className="border border-black p-1 w-8">STT</th>
-                          <th className="border border-black p-1 w-14">Mã GV</th>
-                          <th className="border border-black p-1 text-left min-w-[130px]">Họ và Tên</th>
-                          <th className="border border-black p-1 text-left min-w-[105px]">Tổ CM</th>
-                          <th className="border border-black p-1 min-w-[65px]">Môn</th>
-                          <th className="border border-black p-1 w-14" title="Số tiết định mức">Tiết/T</th>
-                          <th className="border border-black p-1 w-12" title="Số lớp dạy">Lớp</th>
-                          <th className="border border-black p-1 min-w-[90px] bg-emerald-50 text-emerald-950 font-black">
-                            1. Ngày Nghỉ
+                          <th className="border border-black p-1 w-9">Hạng</th>
+                          <th className="border border-black p-1 w-12">Mã GV</th>
+                          <th className="border border-black p-1 text-left min-w-[125px]">Họ và Tên</th>
+                          <th className="border border-black p-1 text-left min-w-[100px]">Tổ CM</th>
+                          <th className="border border-black p-1 min-w-[60px]">Môn</th>
+                          <th className="border border-black p-1 w-12" title="Số tiết thực tế trên TKB (không tính kiêm nhiệm)">Tiết TKB</th>
+                          <th className="border border-black p-1 w-12" title="Số buổi đi dạy">Buổi Dạy</th>
+                          <th className="border border-black p-1 min-w-[85px] bg-emerald-100 text-emerald-950 font-black">
+                            ⭐ Tiết/Buổi
                           </th>
-                          <th className="border border-black p-1 min-w-[65px] bg-blue-50 text-blue-950 font-black">
-                            2. Buổi Nghỉ
-                          </th>
-                          <th className="border border-black p-1 min-w-[60px] bg-amber-50 text-amber-950 font-black">
-                            3. Tiết Lủng
-                          </th>
-                          <th className="border border-black p-1 w-12">Điểm</th>
-                          <th className="border border-black p-1 min-w-[100px]">Xếp Loại</th>
-                          <th className="border border-black p-1 text-left min-w-[180px]">Đề Xuất & Ghi Chú</th>
+                          <th className="border border-black p-1 min-w-[95px]">Xếp Loại</th>
+                          <th className="border border-black p-1 min-w-[80px]">1. Ngày Nghỉ</th>
+                          <th className="border border-black p-1 min-w-[60px]">2. Buổi Nghỉ</th>
+                          <th className="border border-black p-1 min-w-[55px]">3. Tiết Lủng</th>
+                          <th className="border border-black p-1 w-10">Lớp</th>
+                          <th className="border border-black p-1 text-left min-w-[150px]">Đề Xuất & Ghi Chú</th>
                         </tr>
                       </thead>
                       <tbody>
                         {auditScope === 'WEEK' ? (
                           weeklySummary.allTeachers.map((t, idx) => (
                             <tr key={t.teacherId} className="border-b border-black/40 hover:bg-slate-50">
-                              <td className="border border-black p-1 text-center font-medium">{idx + 1}</td>
+                              <td className="border border-black p-1 text-center font-bold text-indigo-900">#{idx + 1}</td>
                               <td className="border border-black p-1 text-center font-mono font-bold text-[7.5pt]">{t.teacherCode || '-'}</td>
                               <td className="border border-black p-1 font-bold text-left">{t.teacherName}</td>
                               <td className="border border-black p-1 text-left">{t.departmentName}</td>
                               <td className="border border-black p-1 text-center">{t.mainSubjectName}</td>
                               <td className="border border-black p-1 text-center font-bold">{t.totalPeriods}t</td>
-                              <td className="border border-black p-1 text-center">{t.assignedClassesCount} lớp</td>
-                              <td className="border border-black p-1 text-center bg-emerald-50/50 font-bold">
+                              <td className="border border-black p-1 text-center font-bold">{t.sessionCount}b</td>
+                              <td className="border border-black p-1 text-center bg-emerald-50/70 font-black text-emerald-950">
+                                {t.periodsPerSession.toFixed(2)} t/b
+                              </td>
+                              <td className="border border-black p-1 text-center font-bold text-[7.5pt]">
+                                {t.tierLabel}
+                              </td>
+                              <td className="border border-black p-1 text-center font-bold">
                                 {t.freeDays} ngày
                                 {t.offDayNames.length > 0 && (
                                   <div className="text-[7pt] font-normal text-slate-600">({t.offDayNames.join(', ')})</div>
                                 )}
                               </td>
-                              <td className="border border-black p-1 text-center bg-blue-50/50 font-bold">{t.freeHalfDays} buổi</td>
-                              <td className="border border-black p-1 text-center bg-amber-50/50 font-bold">
+                              <td className="border border-black p-1 text-center font-bold">{t.freeHalfDays} buổi</td>
+                              <td className="border border-black p-1 text-center font-bold">
                                 {t.totalGaps > 0 ? `${t.totalGaps} tiết` : '-'}
                               </td>
-                              <td className="border border-black p-1 text-center font-bold">{t.score}</td>
-                              <td className="border border-black p-1 text-center font-bold text-[7.5pt]">
-                                {t.tierLabel}
-                              </td>
+                              <td className="border border-black p-1 text-center">{t.assignedClassesCount}</td>
                               <td className="border border-black p-1 text-left text-[7pt] leading-tight">
                                 {t.diagnosisNotes[0] || t.suggestedAction || '-'}
                               </td>
@@ -1878,24 +1936,27 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                         ) : (
                           semesterSummary.allTeachers.map((t, idx) => (
                             <tr key={t.teacherId} className="border-b border-black/40 hover:bg-slate-50">
-                              <td className="border border-black p-1 text-center font-medium">{idx + 1}</td>
+                              <td className="border border-black p-1 text-center font-bold text-indigo-900">#{idx + 1}</td>
                               <td className="border border-black p-1 text-center font-mono font-bold text-[7.5pt]">{t.teacherCode || '-'}</td>
                               <td className="border border-black p-1 font-bold text-left">{t.teacherName}</td>
                               <td className="border border-black p-1 text-left">{t.departmentName}</td>
                               <td className="border border-black p-1 text-center">{t.mainSubjectName}</td>
                               <td className="border border-black p-1 text-center font-bold">{t.avgPeriodsPerWeek}t/t</td>
-                              <td className="border border-black p-1 text-center">{t.assignedClassesCount} lớp</td>
-                              <td className="border border-black p-1 text-center bg-emerald-50/50 font-bold">
-                                {t.avgFreeDaysPerWeek} ng/t
+                              <td className="border border-black p-1 text-center font-bold">{t.avgSessionsPerWeek}b/t</td>
+                              <td className="border border-black p-1 text-center bg-emerald-50/70 font-black text-emerald-950">
+                                {t.periodsPerSession.toFixed(2)} t/b
                               </td>
-                              <td className="border border-black p-1 text-center bg-blue-50/50 font-bold">{t.avgFreeHalfDaysPerWeek} b/t</td>
-                              <td className="border border-black p-1 text-center bg-amber-50/50 font-bold">
-                                {t.totalGaps > 0 ? `${t.totalGaps}t (${t.avgGapsPerWeek}/t)` : '-'}
-                              </td>
-                              <td className="border border-black p-1 text-center font-bold">{t.avgScore}</td>
                               <td className="border border-black p-1 text-center font-bold text-[7.5pt]">
                                 {t.statusLabel}
                               </td>
+                              <td className="border border-black p-1 text-center font-bold">
+                                {t.avgFreeDaysPerWeek} ng/t
+                              </td>
+                              <td className="border border-black p-1 text-center font-bold">{t.avgFreeHalfDaysPerWeek} b/t</td>
+                              <td className="border border-black p-1 text-center font-bold">
+                                {t.totalGaps > 0 ? `${t.totalGaps}t (${t.avgGapsPerWeek}/t)` : '-'}
+                              </td>
+                              <td className="border border-black p-1 text-center">{t.assignedClassesCount}</td>
                               <td className="border border-black p-1 text-left text-[7pt] leading-tight">
                                 {t.balancingSuggestions[0] || '-'}
                               </td>
