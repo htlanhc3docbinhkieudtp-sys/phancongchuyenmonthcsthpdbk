@@ -228,11 +228,54 @@
   .comprehensive-print-table *,
   .concurrent-print-table *,
   .weekly-teaching-print-table *,
-  .quality-audit-print-table * {
+  .quality-audit-print-table *,
+  .admin-timetable-print-table * {
     overflow: visible !important;
     text-overflow: clip !important;
     white-space: normal !important;
     word-break: break-word !important;
+  }
+
+  /* Administrative School Timetable Printing (A4 Landscape) */
+  .admin-timetable-print-sheet {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #000000 !important;
+    page-break-inside: avoid !important;
+  }
+
+  .admin-timetable-print-table {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    border: 0.5pt solid #000000 !important;
+    font-family: 'Times New Roman', Times, serif !important;
+    font-size: 7.2pt !important;
+    line-height: 1.08 !important;
+  }
+
+  .admin-timetable-print-table th,
+  .admin-timetable-print-table td {
+    padding: 1.5px 1px !important;
+    border: 0.5pt solid #000000 !important;
+    color: #000000 !important;
+    vertical-align: middle !important;
+    word-break: break-word !important;
+    overflow: visible !important;
+  }
+
+  .admin-timetable-print-table th {
+    font-weight: bold !important;
+    background-color: #f1f5f9 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
 
