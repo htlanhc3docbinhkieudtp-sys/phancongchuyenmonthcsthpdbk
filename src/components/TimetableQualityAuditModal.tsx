@@ -79,6 +79,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
   const [selectedWorkloadFilter, setSelectedWorkloadFilter] = useState<'ALL' | 'HIGH' | 'MEDIUM' | 'LIGHT'>('ALL');
   const [daysOffFilter, setDaysOffFilter] = useState<'ALL' | 'ALWAYS_MONDAY_OFF' | 'ALWAYS_SATURDAY_OFF' | 'ALWAYS_BOTH_OFF' | 'NEVER_OFF'>('ALL');
   const [selectedTeacherDetail, setSelectedTeacherDetail] = useState<TeacherQualityMetric | TeacherSemesterQualityMetric | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   // Synchronize with external week when opened
   React.useEffect(() => {
@@ -256,8 +257,6 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
   }, [auditScope, weeklySummary.allTeachers, semesterSummary.allTeachers, teachers]);
 
   if (!isOpen || !isAdmin) return null;
-
-  const [isExporting, setIsExporting] = useState(false);
 
   const handleExportExcel = async () => {
     try {
