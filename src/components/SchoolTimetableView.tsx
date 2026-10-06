@@ -554,47 +554,37 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
             </div>
           </div>
 
-          {/* Quick Action buttons */}
-          <div className="flex flex-wrap items-center gap-2 print:hidden">
-            {/* Primary Action: Administrative PDF Export & Print */}
-            <button
-              onClick={() => setIsPdfModalOpen(true)}
-              className="px-4 py-2 bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 hover:from-rose-700 hover:to-indigo-700 active:scale-95 text-white text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer ring-2 ring-rose-400/40"
-              title="Xuất bản in PDF chuẩn văn bản hành chính theo Điểm trường & Khối lớp"
-            >
-              <Printer className="w-4 h-4 text-rose-100" />
-              <span>Xuất PDF / In TKB Hành Chính</span>
-            </button>
+          {/* Quick Action buttons - ONLY FOR ADMIN */}
+          {isAdmin && (
+            <div className="flex flex-wrap items-center gap-2 print:hidden">
+              {/* Primary Action: Administrative PDF Export & Print */}
+              <button
+                onClick={() => setIsPdfModalOpen(true)}
+                className="px-4 py-2 bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 hover:from-rose-700 hover:to-indigo-700 active:scale-95 text-white text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer ring-2 ring-rose-400/40"
+                title="Chỉ Quản trị viên: Xuất bản in PDF chuẩn văn bản hành chính theo Điểm trường & Khối lớp"
+              >
+                <Printer className="w-4 h-4 text-rose-100" />
+                <span>Xuất PDF / In TKB Hành Chính</span>
+              </button>
 
-            {isAdmin && (
-              <>
-                <button
-                  onClick={() => setIsImportModalOpen(true)}
-                  className="px-4 py-2 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-700 hover:to-indigo-700 text-white text-xs font-black rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer ring-2 ring-emerald-400/40"
-                  title="Nhập và cập nhật thời khóa biểu trực tiếp từ phần mềm VietSchool (Excel/CSV)"
-                >
-                  <FileSpreadsheet className="w-4 h-4 text-emerald-100" />
-                  <span>Nhập TKB VietSchool</span>
-                </button>
+              <button
+                onClick={() => setIsImportModalOpen(true)}
+                className="px-4 py-2 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-700 hover:to-indigo-700 text-white text-xs font-black rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer ring-2 ring-emerald-400/40"
+                title="Nhập và cập nhật thời khóa biểu trực tiếp từ phần mềm VietSchool (Excel/CSV)"
+              >
+                <FileSpreadsheet className="w-4 h-4 text-emerald-100" />
+                <span>Nhập TKB VietSchool</span>
+              </button>
 
-                <button
-                  onClick={() => exportTimetableToExcel(timetable, classes, teachers, config)}
-                  className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
-                >
-                  <FileSpreadsheet className="w-3.5 h-3.5" />
-                  <span>Xuất Excel TKB</span>
-                </button>
-              </>
-            )}
-
-            <button
-              onClick={() => setIsPdfModalOpen(true)}
-              className="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl border border-white/20 transition-all flex items-center gap-1.5 cursor-pointer"
-            >
-              <Printer className="w-3.5 h-3.5" />
-              <span>In TKB / PDF</span>
-            </button>
-          </div>
+              <button
+                onClick={() => exportTimetableToExcel(timetable, classes, teachers, config)}
+                className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5" />
+                <span>Xuất Excel TKB</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -967,16 +957,18 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 </button>
               </div>
 
-              {/* PDF Print Button */}
-              <button
-                type="button"
-                onClick={() => setIsPdfModalOpen(true)}
-                className="px-3.5 py-2 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-black rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer ring-2 ring-rose-400/30"
-                title="Xuất bản in PDF theo Điểm trường và Khối lớp chuẩn văn bản hành chính"
-              >
-                <Printer className="w-4 h-4" />
-                <span>Xuất PDF / In TKB</span>
-              </button>
+              {/* PDF Print Button (Only for Admin) */}
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => setIsPdfModalOpen(true)}
+                  className="px-3.5 py-2 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-black rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer ring-2 ring-rose-400/30"
+                  title="Chỉ Quản trị viên: Xuất bản in PDF theo Điểm trường và Khối lớp chuẩn văn bản hành chính"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Xuất PDF / In TKB</span>
+                </button>
+              )}
 
               {/* Dedicated Quality Evaluation Button (Only for Admin) */}
               {isAdmin && (
@@ -1840,9 +1832,6 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                   <div className="text-sm font-black text-indigo-950 uppercase tracking-tight mt-0.5">
                     {config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU'}
                   </div>
-                  <div className="text-xs text-slate-500 italic mt-0.5">
-                    Số: ..... /TKB-ĐBK
-                  </div>
                 </div>
 
                 {/* Right Motto */}
@@ -1934,28 +1923,30 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 </button>
               </div>
 
-              {/* Action buttons: PDF export & Excel */}
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsPdfModalOpen(true)}
-                  className="px-3.5 py-1.5 bg-gradient-to-r from-rose-600 to-indigo-600 hover:from-rose-700 hover:to-indigo-700 active:scale-95 text-white font-black rounded-lg shadow-xs transition-all flex items-center gap-1.5 cursor-pointer ring-2 ring-rose-400/30"
-                  title="Xuất bản in PDF theo Điểm trường và Khối lớp chuẩn văn bản hành chính"
-                >
-                  <Printer className="w-3.5 h-3.5 text-rose-100" />
-                  <span>Xuất PDF / In TKB Theo Điểm & Khối</span>
-                </button>
+              {/* Action buttons: PDF export & Excel (Only for Admin) */}
+              {isAdmin && (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsPdfModalOpen(true)}
+                    className="px-3.5 py-1.5 bg-gradient-to-r from-rose-600 to-indigo-600 hover:from-rose-700 hover:to-indigo-700 active:scale-95 text-white font-black rounded-lg shadow-xs transition-all flex items-center gap-1.5 cursor-pointer ring-2 ring-rose-400/30"
+                    title="Chỉ Quản trị viên: Xuất bản in PDF theo Điểm trường và Khối lớp chuẩn văn bản hành chính"
+                  >
+                    <Printer className="w-3.5 h-3.5 text-rose-100" />
+                    <span>Xuất PDF / In TKB Theo Điểm & Khối</span>
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => exportTimetableToExcel(timetable, classes, teachers, config)}
-                  className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
-                  title="Tải toàn bộ TKB dạng bảng Excel"
-                >
-                  <FileSpreadsheet className="w-3.5 h-3.5" />
-                  <span>Xuất Excel</span>
-                </button>
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => exportTimetableToExcel(timetable, classes, teachers, config)}
+                    className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
+                    title="Tải toàn bộ TKB dạng bảng Excel"
+                  >
+                    <FileSpreadsheet className="w-3.5 h-3.5" />
+                    <span>Xuất Excel</span>
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* 3. Timetable Matrix Table grouped by Campus and Grade */}
@@ -2119,35 +2110,16 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-                {/* Người lập biểu */}
-                <div className="space-y-1">
-                  <div className="text-xs font-black uppercase text-slate-900">NGƯỜI LẬP BIỂU</div>
+              <div className="flex justify-end">
+                <div className="w-80 text-center space-y-1">
+                  <div className="text-xs italic mb-2 text-slate-600">
+                    Tháp Mười, ngày {new Date().getDate()} tháng {new Date().getMonth() + 1} năm {new Date().getFullYear()}
+                  </div>
+                  <div className="text-xs font-black uppercase text-slate-900 tracking-wider">PHÓ HIỆU TRƯỞNG</div>
                   <div className="text-[11px] italic text-slate-500">(Ký và ghi rõ họ tên)</div>
-                  <div className="h-16 flex items-end justify-center font-bold text-xs text-indigo-950">
+                  <div className="h-20 flex items-end justify-center font-bold text-sm text-indigo-950">
                     {config.vicePrincipalName || 'Nguyễn Minh Trí'}
                   </div>
-                  <div className="text-[11px] text-slate-600 font-medium">Phó Hiệu trưởng</div>
-                </div>
-
-                {/* Tổ trưởng chuyên môn */}
-                <div className="space-y-1">
-                  <div className="text-xs font-black uppercase text-slate-900">TỔ TRƯỞNG CHUYÊN MÔN</div>
-                  <div className="text-[11px] italic text-slate-500">(Ký và ghi rõ họ tên)</div>
-                  <div className="h-16 flex items-end justify-center font-bold text-xs text-indigo-950">
-                    Đại diện các Tổ CM
-                  </div>
-                  <div className="text-[11px] text-slate-600 font-medium">Các Tổ Chuyên Môn</div>
-                </div>
-
-                {/* Hiệu trưởng */}
-                <div className="space-y-1">
-                  <div className="text-xs font-black uppercase text-slate-900">HIỆU TRƯỞNG</div>
-                  <div className="text-[11px] italic text-slate-500">(Ký tên, đóng dấu)</div>
-                  <div className="h-16 flex items-end justify-center font-bold text-xs text-indigo-950">
-                    {config.principalName || 'Lê Thanh Cường'}
-                  </div>
-                  <div className="text-[11px] text-slate-600 font-medium">Hiệu trưởng</div>
                 </div>
               </div>
             </div>
@@ -2470,9 +2442,9 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         }}
       />
 
-      {/* Administrative Timetable PDF Export & Print Modal */}
+      {/* Administrative Timetable PDF Export & Print Modal (Admin Only) */}
       <AdministrativeTimetablePdfModal
-        isOpen={isPdfModalOpen}
+        isOpen={isPdfModalOpen && isAdmin}
         onClose={() => setIsPdfModalOpen(false)}
         config={config}
         classes={classes}

@@ -277,31 +277,25 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
         ws.getCell('H2').font = { name: 'Times New Roman', size: 10, bold: true, underline: true };
         ws.getCell('H2').alignment = { horizontal: 'center' };
 
-        // Row 3: Số hiệu
-        ws.mergeCells('A3:G3');
-        ws.getCell('A3').value = 'Số: ..... /TKB-ĐBK';
-        ws.getCell('A3').font = { name: 'Times New Roman', size: 9, italic: true };
-        ws.getCell('A3').alignment = { horizontal: 'center' };
-
-        // Row 4: Empty
+        // Row 3: Empty
         ws.addRow([]);
 
-        // Row 5: Main Title
+        // Row 4: Main Title
+        ws.mergeCells('A4:AE4');
+        ws.getCell('A4').value = block.title.toUpperCase();
+        ws.getCell('A4').font = { name: 'Times New Roman', size: 14, bold: true, color: { argb: 'FF0F172A' } };
+        ws.getCell('A4').alignment = { horizontal: 'center', vertical: 'middle' };
+
+        // Row 5: Subtitle
         ws.mergeCells('A5:AE5');
-        ws.getCell('A5').value = block.title.toUpperCase();
-        ws.getCell('A5').font = { name: 'Times New Roman', size: 14, bold: true, color: { argb: 'FF0F172A' } };
+        ws.getCell('A5').value = `Tuần ${currentWeek} (${weekInfo.startDateShort} - ${weekInfo.endDateShort}) • Năm học ${config.academicYear || '2026 - 2027'} (Áp dụng từ Thứ Hai, ${weekInfo.startDateShort})`;
+        ws.getCell('A5').font = { name: 'Times New Roman', size: 10, italic: true, bold: true, color: { argb: 'FF334155' } };
         ws.getCell('A5').alignment = { horizontal: 'center', vertical: 'middle' };
 
-        // Row 6: Subtitle
-        ws.mergeCells('A6:AE6');
-        ws.getCell('A6').value = `Tuần ${currentWeek} (${weekInfo.startDateShort} - ${weekInfo.endDateShort}) • Năm học ${config.academicYear || '2026 - 2027'} (Áp dụng từ Thứ Hai, ${weekInfo.startDateShort})`;
-        ws.getCell('A6').font = { name: 'Times New Roman', size: 10, italic: true, bold: true, color: { argb: 'FF334155' } };
-        ws.getCell('A6').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        // Row 7: Empty
+        // Row 6: Empty
         ws.addRow([]);
 
-        // Row 8: Table Header (Day groups)
+        // Row 7: Table Header (Day groups)
         const headerRow1 = [
           'STT',
           'Lớp',
@@ -311,32 +305,32 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
         DAYS_OF_WEEK.forEach(d => {
           headerRow1.push(d.label, '', '', '', '');
         });
-        const r8 = ws.addRow(headerRow1);
-        r8.font = { name: 'Times New Roman', size: 10, bold: true };
-        r8.alignment = { horizontal: 'center', vertical: 'middle' };
+        const r7 = ws.addRow(headerRow1);
+        r7.font = { name: 'Times New Roman', size: 10, bold: true };
+        r7.alignment = { horizontal: 'center', vertical: 'middle' };
 
-        ws.mergeCells('A8:A9');
-        ws.mergeCells('B8:B9');
-        ws.mergeCells('C8:C9');
-        ws.mergeCells('D8:D9');
+        ws.mergeCells('A7:A8');
+        ws.mergeCells('B7:B8');
+        ws.mergeCells('C7:C8');
+        ws.mergeCells('D7:D8');
 
         let colIdx = 5;
         DAYS_OF_WEEK.forEach(() => {
-          ws.mergeCells(8, colIdx, 8, colIdx + 4);
+          ws.mergeCells(7, colIdx, 7, colIdx + 4);
           colIdx += 5;
         });
 
-        // Row 9: Period numbers T1 - T5
+        // Row 8: Period numbers T1 - T5
         const headerRow2 = ['', '', '', ''];
         DAYS_OF_WEEK.forEach(() => {
           PERIODS.forEach(p => headerRow2.push(`T${p}`));
         });
-        const r9 = ws.addRow(headerRow2);
-        r9.font = { name: 'Times New Roman', size: 9, bold: true };
-        r9.alignment = { horizontal: 'center', vertical: 'middle' };
+        const r8 = ws.addRow(headerRow2);
+        r8.font = { name: 'Times New Roman', size: 9, bold: true };
+        r8.alignment = { horizontal: 'center', vertical: 'middle' };
 
         // Style table headers
-        [r8, r9].forEach(row => {
+        [r7, r8].forEach(row => {
           row.eachCell(cell => {
             cell.fill = {
               type: 'pattern',
@@ -411,37 +405,23 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
           });
         });
 
-        // Signatures block
+        // Signatures block: Chỉ Phó Hiệu trưởng Nguyễn Minh Trí
         ws.addRow([]);
         const dateRow = ws.addRow([]);
-        ws.mergeCells(dateRow.number, 20, dateRow.number, 31);
-        ws.getCell(dateRow.number, 20).value = `Tháp Mười, ngày ${new Date().getDate()} tháng ${new Date().getMonth() + 1} năm ${new Date().getFullYear()}`;
-        ws.getCell(dateRow.number, 20).font = { name: 'Times New Roman', size: 10, italic: true };
-        ws.getCell(dateRow.number, 20).alignment = { horizontal: 'center' };
+        ws.mergeCells(dateRow.number, 22, dateRow.number, 32);
+        ws.getCell(dateRow.number, 22).value = `Tháp Mười, ngày ${new Date().getDate()} tháng ${new Date().getMonth() + 1} năm ${new Date().getFullYear()}`;
+        ws.getCell(dateRow.number, 22).font = { name: 'Times New Roman', size: 10, italic: true };
+        ws.getCell(dateRow.number, 22).alignment = { horizontal: 'center' };
 
         const sigTitles = ws.addRow([]);
-        ws.mergeCells(sigTitles.number, 2, sigTitles.number, 8);
-        ws.getCell(sigTitles.number, 2).value = 'NGƯỜI LẬP BIỂU';
-
-        ws.mergeCells(sigTitles.number, 12, sigTitles.number, 18);
-        ws.getCell(sigTitles.number, 12).value = 'TỔ TRƯỞNG CHUYÊN MÔN';
-
-        ws.mergeCells(sigTitles.number, 23, sigTitles.number, 30);
-        ws.getCell(sigTitles.number, 23).value = 'HIỆU TRƯỞNG';
-
+        ws.mergeCells(sigTitles.number, 22, sigTitles.number, 32);
+        ws.getCell(sigTitles.number, 22).value = 'PHÓ HIỆU TRƯỞNG';
         sigTitles.font = { name: 'Times New Roman', size: 10, bold: true };
         sigTitles.alignment = { horizontal: 'center' };
 
         const sigNotes = ws.addRow([]);
-        ws.mergeCells(sigNotes.number, 2, sigNotes.number, 8);
-        ws.getCell(sigNotes.number, 2).value = '(Ký và ghi rõ họ tên)';
-
-        ws.mergeCells(sigNotes.number, 12, sigNotes.number, 18);
-        ws.getCell(sigNotes.number, 12).value = '(Ký và ghi rõ họ tên)';
-
-        ws.mergeCells(sigNotes.number, 23, sigNotes.number, 30);
-        ws.getCell(sigNotes.number, 23).value = '(Ký tên, đóng dấu)';
-
+        ws.mergeCells(sigNotes.number, 22, sigNotes.number, 32);
+        ws.getCell(sigNotes.number, 22).value = '(Ký và ghi rõ họ tên)';
         sigNotes.font = { name: 'Times New Roman', size: 9, italic: true };
         sigNotes.alignment = { horizontal: 'center' };
 
@@ -450,15 +430,8 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
         ws.addRow([]);
 
         const sigNames = ws.addRow([]);
-        ws.mergeCells(sigNames.number, 2, sigNames.number, 8);
-        ws.getCell(sigNames.number, 2).value = creatorName;
-
-        ws.mergeCells(sigNames.number, 12, sigNames.number, 18);
-        ws.getCell(sigNames.number, 12).value = 'Đại diện các Tổ CM';
-
-        ws.mergeCells(sigNames.number, 23, sigNames.number, 30);
-        ws.getCell(sigNames.number, 23).value = principalName;
-
+        ws.mergeCells(sigNames.number, 22, sigNames.number, 32);
+        ws.getCell(sigNames.number, 22).value = creatorName || 'Nguyễn Minh Trí';
         sigNames.font = { name: 'Times New Roman', size: 10, bold: true };
         sigNames.alignment = { horizontal: 'center' };
 
@@ -715,23 +688,15 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
               <span>Tổng số trang/bản in dự kiến: <strong className="text-slate-900">{printBlocks.length} bản</strong></span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-1">
-                <span className="text-[11px] font-semibold text-slate-500">Người lập biểu:</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[11px] font-semibold text-slate-500">Người ký duyệt:</span>
+              <div className="flex items-center gap-1 bg-slate-100 border border-slate-300 rounded px-2 py-0.5">
+                <span className="text-[11px] font-bold text-slate-700">Phó Hiệu trưởng:</span>
                 <input
                   type="text"
                   value={creatorName}
                   onChange={(e) => setCreatorName(e.target.value)}
-                  className="h-7 px-2 bg-slate-50 border border-slate-300 rounded text-xs font-bold text-slate-800 w-36"
-                />
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-[11px] font-semibold text-slate-500">Hiệu trưởng:</span>
-                <input
-                  type="text"
-                  value={principalName}
-                  onChange={(e) => setPrincipalName(e.target.value)}
-                  className="h-7 px-2 bg-slate-50 border border-slate-300 rounded text-xs font-bold text-slate-800 w-36"
+                  className="bg-transparent text-xs font-black text-indigo-950 w-36 focus:outline-hidden"
                 />
               </div>
             </div>
@@ -773,10 +738,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                         <div className="text-[11pt] font-black tracking-tight text-slate-950 mt-0.5">
                           {config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU'}
                         </div>
-                        <div className="text-[9pt] italic font-normal normal-case mt-0.5 text-slate-700">
-                          Số: ..... /TKB-ĐBK
-                        </div>
-                        <div className="w-32 h-[1px] bg-black mx-auto mt-1" />
+                        <div className="w-32 h-[1px] bg-black mx-auto mt-1.5" />
                       </div>
 
                       {/* Right: National Motto */}
@@ -914,42 +876,22 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                     </table>
                   </div>
 
-                  {/* Administrative Signatures Block (Chữ ký 3 bên) */}
+                  {/* Administrative Signatures Block (Chỉ Phó Hiệu trưởng Nguyễn Minh Trí) */}
                   <div className="mt-4 pt-2 font-serif text-black print:avoid-break">
-                    <div className="flex justify-end text-xs italic mb-2">
-                      <span>
-                        Tháp Mười, ngày {new Date().getDate()} tháng {new Date().getMonth() + 1} năm {new Date().getFullYear()}
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4 text-center">
-                      {/* Signature 1 */}
-                      <div>
-                        <div className="font-bold uppercase text-[10pt]">NGƯỜI LẬP BIỂU</div>
-                        <div className="text-[9pt] italic text-slate-700">(Ký và ghi rõ họ tên)</div>
-                        <div className="h-16 flex items-end justify-center font-bold text-[10pt] text-slate-950">
-                          {creatorName}
+                    <div className="flex justify-end">
+                      <div className="w-80 text-center">
+                        <div className="text-xs italic mb-1 text-slate-800">
+                          Tháp Mười, ngày {new Date().getDate()} tháng {new Date().getMonth() + 1} năm {new Date().getFullYear()}
                         </div>
-                        <div className="text-[9pt] text-slate-700">Phó Hiệu trưởng</div>
-                      </div>
-
-                      {/* Signature 2 */}
-                      <div>
-                        <div className="font-bold uppercase text-[10pt]">TỔ TRƯỞNG CHUYÊN MÔN</div>
-                        <div className="text-[9pt] italic text-slate-700">(Ký và ghi rõ họ tên)</div>
-                        <div className="h-16 flex items-end justify-center font-bold text-[10pt] text-slate-950">
-                          Đại diện các Tổ CM
+                        <div className="font-bold uppercase text-[11pt] tracking-wider text-slate-950">
+                          PHÓ HIỆU TRƯỞNG
                         </div>
-                      </div>
-
-                      {/* Signature 3 */}
-                      <div>
-                        <div className="font-bold uppercase text-[10pt]">HIỆU TRƯỞNG</div>
-                        <div className="text-[9pt] italic text-slate-700">(Ký tên, đóng dấu)</div>
-                        <div className="h-16 flex items-end justify-center font-bold text-[10pt] text-slate-950">
-                          {principalName}
+                        <div className="text-[9pt] italic text-slate-700">
+                          (Ký và ghi rõ họ tên)
                         </div>
-                        <div className="text-[9pt] text-slate-700">Hiệu trưởng</div>
+                        <div className="h-20 flex items-end justify-center font-bold text-[11pt] text-slate-950">
+                          {creatorName || 'Nguyễn Minh Trí'}
+                        </div>
                       </div>
                     </div>
                   </div>
