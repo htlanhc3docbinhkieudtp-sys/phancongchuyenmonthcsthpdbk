@@ -236,7 +236,7 @@
     word-break: break-word !important;
   }
 
-  /* Administrative School Timetable Printing (A4 Landscape) */
+  /* Administrative School Timetable Printing (A4) */
   .admin-timetable-print-sheet {
     width: 100% !important;
     max-width: 100% !important;
@@ -247,23 +247,23 @@
     box-shadow: none !important;
     color: #000000 !important;
     page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   .admin-timetable-print-table {
     width: 100% !important;
     min-width: 100% !important;
     max-width: 100% !important;
-    table-layout: fixed !important;
     border-collapse: collapse !important;
     border: 0.5pt solid #000000 !important;
     font-family: 'Times New Roman', Times, serif !important;
-    font-size: 7.2pt !important;
-    line-height: 1.08 !important;
+    font-size: 7.5pt !important;
+    line-height: 1.1 !important;
   }
 
   .admin-timetable-print-table th,
   .admin-timetable-print-table td {
-    padding: 1.5px 1px !important;
+    padding: 2px 2px !important;
     border: 0.5pt solid #000000 !important;
     color: #000000 !important;
     vertical-align: middle !important;

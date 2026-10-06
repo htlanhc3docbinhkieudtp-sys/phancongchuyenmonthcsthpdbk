@@ -50,7 +50,8 @@ import {
   ShieldCheck,
   ArrowRightLeft,
   Trash2,
-  Scale
+  Scale,
+  Info
 } from 'lucide-react';
 import { TimetableImportModal } from './TimetableImportModal';
 import { CopyTimetableModal } from './CopyTimetableModal';
@@ -155,6 +156,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
     const map = new Map<string, TimetableSlot>();
     activeSlots.forEach(s => {
       map.set(`${s.classId}_${s.dayOfWeek}_${s.session}_${s.period}`, s);
+      map.set(`${s.className}_${s.dayOfWeek}_${s.session}_${s.period}`, s);
     });
     return map;
   }, [activeSlots]);
@@ -380,12 +382,15 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
 
     order.forEach(k => {
       if (groupMap.has(k)) {
-        groups.push(groupMap.get(k)!);
+        const grp = groupMap.get(k)!;
+        grp.classes.sort((a, b) => a.name.localeCompare(b.name, 'vi', { numeric: true }));
+        groups.push(grp);
       }
     });
 
     groupMap.forEach((v, k) => {
       if (!order.includes(k)) {
+        v.classes.sort((a, b) => a.name.localeCompare(b.name, 'vi', { numeric: true }));
         groups.push(v);
       }
     });
@@ -1874,10 +1879,10 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
             </div>
 
             {/* 2. Interactive In-table Quick Filter & Export Bar */}
-            <div className="bg-slate-100/90 border-b border-slate-200 p-3 sm:px-5 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="bg-slate-100/95 border-b border-slate-200 p-3 sm:px-5 flex flex-wrap items-center justify-between gap-3 text-xs">
               {/* Campus filter quick pills */}
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="font-bold text-slate-600 mr-1 flex items-center gap-1">
+                <span className="font-bold text-slate-700 mr-1 flex items-center gap-1">
                   <Building2 className="w-3.5 h-3.5 text-indigo-600" />
                   <span>Điểm:</span>
                 </span>
@@ -1923,17 +1928,48 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 </button>
               </div>
 
-              {/* Action buttons: PDF export & Excel (Only for Admin) */}
+              {/* Grade filter pills */}
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="font-bold text-slate-700 mr-1 flex items-center gap-1">
+                  <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
+                  <span>Khối:</span>
+                </span>
+                <button
+                  onClick={() => setSelectedGrade('ALL')}
+                  className={`px-2 py-0.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    selectedGrade === 'ALL'
+                      ? 'bg-indigo-600 text-white shadow-2xs'
+                      : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
+                  }`}
+                >
+                  Tất cả
+                </button>
+                {['10', '11', '12', '6', '7', '8', '9'].map(g => (
+                  <button
+                    key={g}
+                    onClick={() => setSelectedGrade(g)}
+                    className={`px-2 py-0.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      selectedGrade === g
+                        ? 'bg-indigo-600 text-white shadow-2xs'
+                        : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
+                    }`}
+                  >
+                    K{g}
+                  </button>
+                ))}
+              </div>
+
+              {/* Action buttons: PDF export & Excel (ONLY for Admin) */}
               {isAdmin && (
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setIsPdfModalOpen(true)}
                     className="px-3.5 py-1.5 bg-gradient-to-r from-rose-600 to-indigo-600 hover:from-rose-700 hover:to-indigo-700 active:scale-95 text-white font-black rounded-lg shadow-xs transition-all flex items-center gap-1.5 cursor-pointer ring-2 ring-rose-400/30"
-                    title="Chỉ Quản trị viên: Xuất bản in PDF theo Điểm trường và Khối lớp chuẩn văn bản hành chính"
+                    title="Chỉ Quản trị viên: Xuất bản in PDF theo Điểm trường và Khối lớp chuẩn văn bản hành chính khổ A4"
                   >
                     <Printer className="w-3.5 h-3.5 text-rose-100" />
-                    <span>Xuất PDF / In TKB Theo Điểm & Khối</span>
+                    <span>Xuất PDF / In TKB Theo Khối & Điểm</span>
                   </button>
 
                   <button
@@ -1949,179 +1985,261 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
               )}
             </div>
 
-            {/* 3. Timetable Matrix Table grouped by Campus and Grade */}
-            <div className="overflow-x-auto max-h-[72vh]">
-              <table className="w-full border-collapse text-left text-xs">
-                <thead className="bg-slate-100 text-slate-800 font-black sticky top-0 z-20 shadow-2xs">
-                  <tr className="border-b border-slate-300 divide-x divide-slate-200">
-                    <th className="py-2.5 px-2.5 w-12 text-center sticky left-0 bg-slate-100 z-30">STT</th>
-                    <th className="py-2.5 px-3 min-w-[85px] sticky left-12 bg-slate-100 z-30">Lớp</th>
-                    <th className="py-2.5 px-3 min-w-[125px]">GVCN</th>
-                    <th className="py-2.5 px-2 w-14 text-center">Buổi</th>
-                    {DAYS_OF_WEEK.map(d => (
-                      <th key={d.value} colSpan={5} className="text-center py-2 bg-indigo-900 text-white font-extrabold border-l border-white/20">
-                        {d.label.toUpperCase()}
-                      </th>
-                    ))}
-                  </tr>
-                  <tr className="border-b border-slate-300 divide-x divide-slate-200 text-[10px] text-slate-600 font-bold bg-slate-50">
-                    <th className="sticky left-0 bg-slate-50 z-30"></th>
-                    <th className="sticky left-12 bg-slate-50 z-30"></th>
-                    <th></th>
-                    <th className="text-center"></th>
-                    {DAYS_OF_WEEK.map(d => (
-                      <React.Fragment key={d.value}>
-                        {PERIODS.map(p => (
-                          <th key={p} className="text-center py-1 px-1.5 w-16 bg-slate-50">
-                            T{p}
-                          </th>
-                        ))}
-                      </React.Fragment>
-                    ))}
-                  </tr>
-                </thead>
+            {/* 3. Timetable Matrix Table: Cột hàng ngang là Lớp • Cột trái là Thứ, Buổi, Tiết */}
+            <div className="p-4 sm:p-6 space-y-8 bg-slate-100/60 max-h-[76vh] overflow-y-auto">
+              {masterGridGroups.length === 0 ? (
+                <div className="bg-white rounded-2xl p-12 text-center text-slate-500 shadow-sm border border-slate-200">
+                  <Info className="w-8 h-8 text-amber-500 mx-auto mb-2" />
+                  <p className="font-bold text-slate-800">Không có lớp học nào thỏa mãn điều kiện lọc.</p>
+                  <p className="text-xs text-slate-500 mt-1">Vui lòng chọn lại Điểm trường hoặc Khối lớp bên trên.</p>
+                </div>
+              ) : (
+                masterGridGroups.map(group => {
+                  // Determine which sessions to display for this group
+                  const hasMorningSlots = group.classes.some(c =>
+                    [2, 3, 4, 5, 6, 7].some(d =>
+                      [1, 2, 3, 4, 5].some(p =>
+                        slotMap.has(`${c.id}_${d}_SANG_${p}`) || slotMap.has(`${c.name}_${d}_SANG_${p}`)
+                      )
+                    )
+                  );
+                  const hasAfternoonSlots = group.classes.some(c =>
+                    [2, 3, 4, 5, 6, 7].some(d =>
+                      [1, 2, 3, 4, 5].some(p =>
+                        slotMap.has(`${c.id}_${d}_CHIEU_${p}`) || slotMap.has(`${c.name}_${d}_CHIEU_${p}`)
+                      )
+                    )
+                  );
 
-                <tbody className="divide-y divide-slate-200 text-xs">
-                  {masterGridGroups.length === 0 ? (
-                    <tr>
-                      <td colSpan={34} className="py-12 text-center text-slate-500 font-medium">
-                        Không có lớp học nào thỏa mãn điều kiện lọc.
-                      </td>
-                    </tr>
-                  ) : (
-                    masterGridGroups.map(group => (
-                      <React.Fragment key={group.key}>
-                        {/* Section Divider Header for this Campus + Grade */}
-                        <tr className="bg-gradient-to-r from-indigo-50 via-slate-100 to-indigo-50/50 font-black text-slate-900 border-y-2 border-indigo-200">
-                          <td colSpan={34} className="py-2 px-3">
-                            <div className="flex flex-wrap items-center justify-between gap-2">
-                              <div className="flex items-center gap-2">
-                                <span className="px-2 py-0.5 rounded-md bg-indigo-600 text-white text-[11px] uppercase tracking-wider font-extrabold shadow-2xs">
-                                  {group.campusShort}
-                                </span>
-                                <span className="text-xs font-black uppercase text-indigo-950">
-                                  {group.campusName} — {group.gradeTitle} ({group.classes.length} Lớp)
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2 text-[11px] font-semibold text-slate-600">
-                                <span>Buổi học chính: <strong className="text-indigo-900">{group.primarySession === 'SANG' ? 'Buổi Sáng (T1-T5)' : 'Buổi Chiều (T1-T5)'}</strong></span>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
+                  let groupSessions: ('SANG' | 'CHIEU')[] = [];
+                  if (selectedSession === 'SANG') {
+                    groupSessions = ['SANG'];
+                  } else if (selectedSession === 'CHIEU') {
+                    groupSessions = ['CHIEU'];
+                  } else if (hasMorningSlots && hasAfternoonSlots) {
+                    groupSessions = ['SANG', 'CHIEU'];
+                  } else if (hasMorningSlots) {
+                    groupSessions = ['SANG'];
+                  } else if (hasAfternoonSlots) {
+                    groupSessions = ['CHIEU'];
+                  } else {
+                    groupSessions = [group.primarySession];
+                  }
 
-                        {/* Classes rows inside this group */}
-                        {group.classes.map((cls, idx) => {
-                          const homeroom = cls.homeroomTeacherId ? teacherMap.get(cls.homeroomTeacherId) : undefined;
-                          const isMainAfternoon = cls.grade === '6' || cls.grade === '7' || /^[67]A/i.test(cls.name);
-                          const primarySession = isMainAfternoon ? 'CHIEU' : 'SANG';
-                          const secondarySession = isMainAfternoon ? 'SANG' : 'CHIEU';
+                  return (
+                    <div
+                      key={group.key}
+                      className="bg-white rounded-2xl shadow-sm border border-slate-300 overflow-hidden"
+                    >
+                      {/* Section Administrative Header */}
+                      <div className="bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 text-white p-3.5 px-5 flex flex-wrap items-center justify-between gap-2 border-b border-indigo-800">
+                        <div className="flex items-center gap-3">
+                          <span className="px-2.5 py-0.5 rounded-lg bg-indigo-500/30 border border-indigo-300/30 text-white text-xs font-black uppercase tracking-wider">
+                            {group.campusShort}
+                          </span>
+                          <h4 className="text-sm font-black uppercase tracking-tight text-white">
+                            THỜI KHÓA BIỂU {group.gradeTitle.toUpperCase()} — {group.campusName} ({group.classes.length} Lớp)
+                          </h4>
+                        </div>
 
-                          return (
-                            <tr key={cls.id} className="hover:bg-indigo-50/40 transition-colors divide-x divide-slate-100">
-                              <td className="py-2 px-2 text-center font-bold text-slate-500 sticky left-0 bg-white z-10">
-                                {idx + 1}
-                              </td>
-                              <td className="py-2 px-3 font-black text-indigo-950 sticky left-12 bg-white z-10 whitespace-nowrap">
-                                {cls.name}
-                              </td>
-                              <td className="py-2 px-3 font-semibold text-slate-700 whitespace-nowrap">
-                                {homeroom?.name || '-'}
-                              </td>
-                              <td className="py-2 px-2 text-center font-bold text-slate-600 text-[11px]">
-                                {primarySession === 'SANG' ? 'Sáng' : 'Chiều'}
-                              </td>
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-indigo-200">
+                            Ca chính: <strong className="text-white">{group.primarySession === 'SANG' ? 'Buổi Sáng (T1-5)' : 'Buổi Chiều (T1-5)'}</strong>
+                          </span>
+                          {isAdmin && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedCampus(group.campusCode);
+                                setSelectedGrade(group.grade);
+                                setIsPdfModalOpen(true);
+                              }}
+                              className="ml-2 px-2.5 py-1 bg-white/10 hover:bg-white/20 active:scale-95 text-white text-[11px] font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer border border-white/20"
+                              title="In hoặc xuất PDF riêng cho khối lớp này"
+                            >
+                              <Printer className="w-3 h-3 text-rose-300" />
+                              <span>In Khối Này (A4)</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
 
-                              {DAYS_OF_WEEK.map(d => (
-                                <React.Fragment key={d.value}>
-                                  {PERIODS.map(p => {
-                                    const slot = selectedSession === 'SANG'
-                                      ? slotMap.get(`${cls.id}_${d.value}_SANG_${p}`)
-                                      : selectedSession === 'CHIEU'
-                                      ? slotMap.get(`${cls.id}_${d.value}_CHIEU_${p}`)
-                                      : (slotMap.get(`${cls.id}_${d.value}_${primarySession}_${p}`) ||
-                                         slotMap.get(`${cls.id}_${d.value}_${secondarySession}_${p}`));
-
-                                    const isSpecial = slot?.isSpecialActivity ||
-                                      slot?.subjectName?.includes('Chào cờ') ||
-                                      slot?.subjectName?.includes('Sinh hoạt');
-
-                                    return (
-                                      <td
-                                        key={p}
-                                        onClick={() => {
-                                          if (isAdmin) {
-                                            setEditingSlot(slot || {
-                                              id: `${cls.id}_${d.value}_${primarySession}_${p}`,
-                                              classId: cls.id,
-                                              className: cls.name,
-                                              dayOfWeek: d.value,
-                                              session: primarySession,
-                                              period: p
-                                            });
-                                          } else if (onPromptAdminLogin) {
-                                            onPromptAdminLogin();
-                                          }
-                                        }}
-                                        className={`p-1 text-center border-r border-slate-100 ${
-                                          isAdmin ? 'cursor-pointer hover:bg-indigo-100/60' : ''
-                                        } ${
-                                          isSpecial
-                                            ? 'bg-amber-50 font-bold text-amber-900'
-                                            : slot?.subjectName
-                                            ? 'bg-white'
-                                            : 'bg-slate-50/50'
-                                        }`}
-                                      >
-                                        {slot?.subjectName ? (
-                                          <div className="leading-tight">
-                                            <div className="font-bold text-[11px] text-slate-900 truncate" title={getSubjectDisplayName(slot)}>
-                                              {getSubjectDisplayName(slot)}
-                                            </div>
-                                            {getTeacherDisplayName(slot) && (
-                                              <div className="text-[10px] text-indigo-700 font-semibold truncate" title={getTeacherDisplayName(slot)}>
-                                                {getTeacherDisplayName(slot)}
-                                              </div>
-                                            )}
-                                          </div>
-                                        ) : (
-                                          <span className="text-slate-300 text-[10px]">-</span>
-                                        )}
-                                      </td>
-                                    );
-                                  })}
-                                </React.Fragment>
+                      {/* Timetable Table: Cột hàng ngang là Lớp • Cột trái là Thứ, Buổi, Tiết */}
+                      <div className="overflow-x-auto">
+                        <table className="w-full border-collapse text-center text-xs">
+                          <thead>
+                            {/* Header Row 1: THỨ, BUỔI, TIẾT, and Class Names */}
+                            <tr className="bg-slate-100 font-bold border-b border-slate-300 divide-x divide-slate-200">
+                              <th rowSpan={2} className="py-2.5 px-2 w-14 text-center bg-slate-200/90 text-slate-800 font-extrabold sticky left-0 z-20">
+                                THỨ
+                              </th>
+                              <th rowSpan={2} className="py-2.5 px-2 w-14 text-center bg-slate-200/90 text-slate-800 font-extrabold sticky left-14 z-20">
+                                BUỔI
+                              </th>
+                              <th rowSpan={2} className="py-2.5 px-1.5 w-10 text-center bg-slate-200/90 text-slate-800 font-extrabold sticky left-28 z-20">
+                                TIẾT
+                              </th>
+                              {group.classes.map(cls => (
+                                <th
+                                  key={cls.id}
+                                  className="py-2.5 px-3 min-w-[130px] font-black text-indigo-950 bg-slate-100 text-sm"
+                                >
+                                  {cls.name}
+                                </th>
                               ))}
                             </tr>
-                          );
-                        })}
-                      </React.Fragment>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
 
-            {/* 4. Administrative Document Signatures Block */}
-            <div className="bg-slate-50 border-t border-slate-200 p-5 sm:p-6 text-slate-800">
-              <div className="flex justify-end text-xs italic mb-4 text-slate-600">
-                <span>
-                  Tháp Mười, ngày {new Date().getDate()} tháng {new Date().getMonth() + 1} năm {new Date().getFullYear()}
-                </span>
-              </div>
+                            {/* Header Row 2: Homeroom Teachers (GVCN) under class names */}
+                            <tr className="bg-slate-50 border-b border-slate-300 divide-x divide-slate-200 text-[11px] italic text-slate-700">
+                              {group.classes.map(cls => {
+                                const homeroom = cls.homeroomTeacherId ? teacherMap.get(cls.homeroomTeacherId) : undefined;
+                                return (
+                                  <th key={`gvcn-${cls.id}`} className="py-1 px-2 text-center font-semibold text-slate-700">
+                                    {homeroom ? `GVCN: ${homeroom.name.replace(/^Thầy\s+|^Cô\s+/i, '')}` : '-'}
+                                  </th>
+                                );
+                              })}
+                            </tr>
+                          </thead>
 
-              <div className="flex justify-end">
-                <div className="w-80 text-center space-y-1">
-                  <div className="text-xs italic mb-2 text-slate-600">
-                    Tháp Mười, ngày {new Date().getDate()} tháng {new Date().getMonth() + 1} năm {new Date().getFullYear()}
-                  </div>
-                  <div className="text-xs font-black uppercase text-slate-900 tracking-wider">PHÓ HIỆU TRƯỞNG</div>
-                  <div className="text-[11px] italic text-slate-500">(Ký và ghi rõ họ tên)</div>
-                  <div className="h-20 flex items-end justify-center font-bold text-sm text-indigo-950">
-                    {config.vicePrincipalName || 'Nguyễn Minh Trí'}
-                  </div>
-                </div>
-              </div>
+                          <tbody className="divide-y divide-slate-200">
+                            {DAYS_OF_WEEK.map(day => {
+                              const totalPeriodsForDay = groupSessions.length * 5;
+
+                              return groupSessions.map((sess, sessIdx) => {
+                                const sessLabel = sess === 'SANG' ? 'Sáng' : 'Chiều';
+
+                                return PERIODS.map((period, periodIdx) => {
+                                  const isFirstRowOfDay = sessIdx === 0 && periodIdx === 0;
+                                  const isFirstRowOfSession = periodIdx === 0;
+
+                                  return (
+                                    <tr
+                                      key={`${day.value}_${sess}_${period}`}
+                                      className={`hover:bg-indigo-50/30 transition-colors divide-x divide-slate-100 ${
+                                        day.value % 2 === 1 ? 'bg-slate-50/40' : 'bg-white'
+                                      }`}
+                                    >
+                                      {/* Day cell */}
+                                      {isFirstRowOfDay && (
+                                        <td
+                                          rowSpan={totalPeriodsForDay}
+                                          className="py-2 px-2 text-center font-black text-slate-800 bg-slate-100 sticky left-0 z-10 align-middle border-r border-slate-300"
+                                        >
+                                          {day.label}
+                                        </td>
+                                      )}
+
+                                      {/* Session cell */}
+                                      {isFirstRowOfSession && (
+                                        <td
+                                          rowSpan={5}
+                                          className="py-2 px-1 text-center font-bold text-slate-700 bg-slate-50 sticky left-14 z-10 align-middle border-r border-slate-200 text-[11px]"
+                                        >
+                                          {sessLabel}
+                                        </td>
+                                      )}
+
+                                      {/* Period cell */}
+                                      <td className="py-2 px-1 text-center font-bold text-slate-600 sticky left-28 z-10 bg-slate-50 align-middle border-r border-slate-200">
+                                        {period}
+                                      </td>
+
+                                      {/* Class cells across columns */}
+                                      {group.classes.map(cls => {
+                                        const slot = slotMap.get(`${cls.id}_${day.value}_${sess}_${period}`) ||
+                                                     slotMap.get(`${cls.name}_${day.value}_${sess}_${period}`);
+
+                                        const isSpecial =
+                                          slot?.isSpecialActivity ||
+                                          slot?.subjectName?.includes('Chào cờ') ||
+                                          slot?.subjectName?.includes('Sinh hoạt');
+
+                                        return (
+                                          <td
+                                            key={cls.id}
+                                            onClick={() => {
+                                              if (isAdmin) {
+                                                setEditingSlot(slot || {
+                                                  id: `${cls.id}_${day.value}_${sess}_${period}`,
+                                                  classId: cls.id,
+                                                  className: cls.name,
+                                                  dayOfWeek: day.value,
+                                                  session: sess,
+                                                  period: period
+                                                });
+                                              } else if (onPromptAdminLogin) {
+                                                onPromptAdminLogin();
+                                              }
+                                            }}
+                                            className={`p-2 text-center align-middle transition-colors ${
+                                              isAdmin ? 'cursor-pointer hover:bg-indigo-100/60' : ''
+                                            } ${
+                                              isSpecial
+                                                ? 'bg-amber-100/70 font-bold text-amber-950'
+                                                : slot?.subjectName
+                                                ? 'bg-white'
+                                                : 'bg-slate-50/40 text-slate-400'
+                                            }`}
+                                          >
+                                            {slot?.subjectName ? (
+                                              <div className="leading-tight space-y-0.5">
+                                                <div
+                                                  className="font-black text-slate-950 text-xs truncate"
+                                                  title={getSubjectDisplayName(slot)}
+                                                >
+                                                  {getSubjectDisplayName(slot)}
+                                                </div>
+                                                {getTeacherDisplayName(slot) && (
+                                                  <div
+                                                    className="text-[11px] text-indigo-700 font-semibold italic truncate"
+                                                    title={getTeacherDisplayName(slot)}
+                                                  >
+                                                    {getTeacherDisplayName(slot)}
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ) : (
+                                              <span className="text-slate-300 font-light">-</span>
+                                            )}
+                                          </td>
+                                        );
+                                      })}
+                                    </tr>
+                                  );
+                                });
+                              });
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Administrative Signature Block at the bottom of the table (Vice Principal only) */}
+                      <div className="bg-slate-50/90 border-t border-slate-200 p-4 px-6">
+                        <div className="flex justify-end">
+                          <div className="w-72 text-center space-y-0.5">
+                            <div className="text-xs italic text-slate-600 mb-1">
+                              Tháp Mười, ngày {new Date().getDate()} tháng {new Date().getMonth() + 1} năm {new Date().getFullYear()}
+                            </div>
+                            <div className="text-[11px] font-bold uppercase text-slate-800">
+                              KT. HIỆU TRƯỞNG
+                            </div>
+                            <div className="text-xs font-black uppercase text-slate-950 tracking-wider">
+                              PHÓ HIỆU TRƯỞNG
+                            </div>
+                            <div className="text-[10px] italic text-slate-500">
+                              (Ký và ghi rõ họ tên)
+                            </div>
+                            <div className="h-14 flex items-end justify-center font-bold text-xs text-indigo-950">
+                              {config.vicePrincipalName || 'Nguyễn Minh Trí'}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         )}
@@ -2455,6 +2573,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         initialCampus={selectedCampus}
         initialGrade={selectedGrade}
         initialSession={selectedSession}
+        isAdmin={isAdmin}
       />
     </div>
   );
