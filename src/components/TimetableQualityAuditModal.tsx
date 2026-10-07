@@ -1793,7 +1793,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                 style={{ ['--print-font-size' as any]: printFontSize }}
                 className="bg-white rounded-2xl border border-slate-300 shadow-sm p-6 sm:p-8 space-y-6 quality-audit-print-container print:p-0 print:border-none print:shadow-none print:m-0 font-['Times_New_Roman',serif] text-black"
               >
-                {/* 1. Quốc hiệu - Tiêu ngữ & Đơn vị chủ quản */}
+                {/* 1. Quốc hiệu - Tiêu ngữ & Đơn vị chủ quản (Không cần số liệu văn bản) */}
                 <table className="w-full border-none mb-3">
                   <tbody>
                     <tr className="align-top">
@@ -1805,9 +1805,6 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                           {config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU'}
                         </div>
                         <div className="w-28 mx-auto my-1 border-b-2 border-black"></div>
-                        <div className="text-[9pt] italic font-normal text-slate-700">
-                          Số: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /BC-TKB-DBK
-                        </div>
                       </td>
                       <td className="w-1/2 text-center p-0 border-none">
                         <div className="text-[10pt] uppercase font-bold">
@@ -1967,35 +1964,27 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                   </div>
                 </div>
 
-                {/* 5. Phần III: Chữ ký hành chính 3 bên */}
+                {/* 5. Phần III: Chữ ký phê duyệt (Chỉ Phó Hiệu trưởng Nguyễn Minh Trí) */}
                 <div className="pt-4 border-t border-black text-black">
-                  <table className="w-full border-none">
-                    <tbody>
-                      <tr>
-                        <td colSpan={2}></td>
-                        <td className="text-center p-0 border-none pb-2 text-[9.5pt] italic">
-                          Đồng Tháp, ngày ..... tháng ..... năm 2026
-                        </td>
-                      </tr>
-                      <tr className="align-top font-bold text-[9.5pt]">
-                        <td className="w-1/3 text-center p-0 border-none">
-                          <div>NGƯỜI LẬP BIỂU</div>
-                          <div className="font-normal italic text-[8.5pt] mt-0.5">(Ký và ghi rõ họ tên)</div>
-                          <div className="h-16"></div>
-                        </td>
-                        <td className="w-1/3 text-center p-0 border-none">
-                          <div>TỔ TRƯỞNG CHUYÊN MÔN</div>
-                          <div className="font-normal italic text-[8.5pt] mt-0.5">(Ký và ghi rõ họ tên)</div>
-                          <div className="h-16"></div>
-                        </td>
-                        <td className="w-1/3 text-center p-0 border-none">
-                          <div>HIỆU TRƯỞNG / BAN GIÁM HIỆU</div>
-                          <div className="font-normal italic text-[8.5pt] mt-0.5">(Ký, đóng dấu và ghi rõ họ tên)</div>
-                          <div className="h-16"></div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div className="flex justify-end">
+                    <div className="w-80 text-center font-bold text-[9.5pt]">
+                      <div className="text-[9.5pt] italic font-normal mb-1">
+                        Đồng Tháp, ngày ..... tháng ..... năm 2026
+                      </div>
+                      <div className="uppercase tracking-wider">
+                        KT. HIỆU TRƯỞNG
+                      </div>
+                      <div className="text-[10.5pt] font-black uppercase tracking-wider text-black">
+                        PHÓ HIỆU TRƯỞNG
+                      </div>
+                      <div className="font-normal italic text-[8.5pt] text-slate-700 mt-0.5">
+                        (Ký và ghi rõ họ tên)
+                      </div>
+                      <div className="h-16 flex items-end justify-center font-bold text-[10.5pt] text-black">
+                        {config.vicePrincipalName || 'Nguyễn Minh Trí'}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

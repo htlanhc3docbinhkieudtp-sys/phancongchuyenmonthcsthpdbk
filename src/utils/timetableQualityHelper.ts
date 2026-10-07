@@ -75,6 +75,24 @@ export interface TeacherQualityMetric {
   tierLabel: string;
   tierColor: string;
 
+  // 3 YẾU TỐ QUYẾT ĐỊNH SỐ NGÀY NGHỈ (KẾT LUẬN RÀ SOÁT CỦA BGH):
+  isHomeroom: boolean; // 1. Có chủ nhiệm hay không (tiết Chào cờ sáng T2 và Sinh hoạt cuối tuần)
+  homeroomClassName?: string; // Tên lớp chủ nhiệm
+  morningPeriods: number; // Số tiết dạy buổi Sáng
+  afternoonPeriods: number; // Số tiết dạy buổi Chiều
+  isBothShifts: boolean; // 2. Có dạy cả 2 buổi sáng/chiều không
+  morningAfternoonRatioText: string; // 3. Tỷ lệ số tiết sáng/chiều
+  isNearEqualShifts: boolean; // Số tiết dạy sáng chiều có gần bằng nhau không
+  grade67Periods: number; // Trường hợp đặc biệt: Dạy trái buổi khối 6, 7
+  hasSpecialShiftCase: boolean; // Có trường hợp đặc biệt khác (chỉ dạy 3 tiết 1 buổi, dạy trái buổi K6,7)
+  specialShiftDescription?: string;
+
+  // THƯỚC ĐO CHÍNH: SỐ TIẾT DẠY / BUỔI (CHỈ ĐẠO BAN GIÁM HIỆU):
+  ratioCategory: 'VERY_LOW' | 'VERY_HIGH' | 'BALANCED'; // Nhóm thấp nhất (<2.5) / cao nhất (>=4.2) / cân đối (2.5-4.1)
+  ratioCategoryLabel: string;
+  isProposalEligible: boolean; // Thuộc nhóm quá thấp hoặc quá cao để chủ động đề xuất điều chỉnh
+  proposalDeadlineNote: string; // Trao đổi đề xuất chậm nhất Thứ 4 hàng tuần (Thứ 5 tạo TKB mới)
+
   // Objective root cause diagnosis
   primaryFactor: string; // Nguyên nhân chính (Đặc thù môn học / Liên ca / Liên điểm / Thuật toán)
   diagnosisNotes: string[];
@@ -85,11 +103,19 @@ export interface SchoolQualitySummary {
   weekNumber: number;
   totalTeachersTeaching: number;
   averageScore: number;
-  avgPeriodsPerSession: number; // Tỷ lệ trung bình toàn trường
+  avgPeriodsPerSession: number; // Tỷ lệ trung bình toàn trường (tiết/buổi)
   totalGapsInSchool: number;
   teachersWithGapsCount: number;
   teachersWithSplitShiftsCount: number;
   teachersWithSinglePeriodSessionsCount: number;
+
+  // Thống kê theo Thước đo chính: Số tiết dạy/buổi (BGH)
+  ratioStats: {
+    veryLowCount: number;       // Nhóm thấp nhất (< 2.5 tiết/buổi)
+    veryHighCount: number;      // Nhóm cao nhất (>= 4.2 tiết/buổi)
+    balancedCount: number;      // Nhóm cân đối (2.5 - 4.1 tiết/buổi)
+    proposalEligibleCount: number; // Tổng số GV thuộc nhóm cần xem xét điều chỉnh
+  };
 
   tierCounts: {
     EXCELLENT: number; // 90 - 100
@@ -393,6 +419,65 @@ export function analyzeTimetableQuality(
 
     const assignedClassesList = Array.from(classesSet).map(cId => classMap.get(cId)?.name || cId);
 
+    // 3 YẾU TỐ QUYẾT ĐỊNH SỐ NGÀY NGHỈ (KẾT LUẬN RÀ SOÁT CỦA BGH):
+    // 1. Có chủ nhiệm hay không
+    const homeroomClass = classes.find(c => c.homeroomTeacherId === teacher.id);
+    const isHomeroom = !!homeroomClass;
+    const homeroomClassName = homeroomClass?.name;
+
+    // 2. Có dạy sáng chiều không & Số tiết dạy sáng chiều có gần bằng nhau không
+    const morningPeriods = tSlots.filter(s => s.session === 'SANG').length;
+    const afternoonPeriods = tSlots.filter(s => s.session === 'CHIEU').length;
+    const isBothShifts = morningPeriods > 0 && afternoonPeriods > 0;
+    const morningAfternoonDiff = Math.abs(morningPeriods - afternoonPeriods);
+    const isNearEqualShifts = isBothShifts && morningAfternoonDiff <= 4;
+    const morningAfternoonRatioText = isBothShifts
+      ? `${morningPeriods}S / ${afternoonPeriods}C ${isNearEqualShifts ? '(Gần bằng)' : ''}`
+      : morningPeriods > 0 ? `${morningPeriods} tiết Sáng` : `${afternoonPeriods} tiết Chiều`;
+
+    // 3. Các trường hợp đặc biệt: Chỉ dạy 3 tiết 1 buổi, Dạy trái buổi khối 6, 7 nhiều tiết
+    const grade67Periods = tSlots.filter(s => {
+      const cls = classMap.get(s.classId);
+      return cls?.grade === '6' || cls?.grade === '7';
+    }).length;
+
+    const has3PeriodSession = Object.values(sessionSlotsMap).some(slots => slots.length === 3);
+    const hasSpecialShiftCase = has3PeriodSession || grade67Periods >= 4 || isCrossCampus;
+    let specialShiftDescription = '';
+    if (grade67Periods >= 4) specialShiftDescription = `Dạy trái buổi K6,7 (${grade67Periods} tiết)`;
+    else if (has3PeriodSession) specialShiftDescription = 'Có buổi dạy 3 tiết';
+    else if (isCrossCampus) specialShiftDescription = 'Giảng dạy liên 2 điểm trường';
+
+    // THƯỚC ĐO CHÍNH CỐT LÕI (CHỈ ĐẠO BAN GIÁM HIỆU):
+    // Số tiết dạy bình quân trong 1 buổi (periodsPerSession)
+    let ratioCategory: 'VERY_LOW' | 'VERY_HIGH' | 'BALANCED' = 'BALANCED';
+    let ratioCategoryLabel = 'Cân đối (2.5 - 4.1 tiết/buổi)';
+
+    if (periodsPerSession < 2.5) {
+      ratioCategory = 'VERY_LOW';
+      ratioCategoryLabel = 'Nhóm Thấp Nhất (< 2.5 tiết/buổi) — Dàn trải';
+    } else if (periodsPerSession >= 4.2) {
+      ratioCategory = 'VERY_HIGH';
+      ratioCategoryLabel = 'Nhóm Cao Nhất (≥ 4.2 tiết/buổi) — Quá tải';
+    }
+
+    const isProposalEligible = ratioCategory === 'VERY_LOW' || ratioCategory === 'VERY_HIGH';
+    const proposalDeadlineNote = 'Trao đổi đề xuất BGH chậm nhất Thứ Tư hàng tuần (Thứ Năm tạo TKB mới)';
+
+    // Gắn thông báo chẩn đoán theo kết luận của BGH
+    if (isHomeroom) {
+      diagnosisNotes.push(`Chủ nhiệm lớp ${homeroomClassName}: Có tiết Chào cờ (Sáng T2) và Sinh hoạt lớp (cuối tuần), neo lịch 2 đầu tuần nên số ngày nghỉ trọn ngày bị chi phối.`);
+    }
+    if (isBothShifts) {
+      diagnosisNotes.push(`Dạy cả hai buổi Sáng & Chiều (${morningAfternoonRatioText}). ${isNearEqualShifts ? 'Số tiết sáng chiều gần bằng nhau nên phải có mặt nhiều buổi ở trường.' : ''}`);
+    }
+    if (grade67Periods >= 4) {
+      diagnosisNotes.push(`Dạy trái buổi khối 6, 7 (${grade67Periods} tiết), làm phát sinh thêm ca học buổi chiều.`);
+    }
+    if (isProposalEligible) {
+      diagnosisNotes.push(`📢 QUY ĐỊNH BGH: Thầy/Cô thuộc ${ratioCategoryLabel}. Nếu có nguyện vọng điều chỉnh TKB, vui lòng chủ động trao đổi đề xuất với BGH chậm nhất Thứ Tư hàng tuần (Thứ Năm tạo TKB mới).`);
+    }
+
     // Bổ sung chẩn đoán tải cao (nhiều tiết, nhiều lớp)
     if (tSlots.length >= 21 || classesSet.size >= 8) {
       diagnosisNotes.unshift(`Dạy định mức cao (${tSlots.length} tiết thực tế trên ${classesSet.size} lớp: ${assignedClassesList.join(', ')}). Đạt hiệu suất ${periodsPerSession} tiết/buổi.`);
@@ -437,6 +522,20 @@ export function analyzeTimetableQuality(
       tier,
       tierLabel,
       tierColor,
+      isHomeroom,
+      homeroomClassName,
+      morningPeriods,
+      afternoonPeriods,
+      isBothShifts,
+      morningAfternoonRatioText,
+      isNearEqualShifts,
+      grade67Periods,
+      hasSpecialShiftCase,
+      specialShiftDescription,
+      ratioCategory,
+      ratioCategoryLabel,
+      isProposalEligible,
+      proposalDeadlineNote,
       primaryFactor,
       diagnosisNotes,
       suggestedAction
@@ -495,6 +594,12 @@ export function analyzeTimetableQuality(
     teachersWithGapsCount: metrics.filter(m => m.totalGaps > 0).length,
     teachersWithSplitShiftsCount: metrics.filter(m => m.splitShiftDays > 0).length,
     teachersWithSinglePeriodSessionsCount: metrics.filter(m => m.singlePeriodSessions > 0).length,
+    ratioStats: {
+      veryLowCount: metrics.filter(m => m.ratioCategory === 'VERY_LOW').length,
+      veryHighCount: metrics.filter(m => m.ratioCategory === 'VERY_HIGH').length,
+      balancedCount: metrics.filter(m => m.ratioCategory === 'BALANCED').length,
+      proposalEligibleCount: metrics.filter(m => m.isProposalEligible).length,
+    },
     tierCounts: {
       EXCELLENT: metrics.filter(m => m.tier === 'EXCELLENT').length,
       GOOD: metrics.filter(m => m.tier === 'GOOD').length,
@@ -559,6 +664,24 @@ export interface TeacherSemesterQualityMetric {
   overallStatus: 'EXCELLENT' | 'GOOD' | 'AVERAGE' | 'FREQUENTLY_BAD';
   statusLabel: string;
   statusColor: string;
+
+  // 3 YẾU TỐ QUYẾT ĐỊNH SỐ NGÀY NGHỈ (KẾT LUẬN RÀ SOÁT CỦA BGH):
+  isHomeroom: boolean; // 1. Có chủ nhiệm hay không
+  homeroomClassName?: string; // Tên lớp chủ nhiệm
+  morningPeriods: number; // Số tiết dạy Sáng TB
+  afternoonPeriods: number; // Số tiết dạy Chiều TB
+  isBothShifts: boolean; // 2. Có dạy cả 2 buổi sáng/chiều không
+  morningAfternoonRatioText: string; // 3. Tỷ lệ số tiết sáng/chiều
+  isNearEqualShifts: boolean; // Số tiết sáng chiều có gần bằng nhau không
+  grade67Periods: number; // Trái buổi khối 6, 7
+  hasSpecialShiftCase: boolean;
+  specialShiftDescription?: string;
+
+  // THƯỚC ĐO CHÍNH: SỐ TIẾT DẠY / BUỔI (CHỈ ĐẠO BAN GIÁM HIỆU):
+  ratioCategory: 'VERY_LOW' | 'VERY_HIGH' | 'BALANCED';
+  ratioCategoryLabel: string;
+  isProposalEligible: boolean;
+  proposalDeadlineNote: string;
   
   // Balancing suggestion for scheduler
   isFrequentlyBad: boolean;
@@ -584,6 +707,14 @@ export interface SemesterQualitySummary {
   avgScore: number;
   avgPeriodsPerSession: number;   // Tỷ lệ trung bình toàn trường (tiết/buổi)
   totalGapsInSemester: number;
+
+  // Thống kê theo Thước đo chính: Số tiết dạy/buổi (BGH)
+  ratioStats: {
+    veryLowCount: number;
+    veryHighCount: number;
+    balancedCount: number;
+    proposalEligibleCount: number;
+  };
   
   // Ranked lists
   frequentlyBadTeachers: TeacherSemesterQualityMetric[];
@@ -1112,10 +1243,11 @@ export async function exportSemesterQualityReportExcel(
     }
   });
 
-  // 6. Khung chữ ký hành chính 3 bên (Người lập biểu - Tổ trưởng - Hiệu trưởng)
+  // 6. Khung chữ ký phê duyệt (Chỉ Phó Hiệu trưởng Nguyễn Minh Trí)
   const lastDataRow = 12 + sortedTeachers.length;
   const sigDateRow = lastDataRow + 2;
-  const sigTitleRow = sigDateRow + 1;
+  const sigRoleRow = sigDateRow + 1;
+  const sigTitleRow = sigRoleRow + 1;
   const sigGuideRow = sigTitleRow + 1;
   const sigNameRow = sigGuideRow + 5;
 
@@ -1125,42 +1257,27 @@ export async function exportSemesterQualityReportExcel(
   ws.getCell(`O${sigDateRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
 
   // Dòng chức danh
-  ws.mergeCells(`B${sigTitleRow}:E${sigTitleRow}`);
-  ws.getCell(`B${sigTitleRow}`).value = 'NGƯỜI LẬP BIỂU';
-  ws.getCell(`B${sigTitleRow}`).font = { name: 'Arial', size: 10.5, bold: true };
-  ws.getCell(`B${sigTitleRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
+  ws.mergeCells(`O${sigRoleRow}:S${sigRoleRow}`);
+  ws.getCell(`O${sigRoleRow}`).value = 'KT. HIỆU TRƯỞNG';
+  ws.getCell(`O${sigRoleRow}`).font = { name: 'Arial', size: 10.5, bold: true };
+  ws.getCell(`O${sigRoleRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
 
-  ws.mergeCells(`G${sigTitleRow}:K${sigTitleRow}`);
-  ws.getCell(`G${sigTitleRow}`).value = 'TỔ TRƯỞNG CHUYÊN MÔN';
-  ws.getCell(`G${sigTitleRow}`).font = { name: 'Arial', size: 10.5, bold: true };
-  ws.getCell(`G${sigTitleRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
-
-  ws.mergeCells(`N${sigTitleRow}:S${sigTitleRow}`);
-  ws.getCell(`N${sigTitleRow}`).value = 'HIỆU TRƯỞNG / BAN GIÁM HIỆU';
-  ws.getCell(`N${sigTitleRow}`).font = { name: 'Arial', size: 10.5, bold: true };
-  ws.getCell(`N${sigTitleRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
+  ws.mergeCells(`O${sigTitleRow}:S${sigTitleRow}`);
+  ws.getCell(`O${sigTitleRow}`).value = 'PHÓ HIỆU TRƯỞNG';
+  ws.getCell(`O${sigTitleRow}`).font = { name: 'Arial', size: 11, bold: true };
+  ws.getCell(`O${sigTitleRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
 
   // Dòng hướng dẫn ký
-  ws.mergeCells(`B${sigGuideRow}:E${sigGuideRow}`);
-  ws.getCell(`B${sigGuideRow}`).value = '(Ký và ghi rõ họ tên)';
-  ws.getCell(`B${sigGuideRow}`).font = { name: 'Arial', size: 9, italic: true };
-  ws.getCell(`B${sigGuideRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
+  ws.mergeCells(`O${sigGuideRow}:S${sigGuideRow}`);
+  ws.getCell(`O${sigGuideRow}`).value = '(Ký và ghi rõ họ tên)';
+  ws.getCell(`O${sigGuideRow}`).font = { name: 'Arial', size: 9, italic: true };
+  ws.getCell(`O${sigGuideRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
 
-  ws.mergeCells(`G${sigGuideRow}:K${sigGuideRow}`);
-  ws.getCell(`G${sigGuideRow}`).value = '(Ký và ghi rõ họ tên)';
-  ws.getCell(`G${sigGuideRow}`).font = { name: 'Arial', size: 9, italic: true };
-  ws.getCell(`G${sigGuideRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
-
-  ws.mergeCells(`N${sigGuideRow}:S${sigGuideRow}`);
-  ws.getCell(`N${sigGuideRow}`).value = '(Ký, đóng dấu và ghi rõ họ tên)';
-  ws.getCell(`N${sigGuideRow}`).font = { name: 'Arial', size: 9, italic: true };
-  ws.getCell(`N${sigGuideRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
-
-  // Họ tên Hiệu trưởng
-  ws.mergeCells(`N${sigNameRow}:S${sigNameRow}`);
-  ws.getCell(`N${sigNameRow}`).value = 'Lê Thanh Cường';
-  ws.getCell(`N${sigNameRow}`).font = { name: 'Arial', size: 11, bold: true };
-  ws.getCell(`N${sigNameRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
+  // Họ tên Phó Hiệu trưởng
+  ws.mergeCells(`O${sigNameRow}:S${sigNameRow}`);
+  ws.getCell(`O${sigNameRow}`).value = 'Nguyễn Minh Trí';
+  ws.getCell(`O${sigNameRow}`).font = { name: 'Arial', size: 11, bold: true };
+  ws.getCell(`O${sigNameRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
 
   // 7. Thiết lập độ rộng cột tỉ mỉ
   const colWidths = [
@@ -1593,10 +1710,11 @@ export async function exportTimetableQualityReportExcel(
     }
   });
 
-  // 6. Khung chữ ký hành chính 3 bên (Người lập biểu - Tổ trưởng - Hiệu trưởng)
+  // 6. Khung chữ ký phê duyệt (Chỉ Phó Hiệu trưởng Nguyễn Minh Trí)
   const lastDataRow = 12 + sortedTeachers.length;
   const sigDateRow = lastDataRow + 2;
-  const sigTitleRow = sigDateRow + 1;
+  const sigRoleRow = sigDateRow + 1;
+  const sigTitleRow = sigRoleRow + 1;
   const sigGuideRow = sigTitleRow + 1;
   const sigNameRow = sigGuideRow + 5;
 
@@ -1605,43 +1723,28 @@ export async function exportTimetableQualityReportExcel(
   ws.getCell(`O${sigDateRow}`).font = { name: 'Arial', size: 10, italic: true };
   ws.getCell(`O${sigDateRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
 
-  // Dòng chức danh
-  ws.mergeCells(`B${sigTitleRow}:E${sigTitleRow}`);
-  ws.getCell(`B${sigTitleRow}`).value = 'NGƯỜI LẬP BIỂU';
-  ws.getCell(`B${sigTitleRow}`).font = { name: 'Arial', size: 10.5, bold: true };
-  ws.getCell(`B${sigTitleRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
+  // Dòng quyền hạn & chức danh
+  ws.mergeCells(`O${sigRoleRow}:S${sigRoleRow}`);
+  ws.getCell(`O${sigRoleRow}`).value = 'KT. HIỆU TRƯỞNG';
+  ws.getCell(`O${sigRoleRow}`).font = { name: 'Arial', size: 10.5, bold: true };
+  ws.getCell(`O${sigRoleRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
 
-  ws.mergeCells(`G${sigTitleRow}:K${sigTitleRow}`);
-  ws.getCell(`G${sigTitleRow}`).value = 'TỔ TRƯỞNG CHUYÊN MÔN';
-  ws.getCell(`G${sigTitleRow}`).font = { name: 'Arial', size: 10.5, bold: true };
-  ws.getCell(`G${sigTitleRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
-
-  ws.mergeCells(`N${sigTitleRow}:S${sigTitleRow}`);
-  ws.getCell(`N${sigTitleRow}`).value = 'HIỆU TRƯỞNG / BAN GIÁM HIỆU';
-  ws.getCell(`N${sigTitleRow}`).font = { name: 'Arial', size: 10.5, bold: true };
-  ws.getCell(`N${sigTitleRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
+  ws.mergeCells(`O${sigTitleRow}:S${sigTitleRow}`);
+  ws.getCell(`O${sigTitleRow}`).value = 'PHÓ HIỆU TRƯỞNG';
+  ws.getCell(`O${sigTitleRow}`).font = { name: 'Arial', size: 11, bold: true };
+  ws.getCell(`O${sigTitleRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
 
   // Dòng hướng dẫn ký
-  ws.mergeCells(`B${sigGuideRow}:E${sigGuideRow}`);
-  ws.getCell(`B${sigGuideRow}`).value = '(Ký và ghi rõ họ tên)';
-  ws.getCell(`B${sigGuideRow}`).font = { name: 'Arial', size: 9, italic: true };
-  ws.getCell(`B${sigGuideRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
+  ws.mergeCells(`O${sigGuideRow}:S${sigGuideRow}`);
+  ws.getCell(`O${sigGuideRow}`).value = '(Ký và ghi rõ họ tên)';
+  ws.getCell(`O${sigGuideRow}`).font = { name: 'Arial', size: 9, italic: true };
+  ws.getCell(`O${sigGuideRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
 
-  ws.mergeCells(`G${sigGuideRow}:K${sigGuideRow}`);
-  ws.getCell(`G${sigGuideRow}`).value = '(Ký và ghi rõ họ tên)';
-  ws.getCell(`G${sigGuideRow}`).font = { name: 'Arial', size: 9, italic: true };
-  ws.getCell(`G${sigGuideRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
-
-  ws.mergeCells(`N${sigGuideRow}:S${sigGuideRow}`);
-  ws.getCell(`N${sigGuideRow}`).value = '(Ký, đóng dấu và ghi rõ họ tên)';
-  ws.getCell(`N${sigGuideRow}`).font = { name: 'Arial', size: 9, italic: true };
-  ws.getCell(`N${sigGuideRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
-
-  // Họ tên Hiệu trưởng
-  ws.mergeCells(`N${sigNameRow}:S${sigNameRow}`);
-  ws.getCell(`N${sigNameRow}`).value = 'Lê Thanh Cường';
-  ws.getCell(`N${sigNameRow}`).font = { name: 'Arial', size: 11, bold: true };
-  ws.getCell(`N${sigNameRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
+  // Họ tên Phó Hiệu trưởng
+  ws.mergeCells(`O${sigNameRow}:S${sigNameRow}`);
+  ws.getCell(`O${sigNameRow}`).value = 'Nguyễn Minh Trí';
+  ws.getCell(`O${sigNameRow}`).font = { name: 'Arial', size: 11, bold: true };
+  ws.getCell(`O${sigNameRow}`).alignment = { horizontal: 'center', vertical: 'middle' };
 
   // 7. Thiết lập độ rộng cột
   const colWidths = [
