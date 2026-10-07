@@ -772,10 +772,10 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                   type="button"
                   onClick={() => setIsQualityModalOpen(true)}
                   className="px-3.5 py-2 bg-gradient-to-r from-amber-500 via-rose-600 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 active:scale-95 text-white text-xs font-black rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer ring-2 ring-amber-300/40"
-                  title="Chỉ Quản trị viên: Đánh giá thời khóa biểu tốt - xấu dựa trên 3 tiêu chí: Số ngày nghỉ, Số buổi nghỉ, Số tiết lủng (Hàng tuần & Học kỳ 1, Học kỳ 2)"
+                  title="Chỉ Quản trị viên: Đánh giá thời khóa biểu Đẹp - Xấu dựa trên Tiêu chí Vàng (Số tiết dạy TB/buổi không tính kiêm nhiệm) và 3 tiêu chí: Số ngày nghỉ, Số buổi nghỉ, Số tiết lủng (Hàng tuần & Cả học kỳ)"
                 >
                   <Scale className="w-4 h-4 text-yellow-200 animate-pulse" />
-                  <span>Đánh Giá TKB Tốt - Xấu (Quản trị)</span>
+                  <span>Đánh Giá TKB Đẹp - Xấu (Quản trị)</span>
                 </button>
               )}
 
@@ -1580,11 +1580,15 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
               filteredTeachers.map(teacher => {
                 // Calculate weekly teaching stats for this teacher
                 let teacherTotalPeriods = 0;
+                const teacherSessionSet = new Set<string>();
                 timetable.slots.forEach(s => {
                   if (s.teacherId === teacher.id && s.subjectName) {
                     teacherTotalPeriods++;
+                    teacherSessionSet.add(`${s.dayOfWeek}_${s.session}`);
                   }
                 });
+                const teacherSessionCount = teacherSessionSet.size;
+                const teacherAvgPeriodsPerSession = teacherSessionCount > 0 ? (teacherTotalPeriods / teacherSessionCount).toFixed(2) : '0';
 
                 const teacherCollisionSlots = collisionDetails.filter(c => c.teacherId === teacher.id);
 
@@ -1608,8 +1612,14 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                               {teacher.role}
                             </span>
                           </div>
-                          <p className="text-xs text-indigo-200/90 font-medium print:text-slate-700">
-                            Điểm trường: <strong className="text-white print:text-slate-900">{teacher.campus === 'THCSTK' ? 'Điểm Tân Kiều' : teacher.campus === 'THCSDBK' ? 'Điểm Đốc Binh Kiều' : 'Điểm chính'}</strong> • Tổng tiết TKB: <strong className="text-white print:text-slate-900">{teacherTotalPeriods} tiết/tuần</strong>
+                          <p className="text-xs text-indigo-200/90 font-medium print:text-slate-700 flex flex-wrap items-center gap-x-2">
+                            <span>Điểm trường: <strong className="text-white print:text-slate-900">{teacher.campus === 'THCSTK' ? 'Điểm Tân Kiều' : teacher.campus === 'THCSDBK' ? 'Điểm Đốc Binh Kiều' : 'Điểm chính'}</strong></span>
+                            <span>•</span>
+                            <span>Thực dạy TKB: <strong className="text-white print:text-slate-900">{teacherTotalPeriods} tiết</strong> ({teacherSessionCount} buổi)</span>
+                            <span>•</span>
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold print:bg-slate-200 print:text-slate-900">
+                              ⭐ TB: {teacherAvgPeriodsPerSession} tiết/buổi
+                            </span>
                           </p>
                         </div>
                       </div>
@@ -1628,10 +1638,10 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                             type="button"
                             onClick={() => setIsQualityModalOpen(true)}
                             className="px-2.5 py-1 bg-amber-500/30 hover:bg-amber-500/50 border border-amber-400/40 text-amber-200 text-xs font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer print:hidden ml-1 shadow-2xs"
-                            title="Chỉ Quản trị viên: Xem đánh giá 3 tiêu chí tốt/xấu của giáo viên này"
+                            title="Chỉ Quản trị viên: Xem đánh giá TKB Đẹp/Xấu (Tiết TB/buổi & 3 tiêu chí ngày nghỉ, buổi nghỉ, tiết lủng) của giáo viên này"
                           >
                             <Scale className="w-3.5 h-3.5 text-yellow-300" />
-                            <span>Đánh giá 3 tiêu chí</span>
+                            <span>Đánh giá TKB Đẹp/Xấu</span>
                           </button>
                         )}
                       </div>

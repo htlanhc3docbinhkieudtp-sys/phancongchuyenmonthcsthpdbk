@@ -428,9 +428,38 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
           </div>
         </div>
 
-        {/* 2. Top Summary: 3 CORE EVALUATION CRITERIA BANNER */}
+        {/* 2. Top Summary: CORE EVALUATION CRITERIA BANNER (Bao gồm Tiêu chí cốt lõi Tiết dạy TB/Buổi) */}
         <div className="bg-slate-50 p-3 sm:p-4 border-b border-slate-200 shrink-0 print:hidden">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            {/* Tiêu chí cốt lõi: Số Tiết Dạy TB / Buổi (Thước đo số 1 TKB Đẹp hay Xấu) */}
+            <div className="bg-white p-3 rounded-2xl border-2 border-emerald-400 shadow-sm relative overflow-hidden bg-gradient-to-b from-emerald-50/50 to-white">
+              <div className="flex items-center justify-between">
+                <span className="text-emerald-950 text-[11px] font-black uppercase tracking-wider flex items-center gap-1">
+                  <span className="w-4 h-4 rounded-full bg-emerald-600 text-white text-[10px] flex items-center justify-center font-black">⭐</span>
+                  Tiết Dạy TB / Buổi
+                </span>
+                <span className="px-1.5 py-0.5 bg-emerald-600 text-white text-[9.5pt] font-black rounded-md shadow-2xs">
+                  Tiêu chí Vàng
+                </span>
+              </div>
+              <div className="mt-1.5 flex items-baseline gap-2">
+                <span className="text-2xl font-black text-emerald-800">
+                  {auditScope === 'WEEK'
+                    ? `${weeklySummary.avgPeriodsPerSession.toFixed(2)}`
+                    : `${semesterSummary.avgPeriodsPerSession.toFixed(2)}`
+                  }
+                </span>
+                <span className="text-xs text-slate-600 font-bold">tiết/buổi</span>
+              </div>
+              <div className="text-[10.5px] text-slate-600 mt-1 flex flex-col gap-0.5 leading-tight">
+                <div className="flex items-center justify-between">
+                  <span>Rất đẹp: <strong className="text-emerald-700 font-extrabold">&ge; 3.5 - 4.5</strong></span>
+                  <span>Bị xấu: <strong className="text-rose-600 font-extrabold">&lt; 2.5 t/b</strong></span>
+                </div>
+                <span className="text-[9.5px] text-slate-400 italic">Tính từ tiết thực tế TKB (không tính kiêm nhiệm)</span>
+              </div>
+            </div>
+
             {/* Criteria 1: Số Ngày Nghỉ */}
             <div className="bg-white p-3 rounded-2xl border-2 border-emerald-200 shadow-2xs relative overflow-hidden">
               <div className="flex items-center justify-between">
@@ -530,12 +559,12 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                 <span className="text-xs text-slate-600 font-bold">giáo viên bị TKB xấu</span>
               </div>
               <div className="text-[11px] text-slate-600 mt-1 flex items-center justify-between">
-                <span>Điểm TB toàn trường: <strong className="text-indigo-900">{auditScope === 'WEEK' ? weeklySummary.averageScore : semesterSummary.avgScore}/100</strong></span>
+                <span>Điểm TB: <strong className="text-indigo-900">{auditScope === 'WEEK' ? weeklySummary.averageScore : semesterSummary.avgScore}/100</strong></span>
                 <button
                   onClick={() => setActiveTab('BALANCING')}
                   className="text-[11px] text-indigo-700 hover:text-indigo-900 font-extrabold underline cursor-pointer"
                 >
-                  Xem gợi ý cân đối &rarr;
+                  Xem gợi ý &rarr;
                 </button>
               </div>
             </div>
@@ -643,17 +672,30 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                   <div className="space-y-2 text-xs">
                     <div>
                       <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-tight flex items-center gap-2 flex-wrap">
-                        <span>Quy Chuẩn 3 Tiêu Chí Đánh Giá Thời Khóa Biểu Tốt - Xấu</span>
+                        <span>Bộ Tiêu Chí Đánh Giá Thời Khóa Biểu Đẹp Hay Xấu</span>
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-200 text-blue-900">
                           {auditScope === 'WEEK' ? `Dữ liệu Tuần ${selectedAuditWeek}` : semesterSummary.semesterLabel}
                         </span>
                       </h3>
                       <p className="text-slate-600 mt-1 leading-relaxed">
-                        Hệ thống căn cứ trực tiếp vào <strong>3 tiêu chí cơ bản</strong> của giáo viên để đánh giá khách quan và minh bạch:
+                        Hệ thống căn cứ trực tiếp vào <strong>Số tiết dạy trung bình/buổi</strong> (từ số tiết thực tế trên TKB, không tính kiêm nhiệm) kết hợp <strong>3 tiêu chí cơ bản</strong> của giáo viên để phân định TKB Đẹp hay Xấu:
                       </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-2.5 pt-1">
+                      {/* Tiêu chí cốt lõi: Số tiết dạy trung bình / buổi */}
+                      <div className="bg-white/95 p-3 rounded-xl border-2 border-emerald-400 shadow-2xs bg-gradient-to-b from-emerald-50/50 to-white">
+                        <div className="font-black text-emerald-950 flex items-center gap-1.5 text-xs">
+                          <span className="text-emerald-600 text-sm">⭐</span>
+                          Tiêu chí Cốt lõi: Tiết dạy TB/Buổi
+                        </div>
+                        <p className="text-[11px] text-slate-600 mt-1">
+                          • Lấy <strong>số tiết thực dạy trên TKB / số buổi đi dạy</strong> (không tính kiêm nhiệm).<br/>
+                          • <strong className="text-emerald-700">TKB Đẹp:</strong> &ge; 3.5 - 4.5 tiết/buổi (dạy tập trung, ít buổi lên trường).<br/>
+                          • <strong className="text-rose-600">TKB Xấu:</strong> &lt; 2.5 tiết/buổi (bị xé lẻ, mỗi buổi chỉ 1-2 tiết).
+                        </p>
+                      </div>
+
                       <div className="bg-white/95 p-3 rounded-xl border-2 border-emerald-200 shadow-2xs">
                         <div className="font-black text-emerald-950 flex items-center gap-1.5 text-xs">
                           <CheckCircle2 className="w-4 h-4 text-emerald-600" />
@@ -726,6 +768,9 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                             <div className="text-[10px] text-slate-600 mt-0.5 flex flex-wrap items-center gap-2">
                               <span className="font-extrabold text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
                                 {auditScope === 'WEEK' ? `${t.totalPeriods} tiết` : `${t.avgPeriodsPerWeek} tiết/T`} • {t.assignedClassesCount} lớp
+                              </span>
+                              <span className="font-black text-emerald-900 bg-emerald-100/90 px-1.5 py-0.5 rounded border border-emerald-300" title="Tiêu chí vàng: Số tiết thực dạy trên TKB / Số buổi đi dạy (Không tính kiêm nhiệm)">
+                                ⭐ {t.periodsPerSession.toFixed(2)} tiết/buổi
                               </span>
                               {t.assignedClassesList?.length > 0 && (
                                 <span className="text-[10px] text-slate-500 max-w-[140px] truncate" title={t.assignedClassesList.join(', ')}>
@@ -811,6 +856,9 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                         <div className="flex flex-wrap items-center gap-2 pl-7 text-[10px]">
                           <span className="text-slate-900 font-extrabold bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
                             {auditScope === 'WEEK' ? `${t.totalPeriods} tiết` : `${t.avgPeriodsPerWeek} tiết/T`} • {t.assignedClassesCount} lớp
+                          </span>
+                          <span className="font-black text-rose-900 bg-rose-100/90 px-1.5 py-0.5 rounded border border-rose-300" title="Tiêu chí vàng: Số tiết thực dạy trên TKB / Số buổi đi dạy (Không tính kiêm nhiệm)">
+                            ⭐ {t.periodsPerSession.toFixed(2)} tiết/buổi
                           </span>
                           {t.assignedClassesList?.length > 0 && (
                             <span className="text-slate-500 max-w-[140px] truncate" title={t.assignedClassesList.join(', ')}>
@@ -943,6 +991,19 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                                 ⚖️ Tải cao (~27 tiết)
                               </span>
                             )}
+
+                            {/* Tiêu chí cốt lõi: Tiết dạy TB / buổi */}
+                            <div className="px-2.5 py-1 rounded-xl bg-emerald-100/90 border-2 border-emerald-400 flex items-center gap-1.5 shadow-2xs">
+                              <span className="text-emerald-950 text-[11px] font-black flex items-center gap-0.5">
+                                <span>⭐</span> Tiết TB/buổi:
+                              </span>
+                              <strong className="text-emerald-900 font-black">
+                                {t.periodsPerSession.toFixed(2)} t/b
+                              </strong>
+                              <span className="text-[10px] text-emerald-800 font-bold">
+                                ({auditScope === 'WEEK' ? `${t.totalPeriods} tiết / ${t.sessionCount} buổi` : `${t.avgPeriodsPerWeek}t / ${t.avgSessionsPerWeek}b`})
+                              </span>
+                            </div>
 
                             <div className="px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-1.5">
                               <span className="text-slate-500 text-[11px]">1. Số ngày nghỉ:</span>
@@ -1428,6 +1489,10 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                       </div>
 
                       <div className="space-y-1 text-xs">
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="text-slate-500">Hiệu suất bình quân tổ:</span>
+                          <span className="font-extrabold text-emerald-800">⭐ {dept.avgPeriodsPerSession ? dept.avgPeriodsPerSession.toFixed(2) : '0'} tiết/buổi</span>
+                        </div>
                         <div className="flex items-center justify-between text-[11px]">
                           <span className="text-slate-500">Tổng tiết lủng trong tổ:</span>
                           <span className="font-bold text-amber-600">{dept.totalGaps} tiết</span>

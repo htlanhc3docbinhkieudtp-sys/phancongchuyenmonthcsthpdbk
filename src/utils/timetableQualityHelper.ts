@@ -129,6 +129,7 @@ export interface SchoolQualitySummary {
     deptName: string;
     teacherCount: number;
     averageScore: number;
+    avgPeriodsPerSession: number;
     totalGaps: number;
   }[];
 
@@ -582,6 +583,7 @@ export function analyzeTimetableQuality(
     deptName: deptMap[deptId] || deptId,
     teacherCount: list.length,
     averageScore: Math.round(list.reduce((s, m) => s + m.score, 0) / (list.length || 1)),
+    avgPeriodsPerSession: Number((list.reduce((s, m) => s + m.periodsPerSession, 0) / (list.length || 1)).toFixed(2)),
     totalGaps: list.reduce((s, m) => s + m.totalGaps, 0)
   })).sort((a, b) => b.averageScore - a.averageScore);
 
@@ -666,22 +668,22 @@ export interface TeacherSemesterQualityMetric {
   statusColor: string;
 
   // 3 YẾU TỐ QUYẾT ĐỊNH SỐ NGÀY NGHỈ (KẾT LUẬN RÀ SOÁT CỦA BGH):
-  isHomeroom: boolean; // 1. Có chủ nhiệm hay không
+  isHomeroom?: boolean; // 1. Có chủ nhiệm hay không
   homeroomClassName?: string; // Tên lớp chủ nhiệm
-  morningPeriods: number; // Số tiết dạy Sáng TB
-  afternoonPeriods: number; // Số tiết dạy Chiều TB
-  isBothShifts: boolean; // 2. Có dạy cả 2 buổi sáng/chiều không
-  morningAfternoonRatioText: string; // 3. Tỷ lệ số tiết sáng/chiều
-  isNearEqualShifts: boolean; // Số tiết sáng chiều có gần bằng nhau không
-  grade67Periods: number; // Trái buổi khối 6, 7
-  hasSpecialShiftCase: boolean;
+  morningPeriods?: number; // Số tiết dạy Sáng TB
+  afternoonPeriods?: number; // Số tiết dạy Chiều TB
+  isBothShifts?: boolean; // 2. Có dạy cả 2 buổi sáng/chiều không
+  morningAfternoonRatioText?: string; // 3. Tỷ lệ số tiết sáng/chiều
+  isNearEqualShifts?: boolean; // Số tiết sáng chiều có gần bằng nhau không
+  grade67Periods?: number; // Trái buổi khối 6, 7
+  hasSpecialShiftCase?: boolean;
   specialShiftDescription?: string;
 
   // THƯỚC ĐO CHÍNH: SỐ TIẾT DẠY / BUỔI (CHỈ ĐẠO BAN GIÁM HIỆU):
-  ratioCategory: 'VERY_LOW' | 'VERY_HIGH' | 'BALANCED';
-  ratioCategoryLabel: string;
-  isProposalEligible: boolean;
-  proposalDeadlineNote: string;
+  ratioCategory?: 'VERY_LOW' | 'VERY_HIGH' | 'BALANCED';
+  ratioCategoryLabel?: string;
+  isProposalEligible?: boolean;
+  proposalDeadlineNote?: string;
   
   // Balancing suggestion for scheduler
   isFrequentlyBad: boolean;
@@ -724,6 +726,7 @@ export interface SemesterQualitySummary {
     deptName: string;
     teacherCount: number;
     avgScore: number;
+    avgPeriodsPerSession: number;
     totalGaps: number;
     avgFreeDays: number;
     frequentlyBadCount: number;
@@ -917,6 +920,23 @@ export function analyzeSemesterQuality(
       balancingSuggestions.push('Lịch hiện tại phân bổ hợp lý, tiếp tục duy trì mức độ cân đối.');
     }
 
+    // THƯỚC ĐO CHÍNH: SỐ TIẾT DẠY / BUỔI (CHỈ ĐẠO BAN GIÁM HIỆU):
+    let ratioCategory: 'VERY_LOW' | 'VERY_HIGH' | 'BALANCED' = 'BALANCED';
+    let ratioCategoryLabel = 'Cân đối (2.5 - 4.1 tiết/buổi)';
+    if (periodsPerSession < 2.5) {
+      ratioCategory = 'VERY_LOW';
+      ratioCategoryLabel = 'Nhóm Thấp Nhất (< 2.5 tiết/buổi) — Dàn trải';
+    } else if (periodsPerSession >= 4.2) {
+      ratioCategory = 'VERY_HIGH';
+      ratioCategoryLabel = 'Nhóm Cao Nhất (≥ 4.2 tiết/buổi) — Quá tải';
+    }
+    const isProposalEligible = ratioCategory === 'VERY_LOW' || ratioCategory === 'VERY_HIGH';
+    const proposalDeadlineNote = 'Trao đổi đề xuất BGH chậm nhất Thứ Tư hàng tuần (Thứ Năm tạo TKB mới)';
+
+    const homeroomClass = classes.find(c => c.homeroomTeacherId === tch.id);
+    const isHomeroom = !!homeroomClass;
+    const homeroomClassName = homeroomClass?.name;
+
     teacherMetrics.push({
       teacherId: tch.id,
       teacherName: tch.name,
@@ -949,6 +969,12 @@ export function analyzeSemesterQuality(
       overallStatus,
       statusLabel,
       statusColor,
+      isHomeroom,
+      homeroomClassName,
+      ratioCategory,
+      ratioCategoryLabel,
+      isProposalEligible,
+      proposalDeadlineNote,
       isFrequentlyBad,
       balancingSuggestions,
       weeklyHistory: history
@@ -991,6 +1017,7 @@ export function analyzeSemesterQuality(
     deptName: deptMap[deptId] || deptId,
     teacherCount: list.length,
     avgScore: Math.round(list.reduce((s, m) => s + m.avgScore, 0) / (list.length || 1)),
+    avgPeriodsPerSession: Number((list.reduce((s, m) => s + m.periodsPerSession, 0) / (list.length || 1)).toFixed(2)),
     totalGaps: list.reduce((s, m) => s + m.totalGaps, 0),
     avgFreeDays: Math.round((list.reduce((s, m) => s + m.avgFreeDaysPerWeek, 0) / (list.length || 1)) * 10) / 10,
     frequentlyBadCount: list.filter(m => m.isFrequentlyBad).length
@@ -1006,6 +1033,12 @@ export function analyzeSemesterQuality(
     avgScore,
     avgPeriodsPerSession,
     totalGapsInSemester,
+    ratioStats: {
+      veryLowCount: teacherMetrics.filter(m => m.ratioCategory === 'VERY_LOW').length,
+      veryHighCount: teacherMetrics.filter(m => m.ratioCategory === 'VERY_HIGH').length,
+      balancedCount: teacherMetrics.filter(m => m.ratioCategory === 'BALANCED').length,
+      proposalEligibleCount: teacherMetrics.filter(m => m.isProposalEligible).length,
+    },
     frequentlyBadTeachers,
     allTeachers: teacherMetrics,
     departmentStats
