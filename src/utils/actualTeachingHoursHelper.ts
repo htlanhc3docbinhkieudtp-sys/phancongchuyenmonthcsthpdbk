@@ -83,6 +83,10 @@ const WHOLE_SCHOOL_ASSEMBLY_PERIODS: Record<string, number> = {
   'tch-khtn-15': 2,
 };
 
+const WEEKLY_TEACHING_ADDITIONS: Record<string, Record<number, number>> = {
+  'tch-v-3': { 1: 1 },
+};
+
 /**
  * Format subject display name cleanly
  */
@@ -1061,6 +1065,15 @@ export function calculateTeacherSingleWeek(
       subject: subName,
       periods: g.periods,
     });
+  }
+
+  const teachingAddition = WEEKLY_TEACHING_ADDITIONS[teacher.id]?.[weekNumber] || 0;
+  if (teachingAddition > 0) {
+    const languageArtsRow = rows.find((row) => row.subject === 'Ngữ văn');
+    if (!languageArtsRow) {
+      throw new Error(`Không tìm thấy dòng Ngữ văn để bổ sung tiết tuần ${weekNumber} cho ${teacher.name}`);
+    }
+    languageArtsRow.periods += teachingAddition;
   }
 
   const teachingPeriods = rows.reduce((sum, r) => sum + r.periods, 0);
