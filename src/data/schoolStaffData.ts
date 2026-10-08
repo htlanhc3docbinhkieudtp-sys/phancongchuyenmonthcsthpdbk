@@ -1101,8 +1101,17 @@ export const officialStaffList: Teacher[] = [
     departmentId: 'dept-khtn',
     primarySubjectId: 'sub-cn',
     role: 'GVBM',
+    duties: [
+      {
+        id: 'duty-khtn-24-connho',
+        type: 'ConNho',
+        name: 'Nuôi con nhỏ (<36 tháng)',
+        reductionPeriods: 3,
+        notes: 'Giảm định mức 3 tiết/tuần do nuôi con nhỏ dưới 36 tháng tuổi',
+      },
+    ],
     baseStandardPeriods: 19,
-    notes: 'THCSDBK - Công nghệ (Khối 6-9) - GVCN 6A5',
+    notes: 'THCSDBK - Công nghệ (Khối 6-9) - GVCN 6A5 - Nuôi con nhỏ dưới 36 tháng (-3 tiết/tuần)',
   },
   {
     id: 'tch-khtn-25',

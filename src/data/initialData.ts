@@ -940,7 +940,7 @@ export const initialAssignments: Assignment[] = [
   { id: 'as-8-4-van', classId: 'cls-8a4', subjectId: 'sub-van', teacherId: 'tch-v-9', periodsPerWeek: 4 }, // Xoa
   { id: 'as-8-4-toan', classId: 'cls-8a4', subjectId: 'sub-toan', teacherId: 'tch-t-10', periodsPerWeek: 4 }, // Ngoan
   { id: 'as-8-4-anh', classId: 'cls-8a4', subjectId: 'sub-anh', teacherId: 'tch-av-10', periodsPerWeek: 3 }, // Hậu
-  { id: 'as-8-4-li', classId: 'cls-8a4', subjectId: 'sub-li', teacherId: 'tch-khtn-13', periodsPerWeek: 1.33 }, // Thắm
+  { id: 'as-8-4-li', classId: 'cls-8a4', subjectId: 'sub-li', teacherId: 'tch-khtn-10', periodsPerWeek: 1.33 }, // Hậu
   { id: 'as-8-4-hoa', classId: 'cls-8a4', subjectId: 'sub-hoa', teacherId: 'tch-khtn-17', periodsPerWeek: 1.33 }, // Ngân
   { id: 'as-8-4-sinh', classId: 'cls-8a4', subjectId: 'sub-sinh', teacherId: 'tch-khtn-18', periodsPerWeek: 1.33 }, // Tài
   { id: 'as-8-4-su', classId: 'cls-8a4', subjectId: 'sub-su', teacherId: 'tch-ls-10', periodsPerWeek: 1.44 }, // Tân (HK1: 26t/18w, Cả năm: 50t)
@@ -1109,4 +1109,3 @@ export const initialLockedCells: LockedCell[] = (() => {
 
   return locked;
 })();
-

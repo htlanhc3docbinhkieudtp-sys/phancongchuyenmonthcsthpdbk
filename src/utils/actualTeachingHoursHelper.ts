@@ -77,6 +77,12 @@ export interface TeacherActualWorkload {
   semesterBalance: number;
 }
 
+const WHOLE_SCHOOL_ASSEMBLY_PERIODS: Record<string, number> = {
+  'tch-khtn-12': 1,
+  'tch-khtn-18': 1,
+  'tch-khtn-15': 2,
+};
+
 /**
  * Format subject display name cleanly
  */
@@ -864,6 +870,11 @@ export function calculateTeacherSingleWeek(
     }
     groups.get(displayName)!.classes.add(className);
     groups.get(displayName)!.periods += count;
+  }
+
+  const wholeSchoolAssemblyPeriods = WHOLE_SCHOOL_ASSEMBLY_PERIODS[teacher.id] || 0;
+  if (wholeSchoolAssemblyPeriods > 0) {
+    addGroup('HĐTNHN (Chào cờ)', 'Toàn trường', wholeSchoolAssemblyPeriods);
   }
 
   for (const item of classSubCount.values()) {
