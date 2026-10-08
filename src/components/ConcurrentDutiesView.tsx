@@ -391,7 +391,7 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
 
         <div className="bg-white p-3 rounded-lg border border-slate-200/80 shadow-2xs">
           <div className="text-[11px] font-bold text-slate-500 flex items-center justify-between">
-            <span>Con Nhỏ (&lt;36T)</span>
+            <span>Con Nhỏ (&lt;12T)</span>
             <Baby className="w-4 h-4 text-rose-600" />
           </div>
           <div className="mt-1 text-xl font-extrabold text-rose-700">

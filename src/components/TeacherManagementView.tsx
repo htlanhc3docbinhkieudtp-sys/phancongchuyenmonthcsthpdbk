@@ -348,7 +348,7 @@ export const TeacherManagementView: React.FC<TeacherManagementViewProps> = ({
               <option value="PhoCap">📚 Phổ cập giáo dục (-4t)</option>
               <option value="ThuKyHoiDong">📝 Thư ký Hội đồng (-2t)</option>
               <option value="TongPhuTrachDoi">🎺 Tổng phụ trách Đội (-13t)</option>
-              <option value="ConNho">🍼 Nuôi con nhỏ &lt;36 tháng (-3t)</option>
+              <option value="ConNho">🍼 Nuôi con nhỏ &lt;12 tháng (-3t)</option>
               <option value="ChuTichCongDoan">🏛️ Chủ tịch Công đoàn (-3t)</option>
               <option value="BanThanhTra">🔍 Ban thanh tra (-1t)</option>
             </select>

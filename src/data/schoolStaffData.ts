@@ -1105,13 +1105,13 @@ export const officialStaffList: Teacher[] = [
       {
         id: 'duty-khtn-24-connho',
         type: 'ConNho',
-        name: 'Nuôi con nhỏ (<36 tháng)',
+        name: 'Nuôi con nhỏ (<12 tháng)',
         reductionPeriods: 3,
-        notes: 'Giảm định mức 3 tiết/tuần do nuôi con nhỏ dưới 36 tháng tuổi',
+        notes: 'Giảm định mức 3 tiết/tuần do nuôi con nhỏ dưới 12 tháng tuổi',
       },
     ],
     baseStandardPeriods: 19,
-    notes: 'THCSDBK - Công nghệ (Khối 6-9) - GVCN 6A5 - Nuôi con nhỏ dưới 36 tháng (-3 tiết/tuần)',
+    notes: 'THCSDBK - Công nghệ (Khối 6-9) - GVCN 6A5 - Nuôi con nhỏ dưới 12 tháng (-3 tiết/tuần)',
   },
   {
     id: 'tch-khtn-25',
@@ -1263,13 +1263,13 @@ export const officialStaffList: Teacher[] = [
       {
         id: 'duty-av7-connho',
         type: 'ConNho',
-        name: 'Nuôi con nhỏ (<36 tháng)',
+        name: 'Nuôi con nhỏ (<12 tháng)',
         reductionPeriods: 3,
-        notes: 'Nữ giáo viên nuôi con nhỏ dưới 36 tháng tuổi (-3t)'
+        notes: 'Nữ giáo viên nuôi con nhỏ dưới 12 tháng tuổi (-3t)'
       }
     ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Tiếng Anh (Khối 10-12) - Nuôi con nhỏ dưới 36 tháng (+3t)',
+    notes: 'THPTDBK - Tiếng Anh (Khối 10-12) - Nuôi con nhỏ dưới 12 tháng (+3t)',
   },
   {
     id: 'tch-av-8',

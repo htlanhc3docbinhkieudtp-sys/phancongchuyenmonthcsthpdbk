@@ -501,8 +501,8 @@ const rawImage2: Record<string, RawSlot[]> = {
     { d: 6, p: 4, text: 'MT - Quốc' },
     { d: 6, p: 5, text: 'TA - Tuyền' },
     // T7
-    { d: 7, p: 1, text: 'HOÁ - Đ.Văn' },
-    { d: 7, p: 2, text: 'HOÁ - Đ.Văn' },
+    { d: 7, p: 1, text: 'LÝ - Phượng' },
+    { d: 7, p: 2, text: 'LÝ - Phượng' },
     { d: 7, p: 3, text: 'TOÁN - Nga' },
     { d: 7, p: 4, text: 'TOÁN - Nga' },
     { d: 7, p: 5, text: 'SHL - Tiến' }
@@ -537,8 +537,8 @@ const rawImage2: Record<string, RawSlot[]> = {
     { d: 6, p: 1, text: 'VĂN - Thảo' },
     { d: 6, p: 2, text: 'VĂN - Thảo' },
     { d: 6, p: 3, text: 'MT - Quốc' },
-    { d: 6, p: 4, text: 'HOÁ - Đ.Văn' },
-    { d: 6, p: 5, text: 'HOÁ - Đ.Văn' },
+    { d: 6, p: 4, text: 'LÝ - Phượng' },
+    { d: 6, p: 5, text: 'LÝ - Phượng' },
     // T7
     { d: 7, p: 1, text: 'TOÁN - Nga' },
     { d: 7, p: 2, text: 'TOÁN - Nga' },
@@ -564,7 +564,7 @@ const rawImage2: Record<string, RawSlot[]> = {
     { d: 4, p: 1, text: 'CN - Tặt' },
     { d: 4, p: 2, text: 'GDTC - Điệp' },
     { d: 4, p: 3, text: 'VĂN - Nhi' },
-    { d: 4, p: 4, text: 'HOÁ - Đ.Văn' },
+    { d: 4, p: 4, text: 'LÝ - Phượng' },
     { d: 4, p: 5, text: 'LÝ - Phượng' },
     // T5
     { d: 5, p: 1, text: 'AN - A.Văn' },
@@ -581,7 +581,7 @@ const rawImage2: Record<string, RawSlot[]> = {
     // T7
     { d: 7, p: 1, text: 'ĐỊA - Sang' },
     { d: 7, p: 2, text: 'SỬ - Hà' },
-    { d: 7, p: 3, text: 'HOÁ - Đ.Văn' },
+    { d: 7, p: 3, text: 'LÝ - Phượng' },
     { d: 7, p: 4, text: 'GDCD - Ngân' },
     { d: 7, p: 5, text: 'SHL - Hậu' }
   ],
@@ -597,12 +597,12 @@ const rawImage2: Record<string, RawSlot[]> = {
     { d: 3, p: 1, text: 'CN - Tặt' },
     { d: 3, p: 2, text: 'AN - A.Văn' },
     { d: 3, p: 3, text: 'GDTC - Điệp' },
-    { d: 3, p: 4, text: 'HOÁ - Đ.Văn' },
+    { d: 3, p: 4, text: 'LÝ - Phượng' },
     { d: 3, p: 5, text: 'GDCD - Ngân' },
     // T4
     { d: 4, p: 1, text: 'GDTC - Điệp' },
     { d: 4, p: 2, text: 'HĐ QML - Tặt' },
-    { d: 4, p: 3, text: 'HOÁ - Đ.Văn' },
+    { d: 4, p: 3, text: 'LÝ - Phượng' },
     { d: 4, p: 4, text: 'LÝ - Phượng' },
     { d: 4, p: 5, text: 'HĐ CĐ - Tặt' },
     // T5

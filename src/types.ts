@@ -50,7 +50,7 @@ export type DutyType =
   | 'PhoCap'            // Phổ cập giáo dục (-4t theo TT 05/2025)
   | 'ThuKyHoiDong'      // Thư ký hội đồng (-2t)
   | 'TongPhuTrachDoi'   // Tổng phụ trách Đội (-13t theo TT 05/2025)
-  | 'ConNho'            // Nuôi con nhỏ dưới 36 tháng tuổi (-3t THPT / -4t THCS)
+  | 'ConNho'            // Nuôi con nhỏ dưới 12 tháng tuổi (-3t THPT / -4t THCS)
   | 'ChuTichCongDoan'   // Chủ tịch Công đoàn (-3t)
   | 'BanThanhTra'       // Ban thanh tra nhân dân (-1t)
   | 'Khac';             // Kiêm nhiệm khác

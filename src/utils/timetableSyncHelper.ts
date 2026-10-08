@@ -311,6 +311,10 @@ export function sanitizeAssignmentsList(
     if ((a.classId === 'cls-8a3' || a.classId === '8A3') && subjectId === 'sub-gdtc') {
       teacherId = 'tch-td-1';
     }
+    // 8A4 Lý thuộc Cô Trần Thị Hậu (tch-khtn-10)
+    if ((a.classId === 'cls-8a4' || a.classId === '8A4') && subjectId === 'sub-li') {
+      teacherId = 'tch-khtn-10';
+    }
 
     if (!validSubIds.has(subjectId)) return;
     if (!validClassIds.has(a.classId)) return;

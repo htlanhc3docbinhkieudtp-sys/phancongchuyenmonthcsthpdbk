@@ -1788,7 +1788,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                     2. <strong>Giải phóng ngày nghỉ cho giáo viên đi dạy 6/6 ngày:</strong> Trường hợp Thầy Trương Sơn Bền (dạy 12 tiết nhưng đi cả 6 ngày), chỉ cần gộp 2 buổi dạy 1 tiết lẻ vào các buổi khác là thầy có thể được nghỉ trọn vẹn 1 hoặc 2 ngày trong tuần.
                   </p>
                   <p>
-                    3. <strong>Minh bạch hóa các trường hợp ưu tiên theo quy định:</strong> Giải thích công khai cho hội đồng trường các trường hợp nghỉ cố định có lý do chính đáng được pháp luật bảo vệ (như Cô Nguyễn Thị Vân Anh nuôi con nhỏ dưới 36 tháng, BGH có ngày họp chuyên trách, TPT Đội hoạt động phong trào).
+                    3. <strong>Minh bạch hóa các trường hợp ưu tiên theo quy định:</strong> Giải thích công khai cho hội đồng trường các trường hợp nghỉ cố định có lý do chính đáng được pháp luật bảo vệ (như Cô Nguyễn Thị Vân Anh nuôi con nhỏ dưới 12 tháng, BGH có ngày họp chuyên trách, TPT Đội hoạt động phong trào).
                   </p>
                 </div>
               </div>

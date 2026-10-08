@@ -115,12 +115,12 @@ export const STANDARD_DUTIES_PRESETS: DutyPreset[] = [
   },
   {
     type: 'ConNho',
-    name: 'Nuôi con nhỏ (<36 tháng)',
+    name: 'Nuôi con nhỏ (<12 tháng)',
     defaultReduction: 3,
     shortLabel: 'Con nhỏ',
     badgeBg: 'bg-emerald-50 border-emerald-200',
     badgeColor: 'text-emerald-800',
-    description: 'Nữ giáo viên nuôi con dưới 36 tháng tuổi (giảm 3 tiết THPT / 4 tiết THCS)'
+    description: 'Nữ giáo viên nuôi con dưới 12 tháng tuổi (giảm 3 tiết THPT / 4 tiết THCS)'
   },
   {
     type: 'ChuTichCongDoan',

@@ -1027,6 +1027,14 @@ export function calculateTeacherSingleWeek(
       reductionPeriods += teacher.customReductionPeriods;
     }
 
+    // Đảm bảo Cô Lê Kim Ngân (tch-khtn-24) có kiêm nhiệm Con nhỏ (+3 tiết/tuần)
+    if (teacher.id === 'tch-khtn-24' || teacher.name === 'Lê Kim Ngân') {
+      if (!dutyList.includes('Con nhỏ')) {
+        dutyList.push('Con nhỏ');
+        reductionPeriods += 3;
+      }
+    }
+
     // 4. Giáo viên chủ nhiệm (GVCN: +4 tiết/tuần không phân biệt cấp THPT hay THCS)
     if (isHomeroom) {
       if (!dutyList.includes('GVCN')) dutyList.push('GVCN');
@@ -1070,10 +1078,16 @@ export function calculateTeacherSingleWeek(
   const teachingAddition = WEEKLY_TEACHING_ADDITIONS[teacher.id]?.[weekNumber] || 0;
   if (teachingAddition > 0) {
     const languageArtsRow = rows.find((row) => row.subject === 'Ngữ văn');
-    if (!languageArtsRow) {
-      throw new Error(`Không tìm thấy dòng Ngữ văn để bổ sung tiết tuần ${weekNumber} cho ${teacher.name}`);
+    if (languageArtsRow) {
+      languageArtsRow.periods += teachingAddition;
+    } else {
+      rows.push({
+        classes: 'Toàn trường',
+        classList: ['Toàn trường'],
+        subject: 'Ngữ văn',
+        periods: teachingAddition,
+      });
     }
-    languageArtsRow.periods += teachingAddition;
   }
 
   const teachingPeriods = rows.reduce((sum, r) => sum + r.periods, 0);
