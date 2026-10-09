@@ -123,14 +123,14 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
     );
   }, [weeklyTimetables, teachers, classes, subjects, auditScope]);
 
-  // Multi-week days off analysis (Weeks 1 to 5)
+  // Multi-week days off analysis (Weeks 1 to 6)
   const multiWeekSummary = useMemo(() => {
     return analyzeMultiWeekDaysOff(
       weeklyTimetables,
       teachers,
       classes,
       subjects,
-      [1, 2, 3, 4, 5]
+      [1, 2, 3, 4, 5, 6]
     );
   }, [weeklyTimetables, teachers, classes, subjects]);
 
@@ -1541,7 +1541,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                         </span>
                       </h3>
                       <p className="text-slate-700 mt-1 leading-relaxed">
-                        Hệ thống đã kiểm tra đối soát chéo trên toàn bộ 5 tuần học (Tuần 1 &rarr; Tuần 5). Kết quả đối chiếu số liệu thực tế như sau:
+                        Hệ thống đã kiểm tra đối soát chéo trên toàn bộ các tuần học (Tuần 1 &rarr; Tuần 6). Kết quả đối chiếu số liệu thực tế như sau:
                       </p>
                     </div>
 
@@ -1684,6 +1684,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                         <th className="py-2.5 px-2 text-center bg-amber-50 text-amber-900 border-x border-amber-200">Tuần 3</th>
                         <th className="py-2.5 px-2 text-center bg-amber-50 text-amber-900 border-x border-amber-200">Tuần 4</th>
                         <th className="py-2.5 px-2 text-center bg-amber-50 text-amber-900 border-x border-amber-200">Tuần 5</th>
+                        <th className="py-2.5 px-2 text-center bg-amber-50 text-amber-900 border-x border-amber-200">Tuần 6</th>
                         <th className="py-2.5 px-3 text-center">TB Ngày Nghỉ/T</th>
                         <th className="py-2.5 px-3">Kết Luận Xác Minh & Ghi Chú</th>
                         <th className="py-2.5 px-2 text-center">Xem TKB</th>
@@ -1746,6 +1747,7 @@ export const TimetableQualityAuditModal: React.FC<TimetableQualityAuditModalProp
                             <td className="py-2 px-1 text-center bg-amber-50/40 border-x border-amber-100">{renderWeekBadge(3)}</td>
                             <td className="py-2 px-1 text-center bg-amber-50/40 border-x border-amber-100">{renderWeekBadge(4)}</td>
                             <td className="py-2 px-1 text-center bg-amber-50/40 border-x border-amber-100">{renderWeekBadge(5)}</td>
+                            <td className="py-2 px-1 text-center bg-amber-50/40 border-x border-amber-100">{renderWeekBadge(6)}</td>
                             <td className="py-2 px-3 text-center font-black text-slate-900">
                               <span className={`px-2 py-0.5 rounded-lg text-xs ${
                                 r.avgOffDays >= 3 ? 'bg-emerald-100 text-emerald-900 font-black' : r.avgOffDays === 0 ? 'bg-rose-100 text-rose-900 font-black' : 'text-slate-800'

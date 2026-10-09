@@ -11,6 +11,7 @@ import { OFFICIAL_WEEK_2_SLOTS } from '../data/officialWeek2Timetable';
 import { OFFICIAL_WEEK_3_SLOTS } from '../data/officialWeek3Timetable';
 import { OFFICIAL_WEEK_4_SLOTS } from '../data/officialWeek4Timetable';
 import { OFFICIAL_WEEK_5_SLOTS } from '../data/officialWeek5Timetable';
+import { OFFICIAL_WEEK_6_SLOTS } from '../data/officialWeek6Timetable';
 import {
   KHTN_8_WEEKS,
   KHTN_9_WEEKS,
@@ -673,9 +674,13 @@ export function getSlotsForWeek(
   let baseSlots: TimetableSlot[] = [];
   if (weeklyTimetables && weeklyTimetables[weekNumber]?.slots?.length > 0) {
     baseSlots = weeklyTimetables[weekNumber].slots;
-  } else if (weekNumber >= 5 && weeklyTimetables && weeklyTimetables[5]?.slots?.length > 0) {
+  } else if (weekNumber >= 6 && weeklyTimetables && weeklyTimetables[6]?.slots?.length > 0) {
+    baseSlots = weeklyTimetables[6].slots;
+  } else if (weekNumber >= 6 && OFFICIAL_WEEK_6_SLOTS?.length > 0) {
+    baseSlots = OFFICIAL_WEEK_6_SLOTS;
+  } else if (weekNumber === 5 && weeklyTimetables && weeklyTimetables[5]?.slots?.length > 0) {
     baseSlots = weeklyTimetables[5].slots;
-  } else if (weekNumber >= 5 && OFFICIAL_WEEK_5_SLOTS?.length > 0) {
+  } else if (weekNumber === 5 && OFFICIAL_WEEK_5_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_5_SLOTS;
   } else if (weekNumber === 4 && weeklyTimetables && weeklyTimetables[4]?.slots?.length > 0) {
     baseSlots = weeklyTimetables[4].slots;
@@ -691,6 +696,8 @@ export function getSlotsForWeek(
     baseSlots = weeklyTimetables[1].slots;
   } else if (fallbackTimetable?.slots?.length > 0) {
     baseSlots = fallbackTimetable.slots;
+  } else if (OFFICIAL_WEEK_6_SLOTS?.length > 0) {
+    baseSlots = OFFICIAL_WEEK_6_SLOTS;
   } else if (OFFICIAL_WEEK_5_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_5_SLOTS;
   } else if (OFFICIAL_WEEK_4_SLOTS?.length > 0) {
