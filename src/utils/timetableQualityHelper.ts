@@ -1391,7 +1391,7 @@ export function analyzeMultiWeekDaysOff(
   teachers: Teacher[],
   classes: ClassGroup[],
   subjects: Subject[],
-  weeksToCheck: number[] = [1, 2, 3, 4, 5]
+  weeksToCheck: number[] = [1, 2, 3, 4, 5, 6, 7]
 ): MultiWeekDaysOffSummary {
   const teacherMap = new Map<string, Teacher>(teachers.map(t => [t.id, t]));
   const classMap = new Map<string, ClassGroup>(classes.map(c => [c.id, c]));

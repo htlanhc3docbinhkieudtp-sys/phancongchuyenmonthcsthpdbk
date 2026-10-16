@@ -26,6 +26,7 @@ import { officialStaffList } from './data/schoolStaffData';
 import { buildOfficialWeek4Timetable, loadOfficialWeek4Timetable } from './data/officialWeek4Timetable';
 import { buildOfficialWeek5Timetable, loadOfficialWeek5Timetable } from './data/officialWeek5Timetable';
 import { buildOfficialWeek6Timetable, loadOfficialWeek6Timetable } from './data/officialWeek6Timetable';
+import { buildOfficialWeek7Timetable, loadOfficialWeek7Timetable } from './data/officialWeek7Timetable';
 import {
   calculateTeacherWorkloads,
   auditAssignmentConflicts
@@ -422,6 +423,7 @@ export default function App() {
           parsed[4] = buildOfficialWeek4Timetable(initialSchoolConfig.academicYear);
           parsed[5] = buildOfficialWeek5Timetable(initialSchoolConfig.academicYear);
           parsed[6] = buildOfficialWeek6Timetable(initialSchoolConfig.academicYear);
+          parsed[7] = buildOfficialWeek7Timetable(initialSchoolConfig.academicYear);
 
           return parsed;
         }
@@ -440,6 +442,7 @@ export default function App() {
     const week4Tkb = buildOfficialWeek4Timetable(initialSchoolConfig.academicYear);
     const week5Tkb = buildOfficialWeek5Timetable(initialSchoolConfig.academicYear);
     const week6Tkb = buildOfficialWeek6Timetable(initialSchoolConfig.academicYear);
+    const week7Tkb = buildOfficialWeek7Timetable(initialSchoolConfig.academicYear);
 
     if (emergencyW1) {
       try {
@@ -451,7 +454,8 @@ export default function App() {
             3: week3Tkb,
             4: week4Tkb,
             5: week5Tkb,
-            6: week6Tkb
+            6: week6Tkb,
+            7: week7Tkb
           };
         }
       } catch { /* ignore */ }
@@ -465,7 +469,8 @@ export default function App() {
       3: week3Tkb,
       4: week4Tkb,
       5: week5Tkb,
-      6: week6Tkb
+      6: week6Tkb,
+      7: week7Tkb
     };
   });
 
@@ -537,7 +542,10 @@ export default function App() {
     if (currentWeek === 6) {
       return buildOfficialWeek6Timetable(config.academicYear);
     }
-    // Weeks 7 to 35: Empty by default as requested by user
+    if (currentWeek === 7) {
+      return buildOfficialWeek7Timetable(config.academicYear);
+    }
+    // Weeks 8 to 35: Empty by default as requested by user
     return createEmptyTimetableForWeek(currentWeek, config.academicYear);
   }, [weeklyTimetables, currentWeek, config.academicYear, classes, subjects, teachers, assignments, config]);
 
@@ -677,6 +685,19 @@ export default function App() {
           }
         })
         .catch(error => console.error('Failed to load official week 6 timetable', error));
+
+      return () => {
+        isMounted = false;
+      };
+    } else if (currentWeek === 7) {
+      let isMounted = true;
+      loadOfficialWeek7Timetable(config.academicYear, initialClasses, initialSubjects, initialTeachers)
+        .then(week7 => {
+          if (isMounted) {
+            setWeeklyTimetables(prev => ({ ...prev, 7: week7 }));
+          }
+        })
+        .catch(error => console.error('Failed to load official week 7 timetable', error));
 
       return () => {
         isMounted = false;
