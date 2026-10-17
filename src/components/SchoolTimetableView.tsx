@@ -176,15 +176,22 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   }, [activeSlots]);
 
   // Detect collisions (where a teacher is assigned to 2+ classes in the same slot)
+  const isWeek1 = currentWeek === 1 || timetable?.weekNumber === 1;
+
   const teacherCollisions = useMemo(() => {
     const set = new Set<string>();
     teacherSlotsMap.forEach((slots, key) => {
       if (slots.length > 1) {
+        // Tuần 1: Bỏ qua cảnh báo trùng tiết của cô Phượng KHTN (đã được sửa tay trên phân công giấy)
+        const firstSlot = slots[0];
+        if (isWeek1 && (firstSlot.teacherId === 'tch-khtn-14' || firstSlot.teacherName?.toLowerCase().includes('phượng'))) {
+          return;
+        }
         set.add(key);
       }
     });
     return set;
-  }, [teacherSlotsMap]);
+  }, [teacherSlotsMap, isWeek1]);
 
   // Structured collision details for rich inspection & quick navigation
   const collisionDetails = useMemo<TeacherCollisionDetail[]>(() => {
@@ -192,6 +199,10 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
     teacherSlotsMap.forEach((slots, key) => {
       if (slots.length > 1) {
         const firstSlot = slots[0];
+        // Tuần 1: Bỏ qua cảnh báo trùng tiết của cô Phượng KHTN (đã được sửa tay trên phân công giấy)
+        if (isWeek1 && (firstSlot.teacherId === 'tch-khtn-14' || firstSlot.teacherName?.toLowerCase().includes('phượng'))) {
+          return;
+        }
         const teacher = teacherMap.get(firstSlot.teacherId);
         list.push({
           id: key,
@@ -212,7 +223,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
       if (a.period !== b.period) return a.period - b.period;
       return a.teacherName.localeCompare(b.teacherName);
     });
-  }, [teacherSlotsMap, teacherMap]);
+  }, [teacherSlotsMap, teacherMap, isWeek1]);
 
   const conflictedTeacherIds = useMemo(() => {
     return new Set(collisionDetails.map(c => c.teacherId));
