@@ -16,8 +16,7 @@ import {
   Check,
   Star,
   Info,
-  Clock,
-  ChevronRight
+  Clock
 } from 'lucide-react';
 import {
   ClassGroup,
@@ -62,9 +61,6 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
   onShowToast,
 }) => {
   const academicYear = config.academicYear || '2026 - 2027';
-
-  // Active target period currently being worked on (Default: Giữa HK1 as requested by user)
-  const [activeTargetPeriod, setActiveTargetPeriod] = useState<'gk1' | 'ck1' | 'gk2' | 'ck2'>('gk1');
 
   // Load latest slots from current week or timetable
   const activeSlots = useMemo(() => {
@@ -261,7 +257,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
   }, [allExamItems]);
 
   return (
-    <div className="space-y-6 pb-16 print:p-0 print:m-0 print:space-y-4">
+    <div className="space-y-5 pb-16 print:p-0 print:m-0 print:space-y-4">
       {/* 1. Header Banner & Security Badge */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 sm:p-6 print:border-none print:shadow-none print:p-0">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -280,14 +276,14 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
               </span>
             </div>
             <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-              Kế Hoạch & Đề Xuất Người Ra Đề Kiểm Tra Tập Trung
+              Bảng Đề Xuất Người Ra Đề Kiểm Tra Tập Trung
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
-              Thống kê giáo viên và số lớp phụ trách theo môn, theo khối. Bố trí liền mạch 4 đợt kiểm tra trong năm học: 
+              Thống kê số lớp phụ trách theo môn, theo khối và giáo viên giảng dạy. Bố trí gọn gàng 4 đợt kiểm tra trong cùng 1 ô: 
               <strong className="text-indigo-700 font-bold ml-1">Giữa HK1 (hiện tại)</strong>, 
-              <strong className="text-slate-700 ml-1">Học kỳ 1</strong>, 
-              <strong className="text-slate-700 ml-1">Giữa HK2</strong> và 
-              <strong className="text-slate-700 ml-1">Học kỳ 2</strong>.
+              <span className="text-slate-700 font-medium ml-1">Học kỳ 1</span>, 
+              <span className="text-slate-700 font-medium ml-1">Giữa HK2</span> và 
+              <span className="text-slate-700 font-medium ml-1">Học kỳ 2</span>.
             </p>
           </div>
 
@@ -305,11 +301,11 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
             <button
               onClick={handleExportExcel}
               disabled={isExporting}
-              title="Xuất bảng phân công 4 đợt ra file Excel"
+              title="Xuất bảng phân công ra file Excel"
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow transition-all cursor-pointer disabled:opacity-50"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>{isExporting ? 'Đang xuất...' : 'Xuất Excel 4 Đợt'}</span>
+              <span>{isExporting ? 'Đang xuất...' : 'Xuất Excel'}</span>
             </button>
 
             <button
@@ -324,7 +320,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
             <button
               onClick={handleResetProposals}
               title="Đặt lại đề xuất"
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 transition-all cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Đặt lại</span>
@@ -332,62 +328,62 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
           </div>
         </div>
 
-        {/* Highlight Note & 4 Checkpoints Status Bar */}
-        <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs print:hidden">
+        {/* Progress & Period Focus Note */}
+        <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs print:hidden">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5 text-indigo-500" />
-              Tiến độ 4 đợt kiểm tra năm học:
+              Tiến độ 4 đợt trong năm:
             </span>
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="px-2.5 py-1 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-800 font-black flex items-center gap-1">
-                <Star className="w-3 h-3 text-indigo-600 fill-indigo-600" />
-                Giữa HK1: {kpiStats.gk1Count}/{kpiStats.totalItems} môn ({kpiStats.completionRateGK1}%)
+                <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                Giữa HK1: {kpiStats.gk1Count}/{kpiStats.totalItems} ({kpiStats.completionRateGK1}%)
               </span>
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-semibold">
+              <span className="px-2 py-1 rounded-lg bg-slate-100 text-slate-600 font-semibold">
                 Cuối HK1: {kpiStats.ck1Count}/{kpiStats.totalItems}
               </span>
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-semibold">
+              <span className="px-2 py-1 rounded-lg bg-slate-100 text-slate-600 font-semibold">
                 Giữa HK2: {kpiStats.gk2Count}/{kpiStats.totalItems}
               </span>
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-semibold">
+              <span className="px-2 py-1 rounded-lg bg-slate-100 text-slate-600 font-semibold">
                 Cuối HK2: {kpiStats.ck2Count}/{kpiStats.totalItems}
               </span>
             </div>
           </div>
 
-          <div className="text-xs text-indigo-700 font-semibold bg-indigo-50/70 px-3 py-1 rounded-lg border border-indigo-100">
-            🎯 <strong>Đang ưu tiên chọn:</strong> Người ra đề <strong>Giữa Học kỳ 1</strong> trước
+          <div className="text-xs text-indigo-700 font-semibold bg-indigo-50/70 px-2.5 py-1 rounded-lg border border-indigo-100">
+            🎯 <strong>Đang ưu tiên:</strong> Chọn người ra đề <strong>Giữa HK1</strong> trước (3 đợt còn lại sẽ chọn khi đến hạn)
           </div>
         </div>
       </div>
 
       {/* 2. KPI Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 print:hidden">
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 print:hidden">
+        <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng môn - khối</span>
             <span className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg">
               <BookOpen className="w-4 h-4" />
             </span>
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
+          <div className="mt-1.5 flex items-baseline gap-2">
             <span className="text-2xl font-black text-slate-900">{kpiStats.totalItems}</span>
             <span className="text-xs text-slate-500">môn/khối</span>
           </div>
-          <div className="mt-1 text-[11px] text-slate-500">
+          <div className="mt-0.5 text-[11px] text-slate-500">
             THCS: 24 môn • THPT: 33 môn
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Đã chọn Giữa HK1</span>
             <span className="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
               <CheckCircle2 className="w-4 h-4" />
             </span>
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
+          <div className="mt-1.5 flex items-baseline gap-2">
             <span className="text-2xl font-black text-emerald-600">{kpiStats.gk1Count}</span>
             <span className="text-xs font-bold text-emerald-700">({kpiStats.completionRateGK1}%)</span>
           </div>
@@ -399,42 +395,42 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Chưa chọn Giữa HK1</span>
             <span className="p-1.5 bg-amber-50 text-amber-600 rounded-lg">
               <AlertCircle className="w-4 h-4" />
             </span>
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
+          <div className="mt-1.5 flex items-baseline gap-2">
             <span className={`text-2xl font-black ${kpiStats.unassignedGK1 > 0 ? 'text-amber-600' : 'text-slate-400'}`}>
               {kpiStats.unassignedGK1}
             </span>
             <span className="text-xs text-slate-500">môn cần chỉ định</span>
           </div>
-          <div className="mt-1 text-[11px] text-slate-500">
+          <div className="mt-0.5 text-[11px] text-slate-500">
             {kpiStats.unassignedGK1 === 0 ? '✨ Đã hoàn tất 100%' : 'Cần chọn GV ra đề Giữa HK1'}
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Danh mục môn thi</span>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Môn tập trung</span>
             <span className="p-1.5 bg-purple-50 text-purple-600 rounded-lg">
               <Users className="w-4 h-4" />
             </span>
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
+          <div className="mt-1.5 flex items-baseline gap-2">
             <span className="text-2xl font-black text-slate-900">11 môn THPT</span>
           </div>
-          <div className="mt-1 text-[11px] text-slate-500">
+          <div className="mt-0.5 text-[11px] text-slate-500">
             6 môn THCS kiểm tra tập trung
           </div>
         </div>
       </div>
 
       {/* 3. Filter Toolbar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-3 print:hidden">
+      <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-xs space-y-2.5 print:hidden">
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
           {/* Search Box */}
           <div className="relative flex-1 max-w-md">
@@ -510,7 +506,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
               onChange={e => setGradeFilter(e.target.value)}
               className="px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700"
             >
-              <option value="ALL">Tất cả các khối</option>
+              <option value="ALL">Tất cả khối</option>
               <option value="6">Khối 6</option>
               <option value="7">Khối 7</option>
               <option value="8">Khối 8</option>
@@ -529,7 +525,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
               onChange={e => setSubjectFilter(e.target.value)}
               className="px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700"
             >
-              <option value="ALL">Tất cả các môn kiểm tra</option>
+              <option value="ALL">Tất cả môn kiểm tra</option>
               {uniqueSubjects.map(s => (
                 <option key={s.key} value={s.key}>
                   {s.name}
@@ -570,67 +566,47 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
         </div>
       </div>
 
-      {/* 5. Main Statistics Table with 4 Checkpoints */}
+      {/* 5. Main Harmonious Table (Gom 4 đợt kiểm tra vào 1 ô duy nhất) */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden print:border-slate-300">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-slate-50/90 text-slate-700 border-b border-slate-200/90 text-[11px] uppercase tracking-wider font-extrabold select-none">
-                <th className="py-3 px-3 text-center w-10">STT</th>
-                <th className="py-3 px-3 text-center w-20">Khối</th>
+                <th className="py-3 px-2 text-center w-10">STT</th>
+                <th className="py-3 px-2 text-center w-16">Khối</th>
                 <th className="py-3 px-3 w-36">Môn kiểm tra</th>
-                <th className="py-3 px-2 text-center w-20">Số lớp</th>
-                <th className="py-3 px-3 min-w-[280px]">
+                <th className="py-3 px-2 text-center w-16">Số lớp</th>
+                <th className="py-3 px-3 min-w-[240px]">
                   Thống kê GV đang dạy & Số lớp
                   <span className="block text-[10px] font-normal text-slate-500 lowercase">
-                    (bấm thẻ để chọn nhanh Giữa HK1)
+                    (bấm thẻ để gán nhanh Giữa HK1)
                   </span>
                 </th>
                 
-                {/* Cột 1: Giữa Học Kỳ 1 (ĐANG CHỌN) */}
-                <th className="py-3 px-3 min-w-[200px] bg-indigo-50/70 text-indigo-950 border-x border-indigo-200">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                    <span>Giữa Học kỳ 1</span>
+                {/* CỘT DUY NHẤT: GOM 4 ĐỢT KIỂM TRA VÀO 1 Ô */}
+                <th className="py-3 px-3 min-w-[360px] max-w-[420px] bg-indigo-50/70 text-indigo-950 border-x border-indigo-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
+                      <span className="font-black text-slate-900">Người ra đề 4 đợt kiểm tra</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-indigo-700 bg-white px-2 py-0.5 rounded-full border border-indigo-200">
+                      GHK1 • HK1 • GHK2 • HK2
+                    </span>
                   </div>
-                  <span className="block text-[9px] font-bold text-indigo-700 capitalize mt-0.5">
-                    (Đợt hiện tại cần chọn)
+                  <span className="block text-[9px] font-normal text-slate-500 mt-0.5">
+                    Đang chọn trước đợt ⭐ <strong>Giữa HK1</strong>; 3 đợt còn lại sẽ chọn khi đến hạn
                   </span>
                 </th>
 
-                {/* Cột 2: Học Kỳ 1 */}
-                <th className="py-3 px-3 min-w-[170px] bg-slate-50 text-slate-700 border-r border-slate-200">
-                  <span>Học kỳ 1</span>
-                  <span className="block text-[9px] font-normal text-slate-500 lowercase mt-0.5">
-                    (chọn khi đến hạn)
-                  </span>
-                </th>
-
-                {/* Cột 3: Giữa Học Kỳ 2 */}
-                <th className="py-3 px-3 min-w-[170px] bg-slate-50 text-slate-700 border-r border-slate-200">
-                  <span>Giữa Học kỳ 2</span>
-                  <span className="block text-[9px] font-normal text-slate-500 lowercase mt-0.5">
-                    (chọn khi đến hạn)
-                  </span>
-                </th>
-
-                {/* Cột 4: Học Kỳ 2 */}
-                <th className="py-3 px-3 min-w-[170px] bg-slate-50 text-slate-700 border-r border-slate-200">
-                  <span>Học kỳ 2</span>
-                  <span className="block text-[9px] font-normal text-slate-500 lowercase mt-0.5">
-                    (chọn khi đến hạn)
-                  </span>
-                </th>
-
-                <th className="py-3 px-2 text-center w-20">Thời lượng</th>
-                <th className="py-3 px-3 w-32">Hình thức</th>
-                <th className="py-3 px-3 w-36">Ghi chú</th>
+                <th className="py-3 px-2 text-center w-28">Thời lượng & Hình thức</th>
+                <th className="py-3 px-2 w-32">Ghi chú</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-800">
               {filteredItems.length === 0 ? (
                 <tr>
-                  <td colSpan={12} className="py-12 text-center text-slate-400 italic">
+                  <td colSpan={8} className="py-12 text-center text-slate-400 italic">
                     <Info className="w-8 h-8 text-slate-300 mx-auto mb-2" />
                     Không tìm thấy môn/khối nào phù hợp với bộ lọc hiện tại.
                   </td>
@@ -644,31 +620,31 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
 
                   const isGK1Assigned = Boolean(prop.gk1TeacherId && prop.gk1TeacherName);
 
-                  // Function to render dropdown strictly containing teachers of this subject
-                  const renderTeacherDropdown = (
+                  // Compact Dropdown strictly listing teachers of this subject
+                  const renderCompactTeacherSelect = (
                     periodKey: 'gk1' | 'ck1' | 'gk2' | 'ck2',
                     currentTeacherId?: string,
                     currentTeacherName?: string,
                     isCurrentHighlight: boolean = false
                   ) => {
                     return (
-                      <div className="space-y-1">
+                      <div className="relative flex items-center">
                         <select
                           value={currentTeacherId || ''}
                           onChange={e => handleUpdatePeriodTeacher(item.id, periodKey, e.target.value)}
-                          className={`w-full text-xs py-1.5 px-2 rounded-xl border transition-all ${
+                          className={`w-full text-[11px] py-1 px-1.5 pr-5 rounded-md border transition-all cursor-pointer truncate ${
                             currentTeacherId
                               ? isCurrentHighlight
-                                ? 'bg-white border-indigo-400 text-indigo-950 font-black shadow-2xs'
-                                : 'bg-white border-slate-300 text-slate-900 font-bold shadow-2xs'
+                                ? 'bg-indigo-50/70 border-indigo-400 text-indigo-950 font-black'
+                                : 'bg-emerald-50/50 border-emerald-300 text-emerald-950 font-bold'
                               : isCurrentHighlight
-                              ? 'bg-amber-50/40 border-amber-300 text-amber-800 font-medium'
-                              : 'bg-white border-slate-200 text-slate-500 font-normal'
+                              ? 'bg-amber-50/60 border-amber-300 text-amber-900 font-medium'
+                              : 'bg-white border-slate-200 text-slate-400 font-normal hover:border-slate-300'
                           }`}
                         >
                           <option value="">-- Chưa chọn --</option>
                           {item.teachers.length > 0 && (
-                            <optgroup label={`GV dạy ${item.subjectName} khối này`}>
+                            <optgroup label={`GV dạy ${item.subjectName} khối ${item.grade}`}>
                               {item.teachers.map(t => (
                                 <option key={t.teacherId} value={t.teacherId}>
                                   {t.teacherName} ({t.classCount} lớp)
@@ -680,28 +656,22 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
                             <optgroup label={`GV khác cùng dạy ${item.subjectName}`}>
                               {item.otherSubjectTeachers.map(t => (
                                 <option key={t.teacherId} value={t.teacherId}>
-                                  {t.teacherName} ({t.teacherCode || 'GV'})
+                                  {t.teacherName}
                                 </option>
                               ))}
                             </optgroup>
                           )}
                         </select>
 
-                        {currentTeacherName && (
-                          <div className="flex items-center justify-between text-[11px] px-1 font-semibold text-slate-600">
-                            <span className="truncate flex items-center gap-1">
-                              <Check className="w-3 h-3 text-emerald-600 shrink-0" />
-                              <span className="truncate">{currentTeacherName}</span>
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => handleUpdatePeriodTeacher(item.id, periodKey, '')}
-                              title="Bỏ chọn"
-                              className="text-slate-400 hover:text-rose-500 p-0.5 print:hidden shrink-0 cursor-pointer"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                          </div>
+                        {currentTeacherId && (
+                          <button
+                            type="button"
+                            onClick={() => handleUpdatePeriodTeacher(item.id, periodKey, '')}
+                            title="Xóa lựa chọn"
+                            className="absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-600 p-0.5 print:hidden cursor-pointer"
+                          >
+                            <X className="w-2.5 h-2.5" />
+                          </button>
                         )}
                       </div>
                     );
@@ -715,12 +685,12 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
                       }`}
                     >
                       {/* STT */}
-                      <td className="py-3 px-3 text-center font-bold text-slate-400">
+                      <td className="py-2.5 px-2 text-center font-bold text-slate-400">
                         {index + 1}
                       </td>
 
                       {/* Khối & Cấp */}
-                      <td className="py-3 px-3 text-center">
+                      <td className="py-2.5 px-2 text-center">
                         <span
                           className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-black ${
                             item.level === 'THPT'
@@ -736,7 +706,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
                       </td>
 
                       {/* Môn kiểm tra */}
-                      <td className="py-3 px-3">
+                      <td className="py-2.5 px-3">
                         <div className="font-extrabold text-slate-900 text-[13px]">
                           {item.subjectName}
                         </div>
@@ -746,14 +716,14 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
                       </td>
 
                       {/* Số lớp trong khối */}
-                      <td className="py-3 px-2 text-center">
+                      <td className="py-2.5 px-2 text-center">
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">
                           {item.totalClassesInGrade} lớp
                         </span>
                       </td>
 
                       {/* Thống kê giáo viên & số lớp phụ trách */}
-                      <td className="py-3 px-3">
+                      <td className="py-2.5 px-3">
                         {item.teachers.length === 0 ? (
                           <span className="text-slate-400 italic text-[11px]">
                             Chưa có dữ liệu phân công giảng dạy
@@ -779,7 +749,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
                                       <span className="font-bold text-[11px]">{t.teacherName}</span>
                                       {isGK1 && (
                                         <span className="text-[9px] px-1 py-0.1 bg-indigo-600 text-white rounded-xs font-black">
-                                          GIỮA HK1
+                                          GHK1
                                         </span>
                                       )}
                                     </div>
@@ -794,10 +764,10 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleUpdatePeriodTeacher(item.id, 'gk1', t.teacherId)}
-                                      title="Chọn làm người ra đề Giữa HK1"
+                                      title="Gán nhanh làm người ra đề Giữa HK1"
                                       className="hidden group-hover:inline-flex p-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-[10px] font-bold cursor-pointer shrink-0 print:hidden"
                                     >
-                                      Chọn GHK1
+                                      + GHK1
                                     </button>
                                   )}
                                 </div>
@@ -807,55 +777,130 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
                         )}
                       </td>
 
-                      {/* 1. Người ra đề GIỮA HỌC KỲ 1 (ĐANG CHỌN) */}
-                      <td className="py-3 px-3 bg-indigo-50/40 border-x border-indigo-200">
-                        {renderTeacherDropdown('gk1', prop.gk1TeacherId, prop.gk1TeacherName, true)}
+                      {/* CỘT DUY NHẤT: 4 ĐỢT KIỂM TRA GOM TRONG 1 Ô */}
+                      <td className="py-2.5 px-3 bg-indigo-50/15 border-x border-indigo-100">
+                        {/* Display on Web: Compact 2x2 Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 print:hidden">
+                          {/* 1. Giữa HK1 (Đợt hiện tại - Nổi bật) */}
+                          <div
+                            className={`p-1.5 rounded-lg border transition-all ${
+                              prop.gk1TeacherId
+                                ? 'bg-indigo-50/80 border-indigo-300 shadow-2xs'
+                                : 'bg-amber-50/50 border-amber-300 shadow-2xs'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between text-[10px] font-extrabold mb-1">
+                              <span className="flex items-center gap-1 text-indigo-950">
+                                <Star className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
+                                <span>Giữa HK1:</span>
+                              </span>
+                              {prop.gk1TeacherName ? (
+                                <span className="text-[9px] px-1 bg-emerald-100 text-emerald-800 rounded-xs font-bold">
+                                  Đã chọn
+                                </span>
+                              ) : (
+                                <span className="text-[9px] px-1 bg-amber-100 text-amber-800 rounded-xs font-bold animate-pulse">
+                                  Cần chọn
+                                </span>
+                              )}
+                            </div>
+                            {renderCompactTeacherSelect('gk1', prop.gk1TeacherId, prop.gk1TeacherName, true)}
+                          </div>
+
+                          {/* 2. Học kỳ 1 (Cuối HK1) */}
+                          <div
+                            className={`p-1.5 rounded-lg border transition-all ${
+                              prop.ck1TeacherId
+                                ? 'bg-slate-50 border-emerald-300'
+                                : 'bg-slate-50/60 border-slate-200'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between text-[10px] font-bold text-slate-700 mb-1">
+                              <span>Học kỳ 1:</span>
+                              {prop.ck1TeacherName && (
+                                <span className="text-[9px] px-1 bg-emerald-100 text-emerald-800 rounded-xs font-bold">
+                                  Đã chọn
+                                </span>
+                              )}
+                            </div>
+                            {renderCompactTeacherSelect('ck1', prop.ck1TeacherId, prop.ck1TeacherName, false)}
+                          </div>
+
+                          {/* 3. Giữa HK2 */}
+                          <div
+                            className={`p-1.5 rounded-lg border transition-all ${
+                              prop.gk2TeacherId
+                                ? 'bg-slate-50 border-emerald-300'
+                                : 'bg-slate-50/60 border-slate-200'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between text-[10px] font-bold text-slate-700 mb-1">
+                              <span>Giữa HK2:</span>
+                              {prop.gk2TeacherName && (
+                                <span className="text-[9px] px-1 bg-emerald-100 text-emerald-800 rounded-xs font-bold">
+                                  Đã chọn
+                                </span>
+                              )}
+                            </div>
+                            {renderCompactTeacherSelect('gk2', prop.gk2TeacherId, prop.gk2TeacherName, false)}
+                          </div>
+
+                          {/* 4. Học kỳ 2 (Cuối HK2) */}
+                          <div
+                            className={`p-1.5 rounded-lg border transition-all ${
+                              prop.ck2TeacherId
+                                ? 'bg-slate-50 border-emerald-300'
+                                : 'bg-slate-50/60 border-slate-200'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between text-[10px] font-bold text-slate-700 mb-1">
+                              <span>Học kỳ 2:</span>
+                              {prop.ck2TeacherName && (
+                                <span className="text-[9px] px-1 bg-emerald-100 text-emerald-800 rounded-xs font-bold">
+                                  Đã chọn
+                                </span>
+                              )}
+                            </div>
+                            {renderCompactTeacherSelect('ck2', prop.ck2TeacherId, prop.ck2TeacherName, false)}
+                          </div>
+                        </div>
+
+                        {/* Display on Print (Clean text layout) */}
+                        <div className="hidden print:block text-[10px] space-y-0.5">
+                          <div><strong>GHK1:</strong> {prop.gk1TeacherName || '---'}</div>
+                          <div><strong>HK1:</strong> {prop.ck1TeacherName || '---'}</div>
+                          <div><strong>GHK2:</strong> {prop.gk2TeacherName || '---'}</div>
+                          <div><strong>HK2:</strong> {prop.ck2TeacherName || '---'}</div>
+                        </div>
                       </td>
 
-                      {/* 2. Người ra đề HỌC KỲ 1 */}
-                      <td className="py-3 px-3 border-r border-slate-200 bg-slate-50/40">
-                        {renderTeacherDropdown('ck1', prop.ck1TeacherId, prop.ck1TeacherName, false)}
-                      </td>
-
-                      {/* 3. Người ra đề GIỮA HỌC KỲ 2 */}
-                      <td className="py-3 px-3 border-r border-slate-200 bg-slate-50/40">
-                        {renderTeacherDropdown('gk2', prop.gk2TeacherId, prop.gk2TeacherName, false)}
-                      </td>
-
-                      {/* 4. Người ra đề HỌC KỲ 2 */}
-                      <td className="py-3 px-3 border-r border-slate-200 bg-slate-50/40">
-                        {renderTeacherDropdown('ck2', prop.ck2TeacherId, prop.ck2TeacherName, false)}
-                      </td>
-
-                      {/* Thời lượng */}
-                      <td className="py-3 px-2 text-center">
-                        <select
-                          value={prop.durationMinutes || item.defaultDuration}
-                          onChange={e => handleUpdateField(item.id, 'durationMinutes', Number(e.target.value))}
-                          className="py-1 px-1 text-xs font-bold rounded-lg border border-slate-200 bg-white text-slate-800 text-center"
-                        >
-                          <option value={45}>45p</option>
-                          <option value={60}>60p</option>
-                          <option value={90}>90p</option>
-                        </select>
-                      </td>
-
-                      {/* Hình thức */}
-                      <td className="py-3 px-2">
-                        <select
-                          value={prop.examFormat || item.defaultFormat}
-                          onChange={e => handleUpdateField(item.id, 'examFormat', e.target.value)}
-                          className="w-full py-1.5 px-2 text-xs rounded-xl border border-slate-200 bg-white text-slate-700 font-medium"
-                        >
-                          <option value="Trắc nghiệm 100%">Trắc nghiệm 100%</option>
-                          <option value="Tự luận 100%">Tự luận 100%</option>
-                          <option value="Trắc nghiệm + Tự luận">Trắc nghiệm + Tự luận</option>
-                          <option value="Trắc nghiệm + Thực hành">Trắc nghiệm + Thực hành</option>
-                        </select>
+                      {/* Thời lượng & Hình thức thi (Gom thành 1 ô xếp tầng) */}
+                      <td className="py-2.5 px-2 text-center">
+                        <div className="space-y-1">
+                          <select
+                            value={prop.durationMinutes || item.defaultDuration}
+                            onChange={e => handleUpdateField(item.id, 'durationMinutes', Number(e.target.value))}
+                            className="w-full py-1 px-1.5 text-[11px] font-bold rounded-lg border border-slate-200 bg-white text-slate-800 text-center"
+                          >
+                            <option value={45}>45 phút</option>
+                            <option value={60}>60 phút</option>
+                            <option value={90}>90 phút</option>
+                          </select>
+                          <select
+                            value={prop.examFormat || item.defaultFormat}
+                            onChange={e => handleUpdateField(item.id, 'examFormat', e.target.value)}
+                            className="w-full py-1 px-1 text-[10px] rounded-lg border border-slate-200 bg-white text-slate-700"
+                          >
+                            <option value="Trắc nghiệm 100%">Trắc nghiệm 100%</option>
+                            <option value="Tự luận 100%">Tự luận 100%</option>
+                            <option value="Trắc nghiệm + Tự luận">TN + Tự luận</option>
+                            <option value="Trắc nghiệm + Thực hành">TN + Thực hành</option>
+                          </select>
+                        </div>
                       </td>
 
                       {/* Ghi chú */}
-                      <td className="py-3 px-2">
+                      <td className="py-2.5 px-2">
                         <input
                           type="text"
                           value={prop.notes || ''}
