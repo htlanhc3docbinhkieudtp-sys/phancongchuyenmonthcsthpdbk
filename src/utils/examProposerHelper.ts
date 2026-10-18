@@ -1,14 +1,5 @@
 import { ClassGroup, Subject, Teacher, Assignment, TimetableSlot, SchoolLevel, GradeLevel } from '../types';
 
-export type ExamPeriod = 'GK1' | 'CK1' | 'GK2' | 'CK2';
-
-export const EXAM_PERIODS: Array<{ id: ExamPeriod; name: string; shortName: string; description: string }> = [
-  { id: 'GK1', name: 'Kiểm tra Giữa Học kỳ 1', shortName: 'Giữa HK1', description: 'Đợt kiểm tra tập trung Giữa HK1 (Tuần 8 - 10)' },
-  { id: 'CK1', name: 'Kiểm tra Cuối Học kỳ 1', shortName: 'Cuối HK1', description: 'Đợt kiểm tra tập trung Cuối HK1 (Tuần 16 - 18)' },
-  { id: 'GK2', name: 'Kiểm tra Giữa Học kỳ 2', shortName: 'Giữa HK2', description: 'Đợt kiểm tra tập trung Giữa HK2 (Tuần 26 - 28)' },
-  { id: 'CK2', name: 'Kiểm tra Cuối Học kỳ 2', shortName: 'Cuối HK2', description: 'Đợt kiểm tra tập trung Cuối HK2 (Tuần 33 - 35)' },
-];
-
 export interface SubjectRule {
   key: string;
   name: string;
@@ -55,6 +46,12 @@ export interface TeacherTeachingStat {
   }>;
 }
 
+export interface TeacherSimpleOption {
+  teacherId: string;
+  teacherName: string;
+  teacherCode: string;
+}
+
 export interface FocusedExamSubjectItem {
   id: string; // `${level}_${grade}_${subjectKey}`
   level: SchoolLevel;
@@ -65,24 +62,28 @@ export interface FocusedExamSubjectItem {
   matchSubjectIds: string[];
   totalClassesInGrade: number;
   gradeClasses: ClassGroup[];
-  teachers: TeacherTeachingStat[];
+  teachers: TeacherTeachingStat[]; // GV đang dạy khối này
+  otherSubjectTeachers: TeacherSimpleOption[]; // Các GV khác trong trường cùng dạy môn này
   defaultDuration: number;
   defaultFormat: string;
 }
 
-export interface ExamProposalRecord {
-  primaryTeacherId: string;
-  primaryTeacherName: string;
-  reserveTeacherId?: string;
-  reserveTeacherName?: string;
+export interface YearExamProposalRecord {
+  gk1TeacherId?: string;
+  gk1TeacherName?: string;
+  ck1TeacherId?: string;
+  ck1TeacherName?: string;
+  gk2TeacherId?: string;
+  gk2TeacherName?: string;
+  ck2TeacherId?: string;
+  ck2TeacherName?: string;
   durationMinutes: number;
   examFormat: string;
-  deadline?: string;
   notes?: string;
   updatedAt?: number;
 }
 
-export type ExamProposalMap = Record<string, ExamProposalRecord>;
+export type YearExamProposalMap = Record<string, YearExamProposalRecord>;
 
 /**
  * Builds all focused exam subject items by level and grade, aggregating teacher assignments
@@ -97,6 +98,35 @@ export function buildFocusedExamItems(
   const teacherMap = new Map<string, Teacher>(teachers.map(t => [t.id, t]));
   const classMap = new Map<string, ClassGroup>(classes.map(c => [c.id, c]));
   const subMap = new Map<string, Subject>(subjects.map(s => [s.id, s]));
+
+  // Global map of teachers who teach each subject key
+  const subjectAllTeachersMap = new Map<string, Set<string>>();
+
+  // Populate from slots
+  timetableSlots.forEach(s => {
+    if (!s.teacherId) return;
+    const allRules = [...THCS_EXAM_SUBJECTS, ...THPT_EXAM_SUBJECTS];
+    for (const rule of allRules) {
+      if (rule.matchSubjectIds.includes(s.subjectId)) {
+        const set = subjectAllTeachersMap.get(rule.key) || new Set<string>();
+        set.add(s.teacherId);
+        subjectAllTeachersMap.set(rule.key, set);
+      }
+    }
+  });
+
+  // Populate from assignments
+  assignments.forEach(a => {
+    if (!a.teacherId) return;
+    const allRules = [...THCS_EXAM_SUBJECTS, ...THPT_EXAM_SUBJECTS];
+    for (const rule of allRules) {
+      if (rule.matchSubjectIds.includes(a.subjectId)) {
+        const set = subjectAllTeachersMap.get(rule.key) || new Set<string>();
+        set.add(a.teacherId);
+        subjectAllTeachersMap.set(rule.key, set);
+      }
+    }
+  });
 
   const result: FocusedExamSubjectItem[] = [];
 
@@ -119,6 +149,24 @@ export function buildFocusedExamItems(
         subRule.name
       );
 
+      const gradeTeacherIds = new Set(stats.map(t => t.teacherId));
+      const allSubjectTeacherIds = subjectAllTeachersMap.get(subRule.key) || new Set<string>();
+      
+      const otherTeachers: TeacherSimpleOption[] = [];
+      allSubjectTeacherIds.forEach(tId => {
+        if (!gradeTeacherIds.has(tId)) {
+          const tch = teacherMap.get(tId);
+          if (tch) {
+            otherTeachers.push({
+              teacherId: tId,
+              teacherName: tch.name,
+              teacherCode: tch.code || '',
+            });
+          }
+        }
+      });
+      otherTeachers.sort((a, b) => a.teacherName.localeCompare(b.teacherName));
+
       result.push({
         id: `THCS_${grade}_${subRule.key}`,
         level: 'THCS',
@@ -130,6 +178,7 @@ export function buildFocusedExamItems(
         totalClassesInGrade: gradeClasses.length,
         gradeClasses,
         teachers: stats,
+        otherSubjectTeachers: otherTeachers,
         defaultDuration: subRule.defaultDuration,
         defaultFormat: subRule.defaultFormat,
       });
@@ -155,7 +204,24 @@ export function buildFocusedExamItems(
         subRule.name
       );
 
-      // Only include if either teachers are assigned or classes exist
+      const gradeTeacherIds = new Set(stats.map(t => t.teacherId));
+      const allSubjectTeacherIds = subjectAllTeachersMap.get(subRule.key) || new Set<string>();
+
+      const otherTeachers: TeacherSimpleOption[] = [];
+      allSubjectTeacherIds.forEach(tId => {
+        if (!gradeTeacherIds.has(tId)) {
+          const tch = teacherMap.get(tId);
+          if (tch) {
+            otherTeachers.push({
+              teacherId: tId,
+              teacherName: tch.name,
+              teacherCode: tch.code || '',
+            });
+          }
+        }
+      });
+      otherTeachers.sort((a, b) => a.teacherName.localeCompare(b.teacherName));
+
       result.push({
         id: `THPT_${grade}_${subRule.key}`,
         level: 'THPT',
@@ -167,6 +233,7 @@ export function buildFocusedExamItems(
         totalClassesInGrade: gradeClasses.length,
         gradeClasses,
         teachers: stats,
+        otherSubjectTeachers: otherTeachers,
         defaultDuration: subRule.defaultDuration,
         defaultFormat: subRule.defaultFormat,
       });
@@ -199,7 +266,7 @@ function extractTeachersForSubjectAndGrade(
     }
   >();
 
-  // Primary source: Timetable slots (contains actual teaching teacher)
+  // Primary source: Timetable slots
   if (timetableSlots && timetableSlots.length > 0) {
     timetableSlots.forEach(slot => {
       if (gradeClassIds.has(slot.classId) && matchSubjectIds.includes(slot.subjectId)) {
@@ -227,7 +294,7 @@ function extractTeachersForSubjectAndGrade(
     });
   }
 
-  // Secondary source: Assignments (supplements any missing classes or period quotas)
+  // Secondary source: Assignments
   assignments.forEach(a => {
     if (gradeClassIds.has(a.classId) && matchSubjectIds.includes(a.subjectId)) {
       if (!a.teacherId) return;
@@ -268,7 +335,7 @@ function extractTeachersForSubjectAndGrade(
     });
   });
 
-  // Sort teachers by number of classes taught descending (most experienced/teaching load first)
+  // Sort teachers by number of classes taught descending
   return list.sort((a, b) => {
     if (b.classCount !== a.classCount) return b.classCount - a.classCount;
     return a.teacherName.localeCompare(b.teacherName);
@@ -276,57 +343,73 @@ function extractTeachersForSubjectAndGrade(
 }
 
 /**
- * Storage key for exam proposals
+ * Storage key for full year exam proposals
  */
-export function getExamProposalsStorageKey(academicYear: string, period: ExamPeriod): string {
+export function getYearExamProposalsStorageKey(academicYear: string): string {
   const cleanYear = academicYear.replace(/\s+/g, '_');
-  return `docbinhkieu_exam_proposals_${cleanYear}_${period}`;
+  return `docbinhkieu_year_exam_proposals_${cleanYear}`;
 }
 
 /**
- * Load exam proposals from localStorage
+ * Load exam proposals for all 4 periods from localStorage
  */
-export function loadExamProposals(academicYear: string, period: ExamPeriod): ExamProposalMap {
+export function loadYearExamProposals(academicYear: string): YearExamProposalMap {
   try {
-    const key = getExamProposalsStorageKey(academicYear, period);
+    const key = getYearExamProposalsStorageKey(academicYear);
     const data = localStorage.getItem(key);
     if (data) {
       return JSON.parse(data);
     }
+
+    // Migration fallback: check old GK1 key
+    const oldKey = `docbinhkieu_exam_proposals_${academicYear.replace(/\s+/g, '_')}_GK1`;
+    const oldData = localStorage.getItem(oldKey);
+    if (oldData) {
+      const parsedOld = JSON.parse(oldData);
+      const migrated: YearExamProposalMap = {};
+      Object.keys(parsedOld).forEach(k => {
+        migrated[k] = {
+          gk1TeacherId: parsedOld[k].primaryTeacherId,
+          gk1TeacherName: parsedOld[k].primaryTeacherName,
+          durationMinutes: parsedOld[k].durationMinutes || 45,
+          examFormat: parsedOld[k].examFormat || 'Trắc nghiệm + Tự luận',
+          notes: parsedOld[k].notes || '',
+          updatedAt: Date.now(),
+        };
+      });
+      return migrated;
+    }
   } catch (e) {
-    console.error('Failed to load exam proposals', e);
+    console.error('Failed to load year exam proposals', e);
   }
   return {};
 }
 
 /**
- * Save exam proposals to localStorage
+ * Save exam proposals for all 4 periods to localStorage
  */
-export function saveExamProposals(academicYear: string, period: ExamPeriod, map: ExamProposalMap): void {
+export function saveYearExamProposals(academicYear: string, map: YearExamProposalMap): void {
   try {
-    const key = getExamProposalsStorageKey(academicYear, period);
+    const key = getYearExamProposalsStorageKey(academicYear);
     localStorage.setItem(key, JSON.stringify(map));
   } catch (e) {
-    console.error('Failed to save exam proposals', e);
+    console.error('Failed to save year exam proposals', e);
   }
 }
 
 /**
- * Auto propose exam makers based on highest class teaching load in the grade
+ * Auto propose exam makers for Giữa HK1 (based on highest teaching load in the grade)
  */
-export function generateAutoExamProposals(items: FocusedExamSubjectItem[]): ExamProposalMap {
-  const proposals: ExamProposalMap = {};
+export function generateAutoExamProposalsForGK1(items: FocusedExamSubjectItem[]): YearExamProposalMap {
+  const proposals: YearExamProposalMap = {};
 
   items.forEach(item => {
     if (item.teachers.length > 0) {
       const primary = item.teachers[0];
-      const reserve = item.teachers.length > 1 ? item.teachers[1] : undefined;
 
       proposals[item.id] = {
-        primaryTeacherId: primary.teacherId,
-        primaryTeacherName: primary.teacherName,
-        reserveTeacherId: reserve?.teacherId,
-        reserveTeacherName: reserve?.teacherName,
+        gk1TeacherId: primary.teacherId,
+        gk1TeacherName: primary.teacherName,
         durationMinutes: item.defaultDuration,
         examFormat: item.defaultFormat,
         notes: `Gợi ý theo số lớp phụ trách (${primary.classCount}/${item.totalClassesInGrade} lớp)`,
@@ -339,26 +422,24 @@ export function generateAutoExamProposals(items: FocusedExamSubjectItem[]): Exam
 }
 
 /**
- * Export exam proposal statistics to Excel
+ * Export year exam proposal statistics to Excel with all 4 periods
  */
-export async function exportExamProposalsToExcel(
+export async function exportYearExamProposalsToExcel(
   items: FocusedExamSubjectItem[],
-  proposals: ExamProposalMap,
-  academicYear: string = '2026 - 2027',
-  period: ExamPeriod = 'GK1'
+  proposals: YearExamProposalMap,
+  academicYear: string = '2026 - 2027'
 ): Promise<void> {
   const XLSX = await import('xlsx');
-  const periodInfo = EXAM_PERIODS.find(p => p.id === period) || EXAM_PERIODS[0];
 
   const rows: any[][] = [];
 
   // Header Title
-  rows.push(['SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP', '', '', '', '', '', '', '', '', '']);
-  rows.push(['TRƯỜNG THPT ĐỐC BINH KIỀU', '', '', '', '', '', '', '', '', '']);
+  rows.push(['SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP', '', '', '', '', '', '', '', '', '', '']);
+  rows.push(['TRƯỜNG THPT ĐỐC BINH KIỀU', '', '', '', '', '', '', '', '', '', '']);
   rows.push([]);
-  rows.push([`BẢNG ĐỀ XUẤT PHÂN CÔNG NGƯỜI RA ĐỀ KIỂM TRA TẬP TRUNG`]);
-  rows.push([`KỲ KIỂM TRA: ${periodInfo.name.toUpperCase()} - NĂM HỌC ${academicYear}`]);
-  rows.push([`Ngày xuất bảng: ${new Date().toLocaleDateString('vi-VN')} | Tài liệu mật - Ban Giám Hiệu`]);
+  rows.push([`BẢNG ĐỀ XUẤT PHÂN CÔNG NGƯỜI RA ĐỀ KIỂM TRA TẬP TRUNG NĂM HỌC ${academicYear}`]);
+  rows.push([`Các đợt: Giữa Học kỳ 1, Học kỳ 1, Giữa Học kỳ 2, Học kỳ 2`]);
+  rows.push([`Ngày xuất: ${new Date().toLocaleDateString('vi-VN')} | Tài liệu mật nội bộ Ban Giám Hiệu`]);
   rows.push([]);
 
   // Table Columns
@@ -369,12 +450,13 @@ export async function exportExamProposalsToExcel(
     'Môn kiểm tra',
     'Tổng số lớp',
     'Thống kê GV giảng dạy & Số lớp phụ trách',
-    'Người ra đề CHÍNH',
-    'Người ra đề DỰ BỊ / PHẢN BIỆN',
+    'Ra đề GIỮA HK1',
+    'Ra đề HỌC KỲ 1',
+    'Ra đề GIỮA HK2',
+    'Ra đề HỌC KỲ 2',
     'Thời lượng (phút)',
     'Hình thức kiểm tra',
     'Ghi chú phân công',
-    'Trạng thái',
   ]);
 
   items.forEach((item, index) => {
@@ -388,8 +470,6 @@ export async function exportExamProposalsToExcel(
         }).join(';\n')
       : '(Chưa phân công GV dạy)';
 
-    const status = prop?.primaryTeacherName ? 'ĐÃ PHÂN CÔNG' : 'CHƯA CHỌN';
-
     rows.push([
       index + 1,
       item.level,
@@ -397,12 +477,13 @@ export async function exportExamProposalsToExcel(
       item.subjectName,
       item.totalClassesInGrade,
       teacherSummary,
-      prop?.primaryTeacherName || '---',
-      prop?.reserveTeacherName || '---',
+      prop?.gk1TeacherName || '---',
+      prop?.ck1TeacherName || '---',
+      prop?.gk2TeacherName || '---',
+      prop?.ck2TeacherName || '---',
       prop?.durationMinutes || item.defaultDuration,
       prop?.examFormat || item.defaultFormat,
       prop?.notes || '',
-      status,
     ]);
   });
 
@@ -442,19 +523,20 @@ export async function exportExamProposalsToExcel(
     { wch: 10 }, // Cấp
     { wch: 10 }, // Khối
     { wch: 24 }, // Môn
-    { wch: 14 }, // Tổng số lớp
-    { wch: 55 }, // Thống kê GV
-    { wch: 26 }, // Đề chính
-    { wch: 26 }, // Đề dự bị
-    { wch: 16 }, // Thời lượng
+    { wch: 13 }, // Tổng số lớp
+    { wch: 45 }, // Thống kê GV
+    { wch: 24 }, // Giữa HK1
+    { wch: 24 }, // Học kỳ 1
+    { wch: 24 }, // Giữa HK2
+    { wch: 24 }, // Học kỳ 2
+    { wch: 15 }, // Thời lượng
     { wch: 24 }, // Hình thức
-    { wch: 30 }, // Ghi chú
-    { wch: 16 }, // Trạng thái
+    { wch: 28 }, // Ghi chú
   ];
 
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, `De_Xuat_${period}`);
+  XLSX.utils.book_append_sheet(wb, ws, `Phan_Cong_Ra_De`);
 
-  const fileName = `De_Xuat_Ra_De_Kiem_Tra_${period}_${academicYear.replace(/[^a-zA-Z0-9]/g, '_')}.xlsx`;
+  const fileName = `De_Xuat_Ra_De_Kiem_Tra_4_Dot_${academicYear.replace(/[^a-zA-Z0-9]/g, '_')}.xlsx`;
   XLSX.writeFile(wb, fileName);
 }
