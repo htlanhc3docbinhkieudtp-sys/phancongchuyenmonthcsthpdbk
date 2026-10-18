@@ -79,9 +79,11 @@ const WeeklyScheduleManagerView = lazy(() => import('./components/WeeklySchedule
 const WeeklyTeachingLogView = lazy(() => import('./components/WeeklyTeachingLogView').then(module => ({ default: module.WeeklyTeachingLogView })));
 const ComprehensiveTableView = lazy(() => import('./components/ComprehensiveTableView').then(module => ({ default: module.ComprehensiveTableView })));
 const CurriculumView = lazy(() => import('./components/CurriculumView').then(module => ({ default: module.CurriculumView })));
+const ExamProposerView = lazy(() => import('./components/ExamProposerView').then(module => ({ default: module.ExamProposerView })));
 import { ConflictAuditDrawer } from './components/ConflictAuditDrawer';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { Footer } from './components/Footer';
+import { ShieldAlert } from 'lucide-react';
 
 const STORAGE_KEY = 'docbinhkieu_phancong_data_v9';
 
@@ -563,10 +565,14 @@ export default function App() {
       'weekly_schedule',
       'weekly_log',
       'summary',
-      'curriculum'
+      'curriculum',
+      'exam_proposer'
     ];
     if (saved === 'homeroom') {
       return 'concurrent_duties';
+    }
+    if (saved === 'exam_proposer' && initialRole !== 'admin') {
+      return 'timetable';
     }
     if (saved && allowedTabs.includes(saved)) {
       return saved;
@@ -581,6 +587,13 @@ export default function App() {
     }
   }, [isGuest, activeTab]);
 
+  // Guard: Non-admin users cannot access 'exam_proposer'
+  useEffect(() => {
+    if (!isAdmin && activeTab === 'exam_proposer') {
+      setActiveTab('timetable');
+    }
+  }, [isAdmin, activeTab]);
+
   const [openReconcileOnLoad, setOpenReconcileOnLoad] = useState<boolean>(false);
 
   useEffect(() => {
@@ -588,6 +601,14 @@ export default function App() {
   }, [activeTab]);
 
   const handleTabChange = (tab: ActiveTabType) => {
+    if (tab === 'exam_proposer' && !isAdmin) {
+      setLoginModalMode('admin');
+      setLoginPromptReason(
+        'Mục "Đề xuất người ra đề kiểm tra" có tính bảo mật cao, chỉ dành riêng cho Ban Giám hiệu / Quản trị viên nhà trường.'
+      );
+      setIsLoginModalOpen(true);
+      return;
+    }
     if (isGuest && tab !== 'timetable') {
       setLoginModalMode('teacher');
       setLoginPromptReason(
@@ -1966,6 +1987,45 @@ export default function App() {
             onPromptAdminLogin={() => {}}
             onUpdateSubjectPeriod={handleUpdateSubjectPeriod}
           />
+        )}
+
+        {/* Tab: Đề Xuất Người Ra Đề Kiểm Tra (Bảo mật BGH • Chỉ Quản trị viên) */}
+        {activeTab === 'exam_proposer' && (
+          isAdmin ? (
+            <ExamProposerView
+              config={config}
+              classes={classes}
+              subjects={subjects}
+              teachers={teachers}
+              assignments={assignments}
+              timetable={timetable}
+              weeklyTimetables={weeklyTimetables}
+              currentWeek={currentWeek}
+              onShowToast={showToast}
+            />
+          ) : (
+            <div className="max-w-xl mx-auto my-16 p-8 bg-white rounded-3xl border border-rose-200 shadow-md text-center">
+              <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <ShieldAlert className="w-8 h-8" />
+              </div>
+              <h2 className="text-xl font-black text-slate-900 mb-2">
+                Khu vực Bảo mật: Đề xuất người ra đề kiểm tra
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 mb-6 leading-relaxed">
+                Nội dung đề xuất và chỉ định người ra đề kiểm tra tập trung có tính bảo mật cao, chỉ được xem khi mở bằng tài khoản <strong>Quản trị viên / Ban Giám hiệu</strong>.
+              </p>
+              <button
+                onClick={() => {
+                  setLoginModalMode('admin');
+                  setLoginPromptReason('Vui lòng đăng nhập quyền Quản trị viên để truy cập mục Đề xuất ra đề.');
+                  setIsLoginModalOpen(true);
+                }}
+                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs hover:shadow transition-all cursor-pointer"
+              >
+                Đăng nhập Quản trị viên
+              </button>
+            </div>
+          )
         )}
         </React.Suspense>
       </main>

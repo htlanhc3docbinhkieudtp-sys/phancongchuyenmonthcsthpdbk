@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Lock,
   Award,
+  FileQuestion,
 } from 'lucide-react';
 
 export type ActiveTabType =
@@ -17,7 +18,8 @@ export type ActiveTabType =
   | 'weekly_schedule'
   | 'weekly_log'
   | 'summary'
-  | 'curriculum';
+  | 'curriculum'
+  | 'exam_proposer';
 
 interface ViewTabsProps {
   activeTab: ActiveTabType;
@@ -47,6 +49,7 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
     icon: React.ComponentType<{ className?: string }>;
     badge?: string;
     isPublic?: boolean;
+    adminOnly?: boolean;
   }> = [
     {
       id: 'timetable',
@@ -83,11 +86,25 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
       icon: BookOpenCheck,
       isPublic: false,
     },
+    {
+      id: 'exam_proposer',
+      label: 'Đề Xuất Ra Đề',
+      shortLabel: 'Đề Xuất Ra Đề',
+      icon: FileQuestion,
+      isPublic: false,
+      adminOnly: true,
+      badge: 'Bảo mật BGH',
+    },
   ];
 
   // If guest, show only timetable or locked internal items
+  // If adminOnly, strictly require isAdmin to be visible
   const isGuest = userRole === 'guest';
-  const visibleTabs = isGuest ? allTabs.filter((t) => t.isPublic) : allTabs;
+  const visibleTabs = allTabs.filter((t) => {
+    if (t.adminOnly && !isAdmin) return false;
+    if (isGuest && !t.isPublic) return false;
+    return true;
+  });
 
   const checkScroll = () => {
     if (navRef.current) {
