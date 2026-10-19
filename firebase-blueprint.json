@@ -52,6 +52,17 @@
         "lastVisitedAt": { "type": "number", "description": "Timestamp of the last visit" },
         "dailyHistory": { "type": "object", "description": "Daily visit breakdown for the last 30 days" }
       }
+    },
+    "ExamProposalsDoc": {
+      "title": "Exam Proposals Document",
+      "description": "Full school year exam maker nomination and proposals across all 4 exam periods synchronized across all devices",
+      "type": "object",
+      "properties": {
+        "academicYear": { "type": "string", "description": "Academic school year, e.g. 2026 - 2027" },
+        "proposals": { "type": "object", "description": "Keyed map of exam subject item proposals" },
+        "updatedAt": { "type": "number", "description": "Timestamp of last modification" },
+        "lastUpdatedBy": { "type": "string", "description": "User or administrator who saved the proposals" }
+      }
     }
   },
   "firestore": {
@@ -70,6 +81,10 @@
     "/site_analytics/{docId}": {
       "schema": "VisitorAnalyticsDoc",
       "description": "Website visitor counter and traffic analytics"
+    },
+    "/exam_proposals/{academicYearDocId}": {
+      "schema": "ExamProposalsDoc",
+      "description": "Persistent cloud storage for exam maker proposals synchronized across all devices and computers"
     }
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
   FileQuestion,
   ShieldCheck,
@@ -16,7 +16,12 @@ import {
   Check,
   Star,
   Info,
-  Clock
+  Clock,
+  CloudCheck,
+  CloudUpload,
+  CloudOff,
+  RefreshCw,
+  MonitorCloud
 } from 'lucide-react';
 import {
   ClassGroup,
@@ -34,8 +39,11 @@ import {
   loadYearExamProposals,
   saveYearExamProposals,
   generateAutoExamProposalsForGK1,
-  exportYearExamProposalsToExcel
+  exportYearExamProposalsToExcel,
+  subscribeYearExamProposals,
+  saveYearExamProposalsToCloud
 } from '../utils/examProposerHelper';
+
 
 interface ExamProposerViewProps {
   config: SchoolConfig;
@@ -81,10 +89,54 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
     return buildFocusedExamItems(classes, subjects, teachers, assignments, activeSlots);
   }, [classes, subjects, teachers, assignments, activeSlots]);
 
-  // Proposals state across the 4 periods for the full school year
+  // Proposals state across the 4 periods for the full school year (initialized from local cache)
   const [proposals, setProposals] = useState<YearExamProposalMap>(() => {
     return loadYearExamProposals(academicYear);
   });
+
+  // Cloud Synchronization state
+  const [cloudSyncStatus, setCloudSyncStatus] = useState<'synced' | 'syncing' | 'offline' | 'error'>('syncing');
+  const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
+  const [lastSyncedBy, setLastSyncedBy] = useState<string>('Quản trị viên');
+
+  // Real-time listener: syncs across all devices & computers instantly
+  useEffect(() => {
+    setCloudSyncStatus('syncing');
+    const unsubscribe = subscribeYearExamProposals(
+      academicYear,
+      (cloudProposals, updatedAt, updatedBy) => {
+        const hasCloudKeys = Object.keys(cloudProposals).length > 0;
+        if (hasCloudKeys) {
+          setProposals(cloudProposals);
+          saveYearExamProposals(academicYear, cloudProposals); // Keep local cache in sync
+          setCloudSyncStatus('synced');
+          setLastSyncedAt(updatedAt || Date.now());
+          if (updatedBy) setLastSyncedBy(updatedBy);
+        } else {
+          // If cloud has no record yet, check if current computer has existing local selections
+          const localCache = loadYearExamProposals(academicYear);
+          if (Object.keys(localCache).length > 0) {
+            setProposals(localCache);
+            // Automatically push local selections up to Firestore so other computers receive them immediately
+            saveYearExamProposalsToCloud(academicYear, localCache, 'Quản trị viên (Đồng bộ ban đầu)').then((success) => {
+              setCloudSyncStatus(success ? 'synced' : 'offline');
+              if (success) setLastSyncedAt(Date.now());
+            });
+          } else {
+            setCloudSyncStatus('synced');
+          }
+        }
+      },
+      (err) => {
+        console.warn('Realtime sync subscription warning, running in offline/cached mode:', err);
+        setCloudSyncStatus('offline');
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, [academicYear]);
 
   // Filters state
   const [levelFilter, setLevelFilter] = useState<'ALL' | 'THCS' | 'THPT'>('ALL');
@@ -98,6 +150,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
 
   // Update proposal handler for any period (gk1, ck1, gk2, ck2)
   const handleUpdatePeriodTeacher = (itemId: string, periodKey: 'gk1' | 'ck1' | 'gk2' | 'ck2', teacherId: string) => {
+    setCloudSyncStatus('syncing');
     setProposals(prev => {
       const existing = prev[itemId] || {
         durationMinutes: 45,
@@ -115,12 +168,22 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
       };
 
       const next = { ...prev, [itemId]: updated };
+      
+      // 1. Instant local persistence
       saveYearExamProposals(academicYear, next);
+
+      // 2. Realtime cloud persistence to Firestore (syncs to other computers)
+      saveYearExamProposalsToCloud(academicYear, next, 'Quản trị viên').then((ok) => {
+        setCloudSyncStatus(ok ? 'synced' : 'offline');
+        if (ok) setLastSyncedAt(Date.now());
+      });
+
       return next;
     });
   };
 
   const handleUpdateField = (itemId: string, field: string, value: any) => {
+    setCloudSyncStatus('syncing');
     setProposals(prev => {
       const existing = prev[itemId] || {
         durationMinutes: 45,
@@ -135,12 +198,17 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
 
       const next = { ...prev, [itemId]: updated };
       saveYearExamProposals(academicYear, next);
+      saveYearExamProposalsToCloud(academicYear, next, 'Quản trị viên').then((ok) => {
+        setCloudSyncStatus(ok ? 'synced' : 'offline');
+        if (ok) setLastSyncedAt(Date.now());
+      });
       return next;
     });
   };
 
   // Auto-propose action for Giữa HK1 (based on teacher with most classes in that grade)
   const handleAutoProposeGK1 = () => {
+    setCloudSyncStatus('syncing');
     const auto = generateAutoExamProposalsForGK1(allExamItems);
     setProposals(prev => {
       const merged: YearExamProposalMap = { ...prev };
@@ -156,19 +224,42 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
         };
       });
       saveYearExamProposals(academicYear, merged);
+      saveYearExamProposalsToCloud(academicYear, merged, 'Quản trị viên (Gợi ý tự động)').then((ok) => {
+        setCloudSyncStatus(ok ? 'synced' : 'offline');
+        if (ok) setLastSyncedAt(Date.now());
+      });
       return merged;
     });
-    onShowToast?.(`Đã tự động đề xuất người ra đề Giữa HK1 theo số lớp phụ trách cho ${Object.keys(auto).length} môn/khối!`);
+    onShowToast?.(`Đã tự động đề xuất và lưu lên đám mây Firestore cho ${Object.keys(auto).length} môn/khối!`);
   };
 
   // Reset proposals
   const handleResetProposals = () => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa toàn bộ danh sách đề xuất người ra đề của năm học này?')) {
+    if (window.confirm('Bạn có chắc chắn muốn xóa toàn bộ danh sách đề xuất người ra đề trên máy chủ đám mây của năm học này?')) {
+      setCloudSyncStatus('syncing');
       setProposals({});
       saveYearExamProposals(academicYear, {});
-      onShowToast?.('Đã đặt lại danh sách đề xuất người ra đề!');
+      saveYearExamProposalsToCloud(academicYear, {}, 'Quản trị viên (Đặt lại)').then((ok) => {
+        setCloudSyncStatus(ok ? 'synced' : 'offline');
+        if (ok) setLastSyncedAt(Date.now());
+      });
+      onShowToast?.('Đã đặt lại danh sách đề xuất người ra đề trên máy chủ đám mây!');
     }
   };
+
+  // Manual cloud force sync
+  const handleManualSyncCloud = async () => {
+    setCloudSyncStatus('syncing');
+    const ok = await saveYearExamProposalsToCloud(academicYear, proposals, 'Quản trị viên (Đồng bộ thủ công)');
+    setCloudSyncStatus(ok ? 'synced' : 'offline');
+    if (ok) {
+      setLastSyncedAt(Date.now());
+      onShowToast?.('☁️ Đã đồng bộ thành công dữ liệu phân công lên đám mây Firestore!');
+    } else {
+      onShowToast?.('⚠️ Không thể kết nối máy chủ đám mây. Dữ liệu vẫn được lưu an toàn trên máy này.');
+    }
+  };
+
 
   // Export Excel action
   const [isExporting, setIsExporting] = useState(false);
@@ -271,6 +362,27 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
                 <ShieldCheck className="w-3.5 h-3.5 text-rose-600" />
                 Bảo mật BGH • Chỉ Quản trị viên
               </span>
+              {cloudSyncStatus === 'synced' && (
+                <span
+                  title={lastSyncedAt ? `Lần cuối lưu đám mây: ${new Date(lastSyncedAt).toLocaleTimeString('vi-VN')} (${lastSyncedBy})` : 'Đã đồng bộ đám mây'}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-2xs"
+                >
+                  <CloudCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Đã lưu đám mây Firestore • Tự động đồng bộ mọi thiết bị</span>
+                </span>
+              )}
+              {cloudSyncStatus === 'syncing' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-800 border border-blue-300 shadow-2xs animate-pulse">
+                  <RefreshCw className="w-3.5 h-3.5 text-blue-600 animate-spin" />
+                  <span>Đang đồng bộ lên đám mây...</span>
+                </span>
+              )}
+              {cloudSyncStatus === 'offline' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-300 shadow-2xs">
+                  <CloudOff className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Đã lưu trên máy này (Chờ mạng đồng bộ)</span>
+                </span>
+              )}
               <span className="text-xs text-slate-500 font-medium hidden sm:inline">
                 Năm học: <strong className="text-slate-800">{academicYear}</strong>
               </span>
@@ -279,16 +391,22 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
               Bảng Đề Xuất Người Ra Đề Kiểm Tra Tập Trung
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
-              Thống kê số lớp phụ trách theo môn, theo khối và giáo viên giảng dạy. Bố trí gọn gàng 4 đợt kiểm tra trong cùng 1 ô: 
-              <strong className="text-indigo-700 font-bold ml-1">Giữa HK1 (hiện tại)</strong>, 
-              <span className="text-slate-700 font-medium ml-1">Học kỳ 1</span>, 
-              <span className="text-slate-700 font-medium ml-1">Giữa HK2</span> và 
-              <span className="text-slate-700 font-medium ml-1">Học kỳ 2</span>.
+              Thống kê số lớp phụ trách theo môn, theo khối và giáo viên giảng dạy. Dữ liệu được lưu trữ tự động trên <strong>Google Cloud Firestore</strong> — phân công trên bất kỳ máy tính nào cũng sẽ đồng bộ tức thì trên mọi máy tính khác.
             </p>
           </div>
 
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-2 print:hidden shrink-0">
+            <button
+              onClick={handleManualSyncCloud}
+              disabled={cloudSyncStatus === 'syncing'}
+              title="Đồng bộ ngay dữ liệu lên Google Cloud Firestore để mở trên máy tính khác"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs hover:shadow transition-all cursor-pointer disabled:opacity-50"
+            >
+              <MonitorCloud className="w-3.5 h-3.5" />
+              <span>{cloudSyncStatus === 'syncing' ? 'Đang đồng bộ...' : 'Đồng bộ đám mây'}</span>
+            </button>
+
             <button
               onClick={handleAutoProposeGK1}
               title="Tự động gợi ý người dạy nhiều lớp nhất khối làm đề Giữa HK1"
@@ -327,6 +445,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
             </button>
           </div>
         </div>
+
 
         {/* Progress & Period Focus Note */}
         <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs print:hidden">

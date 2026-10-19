@@ -1,4 +1,6 @@
 import { ClassGroup, Subject, Teacher, Assignment, TimetableSlot, SchoolLevel, GradeLevel } from '../types';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { db, handleFirestoreError, OperationType } from '../firebase';
 
 export interface SubjectRule {
   key: string;
@@ -350,10 +352,114 @@ export function getYearExamProposalsStorageKey(academicYear: string): string {
   return `docbinhkieu_year_exam_proposals_${cleanYear}`;
 }
 
+export function getExamProposalsDocId(academicYear: string): string {
+  return academicYear.trim().replace(/[^a-zA-Z0-9]/g, '_');
+}
+
 /**
- * Load exam proposals for all 4 periods from localStorage
+ * Real-time listener for exam proposals from Firestore cloud database
+ */
+export function subscribeYearExamProposals(
+  academicYear: string,
+  onUpdate: (proposals: YearExamProposalMap, updatedAt?: number, updatedBy?: string) => void,
+  onError?: (err: unknown) => void
+): () => void {
+  const docId = getExamProposalsDocId(academicYear);
+  const path = `exam_proposals/${docId}`;
+  const docRef = doc(db, 'exam_proposals', docId);
+
+  return onSnapshot(
+    docRef,
+    (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.data();
+        const proposals = (data.proposals || {}) as YearExamProposalMap;
+        onUpdate(proposals, data.updatedAt, data.lastUpdatedBy);
+      } else {
+        // Document doesn't exist yet on cloud
+        onUpdate({}, undefined, undefined);
+      }
+    },
+    (error) => {
+      console.warn('[Firestore] Realtime subscription error:', error);
+      onError?.(error);
+      try {
+        handleFirestoreError(error, OperationType.GET, path);
+      } catch (e) {
+        // Log handled error without crashing app
+      }
+    }
+  );
+}
+
+/**
+ * Fetch exam proposals directly from Firestore
+ */
+export async function fetchYearExamProposalsFromCloud(academicYear: string): Promise<YearExamProposalMap | null> {
+  const docId = getExamProposalsDocId(academicYear);
+  const path = `exam_proposals/${docId}`;
+  try {
+    const docRef = doc(db, 'exam_proposals', docId);
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      return (data.proposals || {}) as YearExamProposalMap;
+    }
+    return null;
+  } catch (error) {
+    console.warn('[Firestore] Failed to fetch exam proposals from cloud:', error);
+    try {
+      handleFirestoreError(error, OperationType.GET, path);
+    } catch (e) {
+      // Ignored
+    }
+    return null;
+  }
+}
+
+/**
+ * Save exam proposals to Firestore cloud database (synchronized across all computers)
+ */
+export async function saveYearExamProposalsToCloud(
+  academicYear: string,
+  map: YearExamProposalMap,
+  lastUpdatedBy = 'Ban Giám hiệu'
+): Promise<boolean> {
+  const docId = getExamProposalsDocId(academicYear);
+  const path = `exam_proposals/${docId}`;
+  try {
+    const docRef = doc(db, 'exam_proposals', docId);
+    await setDoc(
+      docRef,
+      {
+        academicYear,
+        proposals: map,
+        updatedAt: Date.now(),
+        lastUpdatedBy,
+      },
+      { merge: true }
+    );
+    // Also save to localStorage as instant offline cache
+    saveYearExamProposals(academicYear, map);
+    return true;
+  } catch (error) {
+    console.error('[Firestore] Failed to save exam proposals to cloud:', error);
+    try {
+      handleFirestoreError(error, OperationType.WRITE, path);
+    } catch (e) {
+      // Ignored
+    }
+    return false;
+  }
+}
+
+/**
+ * Load exam proposals for all 4 periods from localStorage (instant cache)
  */
 export function loadYearExamProposals(academicYear: string): YearExamProposalMap {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return {};
+  }
   try {
     const key = getYearExamProposalsStorageKey(academicYear);
     const data = localStorage.getItem(key);
@@ -386,9 +492,12 @@ export function loadYearExamProposals(academicYear: string): YearExamProposalMap
 }
 
 /**
- * Save exam proposals for all 4 periods to localStorage
+ * Save exam proposals for all 4 periods to localStorage (offline cache)
  */
 export function saveYearExamProposals(academicYear: string, map: YearExamProposalMap): void {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return;
+  }
   try {
     const key = getYearExamProposalsStorageKey(academicYear);
     localStorage.setItem(key, JSON.stringify(map));
@@ -396,6 +505,8 @@ export function saveYearExamProposals(academicYear: string, map: YearExamProposa
     console.error('Failed to save year exam proposals', e);
   }
 }
+
+
 
 /**
  * Auto propose exam makers for Giữa HK1 (based on highest teaching load in the grade)
