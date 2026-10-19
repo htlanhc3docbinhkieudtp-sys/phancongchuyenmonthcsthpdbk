@@ -347,6 +347,10 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
     return Array.from(map.entries()).map(([key, name]) => ({ key, name }));
   }, [allExamItems]);
 
+  const thcsCount = useMemo(() => allExamItems.filter(i => i.level === 'THCS').length, [allExamItems]);
+  const thptCount = useMemo(() => allExamItems.filter(i => i.level === 'THPT').length, [allExamItems]);
+
+
   return (
     <div className="space-y-5 pb-16 print:p-0 print:m-0 print:space-y-4">
       {/* 1. Header Banner & Security Badge */}
@@ -491,7 +495,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
             <span className="text-xs text-slate-500">môn/khối</span>
           </div>
           <div className="mt-0.5 text-[11px] text-slate-500">
-            THCS: 24 môn • THPT: 33 môn
+            THCS: {thcsCount} môn • THPT: {thptCount} môn
           </div>
         </div>
 
@@ -540,10 +544,10 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
             </span>
           </div>
           <div className="mt-1.5 flex items-baseline gap-2">
-            <span className="text-2xl font-black text-slate-900">11 môn THPT</span>
+            <span className="text-2xl font-black text-slate-900">{allExamItems.length} môn-khối</span>
           </div>
           <div className="mt-0.5 text-[11px] text-slate-500">
-            6 môn THCS kiểm tra tập trung
+            6 môn THCS • 10-11 môn THPT
           </div>
         </div>
       </div>
@@ -588,7 +592,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
                   levelFilter === 'THCS' ? 'bg-white text-blue-700 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Cấp THCS (24)
+                Cấp THCS ({thcsCount})
               </button>
               <button
                 onClick={() => setLevelFilter('THPT')}
@@ -596,7 +600,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
                   levelFilter === 'THPT' ? 'bg-white text-purple-700 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Cấp THPT (33)
+                Cấp THPT ({thptCount})
               </button>
             </div>
 

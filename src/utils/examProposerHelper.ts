@@ -195,6 +195,11 @@ export function buildFocusedExamItems(
     const gradeClassIds = new Set(gradeClasses.map(c => c.id));
 
     for (const subRule of THPT_EXAM_SUBJECTS) {
+      // Môn Công nghệ khối 10 và khối 11 không có học sinh lựa chọn học nên loại bỏ khỏi danh sách ra đề kiểm tra
+      if (subRule.key === 'cn' && (grade === '10' || grade === '11')) {
+        continue;
+      }
+
       const stats = extractTeachersForSubjectAndGrade(
         gradeClassIds,
         subRule.matchSubjectIds,
