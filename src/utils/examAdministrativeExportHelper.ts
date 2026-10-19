@@ -11,11 +11,11 @@ export interface AdministrativeExportOptions {
 }
 
 const DEFAULT_OPTIONS: Required<AdministrativeExportOptions> = {
-  decisionNumber: '       /QĐ-THCS&THPTĐBK',
-  decisionDateText: 'ngày 20 tháng 10 năm 2026',
-  examDaysText: 'Từ ngày 27/10/2026 đến ngày 31/10/2026',
-  submissionDeadlineText: '16h00 ngày 24/10/2026',
-  locationDateText: 'Tháp Mười, ngày 20 tháng 10 năm 2026',
+  decisionNumber: '50/KH-THCS&THPTĐBK',
+  decisionDateText: 'ngày 16 tháng 10 năm 2026',
+  examDaysText: 'Tuần 9: Từ 02/11/2026 đến 06/11/2026',
+  submissionDeadlineText: 'Trước 17h00 ngày 25/10/2026 (nộp cho PHT Nguyễn Minh Trí)',
+  locationDateText: 'Đồng Tháp, ngày 16 tháng 10 năm 2026',
 };
 
 // Chuẩn đường viền bảng

@@ -26,7 +26,9 @@ import {
   ClipboardCheck,
   FileCheck,
   Settings2,
-  ChevronDown
+  ChevronDown,
+  Mail,
+  FileText,
 } from 'lucide-react';
 import {
   Department,
@@ -56,6 +58,8 @@ import {
   exportFullMidTerm1DossierExcel,
   AdministrativeExportOptions
 } from '../utils/examAdministrativeExportHelper';
+import { MidTermPlanModal } from './MidTermPlanModal';
+import { TeacherEmailNotificationModal } from './TeacherEmailNotificationModal';
 
 
 
@@ -69,6 +73,7 @@ interface ExamProposerViewProps {
   timetable?: SchoolTimetable;
   weeklyTimetables?: Record<number, SchoolTimetable>;
   currentWeek?: number;
+  onUpdateTeacherEmail?: (teacherId: string, email: string) => void;
   onShowToast?: (msg: string) => void;
 }
 
@@ -80,9 +85,9 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
   departments = initialDepartments,
   assignments,
   timetable,
-
   weeklyTimetables,
   currentWeek = 7,
+  onUpdateTeacherEmail,
   onShowToast,
 }) => {
   const academicYear = config.academicYear || '2026 - 2027';
@@ -278,14 +283,17 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
   };
 
 
-  // Administrative Export Modal & Options State
+  // Modals State
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+
   const [adminExportOptions, setAdminExportOptions] = useState<AdministrativeExportOptions>({
-    decisionNumber: '       /QĐ-THCS&THPTĐBK',
-    decisionDateText: 'ngày 20 tháng 10 năm 2026',
-    examDaysText: 'Từ ngày 27/10/2026 đến ngày 31/10/2026',
-    submissionDeadlineText: '16h00 ngày 24/10/2026',
-    locationDateText: 'Tháp Mười, ngày 20 tháng 10 năm 2026',
+    decisionNumber: '50/KH-THCS&THPTĐBK',
+    decisionDateText: 'ngày 16 tháng 10 năm 2026',
+    examDaysText: 'Tuần 9: Từ 02/11/2026 đến 06/11/2026',
+    submissionDeadlineText: 'Trước 17h00 ngày 25/10/2026 (nộp cho PHT Nguyễn Minh Trí)',
+    locationDateText: 'Đồng Tháp, ngày 16 tháng 10 năm 2026',
   });
 
   // Export Excel action (Full Year 4 periods)
@@ -471,6 +479,26 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
 
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-2 print:hidden shrink-0">
+            {/* 0.1 NÚT XEM KẾ HOẠCH 50/KH */}
+            <button
+              onClick={() => setIsPlanModalOpen(true)}
+              title="Xem chi tiết Kế hoạch 50/KH-THCS&THPTĐBK (Lịch thi Tuần 9, thời lượng, quy định ra đề, hạn nộp đề)"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 transition-all cursor-pointer"
+            >
+              <FileText className="w-3.5 h-3.5 text-blue-600" />
+              <span>Kế hoạch 50/KH</span>
+            </button>
+
+            {/* 0.2 NÚT GỬI EMAIL PHÂN CÔNG RA ĐỀ BẢO MẬT (1-1) */}
+            <button
+              onClick={() => setIsEmailModalOpen(true)}
+              title="Xem và gửi email thông báo phân công ra đề bảo mật riêng cho từng giáo viên (1-1)"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-xs hover:shadow transition-all cursor-pointer"
+            >
+              <Mail className="w-3.5 h-3.5 text-amber-300" />
+              <span>Gửi Email Ra Đề (Mật)</span>
+            </button>
+
             {/* 1. NÚT CHÍNH: XUẤT EXCEL PHÂN CÔNG COI KIỂM TRA (A4) */}
             <button
               onClick={handleExportInvigilation}
@@ -1386,6 +1414,23 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal: Toàn văn & Lịch thi Kế hoạch 50/KH */}
+      <MidTermPlanModal
+        isOpen={isPlanModalOpen}
+        onClose={() => setIsPlanModalOpen(false)}
+      />
+
+      {/* Modal: Gửi Email Phân Công Ra Đề MẬT cho từng giáo viên */}
+      <TeacherEmailNotificationModal
+        isOpen={isEmailModalOpen}
+        onClose={() => setIsEmailModalOpen(false)}
+        items={filteredItems}
+        proposals={proposals}
+        teachers={teachers}
+        onUpdateTeacherEmail={onUpdateTeacherEmail}
+        onShowToast={onShowToast}
+      />
     </div>
   );
 };

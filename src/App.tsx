@@ -1151,6 +1151,18 @@ export default function App() {
     setTeachers(prev => prev.map(t => (t.id === updatedTeacher.id ? updatedTeacher : t)));
   };
 
+  const handleUpdateTeacherEmail = (teacherId: string, email: string) => {
+    setTeachers(prev => {
+      const updated = prev.map(t => (t.id === teacherId ? { ...t, email } : t));
+      try {
+        localStorage.setItem(`${STORAGE_KEY}_teachers`, JSON.stringify(updated));
+      } catch (e) {
+        console.warn('Failed to persist teachers update:', e);
+      }
+      return updated;
+    });
+  };
+
   const handleDeleteTeacher = (teacherId: string) => {
     setTeachers(prev => prev.filter(t => t.id !== teacherId));
     setAssignments(prev => prev.filter(a => a.teacherId !== teacherId));
@@ -2002,6 +2014,7 @@ export default function App() {
               timetable={timetable}
               weeklyTimetables={weeklyTimetables}
               currentWeek={currentWeek}
+              onUpdateTeacherEmail={handleUpdateTeacherEmail}
               onShowToast={showToast}
             />
           ) : (

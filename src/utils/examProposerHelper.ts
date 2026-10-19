@@ -241,7 +241,7 @@ export function buildFocusedExamItems(
         gradeClasses,
         teachers: stats,
         otherSubjectTeachers: otherTeachers,
-        defaultDuration: subRule.defaultDuration,
+        defaultDuration: (grade === '12' && !['van', 'toan', 'anh'].includes(subRule.key)) ? 50 : subRule.defaultDuration,
         defaultFormat: subRule.defaultFormat,
       });
     }
