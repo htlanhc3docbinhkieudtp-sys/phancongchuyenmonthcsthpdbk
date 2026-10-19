@@ -21,9 +21,15 @@ import {
   CloudUpload,
   CloudOff,
   RefreshCw,
-  MonitorCloud
+  MonitorCloud,
+  FileSpreadsheet,
+  ClipboardCheck,
+  FileCheck,
+  Settings2,
+  ChevronDown
 } from 'lucide-react';
 import {
+  Department,
   ClassGroup,
   Subject,
   Teacher,
@@ -32,6 +38,7 @@ import {
   SchoolConfig,
   SchoolTimetable
 } from '../types';
+import { initialDepartments } from '../data/initialData';
 import {
   FocusedExamSubjectItem,
   YearExamProposalMap,
@@ -43,6 +50,13 @@ import {
   subscribeYearExamProposals,
   saveYearExamProposalsToCloud
 } from '../utils/examProposerHelper';
+import {
+  exportMidTerm1ExamInvigilationExcel,
+  exportMidTerm1ExamMakerExcel,
+  exportFullMidTerm1DossierExcel,
+  AdministrativeExportOptions
+} from '../utils/examAdministrativeExportHelper';
+
 
 
 interface ExamProposerViewProps {
@@ -50,6 +64,7 @@ interface ExamProposerViewProps {
   classes: ClassGroup[];
   subjects: Subject[];
   teachers: Teacher[];
+  departments?: Department[];
   assignments: Assignment[];
   timetable?: SchoolTimetable;
   weeklyTimetables?: Record<number, SchoolTimetable>;
@@ -62,8 +77,10 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
   classes,
   subjects,
   teachers,
+  departments = initialDepartments,
   assignments,
   timetable,
+
   weeklyTimetables,
   currentWeek = 7,
   onShowToast,
@@ -261,7 +278,17 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
   };
 
 
-  // Export Excel action
+  // Administrative Export Modal & Options State
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [adminExportOptions, setAdminExportOptions] = useState<AdministrativeExportOptions>({
+    decisionNumber: '       /QĐ-THCS&THPTĐBK',
+    decisionDateText: 'ngày 20 tháng 10 năm 2026',
+    examDaysText: 'Từ ngày 27/10/2026 đến ngày 31/10/2026',
+    submissionDeadlineText: '16h00 ngày 24/10/2026',
+    locationDateText: 'Tháp Mười, ngày 20 tháng 10 năm 2026',
+  });
+
+  // Export Excel action (Full Year 4 periods)
   const [isExporting, setIsExporting] = useState(false);
   const handleExportExcel = async () => {
     try {
@@ -275,6 +302,49 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
       setIsExporting(false);
     }
   };
+
+  // Export 1: Phân công COI KIỂM TRA Giữa HK1 (Chuẩn A4, Nghị định 30)
+  const handleExportInvigilation = async () => {
+    try {
+      setIsExporting(true);
+      await exportMidTerm1ExamInvigilationExcel(teachers, departments, academicYear, adminExportOptions);
+      onShowToast?.('📋 Đã xuất thành công file Excel Bảng phân công coi kiểm tra Giữa HK1 (Khổ A4)!');
+    } catch (err) {
+      console.error(err);
+      onShowToast?.('Có lỗi khi xuất file Excel phân công coi kiểm tra');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // Export 2: Phân công RA ĐỀ Giữa HK1 (Chuẩn A4, Nghị định 30)
+  const handleExportExamMaker = async () => {
+    try {
+      setIsExporting(true);
+      await exportMidTerm1ExamMakerExcel(filteredItems, proposals, academicYear, adminExportOptions);
+      onShowToast?.('📄 Đã xuất thành công file Excel Bảng phân công ra đề Giữa HK1 (Khổ A4)!');
+    } catch (err) {
+      console.error(err);
+      onShowToast?.('Có lỗi khi xuất file Excel phân công ra đề');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // Export 3: Trọn bộ Hồ sơ Ban Ra đề & Coi thi Giữa HK1 (2 sheet A4)
+  const handleExportFullDossier = async () => {
+    try {
+      setIsExporting(true);
+      await exportFullMidTerm1DossierExcel(filteredItems, proposals, teachers, departments, academicYear, adminExportOptions);
+      onShowToast?.('📑 Đã xuất trọn bộ Hồ sơ Ban ra đề & Coi kiểm tra Giữa HK1 (2 Sheet A4)!');
+    } catch (err) {
+      console.error(err);
+      onShowToast?.('Có lỗi khi xuất trọn bộ hồ sơ');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
 
   // Filtered items
   const filteredItems = useMemo(() => {
@@ -401,51 +471,76 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
 
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-2 print:hidden shrink-0">
+            {/* 1. NÚT CHÍNH: XUẤT EXCEL PHÂN CÔNG COI KIỂM TRA (A4) */}
+            <button
+              onClick={handleExportInvigilation}
+              disabled={isExporting}
+              title="Xuất file Excel Phân công coi kiểm tra Giữa HK1 (Khổ A4, Thể thức Văn bản Hành chính)"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-teal-600 hover:bg-teal-700 text-white shadow-xs hover:shadow transition-all cursor-pointer disabled:opacity-50"
+            >
+              <ClipboardCheck className="w-3.5 h-3.5" />
+              <span>{isExporting ? 'Đang xuất...' : 'Xuất Excel Coi Thi (A4)'}</span>
+            </button>
+
+            {/* 2. XUẤT EXCEL PHÂN CÔNG RA ĐỀ (A4) */}
+            <button
+              onClick={handleExportExamMaker}
+              disabled={isExporting}
+              title="Xuất file Excel Phân công giáo viên ra đề Giữa HK1 (Khổ A4, Thể thức Văn bản Hành chính)"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow transition-all cursor-pointer disabled:opacity-50"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <span>{isExporting ? 'Đang xuất...' : 'Xuất Excel Ra Đề (A4)'}</span>
+            </button>
+
+            {/* 3. TÙY CHỌN HỒ SƠ A4 & XUẤT TRỌN BỘ */}
+            <button
+              onClick={() => setIsExportModalOpen(true)}
+              title="Mở bảng tùy chọn hồ sơ, trích yếu, số quyết định và xuất trọn bộ hồ sơ A4"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200 transition-all cursor-pointer"
+            >
+              <Settings2 className="w-3.5 h-3.5 text-slate-500" />
+              <span>Hồ sơ A4 & Tùy chọn</span>
+            </button>
+
+            {/* 4. GỢI Ý TỰ ĐỘNG GIỮA HK1 */}
+            <button
+              onClick={handleAutoProposeGK1}
+              title="Tự động gợi ý người dạy nhiều lớp nhất khối làm đề Giữa HK1"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-amber-500 hover:bg-amber-600 text-white shadow-xs hover:shadow transition-all cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Gợi ý tự động</span>
+            </button>
+
+            {/* 5. ĐỒNG BỘ ĐÁM MÂY */}
             <button
               onClick={handleManualSyncCloud}
               disabled={cloudSyncStatus === 'syncing'}
               title="Đồng bộ ngay dữ liệu lên Google Cloud Firestore để mở trên máy tính khác"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs hover:shadow transition-all cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs hover:shadow transition-all cursor-pointer disabled:opacity-50"
             >
               <MonitorCloud className="w-3.5 h-3.5" />
-              <span>{cloudSyncStatus === 'syncing' ? 'Đang đồng bộ...' : 'Đồng bộ đám mây'}</span>
+              <span>{cloudSyncStatus === 'syncing' ? 'Đang lưu...' : 'Lưu Đám Mây'}</span>
             </button>
 
-            <button
-              onClick={handleAutoProposeGK1}
-              title="Tự động gợi ý người dạy nhiều lớp nhất khối làm đề Giữa HK1"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-amber-500 hover:bg-amber-600 text-white shadow-xs hover:shadow transition-all cursor-pointer"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Gợi ý tự động Giữa HK1</span>
-            </button>
-
-            <button
-              onClick={handleExportExcel}
-              disabled={isExporting}
-              title="Xuất bảng phân công ra file Excel"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow transition-all cursor-pointer disabled:opacity-50"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>{isExporting ? 'Đang xuất...' : 'Xuất Excel'}</span>
-            </button>
-
+            {/* 6. IN BẢNG TRỰC TIẾP */}
             <button
               onClick={() => window.print()}
               title="In bảng phân công ra đề"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-slate-700 hover:bg-slate-800 text-white shadow-xs hover:shadow transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-slate-700 hover:bg-slate-800 text-white shadow-xs hover:shadow transition-all cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>In bảng</span>
             </button>
 
+            {/* 7. ĐẶT LẠI */}
             <button
               onClick={handleResetProposals}
               title="Đặt lại đề xuất"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-2.5 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 transition-all cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Đặt lại</span>
             </button>
           </div>
         </div>
@@ -1059,6 +1154,239 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
           <div className="font-bold text-slate-800">Lê Thanh Cường</div>
         </div>
       </div>
+
+      {/* 7. Modal: Tùy Chọn & Xuất File Excel Hồ Sơ Ban Ra Đề - Coi Kiểm Tra Giữa HK1 (Khổ A4) */}
+      {isExportModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-3xl w-full p-6 sm:p-7 space-y-6 my-8 animate-in fade-in zoom-in duration-200">
+            {/* Header */}
+            <div className="flex items-start justify-between border-b border-slate-100 pb-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="p-1.5 bg-teal-50 text-teal-700 rounded-lg">
+                    <ClipboardCheck className="w-5 h-5" />
+                  </span>
+                  <h3 className="text-lg sm:text-xl font-black text-slate-900">
+                    Xuất File Excel Hồ Sơ Ban Ra Đề & Coi Kiểm Tra Giữa HK1
+                  </h3>
+                </div>
+                <p className="text-xs text-slate-500">
+                  Thiết kế theo khổ giấy A4 (210 x 297 mm), căn lề 2.0cm, vẽ bảng đẹp mắt, viền nét mảnh rõ nét, thể thức chuẩn văn bản hành chính nhà nước (Nghị định 30/2020/NĐ-CP).
+                </p>
+              </div>
+              <button
+                onClick={() => setIsExportModalOpen(false)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Thông số thể thức hành chính tùy chỉnh */}
+            <div className="bg-slate-50/80 rounded-2xl border border-slate-200/80 p-4 space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <Settings2 className="w-4 h-4 text-indigo-600" />
+                <span>Thông tin thể thức trên văn bản (Có thể điều chỉnh trước khi in):</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="block font-semibold text-slate-600 mb-1">Số Quyết định thành lập ban:</label>
+                  <input
+                    type="text"
+                    value={adminExportOptions.decisionNumber}
+                    onChange={e => setAdminExportOptions(prev => ({ ...prev, decisionNumber: e.target.value }))}
+                    placeholder="       /QĐ-THCS&THPTĐBK"
+                    className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl font-medium text-slate-800"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-600 mb-1">Ngày ký Quyết định:</label>
+                  <input
+                    type="text"
+                    value={adminExportOptions.decisionDateText}
+                    onChange={e => setAdminExportOptions(prev => ({ ...prev, decisionDateText: e.target.value }))}
+                    placeholder="ngày 20 tháng 10 năm 2026"
+                    className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl font-medium text-slate-800"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-600 mb-1">Thời gian kiểm tra tập trung:</label>
+                  <input
+                    type="text"
+                    value={adminExportOptions.examDaysText}
+                    onChange={e => setAdminExportOptions(prev => ({ ...prev, examDaysText: e.target.value }))}
+                    placeholder="Từ ngày 27/10/2026 đến ngày 31/10/2026"
+                    className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl font-medium text-slate-800"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-600 mb-1">Hạn chót nộp đề niêm phong:</label>
+                  <input
+                    type="text"
+                    value={adminExportOptions.submissionDeadlineText}
+                    onChange={e => setAdminExportOptions(prev => ({ ...prev, submissionDeadlineText: e.target.value }))}
+                    placeholder="16h00 ngày 24/10/2026"
+                    className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl font-medium text-slate-800"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block font-semibold text-slate-600 mb-1">Địa danh & ngày tháng ban hành:</label>
+                  <input
+                    type="text"
+                    value={adminExportOptions.locationDateText}
+                    onChange={e => setAdminExportOptions(prev => ({ ...prev, locationDateText: e.target.value }))}
+                    placeholder="Tháp Mười, ngày 20 tháng 10 năm 2026"
+                    className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl font-medium text-slate-800"
+                  />
+                </div>
+              </div>
+
+              {/* Standard compliance badges */}
+              <div className="pt-2 flex flex-wrap gap-2 text-[11px] text-slate-600">
+                <span className="px-2.5 py-1 bg-white rounded-lg border border-slate-200 font-semibold text-emerald-700">
+                  ✓ Khổ giấy A4 (210 x 297mm)
+                </span>
+                <span className="px-2.5 py-1 bg-white rounded-lg border border-slate-200 font-semibold text-emerald-700">
+                  ✓ Căn lề chuẩn: Trái 2.0cm, Phải 1.5cm, Trên 2.0cm, Dưới 2.0cm
+                </span>
+                <span className="px-2.5 py-1 bg-white rounded-lg border border-slate-200 font-semibold text-emerald-700">
+                  ✓ Font chuẩn Times New Roman
+                </span>
+                <span className="px-2.5 py-1 bg-white rounded-lg border border-slate-200 font-semibold text-emerald-700">
+                  ✓ Kẻ viền bảng rõ nét, có cột ký nhận
+                </span>
+              </div>
+            </div>
+
+            {/* 3 Download Action Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              {/* Card 1: Coi thi */}
+              <div className="p-4 rounded-2xl border border-teal-200 bg-teal-50/40 space-y-2.5 flex flex-col justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5 text-teal-800 font-bold text-xs uppercase">
+                    <ClipboardCheck className="w-4 h-4 text-teal-600" />
+                    <span>1. Phân Công Coi Kiểm Tra</span>
+                  </div>
+                  <h4 className="text-sm font-black text-slate-900">
+                    Bảng Phân Công Coi Kiểm Tra Giữa HK1
+                  </h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Phân công toàn bộ <strong>{teachers.length} cán bộ, giáo viên</strong> trong trường làm nhiệm vụ Trưởng ban, Phó ban, Thư ký, Giám thị coi thi sáng/chiều, phòng thi, có cột ký nhận nhiệm vụ.
+                  </p>
+                </div>
+                <button
+                  onClick={async () => {
+                    await handleExportInvigilation();
+                    setIsExportModalOpen(false);
+                  }}
+                  disabled={isExporting}
+                  className="w-full py-2.5 px-3 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Tải Bảng Coi Thi (Khổ A4)</span>
+                </button>
+              </div>
+
+              {/* Card 2: Ra đề */}
+              <div className="p-4 rounded-2xl border border-emerald-200 bg-emerald-50/40 space-y-2.5 flex flex-col justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5 text-emerald-800 font-bold text-xs uppercase">
+                    <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                    <span>2. Phân Công Ra Đề</span>
+                  </div>
+                  <h4 className="text-sm font-black text-slate-900">
+                    Bảng Phân Công Ra Đề Giữa HK1
+                  </h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Gồm <strong>{filteredItems.length} môn-khối</strong> kiểm tra tập trung, tên giáo viên ra đề được chỉ định, thời lượng, hình thức, hạn nộp đề, có cột ký bàn giao đề niêm phong.
+                  </p>
+                </div>
+                <button
+                  onClick={async () => {
+                    await handleExportExamMaker();
+                    setIsExportModalOpen(false);
+                  }}
+                  disabled={isExporting}
+                  className="w-full py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Tải Bảng Ra Đề (Khổ A4)</span>
+                </button>
+              </div>
+
+              {/* Card 3: Trọn bộ 2 sheet */}
+              <div className="p-4 rounded-2xl border border-indigo-200 bg-indigo-50/40 space-y-2.5 flex flex-col justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5 text-indigo-800 font-bold text-xs uppercase">
+                    <FileCheck className="w-4 h-4 text-indigo-600" />
+                    <span>3. Trọn Bộ Hồ Sơ Ban (2 Sheet)</span>
+                  </div>
+                  <h4 className="text-sm font-black text-slate-900">
+                    Hồ Sơ Ban Ra Đề & Coi Kiểm Tra
+                  </h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Gộp cả <strong>2 bảng Coi thi & Ra đề</strong> vào cùng 1 file Excel (2 sheet A4 riêng biệt) để in ấn trọn bộ lưu vào hồ sơ kiểm tra.
+                  </p>
+                </div>
+                <button
+                  onClick={async () => {
+                    await handleExportFullDossier();
+                    setIsExportModalOpen(false);
+                  }}
+                  disabled={isExporting}
+                  className="w-full py-2.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Tải Trọn Bộ 2 Sheet (Khổ A4)</span>
+                </button>
+              </div>
+
+              {/* Card 4: Tổng hợp 4 đợt cả năm */}
+              <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 space-y-2.5 flex flex-col justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5 text-slate-700 font-bold text-xs uppercase">
+                    <Calendar className="w-4 h-4 text-slate-600" />
+                    <span>4. Kế Hoạch 4 Đợt Cả Năm</span>
+                  </div>
+                  <h4 className="text-sm font-black text-slate-900">
+                    Bảng Phân Công 4 Đợt Kiểm Tra
+                  </h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    File tổng hợp ma trận phân công người ra đề qua cả 4 đợt (Giữa HK1, Cuối HK1, Giữa HK2, Cuối HK2).
+                  </p>
+                </div>
+                <button
+                  onClick={async () => {
+                    await handleExportExcel();
+                    setIsExportModalOpen(false);
+                  }}
+                  disabled={isExporting}
+                  className="w-full py-2.5 px-3 bg-slate-700 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Tải Bảng 4 Đợt Cả Năm</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-end">
+              <button
+                onClick={() => setIsExportModalOpen(false)}
+                className="px-5 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-all cursor-pointer"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+
