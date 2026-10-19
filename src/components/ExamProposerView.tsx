@@ -431,354 +431,295 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
 
   return (
     <div className="space-y-5 pb-16 print:p-0 print:m-0 print:space-y-4">
-      {/* 1. Header Banner & Security Badge */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 sm:p-6 print:border-none print:shadow-none print:p-0">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      {/* 1. Header Banner & Action Control Bar (Gọn gàng, Cân đối, Không bị dày đặc nút) */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 sm:p-5 print:border-none print:shadow-none print:p-0">
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+          
+          {/* Cụm Tiêu Đề & Huy Hiệu Trạng Thái */}
           <div className="space-y-1.5">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                <FileQuestion className="w-3.5 h-3.5 text-indigo-600" />
-                Kiểm Tra Tập Trung
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <span className="px-2.5 py-0.5 rounded-full font-bold bg-slate-100 text-slate-800 border border-slate-200">
+                Năm học {academicYear}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                <ShieldCheck className="w-3.5 h-3.5 text-rose-600" />
-                Bảo mật BGH • Chỉ Quản trị viên
+              <span className="px-2.5 py-0.5 rounded-full font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                Kế hoạch 50/KH
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full font-bold bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3 text-rose-600" />
+                Bảo mật BGH
               </span>
               {cloudSyncStatus === 'synced' && (
                 <span
                   title={lastSyncedAt ? `Lần cuối lưu đám mây: ${new Date(lastSyncedAt).toLocaleTimeString('vi-VN')} (${lastSyncedBy})` : 'Đã đồng bộ đám mây'}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-2xs"
+                  className="px-2.5 py-0.5 rounded-full font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 flex items-center gap-1"
                 >
-                  <CloudCheck className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Đã lưu đám mây Firestore • Tự động đồng bộ mọi thiết bị</span>
+                  <CloudCheck className="w-3 h-3 text-emerald-600" />
+                  <span>Firestore Cloud ✓</span>
                 </span>
               )}
               {cloudSyncStatus === 'syncing' && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-800 border border-blue-300 shadow-2xs animate-pulse">
-                  <RefreshCw className="w-3.5 h-3.5 text-blue-600 animate-spin" />
-                  <span>Đang đồng bộ lên đám mây...</span>
+                <span className="px-2.5 py-0.5 rounded-full font-bold bg-blue-50 text-blue-800 border border-blue-300 flex items-center gap-1 animate-pulse">
+                  <RefreshCw className="w-3 h-3 text-blue-600 animate-spin" />
+                  <span>Đang đồng bộ...</span>
                 </span>
               )}
               {cloudSyncStatus === 'offline' && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-300 shadow-2xs">
-                  <CloudOff className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Đã lưu trên máy này (Chờ mạng đồng bộ)</span>
+                <span className="px-2.5 py-0.5 rounded-full font-bold bg-amber-50 text-amber-800 border border-amber-300 flex items-center gap-1">
+                  <CloudOff className="w-3 h-3 text-amber-600" />
+                  <span>Đã lưu trên máy</span>
                 </span>
               )}
-              <span className="text-xs text-slate-500 font-medium hidden sm:inline">
-                Năm học: <strong className="text-slate-800">{academicYear}</strong>
-              </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-              Bảng Đề Xuất Người Ra Đề Kiểm Tra Tập Trung
+
+            <h1 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+              <FileQuestion className="w-5 h-5 text-indigo-600 shrink-0" />
+              <span>Bảng Đề Xuất Phân Công Ra Đề Kiểm Tra Tập Trung</span>
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
-              Thống kê số lớp phụ trách theo môn, theo khối và giáo viên giảng dạy. Dữ liệu được lưu trữ tự động trên <strong>Google Cloud Firestore</strong> — phân công trên bất kỳ máy tính nào cũng sẽ đồng bộ tức thì trên mọi máy tính khác.
-            </p>
           </div>
 
-          {/* Action Buttons */}
+          {/* Cụm Tác Vụ: Phân Nhóm Logic (Không dồn 8 nút màu mè thành 1 hàng) */}
           <div className="flex flex-wrap items-center gap-2 print:hidden shrink-0">
-            {/* 0.1 NÚT XEM KẾ HOẠCH 50/KH */}
-            <button
-              onClick={() => setIsPlanModalOpen(true)}
-              title="Xem chi tiết Kế hoạch 50/KH-THCS&THPTĐBK (Lịch thi Tuần 9, thời lượng, quy định ra đề, hạn nộp đề)"
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 transition-all cursor-pointer"
-            >
-              <FileText className="w-3.5 h-3.5 text-blue-600" />
-              <span>Kế hoạch 50/KH</span>
-            </button>
-
-            {/* 0.2 NÚT GỬI EMAIL PHÂN CÔNG RA ĐỀ BẢO MẬT (1-1) */}
+            {/* Nhóm 1: Tác vụ Đề & Email (Nổi bật) */}
             <button
               onClick={() => setIsEmailModalOpen(true)}
-              title="Xem và gửi email thông báo phân công ra đề bảo mật riêng cho từng giáo viên (1-1)"
+              title="Gửi email thông báo phân công ra đề bảo mật riêng cho từng giáo viên (1-1)"
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-xs hover:shadow transition-all cursor-pointer"
             >
               <Mail className="w-3.5 h-3.5 text-amber-300" />
               <span>Gửi Email Ra Đề (Mật)</span>
             </button>
 
-            {/* 1. NÚT CHÍNH: XUẤT EXCEL PHÂN CÔNG COI KIỂM TRA (A4) */}
+            <button
+              onClick={() => setIsPlanModalOpen(true)}
+              title="Xem toàn văn Kế hoạch 50/KH (Lịch thi Tuần 9, thời lượng, hạn nộp đề)"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 transition-all cursor-pointer"
+            >
+              <FileText className="w-3.5 h-3.5 text-blue-600" />
+              <span>Kế hoạch 50/KH</span>
+            </button>
+
+            {/* Phân cách nhẹ */}
+            <div className="h-6 w-px bg-slate-200 mx-0.5 hidden sm:block" />
+
+            {/* Nhóm 2: Xuất bản Excel A4 chuẩn Nghị định 30 */}
             <button
               onClick={handleExportInvigilation}
               disabled={isExporting}
-              title="Xuất file Excel Phân công coi kiểm tra Giữa HK1 (Khổ A4, Thể thức Văn bản Hành chính)"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-teal-600 hover:bg-teal-700 text-white shadow-xs hover:shadow transition-all cursor-pointer disabled:opacity-50"
+              title="Xuất file Excel Phân công coi kiểm tra Giữa HK1 (Khổ A4)"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-teal-600 hover:bg-teal-700 text-white shadow-xs hover:shadow transition-all cursor-pointer disabled:opacity-50"
             >
               <ClipboardCheck className="w-3.5 h-3.5" />
-              <span>{isExporting ? 'Đang xuất...' : 'Xuất Excel Coi Thi (A4)'}</span>
+              <span>Coi Thi (A4)</span>
             </button>
 
-            {/* 2. XUẤT EXCEL PHÂN CÔNG RA ĐỀ (A4) */}
             <button
               onClick={handleExportExamMaker}
               disabled={isExporting}
-              title="Xuất file Excel Phân công giáo viên ra đề Giữa HK1 (Khổ A4, Thể thức Văn bản Hành chính)"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow transition-all cursor-pointer disabled:opacity-50"
+              title="Xuất file Excel Phân công giáo viên ra đề Giữa HK1 (Khổ A4)"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow transition-all cursor-pointer disabled:opacity-50"
             >
               <FileSpreadsheet className="w-3.5 h-3.5" />
-              <span>{isExporting ? 'Đang xuất...' : 'Xuất Excel Ra Đề (A4)'}</span>
+              <span>Ra Đề (A4)</span>
             </button>
 
-            {/* 3. TÙY CHỌN HỒ SƠ A4 & XUẤT TRỌN BỘ */}
             <button
               onClick={() => setIsExportModalOpen(true)}
-              title="Mở bảng tùy chọn hồ sơ, trích yếu, số quyết định và xuất trọn bộ hồ sơ A4"
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200 transition-all cursor-pointer"
+              title="Tùy chọn trích yếu, số quyết định & xuất trọn bộ hồ sơ A4"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all cursor-pointer"
             >
               <Settings2 className="w-3.5 h-3.5 text-slate-500" />
-              <span>Hồ sơ A4 & Tùy chọn</span>
+              <span>Hồ sơ A4</span>
             </button>
 
-            {/* 4. GỢI Ý TỰ ĐỘNG GIỮA HK1 */}
+            {/* Phân cách nhẹ */}
+            <div className="h-6 w-px bg-slate-200 mx-0.5 hidden sm:block" />
+
+            {/* Nhóm 3: Công cụ thao tác nhanh */}
             <button
               onClick={handleAutoProposeGK1}
-              title="Tự động gợi ý người dạy nhiều lớp nhất khối làm đề Giữa HK1"
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-amber-500 hover:bg-amber-600 text-white shadow-xs hover:shadow transition-all cursor-pointer"
+              title="Gợi ý tự động: chọn người dạy nhiều lớp nhất khối cho Giữa HK1"
+              className="inline-flex items-center gap-1.5 px-2.5 py-2 text-xs font-bold rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition-all cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Gợi ý tự động</span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              <span className="hidden md:inline">Gợi ý</span>
             </button>
 
-            {/* 5. ĐỒNG BỘ ĐÁM MÂY */}
             <button
               onClick={handleManualSyncCloud}
               disabled={cloudSyncStatus === 'syncing'}
-              title="Đồng bộ ngay dữ liệu lên Google Cloud Firestore để mở trên máy tính khác"
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs hover:shadow transition-all cursor-pointer disabled:opacity-50"
+              title="Lưu đồng bộ tức thì lên Google Cloud Firestore"
+              className="inline-flex items-center gap-1.5 px-2.5 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all cursor-pointer disabled:opacity-50"
             >
-              <MonitorCloud className="w-3.5 h-3.5" />
-              <span>{cloudSyncStatus === 'syncing' ? 'Đang lưu...' : 'Lưu Đám Mây'}</span>
+              <MonitorCloud className="w-3.5 h-3.5 text-slate-600" />
+              <span className="hidden md:inline">Lưu mây</span>
             </button>
 
-            {/* 6. IN BẢNG TRỰC TIẾP */}
             <button
               onClick={() => window.print()}
-              title="In bảng phân công ra đề"
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-slate-700 hover:bg-slate-800 text-white shadow-xs hover:shadow transition-all cursor-pointer"
+              title="In trực tiếp bảng phân công"
+              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>In bảng</span>
             </button>
 
-            {/* 7. ĐẶT LẠI */}
             <button
               onClick={handleResetProposals}
-              title="Đặt lại đề xuất"
-              className="inline-flex items-center gap-1.5 px-2.5 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 transition-all cursor-pointer"
+              title="Đặt lại toàn bộ phân công"
+              className="p-2 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600 border border-slate-200 transition-all cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
+        {/* 2. Dải Tiến Độ & Tổng Quan Tinh Gọn (Gộp KPI & Tiến Độ vào 1 dải ngang hài hòa) */}
+        <div className="mt-3.5 pt-3 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs print:hidden">
+          {/* Cụm KPI chính */}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-1.5">
+              <span className="text-slate-500 font-medium">Tổng số:</span>
+              <strong className="text-slate-900 font-bold">{allExamItems.length} môn-khối</strong>
+              <span className="text-slate-400 font-normal">({thcsCount} THCS • {thptCount} THPT)</span>
+            </div>
 
-        {/* Progress & Period Focus Note */}
-        <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs print:hidden">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5 text-indigo-500" />
-              Tiến độ 4 đợt trong năm:
-            </span>
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="px-2.5 py-1 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-800 font-black flex items-center gap-1">
-                <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
-                Giữa HK1: {kpiStats.gk1Count}/{kpiStats.totalItems} ({kpiStats.completionRateGK1}%)
+            <div className="h-3.5 w-px bg-slate-200 hidden sm:block" />
+
+            <div className="flex items-center gap-1.5">
+              <span className="text-slate-500 font-medium">Đã chọn Giữa HK1:</span>
+              <span className="px-2 py-0.5 rounded-md bg-emerald-100/90 text-emerald-800 font-black">
+                {kpiStats.gk1Count}/{kpiStats.totalItems} ({kpiStats.completionRateGK1}%)
               </span>
-              <span className="px-2 py-1 rounded-lg bg-slate-100 text-slate-600 font-semibold">
-                Cuối HK1: {kpiStats.ck1Count}/{kpiStats.totalItems}
-              </span>
-              <span className="px-2 py-1 rounded-lg bg-slate-100 text-slate-600 font-semibold">
-                Giữa HK2: {kpiStats.gk2Count}/{kpiStats.totalItems}
-              </span>
-              <span className="px-2 py-1 rounded-lg bg-slate-100 text-slate-600 font-semibold">
-                Cuối HK2: {kpiStats.ck2Count}/{kpiStats.totalItems}
+            </div>
+
+            <div className="h-3.5 w-px bg-slate-200 hidden sm:block" />
+
+            <div className="flex items-center gap-1.5">
+              <span className="text-slate-500 font-medium">Chưa chọn:</span>
+              <span className={`px-2 py-0.5 rounded-md font-bold ${
+                kpiStats.unassignedGK1 === 0 ? 'bg-slate-100 text-slate-600' : 'bg-amber-100 text-amber-800'
+              }`}>
+                {kpiStats.unassignedGK1 === 0 ? '0 (Đã hoàn tất 100%)' : `${kpiStats.unassignedGK1} môn`}
               </span>
             </div>
           </div>
 
-          <div className="text-xs text-indigo-700 font-semibold bg-indigo-50/70 px-2.5 py-1 rounded-lg border border-indigo-100">
-            🎯 <strong>Đang ưu tiên:</strong> Chọn người ra đề <strong>Giữa HK1</strong> trước (3 đợt còn lại sẽ chọn khi đến hạn)
+          {/* Cụm Tiến độ 4 đợt & Hạn chót */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-slate-400 font-medium">4 đợt cả năm:</span>
+            <div className="flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded bg-indigo-50 border border-indigo-200 text-indigo-800 font-bold text-[11px]">
+                G.HK1: {kpiStats.gk1Count}/{kpiStats.totalItems}
+              </span>
+              <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-medium text-[11px]">
+                C.HK1: {kpiStats.ck1Count}/{kpiStats.totalItems}
+              </span>
+              <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-medium text-[11px]">
+                G.HK2: {kpiStats.gk2Count}/{kpiStats.totalItems}
+              </span>
+              <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-medium text-[11px]">
+                C.HK2: {kpiStats.ck2Count}/{kpiStats.totalItems}
+              </span>
+            </div>
+            <span className="text-[11px] text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 font-medium">
+              ⏰ Hạn nộp đề GHK1: 17h00 ngày 25/10
+            </span>
           </div>
         </div>
       </div>
 
-      {/* 2. KPI Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 print:hidden">
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng môn - khối</span>
-            <span className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg">
-              <BookOpen className="w-4 h-4" />
-            </span>
-          </div>
-          <div className="mt-1.5 flex items-baseline gap-2">
-            <span className="text-2xl font-black text-slate-900">{kpiStats.totalItems}</span>
-            <span className="text-xs text-slate-500">môn/khối</span>
-          </div>
-          <div className="mt-0.5 text-[11px] text-slate-500">
-            THCS: {thcsCount} môn • THPT: {thptCount} môn
-          </div>
-        </div>
-
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Đã chọn Giữa HK1</span>
-            <span className="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
-              <CheckCircle2 className="w-4 h-4" />
-            </span>
-          </div>
-          <div className="mt-1.5 flex items-baseline gap-2">
-            <span className="text-2xl font-black text-emerald-600">{kpiStats.gk1Count}</span>
-            <span className="text-xs font-bold text-emerald-700">({kpiStats.completionRateGK1}%)</span>
-          </div>
-          <div className="mt-1 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-            <div
-              className="bg-emerald-500 h-1.5 rounded-full transition-all duration-500"
-              style={{ width: `${kpiStats.completionRateGK1}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Chưa chọn Giữa HK1</span>
-            <span className="p-1.5 bg-amber-50 text-amber-600 rounded-lg">
-              <AlertCircle className="w-4 h-4" />
-            </span>
-          </div>
-          <div className="mt-1.5 flex items-baseline gap-2">
-            <span className={`text-2xl font-black ${kpiStats.unassignedGK1 > 0 ? 'text-amber-600' : 'text-slate-400'}`}>
-              {kpiStats.unassignedGK1}
-            </span>
-            <span className="text-xs text-slate-500">môn cần chỉ định</span>
-          </div>
-          <div className="mt-0.5 text-[11px] text-slate-500">
-            {kpiStats.unassignedGK1 === 0 ? '✨ Đã hoàn tất 100%' : 'Cần chọn GV ra đề Giữa HK1'}
-          </div>
-        </div>
-
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Môn tập trung</span>
-            <span className="p-1.5 bg-purple-50 text-purple-600 rounded-lg">
-              <Users className="w-4 h-4" />
-            </span>
-          </div>
-          <div className="mt-1.5 flex items-baseline gap-2">
-            <span className="text-2xl font-black text-slate-900">{allExamItems.length} môn-khối</span>
-          </div>
-          <div className="mt-0.5 text-[11px] text-slate-500">
-            6 môn THCS • 10-11 môn THPT
-          </div>
-        </div>
-      </div>
-
-      {/* 3. Filter Toolbar */}
-      <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-xs space-y-2.5 print:hidden">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-          {/* Search Box */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+      {/* 3. Thanh Bộ Lọc Đồng Mức Trên Đúng 1 Hàng Ngang (Không phân tán 2 hàng, không trống trải) */}
+      <div className="bg-white px-4 py-2.5 rounded-xl border border-slate-200/90 shadow-2xs flex flex-wrap items-center justify-between gap-2.5 text-xs print:hidden">
+        
+        {/* Nhóm bộ lọc bên trái */}
+        <div className="flex flex-wrap items-center gap-2 flex-1">
+          {/* Ô Tìm Kiếm vừa vặn */}
+          <div className="relative w-48 sm:w-56">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
             <input
               type="text"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              placeholder="Tìm theo môn, khối, tên GV, tên lớp..."
-              className="w-full pl-9 pr-8 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-800 placeholder-slate-400 transition-all"
+              placeholder="Tìm môn, khối, tên GV..."
+              className="w-full pl-8 pr-7 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-indigo-500 focus:bg-white text-slate-800 placeholder-slate-400 transition-all"
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-3 h-3" />
               </button>
             )}
           </div>
 
-          {/* Level Filter Buttons */}
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="inline-flex p-1 bg-slate-100 rounded-xl text-xs font-bold">
-              <button
-                onClick={() => setLevelFilter('ALL')}
-                className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all ${
-                  levelFilter === 'ALL' ? 'bg-white text-indigo-700 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Tất cả ({allExamItems.length})
-              </button>
-              <button
-                onClick={() => setLevelFilter('THCS')}
-                className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all ${
-                  levelFilter === 'THCS' ? 'bg-white text-blue-700 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Cấp THCS ({thcsCount})
-              </button>
-              <button
-                onClick={() => setLevelFilter('THPT')}
-                className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all ${
-                  levelFilter === 'THPT' ? 'bg-white text-purple-700 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Cấp THPT ({thptCount})
-              </button>
-            </div>
-
-            {/* Status Filter for Giữa HK1 */}
-            <select
-              value={statusFilter}
-              onChange={e => setStatusFilter(e.target.value as any)}
-              className="px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+          {/* Chọn Cấp Học */}
+          <div className="inline-flex p-0.5 bg-slate-100 rounded-lg text-xs font-bold border border-slate-200/60">
+            <button
+              onClick={() => setLevelFilter('ALL')}
+              className={`px-2.5 py-1 rounded-md cursor-pointer transition-all ${
+                levelFilter === 'ALL' ? 'bg-white text-indigo-700 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
-              <option value="ALL">Tất cả tình trạng Giữa HK1</option>
-              <option value="ASSIGNED">Đã chọn người ra đề</option>
-              <option value="UNASSIGNED">Chưa chọn người ra đề</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Secondary filters */}
-        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100 text-xs text-slate-600">
-          <span className="font-bold text-slate-400">Lọc chi tiết:</span>
-
-          {/* Grade filter */}
-          <div className="flex items-center gap-1">
-            <span className="text-[11px] font-semibold text-slate-500">Khối:</span>
-            <select
-              value={gradeFilter}
-              onChange={e => setGradeFilter(e.target.value)}
-              className="px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700"
+              Tất cả ({allExamItems.length})
+            </button>
+            <button
+              onClick={() => setLevelFilter('THCS')}
+              className={`px-2.5 py-1 rounded-md cursor-pointer transition-all ${
+                levelFilter === 'THCS' ? 'bg-white text-blue-700 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
-              <option value="ALL">Tất cả khối</option>
-              <option value="6">Khối 6</option>
-              <option value="7">Khối 7</option>
-              <option value="8">Khối 8</option>
-              <option value="9">Khối 9</option>
-              <option value="10">Khối 10</option>
-              <option value="11">Khối 11</option>
-              <option value="12">Khối 12</option>
-            </select>
+              THCS ({thcsCount})
+            </button>
+            <button
+              onClick={() => setLevelFilter('THPT')}
+              className={`px-2.5 py-1 rounded-md cursor-pointer transition-all ${
+                levelFilter === 'THPT' ? 'bg-white text-purple-700 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              THPT ({thptCount})
+            </button>
           </div>
 
-          {/* Subject filter */}
-          <div className="flex items-center gap-1">
-            <span className="text-[11px] font-semibold text-slate-500">Môn:</span>
-            <select
-              value={subjectFilter}
-              onChange={e => setSubjectFilter(e.target.value)}
-              className="px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700"
-            >
-              <option value="ALL">Tất cả môn kiểm tra</option>
-              {uniqueSubjects.map(s => (
-                <option key={s.key} value={s.key}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Chọn Khối */}
+          <select
+            value={gradeFilter}
+            onChange={e => setGradeFilter(e.target.value)}
+            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none"
+          >
+            <option value="ALL">Tất cả khối</option>
+            <option value="6">Khối 6</option>
+            <option value="7">Khối 7</option>
+            <option value="8">Khối 8</option>
+            <option value="9">Khối 9</option>
+            <option value="10">Khối 10</option>
+            <option value="11">Khối 11</option>
+            <option value="12">Khối 12</option>
+          </select>
+
+          {/* Chọn Môn */}
+          <select
+            value={subjectFilter}
+            onChange={e => setSubjectFilter(e.target.value)}
+            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none max-w-[150px] truncate"
+          >
+            <option value="ALL">Tất cả môn</option>
+            {uniqueSubjects.map(s => (
+              <option key={s.key} value={s.key}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+
+          {/* Chọn Tình trạng Giữa HK1 */}
+          <select
+            value={statusFilter}
+            onChange={e => setStatusFilter(e.target.value as any)}
+            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none"
+          >
+            <option value="ALL">Tất cả tình trạng</option>
+            <option value="ASSIGNED">Đã có người ra đề</option>
+            <option value="UNASSIGNED">Chưa có người ra đề</option>
+          </select>
 
           {(gradeFilter !== 'ALL' || subjectFilter !== 'ALL' || statusFilter !== 'ALL' || levelFilter !== 'ALL' || searchTerm) && (
             <button
@@ -789,15 +730,16 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
                 setStatusFilter('ALL');
                 setSearchTerm('');
               }}
-              className="ml-auto text-[11px] font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
+              className="text-xs font-bold text-rose-600 hover:text-rose-800 underline cursor-pointer ml-1"
             >
-              Xóa bộ lọc
+              Đặt lại lọc
             </button>
           )}
+        </div>
 
-          <span className="ml-auto text-[11px] text-slate-500">
-            Hiển thị <strong>{filteredItems.length}</strong> / {allExamItems.length} môn-khối
-          </span>
+        {/* Thông tin số lượng bên phải */}
+        <div className="shrink-0 text-slate-500 text-xs font-medium">
+          Hiển thị: <strong className="text-slate-800 font-bold">{filteredItems.length}</strong> / {allExamItems.length} môn-khối
         </div>
       </div>
 
