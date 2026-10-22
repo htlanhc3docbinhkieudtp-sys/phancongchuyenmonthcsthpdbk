@@ -649,6 +649,7 @@ const rawImage2: Record<string, RawSlot[]> = {
     { d: 5, p: 2, text: 'SỬ - Hà' },
     { d: 5, p: 3, text: 'TA - Thành' },
     { d: 5, p: 4, text: 'AN - A.Văn' },
+    { d: 5, p: 5, text: 'TOÁN - Huy' },
     // T6
     { d: 6, p: 1, text: 'MT - Quốc' },
     { d: 6, p: 2, text: 'LÝ - Phượng' },

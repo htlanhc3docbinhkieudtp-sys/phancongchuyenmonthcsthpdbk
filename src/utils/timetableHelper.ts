@@ -322,7 +322,7 @@ export function getUnifiedSubjectName(slot: { classId?: string; className?: stri
 }
 
 export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[] {
-  return (slots || []).map(s => {
+  const normalized = (slots || []).map(s => {
     const unifiedName = getUnifiedSubjectName(s);
     let subjectName = unifiedName || s.subjectName;
     let subjectId = s.subjectId;
@@ -502,6 +502,37 @@ export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[]
       teacherCode
     };
   });
+
+  // Reconcile Thầy Trần Quốc Huy (tch-t-2) - Môn Toán lớp 9A7 (THCS Tân Kiều):
+  // Nếu TKB lớp 9A7 bị thiếu tiết Toán (chỉ có 3 tiết thay vì 4 tiết), tự động bù tiết Toán thứ 5 tiết 5
+  const math9A7Slots = normalized.filter(s => 
+    (s.classId === 'cls-9a7' || s.className === '9A7') && 
+    (s.subjectId === 'sub-toan' || s.subjectName === 'Toán' || s.subjectName?.includes('Toán'))
+  );
+  if (math9A7Slots.length > 0 && math9A7Slots.length < 4) {
+    const hasT5P5 = normalized.some(s => 
+      (s.classId === 'cls-9a7' || s.className === '9A7') && 
+      s.dayOfWeek === 5 && 
+      s.period === 5
+    );
+    if (!hasT5P5) {
+      normalized.push({
+        id: 'slot-tkb-w1-fix-9a7-toan-huy-t5p5',
+        classId: 'cls-9a7',
+        className: '9A7',
+        teacherId: 'tch-t-2',
+        teacherName: 'Trần Quốc Huy',
+        teacherCode: 'Huy.TQ',
+        subjectId: 'sub-toan',
+        subjectName: 'Toán',
+        dayOfWeek: 5,
+        period: 5,
+        session: 'SANG',
+      });
+    }
+  }
+
+  return normalized;
 }
 
 /**

@@ -87,6 +87,7 @@ const WHOLE_SCHOOL_ASSEMBLY_PERIODS: Record<string, number> = {
 
 const WEEKLY_TEACHING_ADDITIONS: Record<string, Record<number, number>> = {
   'tch-v-3': { 1: 1 },
+  'tch-t-2': { 1: 1 }, // Thầy Trần Quốc Huy: Bù +1 tiết Toán 9A7 tuần 1 bị thiếu do lỗi TKB
 };
 
 /**
@@ -1091,16 +1092,35 @@ export function calculateTeacherSingleWeek(
 
   const teachingAddition = WEEKLY_TEACHING_ADDITIONS[teacher.id]?.[weekNumber] || 0;
   if (teachingAddition > 0) {
-    const languageArtsRow = rows.find((row) => row.subject === 'Ngữ văn');
-    if (languageArtsRow) {
-      languageArtsRow.periods += teachingAddition;
+    if (teacher.id === 'tch-t-2' || teacher.name.includes('Quốc Huy') || teacher.code?.includes('Huy.TQ')) {
+      const mathRow = rows.find((row) => row.subject === 'Toán' || row.subject.includes('Toán'));
+      if (mathRow) {
+        if (mathRow.periods < 12) {
+          mathRow.periods += teachingAddition;
+          if (!mathRow.classes.includes('9A7')) {
+            mathRow.classes = mathRow.classes ? `${mathRow.classes}, 9A7` : '9A7';
+          }
+        }
+      } else {
+        rows.push({
+          classes: '9A7',
+          classList: ['9A7'],
+          subject: 'Toán',
+          periods: teachingAddition,
+        });
+      }
     } else {
-      rows.push({
-        classes: 'Toàn trường',
-        classList: ['Toàn trường'],
-        subject: 'Ngữ văn',
-        periods: teachingAddition,
-      });
+      const languageArtsRow = rows.find((row) => row.subject === 'Ngữ văn');
+      if (languageArtsRow) {
+        languageArtsRow.periods += teachingAddition;
+      } else {
+        rows.push({
+          classes: 'Toàn trường',
+          classList: ['Toàn trường'],
+          subject: 'Ngữ văn',
+          periods: teachingAddition,
+        });
+      }
     }
   }
 
