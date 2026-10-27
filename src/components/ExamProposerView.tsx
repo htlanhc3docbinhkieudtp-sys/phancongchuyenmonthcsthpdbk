@@ -29,6 +29,7 @@ import {
   ChevronDown,
   Mail,
   FileText,
+  ArrowUpDown,
 } from 'lucide-react';
 import {
   Department,
@@ -60,6 +61,7 @@ import {
 } from '../utils/examAdministrativeExportHelper';
 import { MidTermPlanModal } from './MidTermPlanModal';
 import { TeacherEmailNotificationModal } from './TeacherEmailNotificationModal';
+import { ExamInvigilationView } from './ExamInvigilationView';
 
 
 
@@ -166,6 +168,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
   const [subjectFilter, setSubjectFilter] = useState<string>('ALL');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'ASSIGNED' | 'UNASSIGNED'>('ALL');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [activeModule, setActiveModule] = useState<'INVIGILATION' | 'PROPOSAL' | 'PERIOD_AUDIT'>('INVIGILATION');
 
   // Fast teacher map
   const teacherMap = useMemo(() => new Map(teachers.map(t => [t.id, t])), [teachers]);
@@ -431,9 +434,104 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
 
   return (
     <div className="space-y-5 pb-16 print:p-0 print:m-0 print:space-y-4">
-      {/* 1. Header Banner & Action Control Bar (Gọn gàng, Cân đối, Không bị dày đặc nút) */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 sm:p-5 print:border-none print:shadow-none print:p-0">
-        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+      {/* 0. THANH ĐIỀU HƯỚNG 3 PHÂN HỆ KIỂM TRA & ĐÁNH GIÁ */}
+      <div className="bg-slate-900 text-white rounded-2xl p-4 shadow-sm border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-indigo-500/20 text-indigo-300 rounded-xl border border-indigo-400/30">
+            <ShieldCheck className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-base sm:text-lg font-black uppercase tracking-tight text-white">
+                Kỳ Kiểm Tra & Đánh Giá Định Kỳ
+              </h2>
+              <span className="px-2.5 py-0.5 bg-indigo-600 text-[11px] font-bold rounded-full border border-indigo-400/30">
+                4 Đợt / Năm • Bảo Mật BGH
+              </span>
+            </div>
+            <p className="text-xs text-slate-300 font-medium mt-0.5">
+              Phân công coi kiểm tra (17 GV Sáng / 11 GV Chiều) • Ra đề thi 55 môn khối • Kê tiết coi thi & bù định mức
+            </p>
+          </div>
+        </div>
+
+        {/* 3 Nút Chuyển Phân Hệ */}
+        <div className="flex flex-wrap items-center gap-1.5 bg-slate-800/90 p-1.5 rounded-xl border border-slate-700">
+          <button
+            type="button"
+            onClick={() => setActiveModule('INVIGILATION')}
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              activeModule === 'INVIGILATION'
+                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black shadow-xs ring-1 ring-amber-300'
+                : 'text-slate-300 hover:text-white hover:bg-slate-700/60'
+            }`}
+          >
+            <ShieldCheck className="w-4 h-4 text-slate-950" />
+            <span>1. Phân Công Coi Thi</span>
+            <span className="px-1.5 py-0.2 rounded text-[10px] bg-red-600 text-white font-black">17 Sáng / 11 Chiều</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveModule('PROPOSAL')}
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              activeModule === 'PROPOSAL'
+                ? 'bg-indigo-600 text-white font-black shadow-xs ring-1 ring-indigo-300'
+                : 'text-slate-300 hover:text-white hover:bg-slate-700/60'
+            }`}
+          >
+            <FileQuestion className="w-4 h-4 text-indigo-200" />
+            <span>2. Phân Công Ra Đề (55 Môn)</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveModule('PERIOD_AUDIT')}
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              activeModule === 'PERIOD_AUDIT'
+                ? 'bg-emerald-600 text-white font-black shadow-xs ring-1 ring-emerald-300'
+                : 'text-slate-300 hover:text-white hover:bg-slate-700/60'
+            }`}
+          >
+            <ArrowUpDown className="w-4 h-4 text-emerald-200" />
+            <span>3. Kê Tiết Coi Kiểm Tra</span>
+          </button>
+        </div>
+      </div>
+
+      {activeModule === 'INVIGILATION' && (
+        <ExamInvigilationView
+          teachers={teachers}
+          departments={departments}
+          classes={classes}
+          subjects={subjects}
+          config={config}
+          slots={activeSlots}
+          activePeriod="GK1"
+          initialSubTab="TEMPLATE_VIEW"
+          onShowToast={onShowToast}
+        />
+      )}
+
+      {activeModule === 'PERIOD_AUDIT' && (
+        <ExamInvigilationView
+          teachers={teachers}
+          departments={departments}
+          classes={classes}
+          subjects={subjects}
+          config={config}
+          slots={activeSlots}
+          activePeriod="GK1"
+          initialSubTab="PERIOD_AUDIT"
+          onShowToast={onShowToast}
+        />
+      )}
+
+      {activeModule === 'PROPOSAL' && (
+        <>
+          {/* 1. Header Banner & Action Control Bar (Gọn gàng, Cân đối, Không bị dày đặc nút) */}
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 sm:p-5 print:border-none print:shadow-none print:p-0">
+            <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
           
           {/* Cụm Tiêu Đề & Huy Hiệu Trạng Thái */}
           <div className="space-y-1.5">
@@ -1355,6 +1453,8 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
             </div>
           </div>
         </div>
+      )}
+        </>
       )}
 
       {/* Modal: Toàn văn & Lịch thi Kế hoạch 50/KH */}

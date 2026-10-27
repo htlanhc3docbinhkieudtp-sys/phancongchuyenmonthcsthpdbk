@@ -574,16 +574,17 @@ export default function App() {
       'weekly_log',
       'summary',
       'curriculum',
+      'exam_evaluation',
       'exam_proposer'
     ];
     if (saved === 'homeroom') {
       return 'concurrent_duties';
     }
-    if (saved === 'exam_proposer' && initialRole !== 'admin') {
+    if ((saved === 'exam_proposer' || saved === 'exam_evaluation') && initialRole !== 'admin') {
       return 'timetable';
     }
     if (saved && allowedTabs.includes(saved)) {
-      return saved;
+      return saved === 'exam_proposer' ? 'exam_evaluation' : saved;
     }
     return 'timetable';
   });
@@ -595,9 +596,9 @@ export default function App() {
     }
   }, [isGuest, activeTab]);
 
-  // Guard: Non-admin users cannot access 'exam_proposer'
+  // Guard: Non-admin users cannot access 'exam_proposer' or 'exam_evaluation'
   useEffect(() => {
-    if (!isAdmin && activeTab === 'exam_proposer') {
+    if (!isAdmin && (activeTab === 'exam_proposer' || activeTab === 'exam_evaluation')) {
       setActiveTab('timetable');
     }
   }, [isAdmin, activeTab]);
@@ -2022,8 +2023,8 @@ export default function App() {
           />
         )}
 
-        {/* Tab: Đề Xuất Người Ra Đề Kiểm Tra (Bảo mật BGH • Chỉ Quản trị viên) */}
-        {activeTab === 'exam_proposer' && (
+        {/* Tab: Kiểm Tra, Đánh Giá (Bảo mật BGH • Chỉ Quản trị viên) */}
+        {(activeTab === 'exam_proposer' || activeTab === 'exam_evaluation') && (
           isAdmin ? (
             <ExamProposerView
               config={config}

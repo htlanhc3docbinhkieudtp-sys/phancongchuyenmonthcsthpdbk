@@ -9,6 +9,7 @@ import {
   Lock,
   Award,
   FileQuestion,
+  ShieldCheck,
 } from 'lucide-react';
 
 export type ActiveTabType =
@@ -19,6 +20,7 @@ export type ActiveTabType =
   | 'weekly_log'
   | 'summary'
   | 'curriculum'
+  | 'exam_evaluation'
   | 'exam_proposer';
 
 interface ViewTabsProps {
@@ -87,13 +89,13 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
       isPublic: false,
     },
     {
-      id: 'exam_proposer',
-      label: 'Đề Xuất Ra Đề',
-      shortLabel: 'Đề Xuất Ra Đề',
-      icon: FileQuestion,
+      id: 'exam_evaluation',
+      label: 'Kiểm Tra, Đánh Giá',
+      shortLabel: 'Kiểm Tra & Đánh Giá',
+      icon: ShieldCheck,
       isPublic: false,
       adminOnly: true,
-      badge: 'Bảo mật BGH',
+      badge: '4 Đợt / Năm',
     },
   ];
 

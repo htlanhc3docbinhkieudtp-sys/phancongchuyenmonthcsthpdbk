@@ -802,6 +802,345 @@ export async function exportFullMidTerm1DossierExcel(
 }
 
 /**
+ * Xuất file Excel PHÂN BỔ GIÁO VIÊN COI KIỂM TRA GIỮA KỲ 1 đúng 100% theo mẫu của Thầy gửi
+ * (Gồm Bảng Khối 11 & 12 Sáng - 17 giám thị/buổi và Bảng Khối 10 Chiều - 11 giám thị/buổi)
+ */
+export async function exportUserTemplateAllocationExcel(
+  academicYear: string,
+  morningRows: Array<{
+    grade12: string;
+    subject12: string;
+    rooms12: number | string;
+    grade11: string;
+    subject11: string;
+    rooms11: number | string;
+    invigilators: number;
+    teachersList: string;
+  }>,
+  afternoonRows: Array<{
+    grade10: string;
+    subject10: string;
+    rooms10: number | string;
+    invigilators: number;
+    teachersList: string;
+  }>,
+  sessionPlans?: Array<{
+    sessionName: string;
+    dayName: string;
+    dateStr: string;
+    targetGrade: string;
+    subjects: string[];
+    invigilators: Array<{
+      role: string;
+      numberStr: string;
+      name: string;
+      code: string;
+      department: string;
+      balance: number;
+    }>;
+  }>
+): Promise<void> {
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'Trường THCS và THPT Đốc Binh Kiều';
+  wb.lastModifiedBy = 'Ban Giám Hiệu';
+  wb.created = new Date();
+
+  const yellowTitleFill: ExcelJS.Fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FFFFFF00' }, // Vàng tươi nguyên bản như ảnh
+  };
+
+  const yellowHeaderFill: ExcelJS.Fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FFFFEB3B' },
+  };
+
+  const greenHeaderFill: ExcelJS.Fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FFA7F3D0' }, // Xanh nhạt cho cột Khối
+  };
+
+  const purpleFill: ExcelJS.Fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FFE9D5FF' }, // Tím nhạt cho Khối 12
+  };
+
+  const borderAll: Partial<ExcelJS.Borders> = {
+    top: { style: 'thin', color: { argb: 'FF000000' } },
+    left: { style: 'thin', color: { argb: 'FF000000' } },
+    bottom: { style: 'thin', color: { argb: 'FF000000' } },
+    right: { style: 'thin', color: { argb: 'FF000000' } },
+  };
+
+  // ==========================================
+  // SHEET 1: KHỐI 11 & 12 (BUỔI SÁNG - 17 GIÁM THỊ)
+  // ==========================================
+  const ws1 = wb.addWorksheet('KHOI_11_12_BUOI_SANG', {
+    pageSetup: {
+      paperSize: 9, // A4
+      orientation: 'landscape',
+      fitToPage: true,
+      fitToWidth: 1,
+      fitToHeight: 0,
+      margins: { left: 0.5, right: 0.5, top: 0.5, bottom: 0.5, header: 0.2, footer: 0.2 },
+      showGridLines: true,
+    },
+  });
+
+  // Set widths
+  ws1.columns = [
+    { width: 8 },  // A: KHỐI 12
+    { width: 16 }, // B: MÔN 12
+    { width: 11 }, // C: Số phòng 12
+    { width: 8 },  // D: KHỐI 11
+    { width: 16 }, // E: MÔN 11
+    { width: 11 }, // F: Số phòng 11
+    { width: 13 }, // G: Số giám thị
+    { width: 75 }, // H: Họ và tên giáo viên coi kiểm tra
+  ];
+
+  // Row 1: Tiêu đề vàng rực
+  ws1.mergeCells('A1:H1');
+  const tCell1 = ws1.getCell('A1');
+  tCell1.value = 'PHÂN BỔ GIÁO VIÊN COI KIỂM TRA GIỮA KỲ 1 - KHỐI 11 & 12 (BUỔI SÁNG)';
+  tCell1.font = { name: 'Times New Roman', size: 16, bold: true, color: { argb: 'FFFF0000' } };
+  tCell1.alignment = { horizontal: 'center', vertical: 'middle' };
+  tCell1.fill = yellowTitleFill;
+  tCell1.border = borderAll;
+  ws1.getRow(1).height = 36;
+
+  // Row 2: Header
+  const hRow1 = ws1.getRow(2);
+  hRow1.height = 28;
+  const headers1 = ['KHỐI', 'MÔN', 'Số phòng', 'KHỐI', 'MÔN', 'Số phòng', 'Số giám thị', 'Họ và tên giáo viên coi kiểm tra'];
+  headers1.forEach((h, idx) => {
+    const c = hRow1.getCell(idx + 1);
+    c.value = h;
+    c.font = { name: 'Times New Roman', size: 11, bold: true, color: idx === 7 ? { argb: 'FFDC2626' } : { argb: 'FF000000' } };
+    c.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+    c.border = borderAll;
+    c.fill = idx === 6 ? yellowHeaderFill : idx === 0 || idx === 3 ? greenHeaderFill : {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFF8FAFC' }
+    };
+  });
+
+  // Data rows
+  morningRows.forEach((r, idx) => {
+    const row = ws1.getRow(idx + 3);
+    row.height = 26;
+
+    row.getCell(1).value = r.grade12;
+    row.getCell(1).alignment = { horizontal: 'center', vertical: 'middle' };
+    row.getCell(1).fill = purpleFill;
+    row.getCell(1).font = { name: 'Times New Roman', size: 11, bold: true };
+    row.getCell(1).border = borderAll;
+
+    row.getCell(2).value = r.subject12;
+    row.getCell(2).alignment = { horizontal: 'left', vertical: 'middle' };
+    row.getCell(2).font = { name: 'Times New Roman', size: 11, bold: true };
+    row.getCell(2).border = borderAll;
+
+    row.getCell(3).value = r.rooms12;
+    row.getCell(3).alignment = { horizontal: 'center', vertical: 'middle' };
+    row.getCell(3).font = { name: 'Times New Roman', size: 11 };
+    row.getCell(3).border = borderAll;
+
+    row.getCell(4).value = r.grade11;
+    row.getCell(4).alignment = { horizontal: 'center', vertical: 'middle' };
+    row.getCell(4).fill = greenHeaderFill;
+    row.getCell(4).font = { name: 'Times New Roman', size: 11, bold: true };
+    row.getCell(4).border = borderAll;
+
+    row.getCell(5).value = r.subject11;
+    row.getCell(5).alignment = { horizontal: 'left', vertical: 'middle' };
+    row.getCell(5).font = { name: 'Times New Roman', size: 11, bold: true };
+    row.getCell(5).border = borderAll;
+
+    row.getCell(6).value = r.rooms11;
+    row.getCell(6).alignment = { horizontal: 'center', vertical: 'middle' };
+    row.getCell(6).font = { name: 'Times New Roman', size: 11 };
+    row.getCell(6).border = borderAll;
+
+    row.getCell(7).value = r.invigilators;
+    row.getCell(7).alignment = { horizontal: 'center', vertical: 'middle' };
+    row.getCell(7).font = { name: 'Times New Roman', size: 11, bold: true };
+    row.getCell(7).fill = yellowHeaderFill;
+    row.getCell(7).border = borderAll;
+
+    row.getCell(8).value = r.teachersList;
+    row.getCell(8).alignment = { horizontal: 'left', vertical: 'middle', wrapText: true };
+    row.getCell(8).font = { name: 'Times New Roman', size: 10.5 };
+    row.getCell(8).border = borderAll;
+  });
+
+  // ==========================================
+  // SHEET 2: KHỐI 10 (BUỔI CHIỀU - 11 GIÁM THỊ)
+  // ==========================================
+  const ws2 = wb.addWorksheet('KHOI_10_BUOI_CHIEU', {
+    pageSetup: {
+      paperSize: 9, // A4
+      orientation: 'landscape',
+      fitToPage: true,
+      fitToWidth: 1,
+      fitToHeight: 0,
+      margins: { left: 0.5, right: 0.5, top: 0.5, bottom: 0.5, header: 0.2, footer: 0.2 },
+      showGridLines: true,
+    },
+  });
+
+  ws2.columns = [
+    { width: 8 },  // A: KHỐI 10
+    { width: 18 }, // B: MÔN
+    { width: 12 }, // C: Số phòng
+    { width: 14 }, // D: Số giám thị
+    { width: 85 }, // E: Họ và tên giáo viên coi kiểm tra
+  ];
+
+  ws2.mergeCells('A1:E1');
+  const tCell2 = ws2.getCell('A1');
+  tCell2.value = 'PHÂN BỔ GIÁO VIÊN COI KIỂM TRA GIỮA KỲ 1 - KHỐI 10 (BUỔI CHIỀU)';
+  tCell2.font = { name: 'Times New Roman', size: 16, bold: true, color: { argb: 'FFFF0000' } };
+  tCell2.alignment = { horizontal: 'center', vertical: 'middle' };
+  tCell2.fill = yellowTitleFill;
+  tCell2.border = borderAll;
+  ws2.getRow(1).height = 36;
+
+  const hRow2 = ws2.getRow(2);
+  hRow2.height = 28;
+  const headers2 = ['KHỐI', 'MÔN', 'Số phòng', 'Số giám thị', 'Họ và tên giáo viên coi kiểm tra'];
+  headers2.forEach((h, idx) => {
+    const c = hRow2.getCell(idx + 1);
+    c.value = h;
+    c.font = { name: 'Times New Roman', size: 11, bold: true, color: idx === 4 ? { argb: 'FFDC2626' } : { argb: 'FF000000' } };
+    c.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+    c.border = borderAll;
+    c.fill = idx === 3 ? yellowHeaderFill : idx === 0 ? greenHeaderFill : {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFF8FAFC' }
+    };
+  });
+
+  afternoonRows.forEach((r, idx) => {
+    const row = ws2.getRow(idx + 3);
+    row.height = 26;
+
+    row.getCell(1).value = r.grade10;
+    row.getCell(1).alignment = { horizontal: 'center', vertical: 'middle' };
+    row.getCell(1).fill = greenHeaderFill;
+    row.getCell(1).font = { name: 'Times New Roman', size: 11, bold: true };
+    row.getCell(1).border = borderAll;
+
+    row.getCell(2).value = r.subject10;
+    row.getCell(2).alignment = { horizontal: 'left', vertical: 'middle' };
+    row.getCell(2).font = { name: 'Times New Roman', size: 11, bold: true };
+    row.getCell(2).border = borderAll;
+
+    row.getCell(3).value = r.rooms10;
+    row.getCell(3).alignment = { horizontal: 'center', vertical: 'middle' };
+    row.getCell(3).font = { name: 'Times New Roman', size: 11 };
+    row.getCell(3).border = borderAll;
+
+    row.getCell(4).value = r.invigilators;
+    row.getCell(4).alignment = { horizontal: 'center', vertical: 'middle' };
+    row.getCell(4).font = { name: 'Times New Roman', size: 11, bold: true };
+    row.getCell(4).fill = yellowHeaderFill;
+    row.getCell(4).border = borderAll;
+
+    row.getCell(5).value = r.teachersList;
+    row.getCell(5).alignment = { horizontal: 'left', vertical: 'middle', wrapText: true };
+    row.getCell(5).font = { name: 'Times New Roman', size: 10.5 };
+    row.getCell(5).border = borderAll;
+  });
+
+  // ==========================================
+  // SHEET 3: LỊCH 10 BUỔI CHI TIẾT (5 SÁNG X 17 GT + 5 CHIỀU X 11 GT)
+  // ==========================================
+  if (sessionPlans && sessionPlans.length > 0) {
+    const ws3 = wb.addWorksheet('LICH_10_BUOI_CHI_TIET', {
+      pageSetup: {
+        paperSize: 9,
+        orientation: 'landscape',
+        fitToPage: true,
+        fitToWidth: 1,
+        fitToHeight: 0,
+      },
+    });
+
+    ws3.columns = [
+      { width: 14 }, // Ngày
+      { width: 12 }, // Buổi
+      { width: 18 }, // Đối tượng
+      { width: 26 }, // Môn kiểm tra
+      { width: 16 }, // Phòng / Vị trí
+      { width: 26 }, // Họ tên giáo viên
+      { width: 12 }, // Mã GV
+      { width: 18 }, // Tổ chuyên môn
+      { width: 12 }, // Tiết âm đầu
+      { width: 18 }, // Ký tên
+    ];
+
+    ws3.mergeCells('A1:J1');
+    const tCell3 = ws3.getCell('A1');
+    tCell3.value = 'LỊCH PHÂN CÔNG GIÁM THỊ COI KIỂM TRA GIỮA KỲ 1 (TỪ 02/11 ĐẾN 06/11/2026)';
+    tCell3.font = { name: 'Times New Roman', size: 14, bold: true, color: { argb: 'FF1E3A8A' } };
+    tCell3.alignment = { horizontal: 'center', vertical: 'middle' };
+    ws3.getRow(1).height = 30;
+
+    const hRow3 = ws3.getRow(2);
+    hRow3.height = 26;
+    const headers3 = ['Ngày kiểm tra', 'Buổi', 'Khối lớp', 'Môn kiểm tra', 'Vị trí coi thi', 'Họ và tên giáo viên', 'Mã GV', 'Tổ chuyên môn', 'Độ âm tiết', 'Ký nhận nhiệm vụ'];
+    headers3.forEach((h, idx) => {
+      const c = hRow3.getCell(idx + 1);
+      c.value = h;
+      c.font = { name: 'Times New Roman', size: 10.5, bold: true };
+      c.alignment = { horizontal: 'center', vertical: 'middle' };
+      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE2E8F0' } };
+      c.border = borderAll;
+    });
+
+    let curRow = 3;
+    sessionPlans.forEach(sp => {
+      sp.invigilators.forEach(inv => {
+        const row = ws3.getRow(curRow++);
+        row.height = 22;
+        row.getCell(1).value = `${sp.dayName} (${sp.dateStr})`;
+        row.getCell(2).value = sp.sessionName;
+        row.getCell(3).value = sp.targetGrade;
+        row.getCell(4).value = sp.subjects.join(', ');
+        row.getCell(5).value = inv.numberStr;
+        row.getCell(6).value = inv.name;
+        row.getCell(7).value = inv.code;
+        row.getCell(8).value = inv.department;
+        row.getCell(9).value = inv.balance < 0 ? `${inv.balance} tiết` : `+${inv.balance} tiết`;
+        row.getCell(10).value = '';
+
+        [1, 2, 3, 5, 7, 9].forEach(col => {
+          row.getCell(col).alignment = { horizontal: 'center', vertical: 'middle' };
+        });
+        [4, 6, 8, 10].forEach(col => {
+          row.getCell(col).alignment = { horizontal: 'left', vertical: 'middle' };
+        });
+
+        for (let c = 1; c <= 10; c++) {
+          row.getCell(c).border = borderAll;
+          row.getCell(c).font = { name: 'Times New Roman', size: 10 };
+        }
+      });
+    });
+  }
+
+  const fileName = `Bang_Phan_Bo_Giao_Vien_Coi_Kiem_Tra_Giua_HK1_${academicYear.replace(/[^a-zA-Z0-9]/g, '_')}.xlsx`;
+  await downloadWorkbook(wb, fileName);
+}
+
+/**
  * Hàm hỗ trợ tải file Excel trong trình duyệt
  */
 async function downloadWorkbook(wb: ExcelJS.Workbook, fileName: string): Promise<void> {
