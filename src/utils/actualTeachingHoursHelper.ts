@@ -13,6 +13,7 @@ import { OFFICIAL_WEEK_4_SLOTS } from '../data/officialWeek4Timetable';
 import { OFFICIAL_WEEK_5_SLOTS } from '../data/officialWeek5Timetable';
 import { OFFICIAL_WEEK_6_SLOTS } from '../data/officialWeek6Timetable';
 import { OFFICIAL_WEEK_7_SLOTS } from '../data/officialWeek7Timetable';
+import { OFFICIAL_WEEK_8_SLOTS } from '../data/officialWeek8Timetable';
 import {
   KHTN_8_WEEKS,
   KHTN_9_WEEKS,
@@ -676,6 +677,8 @@ export function getSlotsForWeek(
   let baseSlots: TimetableSlot[] = [];
   if (weeklyTimetables && weeklyTimetables[weekNumber]?.slots?.length > 0) {
     baseSlots = weeklyTimetables[weekNumber].slots;
+  } else if (weekNumber === 8 && OFFICIAL_WEEK_8_SLOTS?.length > 0) {
+    baseSlots = OFFICIAL_WEEK_8_SLOTS;
   } else if (weekNumber >= 7 && weeklyTimetables && weeklyTimetables[7]?.slots?.length > 0) {
     baseSlots = weeklyTimetables[7].slots;
   } else if (weekNumber >= 7 && OFFICIAL_WEEK_7_SLOTS?.length > 0) {

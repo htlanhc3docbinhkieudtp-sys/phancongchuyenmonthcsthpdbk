@@ -16,6 +16,7 @@ import { buildOfficialWeek4Timetable, OFFICIAL_WEEK_4_SLOTS } from '../data/offi
 import { buildOfficialWeek5Timetable, OFFICIAL_WEEK_5_SLOTS } from '../data/officialWeek5Timetable';
 import { buildOfficialWeek6Timetable, OFFICIAL_WEEK_6_SLOTS } from '../data/officialWeek6Timetable';
 import { buildOfficialWeek7Timetable, OFFICIAL_WEEK_7_SLOTS } from '../data/officialWeek7Timetable';
+import { buildOfficialWeek8Timetable, OFFICIAL_WEEK_8_SLOTS } from '../data/officialWeek8Timetable';
 
 export {
   buildOfficialWeek2Timetable,
@@ -29,7 +30,9 @@ export {
   buildOfficialWeek6Timetable,
   OFFICIAL_WEEK_6_SLOTS,
   buildOfficialWeek7Timetable,
-  OFFICIAL_WEEK_7_SLOTS
+  OFFICIAL_WEEK_7_SLOTS,
+  buildOfficialWeek8Timetable,
+  OFFICIAL_WEEK_8_SLOTS
 };
 
 export const DAYS_OF_WEEK = [
