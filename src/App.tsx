@@ -78,6 +78,7 @@ import { SchoolTimetableView } from './components/SchoolTimetableView';
 const ConcurrentDutiesView = lazy(() => import('./components/ConcurrentDutiesView').then(module => ({ default: module.ConcurrentDutiesView })));
 const WeeklyScheduleManagerView = lazy(() => import('./components/WeeklyScheduleManagerView').then(module => ({ default: module.WeeklyScheduleManagerView })));
 const WeeklyTeachingLogView = lazy(() => import('./components/WeeklyTeachingLogView').then(module => ({ default: module.WeeklyTeachingLogView })));
+const DraftAssignmentView = lazy(() => import('./components/DraftAssignmentView').then(module => ({ default: module.DraftAssignmentView })));
 const ComprehensiveTableView = lazy(() => import('./components/ComprehensiveTableView').then(module => ({ default: module.ComprehensiveTableView })));
 const CurriculumView = lazy(() => import('./components/CurriculumView').then(module => ({ default: module.CurriculumView })));
 const ExamProposerView = lazy(() => import('./components/ExamProposerView').then(module => ({ default: module.ExamProposerView })));
@@ -572,6 +573,7 @@ export default function App() {
       'homeroom',
       'weekly_schedule',
       'weekly_log',
+      'draft_assignment',
       'summary',
       'curriculum',
       'exam_evaluation',
@@ -1991,6 +1993,22 @@ export default function App() {
             currentWeek={currentWeek}
             timetable={timetable}
             isAdmin={isAdmin}
+          />
+        )}
+
+        {/* Tab: Dự Thảo Phân Công Mới (Sandbox Thí Điểm) */}
+        {activeTab === 'draft_assignment' && (
+          <DraftAssignmentView
+            config={config}
+            teachers={teachers}
+            departments={departments}
+            classes={classes}
+            subjects={subjects}
+            weeklyTimetables={weeklyTimetables}
+            currentWeek={currentWeek}
+            timetable={timetable}
+            isAdmin={isAdmin}
+            onShowToast={showToast}
           />
         )}
 

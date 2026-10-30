@@ -240,6 +240,14 @@ export function isExcludedFromInvigilation(teacher: Teacher): boolean {
     );
   if (isTinHoc) return true;
 
+  // 3. Quy tắc cốt lõi: Phân công coi kiểm tra cấp THPT chỉ lấy nhân sự ở ĐIỂM CHÍNH (THPT Đốc Binh Kiều),
+  // Tuyệt đối KHÔNG lấy nhân sự từ 2 điểm trường THCS (THCS Đốc Binh Kiều & Tân Kiều)
+  const isThcsCampus =
+    teacher.campus === 'THCSDBK' ||
+    teacher.campus === 'THCSTK' ||
+    teacher.campus !== 'THPTDBK';
+  if (isThcsCampus) return true;
+
   return false;
 }
 
@@ -326,15 +334,19 @@ export function generateAutoInvigilationAssignments(
   const teacherSessionCount = new Map<string, number>();
   ranked.forEach(r => teacherSessionCount.set(r.teacher.id, 0));
 
-  // Xác định số buổi mong đợi dựa vào độ âm tiết:
-  // - Âm từ 4 tiết trở lên: 3 - 4 buổi
-  // - Âm từ 1 đến 3 tiết: 2 - 3 buổi
-  // - Âm 0 hoặc dư nhẹ: 1 - 2 buổi
+  // Xác định số buổi mong đợi dựa vào độ âm tiết của 28 giáo viên điểm chính:
+  // - Âm nặng (từ 10 tiết trở lên): 6 - 7 buổi
+  // - Âm trung bình (từ 6 đến 9 tiết): 5 - 6 buổi
+  // - Âm nhẹ (từ 3 đến 5 tiết): 4 - 5 buổi
+  // - Âm ít hoặc đủ định mức (0 đến 2 tiết): 3 - 4 buổi
+  // - Dư tiết: 1 - 2 buổi
   const getTargetSessions = (bal: number) => {
-    if (bal <= -4) return 4;
-    if (bal <= -2) return 3;
-    if (bal < 0) return 2;
-    return 1;
+    if (bal <= -10) return 7;
+    if (bal <= -7) return 6;
+    if (bal <= -4) return 5;
+    if (bal <= -2) return 4;
+    if (bal <= 0) return 3;
+    return 2;
   };
 
   MIDTERM_1_SESSIONS.forEach(sessionConf => {
@@ -343,9 +355,9 @@ export function generateAutoInvigilationAssignments(
 
     // Sắp xếp các ứng viên khả thi cho buổi này:
     // 1. Chưa được phân trong buổi này
-    // 2. Tỷ lệ hoàn thành số buổi mục tiêu (còn thiếu bao nhiêu buổi so với độ âm)
-    // 3. Số buổi đã phân hiện tại (ít hơn ưu tiên hơn)
-    // 4. Độ âm tiết ban đầu
+    // 2. Còn thiếu nhiều buổi so với độ âm (remain)
+    // 3. Độ âm tiết ban đầu (càng âm nặng càng ưu tiên)
+    // 4. Số buổi đã phân hiện tại
     const candidates = [...ranked].filter(r => !usedInThisSession.has(r.teacher.id));
     candidates.sort((a, b) => {
       const targetA = getTargetSessions(a.balance);
@@ -356,9 +368,9 @@ export function generateAutoInvigilationAssignments(
       const remainA = targetA - doneA;
       const remainB = targetB - doneB;
 
-      if (remainA !== remainB) return remainB - remainA; // Cần thêm buổi hơn thì ưu tiên
-      if (doneA !== doneB) return doneA - doneB; // Ít buổi hơn thì ưu tiên
-      return a.balance - b.balance; // Âm nhiều hơn ưu tiên
+      if (remainA !== remainB) return remainB - remainA; // Cần thêm buổi hơn so với mục tiêu thì ưu tiên
+      if (a.balance !== b.balance) return a.balance - b.balance; // Âm nhiều hơn ưu tiên
+      return doneA - doneB;
     });
 
     const needed = sessionConf.requiredInvigilators;
@@ -379,11 +391,11 @@ export function generateAutoInvigilationAssignments(
         teacherId: cand.teacher.id,
         teacherName: cand.teacher.name,
         teacherCode: cand.teacher.code,
-        departmentName: cand.workload.departmentName,
+        departmentName: cand.workload?.departmentName || cand.teacher.departmentId,
         role,
         roomOrHallwayNumber: numberStr,
         initialBalance: cand.balance,
-        subjectTaught: cand.workload.rows?.[0]?.subject || cand.workload.departmentName
+        subjectTaught: cand.workload?.rows?.[0]?.subject || cand.workload?.departmentName || cand.teacher.primarySubjectId || ''
       });
     });
 
@@ -451,11 +463,11 @@ export function calculateTeacherInvigilationSummaries(
       teacherId: t.id,
       teacherName: t.name,
       teacherCode: t.code,
-      departmentName: deptMap.get(t.departmentId) || wl.departmentName || 'Chưa xếp tổ',
+      departmentName: deptMap.get(t.departmentId) || wl?.departmentName || 'Chưa xếp tổ',
       initialBalance: item.balance,
-      teachingPeriods: wl.teachingPeriods,
-      standardPeriods: wl.standardPeriods,
-      reductionPeriods: wl.reductionPeriods,
+      teachingPeriods: wl?.teachingPeriods ?? item.teachingPeriods,
+      standardPeriods: wl?.standardPeriods ?? item.standardPeriods,
+      reductionPeriods: wl?.reductionPeriods ?? item.reductionPeriods,
       assignedSessionsCount: totalSessions,
       assignedRoomCount: roomCount,
       assignedHallwayCount: hallwayCount,

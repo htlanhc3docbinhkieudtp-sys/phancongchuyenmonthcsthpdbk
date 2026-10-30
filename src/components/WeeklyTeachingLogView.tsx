@@ -45,6 +45,10 @@ interface WeeklyTeachingLogViewProps {
   currentWeek?: number;
   timetable?: SchoolTimetable;
   isAdmin?: boolean;
+  storageKeyPrefix?: string;
+  customTitle?: string;
+  customDescription?: string;
+  bannerExtra?: React.ReactNode;
 }
 
 type ViewMode = 'WEEKLY_DETAIL' | 'MULTI_WEEK';
@@ -79,7 +83,14 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   currentWeek = 1,
   timetable,
   isAdmin = false,
+  storageKeyPrefix,
+  customTitle,
+  customDescription,
+  bannerExtra,
 }) => {
+  const effectiveAdjustmentKey = storageKeyPrefix
+    ? `${storageKeyPrefix}_adjustments_v1`
+    : ADJUSTMENT_STORAGE_KEY;
   // Selected period in week selector: 'FULL_YEAR' | 'HK1' | 'HK2' | '1'..'35'
   const [selectedPeriod, setSelectedPeriod] = useState<string>('FULL_YEAR');
   const isFullYearView = selectedPeriod === 'FULL_YEAR';
@@ -153,7 +164,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     Record<string, number>
   >(() => {
     try {
-      const saved = localStorage.getItem(ADJUSTMENT_STORAGE_KEY);
+      const saved = localStorage.getItem(effectiveAdjustmentKey);
       if (saved) return JSON.parse(saved);
     } catch (e) {
       console.error(e);
@@ -170,7 +181,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     setManualAdjustments((prev) => {
       const next = { ...prev, [teacherId]: value };
       try {
-        localStorage.setItem(ADJUSTMENT_STORAGE_KEY, JSON.stringify(next));
+        localStorage.setItem(effectiveAdjustmentKey, JSON.stringify(next));
       } catch (e) {
         console.error(e);
       }
@@ -510,6 +521,12 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
   return (
     <div id="weekly-teaching-log-view" className="space-y-4">
+      {bannerExtra && (
+        <div className="print:hidden">
+          {bannerExtra}
+        </div>
+      )}
+
       {/* Top Banner & Control Bar */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 print:hidden">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -519,12 +536,12 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                 <FileSpreadsheet className="w-5 h-5" />
               </span>
               <div>
-                <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-                  Số Tiết Thực Dạy
+                <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                  {customTitle || 'Số Tiết Thực Dạy'}
                 </h1>
                 <p className="text-xs text-slate-500">
-                  Phân công giảng dạy trích xuất từ Thời Khóa Biểu thực tế •
-                  Tự động tính tiết dạy, kiêm nhiệm, định mức và thừa/thiếu
+                  {customDescription ||
+                    'Phân công giảng dạy trích xuất từ Thời Khóa Biểu thực tế • Tự động tính tiết dạy, kiêm nhiệm, định mức và thừa/thiếu'}
                 </p>
               </div>
             </div>

@@ -12,6 +12,7 @@ import {
   ExamSessionConfig,
   InvigilatorAssignment,
   MIDTERM_1_SESSIONS,
+  isExcludedFromInvigilation,
   getEligibleInvigilatorsRankedByDeficit,
   generateAutoInvigilationAssignments,
   calculateTeacherInvigilationSummaries,
@@ -54,7 +55,7 @@ interface ExamInvigilationViewProps {
   onShowToast?: (msg: string) => void;
 }
 
-const STORAGE_INVIGILATION_KEY = 'docbinhkieu_exam_invigilation_assignments_v1';
+const STORAGE_INVIGILATION_KEY = 'docbinhkieu_exam_invigilation_assignments_v2';
 
 export const ExamInvigilationView: React.FC<ExamInvigilationViewProps> = ({
   teachers,
@@ -85,7 +86,23 @@ export const ExamInvigilationView: React.FC<ExamInvigilationViewProps> = ({
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && typeof parsed === 'object' && Object.keys(parsed).length > 0) {
-          return parsed;
+          // Kiểm tra tính hợp lệ: 100% giáo viên phải thuộc Điểm chính (THPTDBK)
+          const teacherMap = new Map(teachers.map(t => [t.id, t]));
+          let hasInvalidTeacher = false;
+          for (const sId of Object.keys(parsed)) {
+            const list: InvigilatorAssignment[] = parsed[sId] || [];
+            for (const item of list) {
+              const t = teacherMap.get(item.teacherId);
+              if (t && (t.campus !== 'THPTDBK' || isExcludedFromInvigilation(t))) {
+                hasInvalidTeacher = true;
+                break;
+              }
+            }
+            if (hasInvalidTeacher) break;
+          }
+          if (!hasInvalidTeacher) {
+            return parsed;
+          }
         }
       }
     } catch { /* ignore */ }
@@ -446,9 +463,12 @@ export const ExamInvigilationView: React.FC<ExamInvigilationViewProps> = ({
       <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="px-2.5 py-1 bg-amber-500/10 text-amber-700 font-extrabold text-xs rounded-lg border border-amber-300">
                 ⭐ KẾ HOẠCH 50/KH • TUẦN 9 (02/11 - 06/11/2026)
+              </span>
+              <span className="px-2 py-0.5 bg-blue-50 text-blue-700 font-bold text-xs rounded-md border border-blue-200">
+                🏫 100% Nhân sự Điểm chính THPT (Không lấy từ 2 điểm THCS)
               </span>
               <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-md border border-emerald-200">
                 17 GV/Buổi Sáng • 11 GV/Buổi Chiều
@@ -456,10 +476,10 @@ export const ExamInvigilationView: React.FC<ExamInvigilationViewProps> = ({
             </div>
             <h2 className="text-lg font-black text-slate-900 mt-1 uppercase tracking-tight flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-indigo-600" />
-              Phân Công Giáo Viên Coi Kiểm Tra Giữa Học Kỳ 1
+              Phân Công Giáo Viên Coi Kiểm Tra Giữa Học Kỳ 1 (Cấp THPT)
             </h2>
             <p className="text-xs text-slate-600 mt-0.5">
-              Ưu tiên giáo viên <b>âm nhiều tiết nhất trường</b> coi nhiều buổi để bù đủ định mức • <b>Loại trừ 100% giáo viên môn Tin học</b> (Học kỳ 2 tăng tiết dạy môn Trí tuệ nhân tạo).
+              Toàn bộ nhân sự coi kiểm tra được lấy từ <b>Điểm chính (THPTĐBK)</b> • Tuyệt đối <b>không lấy nhân sự từ 2 điểm THCS</b> • Ưu tiên giáo viên <b>âm nhiều tiết nhất</b> coi nhiều buổi để bù định mức • <b>Loại trừ 100% giáo viên môn Tin học</b> (HK2 tăng tiết dạy môn Trí tuệ nhân tạo).
             </p>
           </div>
 

@@ -10,6 +10,7 @@ import {
   Award,
   FileQuestion,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 
 export type ActiveTabType =
@@ -18,6 +19,7 @@ export type ActiveTabType =
   | 'homeroom'
   | 'weekly_schedule'
   | 'weekly_log'
+  | 'draft_assignment'
   | 'summary'
   | 'curriculum'
   | 'exam_evaluation'
@@ -72,6 +74,14 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
       label: 'Số Tiết Thực Dạy',
       shortLabel: 'Số Tiết Thực Dạy',
       icon: TrendingUp,
+      isPublic: false,
+    },
+    {
+      id: 'draft_assignment',
+      label: 'Dự thảo phân công mới',
+      shortLabel: 'Dự Thảo Mới',
+      icon: Sparkles,
+      badge: 'Thí điểm',
       isPublic: false,
     },
     {
