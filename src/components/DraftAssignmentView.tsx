@@ -12,6 +12,10 @@ import { WeeklyTeachingLogView } from './WeeklyTeachingLogView';
 import { OFFICIAL_WEEK_8_SLOTS } from '../data/officialWeek8Timetable';
 import { OFFICIAL_WEEK_7_SLOTS } from '../data/officialWeek7Timetable';
 import {
+  calculateAllActualWorkloads,
+  TeacherActualWorkload,
+} from '../utils/actualTeachingHoursHelper';
+import {
   Sparkles,
   RotateCcw,
   Zap,
@@ -179,8 +183,12 @@ export interface TeacherWorkloadDelta {
   departmentName: string;
   campus: string;
   effectiveStandard: number;
+  reductionPeriods?: number;
+  duties?: string;
   oldWeeklyTeaching: number;
   newWeeklyTeaching: number;
+  oldWeeklyTotal?: number;
+  newWeeklyTotal?: number;
   oldWeeklyBalance: number;
   newWeeklyBalance: number;
   weeklyDelta: number;
@@ -325,6 +333,43 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   }, [draftWeeklyTimetables, currentWeek]);
 
   // =========================================================================
+  // OFFICIAL CALCULATION ENGINE: RUN WORKLOAD ENGINE FOR BASELINE & DRAFT
+  // =========================================================================
+  const baseActualWorkloads = useMemo(() => {
+    return calculateAllActualWorkloads(
+      currentWeek || 8,
+      teachers,
+      departments,
+      classes,
+      subjects,
+      config,
+      weeklyTimetables,
+      timetable,
+      35,
+      {},
+      1,
+      35
+    );
+  }, [currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable]);
+
+  const draftActualWorkloads = useMemo(() => {
+    return calculateAllActualWorkloads(
+      currentWeek || 8,
+      teachers,
+      departments,
+      classes,
+      subjects,
+      config,
+      draftWeeklyTimetables,
+      draftMasterTimetable,
+      35,
+      {},
+      1,
+      35
+    );
+  }, [currentWeek, teachers, departments, classes, subjects, config, draftWeeklyTimetables, draftMasterTimetable]);
+
+  // =========================================================================
   // CORE ENGINE: CALCULATE PRECISE DIFFERENCES (SLOT DIFFS & TEACHER DELTAS)
   // =========================================================================
   const { slotDifferences, teacherDeltas, totalSlotChangesCount, annualImpact } = useMemo(() => {
@@ -374,69 +419,52 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       }
     });
 
-    // Calculate teacher weekly teaching counts (excluding Chào cờ & SHL homeroom slots)
-    const baseWeeklyCounts = new Map<string, number>();
-    const draftWeeklyCounts = new Map<string, number>();
+    // Map official workloads by teacherId
+    const baseWorkloadMap = new Map<string, TeacherActualWorkload>(
+      baseActualWorkloads.map((w) => [w.teacherId, w])
+    );
+    const draftWorkloadMap = new Map<string, TeacherActualWorkload>(
+      draftActualWorkloads.map((w) => [w.teacherId, w])
+    );
 
-    baselineSlots.forEach((s) => {
-      if (!s.teacherName || s.teacherName === 'Chưa xếp' || s.teacherName === 'Trống') return;
-      if (
-        s.subjectId === 'sub-chao-co' ||
-        s.subjectId === 'sub-shl' ||
-        s.subjectName === 'Chào cờ' ||
-        s.subjectName === 'Sinh hoạt lớp'
-      ) {
-        return;
-      }
-      baseWeeklyCounts.set(s.teacherName, (baseWeeklyCounts.get(s.teacherName) || 0) + 1);
-    });
-
-    currentDraftSlots.forEach((s) => {
-      if (!s.teacherName || s.teacherName === 'Chưa xếp' || s.teacherName === 'Trống') return;
-      if (
-        s.subjectId === 'sub-chao-co' ||
-        s.subjectId === 'sub-shl' ||
-        s.subjectName === 'Chào cờ' ||
-        s.subjectName === 'Sinh hoạt lớp'
-      ) {
-        return;
-      }
-      draftWeeklyCounts.set(s.teacherName, (draftWeeklyCounts.get(s.teacherName) || 0) + 1);
-    });
-
-    // Build teacher delta list
+    // Build teacher delta list from official calculations
     const deltas: TeacherWorkloadDelta[] = [];
     teachers.forEach((t) => {
-      const bCount = baseWeeklyCounts.get(t.name) || 0;
-      const dCount = draftWeeklyCounts.get(t.name) || 0;
-      const delta = dCount - bCount;
+      const bW = baseWorkloadMap.get(t.id);
+      const dW = draftWorkloadMap.get(t.id);
+      if (!bW || !dW) return;
 
-      if (delta !== 0) {
-        const effStd = Math.max(0, t.baseStandardPeriods - (t.customReductionPeriods || 0));
-        const oldWBal = bCount - effStd;
-        const newWBal = dCount - effStd;
-        const oldYTeaching = bCount * 35;
-        const newYTeaching = dCount * 35;
-        const oldYBal = oldWBal * 35;
-        const newYBal = newWBal * 35;
+      const weeklyDelta = dW.weeklyBalance - bW.weeklyBalance;
+      const yearDelta = dW.semesterBalance - bW.semesterBalance;
+      const teachingDelta = dW.teachingPeriods - bW.teachingPeriods;
 
+      if (weeklyDelta !== 0 || yearDelta !== 0 || teachingDelta !== 0 || gainedMap.has(t.name) || lostMap.has(t.name)) {
         deltas.push({
           teacherId: t.id,
           teacherName: t.name,
           teacherCode: t.code,
-          departmentName: departmentMap.get(t.departmentId) || 'Chưa xếp tổ',
-          campus: t.campus === 'THPTDBK' ? 'Điểm chính (THPT)' : t.campus === 'THCSTK' ? 'THCS Tân Kiều' : 'THCS Đốc Binh Kiều',
-          effectiveStandard: effStd,
-          oldWeeklyTeaching: bCount,
-          newWeeklyTeaching: dCount,
-          oldWeeklyBalance: oldWBal,
-          newWeeklyBalance: newWBal,
-          weeklyDelta: delta,
-          oldYearTeaching: oldYTeaching,
-          newYearTeaching: newYTeaching,
-          oldYearBalance: oldYBal,
-          newYearBalance: newYBal,
-          yearDelta: delta * 35,
+          departmentName: departmentMap.get(t.departmentId) || bW.departmentName || 'Chưa xếp tổ',
+          campus:
+            t.campus === 'THPTDBK'
+              ? 'Điểm chính (THPT)'
+              : t.campus === 'THCSTK'
+              ? 'THCS Tân Kiều'
+              : 'THCS Đốc Binh Kiều',
+          effectiveStandard: bW.standardPeriods,
+          reductionPeriods: bW.reductionPeriods,
+          duties: bW.duties,
+          oldWeeklyTeaching: bW.teachingPeriods,
+          newWeeklyTeaching: dW.teachingPeriods,
+          oldWeeklyTotal: bW.totalPeriods,
+          newWeeklyTotal: dW.totalPeriods,
+          oldWeeklyBalance: bW.weeklyBalance,
+          newWeeklyBalance: dW.weeklyBalance,
+          weeklyDelta: weeklyDelta,
+          oldYearTeaching: bW.semesterTotalTeaching,
+          newYearTeaching: dW.semesterTotalTeaching,
+          oldYearBalance: bW.semesterBalance,
+          newYearBalance: dW.semesterBalance,
+          yearDelta: yearDelta,
           classesGained: gainedMap.get(t.name) || [],
           classesLost: lostMap.get(t.name) || [],
         });
@@ -444,7 +472,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     });
 
     // Sort deltas: teachers gained most at top, then teachers lost most
-    deltas.sort((a, b) => b.weeklyDelta - a.weeklyDelta);
+    deltas.sort((a, b) => b.yearDelta - a.yearDelta || b.weeklyDelta - a.weeklyDelta);
 
     // 1. Gained Group (13 GVCN)
     const gainedList = deltas.filter((d) => d.weeklyDelta > 0);
@@ -577,7 +605,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
         departmentBreakdown,
       },
     };
-  }, [baselineSlots, draftWeeklyTimetables, currentWeek, teachers, departmentMap, teacherMap, departments]);
+  }, [baselineSlots, draftWeeklyTimetables, currentWeek, teachers, departmentMap, teacherMap, departments, baseActualWorkloads, draftActualWorkloads]);
 
   // Filtered deltas based on filter tabs & search term
   const filteredTeacherDeltas = useMemo(() => {
