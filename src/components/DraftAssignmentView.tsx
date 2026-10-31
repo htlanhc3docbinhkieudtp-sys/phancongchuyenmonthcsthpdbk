@@ -26,6 +26,15 @@ import {
   Layers,
   TrendingDown,
   TrendingUp,
+  History,
+  Eye,
+  FileSpreadsheet,
+  ArrowRight,
+  UserCheck,
+  Info,
+  Calendar,
+  Building2,
+  ShieldAlert,
 } from 'lucide-react';
 
 interface DraftAssignmentViewProps {
@@ -146,6 +155,41 @@ const CONSOLIDATION_19_CLASSES_MAP: Record<
   },
 };
 
+export interface SlotDifferenceItem {
+  slotId: string;
+  className: string;
+  dayOfWeek: number;
+  period: number;
+  session: string;
+  subjectName: string;
+  oldTeacherName: string;
+  oldTeacherCode: string;
+  newTeacherName: string;
+  newTeacherCode: string;
+  reason?: string;
+}
+
+export interface TeacherWorkloadDelta {
+  teacherId: string;
+  teacherName: string;
+  teacherCode: string;
+  departmentName: string;
+  campus: string;
+  effectiveStandard: number;
+  oldWeeklyTeaching: number;
+  newWeeklyTeaching: number;
+  oldWeeklyBalance: number;
+  newWeeklyBalance: number;
+  weeklyDelta: number;
+  oldYearTeaching: number;
+  newYearTeaching: number;
+  oldYearBalance: number;
+  newYearBalance: number;
+  yearDelta: number;
+  classesGained: string[];
+  classesLost: string[];
+}
+
 export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   config,
   teachers,
@@ -158,7 +202,19 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   isAdmin = true,
   onShowToast,
 }) => {
-  // 1. Independent Sandbox Weekly Timetables State
+  // 1. Baseline Slots from Official Timetable (Week 8 / Official Timetable)
+  const baselineSlots = useMemo<TimetableSlot[]>(() => {
+    return (
+      weeklyTimetables?.[8]?.slots ||
+      OFFICIAL_WEEK_8_SLOTS ||
+      weeklyTimetables?.[7]?.slots ||
+      OFFICIAL_WEEK_7_SLOTS ||
+      timetable?.slots ||
+      []
+    );
+  }, [weeklyTimetables, timetable]);
+
+  // 2. Independent Sandbox Weekly Timetables State
   const [draftWeeklyTimetables, setDraftWeeklyTimetables] = useState<
     Record<number, SchoolTimetable>
   >(() => {
@@ -174,15 +230,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       /* ignore */
     }
 
-    // Default: Clone official weekly timetables or generate baseline from Week 8
-    const baseSlots =
-      weeklyTimetables?.[8]?.slots ||
-      weeklyTimetables?.[7]?.slots ||
-      OFFICIAL_WEEK_8_SLOTS ||
-      OFFICIAL_WEEK_7_SLOTS ||
-      timetable?.slots ||
-      [];
-
+    const baseSlots = baselineSlots;
     const initialDraft: Record<number, SchoolTimetable> = {};
     for (let w = 1; w <= 35; w++) {
       const existing = weeklyTimetables?.[w];
@@ -231,9 +279,15 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   const [selectedNewTeacherId, setSelectedNewTeacherId] = useState<string>('');
   const [applyScope, setApplyScope] = useState<'CURRENT_ONWARD' | 'ALL_SEMESTER'>('CURRENT_ONWARD');
 
+  // UI State for Change Tracking Panel
+  const [isDiffDrawerOpen, setIsDiffDrawerOpen] = useState(true);
+  const [diffFilterTab, setDiffFilterTab] = useState<'ALL' | 'GAINED' | 'LOST' | 'SLOTS'>('ALL');
+  const [diffSearchTerm, setDiffSearchTerm] = useState('');
+
   // Teacher map for easy lookup
   const teacherMap = useMemo(() => new Map(teachers.map((t) => [t.id, t])), [teachers]);
   const teacherByName = useMemo(() => new Map(teachers.map((t) => [t.name, t])), [teachers]);
+  const departmentMap = useMemo(() => new Map(departments.map((d) => [d.id, d.name])), [departments]);
 
   // Fill teacherId in CONSOLIDATION_19_CLASSES_MAP
   useEffect(() => {
@@ -252,7 +306,6 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       draftWeeklyTimetables[8]?.slots ||
       draftWeeklyTimetables[currentWeek]?.slots ||
       [];
-    // Check 8A1: if only Nguyễn Thái Hùng teaches HĐTN in 8A1, then it's consolidated
     const slots8A1Hdtn = sampleWeekSlots.filter(
       (s) =>
         (s.className === '8A1' || s.classId === 'cls-8a1') &&
@@ -261,6 +314,156 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     const uniqueTeachers = new Set(slots8A1Hdtn.map((s) => s.teacherName));
     return uniqueTeachers.size === 1 && uniqueTeachers.has('Nguyễn Thái Hùng');
   }, [draftWeeklyTimetables, currentWeek]);
+
+  // =========================================================================
+  // CORE ENGINE: CALCULATE PRECISE DIFFERENCES (SLOT DIFFS & TEACHER DELTAS)
+  // =========================================================================
+  const { slotDifferences, teacherDeltas, totalSlotChangesCount } = useMemo(() => {
+    const currentDraftSlots =
+      draftWeeklyTimetables[8]?.slots ||
+      draftWeeklyTimetables[currentWeek]?.slots ||
+      [];
+
+    // Map baseline slots by unique key: classId + day + session + period
+    const baselineMap = new Map<string, TimetableSlot>();
+    baselineSlots.forEach((slot) => {
+      const key = `${slot.classId || slot.className}_${slot.dayOfWeek}_${slot.session}_${slot.period}`;
+      baselineMap.set(key, slot);
+    });
+
+    const diffs: SlotDifferenceItem[] = [];
+    const gainedMap = new Map<string, string[]>(); // teacherName -> ['6A1 (HĐTN)', ...]
+    const lostMap = new Map<string, string[]>();
+
+    currentDraftSlots.forEach((draftSlot) => {
+      const key = `${draftSlot.classId || draftSlot.className}_${draftSlot.dayOfWeek}_${draftSlot.session}_${draftSlot.period}`;
+      const base = baselineMap.get(key);
+
+      if (base && base.teacherName !== draftSlot.teacherName) {
+        const cReason = CONSOLIDATION_19_CLASSES_MAP[draftSlot.className]?.roleReason;
+        diffs.push({
+          slotId: draftSlot.id,
+          className: draftSlot.className,
+          dayOfWeek: draftSlot.dayOfWeek,
+          period: draftSlot.period,
+          session: draftSlot.session,
+          subjectName: draftSlot.subjectName,
+          oldTeacherName: base.teacherName,
+          oldTeacherCode: base.teacherCode,
+          newTeacherName: draftSlot.teacherName,
+          newTeacherCode: draftSlot.teacherCode,
+          reason: cReason,
+        });
+
+        // Track labels
+        const label = `${draftSlot.className} (${draftSlot.subjectName} T${draftSlot.period} Thứ ${draftSlot.dayOfWeek})`;
+        if (!gainedMap.has(draftSlot.teacherName)) gainedMap.set(draftSlot.teacherName, []);
+        gainedMap.get(draftSlot.teacherName)!.push(label);
+
+        if (!lostMap.has(base.teacherName)) lostMap.set(base.teacherName, []);
+        lostMap.get(base.teacherName)!.push(label);
+      }
+    });
+
+    // Calculate teacher weekly teaching counts (excluding Chào cờ & SHL homeroom slots)
+    const baseWeeklyCounts = new Map<string, number>();
+    const draftWeeklyCounts = new Map<string, number>();
+
+    baselineSlots.forEach((s) => {
+      if (!s.teacherName || s.teacherName === 'Chưa xếp' || s.teacherName === 'Trống') return;
+      if (
+        s.subjectId === 'sub-chao-co' ||
+        s.subjectId === 'sub-shl' ||
+        s.subjectName === 'Chào cờ' ||
+        s.subjectName === 'Sinh hoạt lớp'
+      ) {
+        return;
+      }
+      baseWeeklyCounts.set(s.teacherName, (baseWeeklyCounts.get(s.teacherName) || 0) + 1);
+    });
+
+    currentDraftSlots.forEach((s) => {
+      if (!s.teacherName || s.teacherName === 'Chưa xếp' || s.teacherName === 'Trống') return;
+      if (
+        s.subjectId === 'sub-chao-co' ||
+        s.subjectId === 'sub-shl' ||
+        s.subjectName === 'Chào cờ' ||
+        s.subjectName === 'Sinh hoạt lớp'
+      ) {
+        return;
+      }
+      draftWeeklyCounts.set(s.teacherName, (draftWeeklyCounts.get(s.teacherName) || 0) + 1);
+    });
+
+    // Build teacher delta list
+    const deltas: TeacherWorkloadDelta[] = [];
+    teachers.forEach((t) => {
+      const bCount = baseWeeklyCounts.get(t.name) || 0;
+      const dCount = draftWeeklyCounts.get(t.name) || 0;
+      const delta = dCount - bCount;
+
+      if (delta !== 0) {
+        const effStd = Math.max(0, t.baseStandardPeriods - (t.customReductionPeriods || 0));
+        const oldWBal = bCount - effStd;
+        const newWBal = dCount - effStd;
+        const oldYTeaching = bCount * 35;
+        const newYTeaching = dCount * 35;
+        const oldYBal = oldWBal * 35;
+        const newYBal = newWBal * 35;
+
+        deltas.push({
+          teacherId: t.id,
+          teacherName: t.name,
+          teacherCode: t.code,
+          departmentName: departmentMap.get(t.departmentId) || 'Chưa xếp tổ',
+          campus: t.campus === 'THPTDBK' ? 'Điểm chính (THPT)' : t.campus === 'THCSTK' ? 'THCS Tân Kiều' : 'THCS Đốc Binh Kiều',
+          effectiveStandard: effStd,
+          oldWeeklyTeaching: bCount,
+          newWeeklyTeaching: dCount,
+          oldWeeklyBalance: oldWBal,
+          newWeeklyBalance: newWBal,
+          weeklyDelta: delta,
+          oldYearTeaching: oldYTeaching,
+          newYearTeaching: newYTeaching,
+          oldYearBalance: oldYBal,
+          newYearBalance: newYBal,
+          yearDelta: delta * 35,
+          classesGained: gainedMap.get(t.name) || [],
+          classesLost: lostMap.get(t.name) || [],
+        });
+      }
+    });
+
+    // Sort deltas: teachers gained most at top, then teachers lost most
+    deltas.sort((a, b) => b.weeklyDelta - a.weeklyDelta);
+
+    return {
+      slotDifferences: diffs,
+      teacherDeltas: deltas,
+      totalSlotChangesCount: diffs.length,
+    };
+  }, [baselineSlots, draftWeeklyTimetables, currentWeek, teachers, departmentMap]);
+
+  // Filtered deltas based on filter tabs & search term
+  const filteredTeacherDeltas = useMemo(() => {
+    return teacherDeltas.filter((item) => {
+      if (diffFilterTab === 'GAINED' && item.weeklyDelta <= 0) return false;
+      if (diffFilterTab === 'LOST' && item.weeklyDelta >= 0) return false;
+
+      if (diffSearchTerm.trim()) {
+        const term = diffSearchTerm.toLowerCase();
+        const matchName = item.teacherName.toLowerCase().includes(term);
+        const matchCode = item.teacherCode.toLowerCase().includes(term);
+        const matchDept = item.departmentName.toLowerCase().includes(term);
+        return matchName || matchCode || matchDept;
+      }
+      return true;
+    });
+  }, [teacherDeltas, diffFilterTab, diffSearchTerm]);
+
+  // Summary counts
+  const gainedTeachersCount = useMemo(() => teacherDeltas.filter((t) => t.weeklyDelta > 0).length, [teacherDeltas]);
+  const lostTeachersCount = useMemo(() => teacherDeltas.filter((t) => t.weeklyDelta < 0).length, [teacherDeltas]);
 
   // 1. ACTION: Pilot Consolidate 19 classes HĐTNHN
   const handleApplyHdtnConsolidation = () => {
@@ -279,7 +482,6 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     const nextDraft: Record<number, SchoolTimetable> = { ...draftWeeklyTimetables };
     let totalUpdatedSlots = 0;
 
-    // Apply from Week 1 to Week 35 (or active semester)
     Object.keys(nextDraft).forEach((wKey) => {
       const wNum = Number(wKey);
       const tbl = nextDraft[wNum];
@@ -306,7 +508,6 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
 
         if (!targetTeacher) return slot;
 
-        // Only update if teacher is currently different
         if (slot.teacherName !== targetTeacher.name) {
           totalUpdatedSlots++;
           return {
@@ -327,9 +528,10 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     });
 
     persistDraft(nextDraft);
+    setIsDiffDrawerOpen(true);
     if (onShowToast) {
       onShowToast(
-        `Đã thí điểm gom thành công 19 lớp HĐTNHN về 1 giáo viên (${totalUpdatedSlots} tiết được gán lại)! Bảng số tiết đã được tính toán lại ngay lập tức.`
+        `Đã thí điểm gom thành công 19 lớp HĐTNHN về 1 giáo viên (${totalUpdatedSlots} tiết)! Bảng so sánh thay đổi đã được cập nhật chi tiết ngay bên dưới.`
       );
     }
   };
@@ -344,13 +546,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       return;
     }
 
-    const baseSlots =
-      weeklyTimetables?.[8]?.slots ||
-      OFFICIAL_WEEK_8_SLOTS ||
-      weeklyTimetables?.[7]?.slots ||
-      timetable?.slots ||
-      [];
-
+    const baseSlots = baselineSlots;
     const freshDraft: Record<number, SchoolTimetable> = {};
     for (let w = 1; w <= 35; w++) {
       const existing = weeklyTimetables?.[w];
@@ -385,7 +581,6 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     return sampleSlots.filter((s) => s.classId === selectedClassId);
   }, [draftWeeklyTimetables, currentWeek, selectedClassId]);
 
-  // Unique subjects in selected class
   const classSubjects = useMemo(() => {
     const map = new Map<string, { subjectId: string; subjectName: string; teacherName: string; count: number }>();
     currentClassSlots.forEach((s) => {
@@ -410,20 +605,17 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     return Array.from(map.values());
   }, [currentClassSlots]);
 
-  // When selectedClassId changes, auto pick first subject
   useEffect(() => {
     if (classSubjects.length > 0 && (!selectedSubjectId || !classSubjects.some((cs) => cs.subjectId === selectedSubjectId))) {
       setSelectedSubjectId(classSubjects[0].subjectId);
     }
   }, [classSubjects, selectedSubjectId]);
 
-  // Currently assigned teacher for selected class & subject
   const currentAssignedTeacher = useMemo(() => {
     const match = classSubjects.find((cs) => cs.subjectId === selectedSubjectId);
     return match ? match.teacherName : '';
   }, [classSubjects, selectedSubjectId]);
 
-  // Execute single reassignment in sandbox
   const handleApplySingleReassignment = () => {
     if (!selectedClassId || !selectedSubjectId || !selectedNewTeacherId) {
       alert('Vui lòng chọn đầy đủ Lớp, Môn học và Giáo viên mới.');
@@ -481,7 +673,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Pilot Sandbox Control Banner */}
+      {/* 1. Pilot Sandbox Control Banner */}
       <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 rounded-2xl p-4 text-white shadow-md border border-purple-800/60">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1.5">
@@ -494,9 +686,13 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 Độc lập 100% với Thời khóa biểu chính thức
               </span>
-              {isHdtnConsolidatedInDraft && (
-                <span className="px-2.5 py-0.5 bg-blue-500/20 text-blue-300 border border-blue-500/40 font-bold text-xs rounded-full flex items-center gap-1">
-                  ⭐ Đã thí điểm gom 19 lớp HĐTNHN về 1 GV
+              {totalSlotChangesCount > 0 ? (
+                <span className="px-2.5 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold text-xs rounded-full flex items-center gap-1 animate-pulse">
+                  ⚡ Đã có {totalSlotChangesCount} tiết thay đổi so với TKB gốc
+                </span>
+              ) : (
+                <span className="px-2.5 py-0.5 bg-slate-500/20 text-slate-300 border border-slate-500/40 font-medium text-xs rounded-full">
+                  Chưa có thay đổi (Nguyên bản Tuần 8)
                 </span>
               )}
             </div>
@@ -505,9 +701,9 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
               Bảng Phân Công Chuyên Môn Dự Thảo & Thử Nghiệm Số Tiết
             </h2>
             <p className="text-xs text-purple-200/90 max-w-3xl leading-relaxed">
-              Đây là không gian <b>thử nghiệm an toàn (Sandbox)</b> để Thầy chạy thử các phương án phân công mới, 
-              kiểm tra số tiết thừa/thiếu cả năm và từng tuần của 101 giáo viên. Mọi điều chỉnh tại đây 
-              <b> tuyệt đối không làm ảnh hưởng</b> đến dữ liệu thời khóa biểu hay phân công đang vận hành của nhà trường.
+              Không gian <b>thử nghiệm an toàn (Sandbox)</b> giúp Thầy chạy thử các phương án phân công mới, 
+              đối chiếu số tiết thừa/thiếu trước và sau khi thay đổi của từng giáo viên. Mọi điều chỉnh tại đây 
+              <b> tuyệt đối không làm ảnh hưởng</b> đến dữ liệu thời khóa biểu đang vận hành.
             </p>
           </div>
 
@@ -550,7 +746,364 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
         </div>
       </div>
 
-      {/* Renders the full calculation engine & visual design of Số Tiết Thực Dạy, but backed by Sandbox state */}
+      {/* 2. LIVE COMPARISON & CHANGE TRACKING DASHBOARD (BẢNG THỂ HIỆN SỰ THAY ĐỔI) */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        {/* Panel Header */}
+        <div className="p-4 bg-slate-50/80 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-purple-100 text-purple-800 rounded-xl">
+              <History className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-black text-slate-900 tracking-tight flex items-center gap-1.5">
+                  Bảng Đối Soát & Thể Hiện Sự Thay Đổi
+                </h3>
+                <span className="px-2 py-0.5 text-xs font-extrabold rounded-md bg-purple-100 text-purple-900 border border-purple-200">
+                  {totalSlotChangesCount} tiết đã điều chỉnh
+                </span>
+                <span className="px-2 py-0.5 text-xs font-bold rounded-md bg-emerald-100 text-emerald-800">
+                  +{gainedTeachersCount} GV tăng tiết
+                </span>
+                <span className="px-2 py-0.5 text-xs font-bold rounded-md bg-rose-100 text-rose-800">
+                  -{lostTeachersCount} GV giảm tiết
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                So sánh trực tiếp giữa <b>Thời Khóa Biểu gốc (Tuần 8)</b> với <b>Bản Dự thảo mới</b> • Thể hiện rõ ai tăng tiết, ai giảm tiết và chi tiết từng lớp điều chỉnh
+              </p>
+            </div>
+          </div>
+
+          {/* Toggle View */}
+          <div className="flex items-center gap-2 self-start md:self-center">
+            <button
+              onClick={() => setIsDiffDrawerOpen(!isDiffDrawerOpen)}
+              className="px-3 py-1.5 bg-white border border-slate-300 hover:border-slate-400 text-slate-700 text-xs font-bold rounded-xl shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <Eye className="w-4 h-4 text-slate-500" />
+              {isDiffDrawerOpen ? 'Thu Gọn Bảng Thay Đổi' : 'Mở Rộng Bảng Thay Đổi'}
+            </button>
+          </div>
+        </div>
+
+        {/* Panel Content (Collapsible) */}
+        {isDiffDrawerOpen && (
+          <div className="p-4 space-y-4">
+            {totalSlotChangesCount === 0 ? (
+              <div className="bg-amber-50/60 border border-amber-200 rounded-xl p-4 text-center space-y-2">
+                <div className="inline-flex p-2 bg-amber-100 text-amber-700 rounded-full">
+                  <Info className="w-5 h-5" />
+                </div>
+                <h4 className="text-sm font-bold text-amber-900">
+                  Bản Dự Thảo Đang Giống 100% Với Thời Khóa Biểu Gốc (Tuần 8)
+                </h4>
+                <p className="text-xs text-amber-700 max-w-lg mx-auto">
+                  Chưa có tiết nào được điều chỉnh. Thầy hãy bấm nút{' '}
+                  <b>"Thí Điểm Gom 19 Lớp HĐTN"</b> ở trên hoặc bấm{' '}
+                  <b>"Đổi GV Lớp & Môn Thử Nghiệm"</b> để xem bảng phân tích thay đổi số tiết hiển thị tại đây!
+                </p>
+                <div className="pt-1">
+                  <button
+                    onClick={handleApplyHdtnConsolidation}
+                    className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-xs transition-all inline-flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Zap className="w-4 h-4 fill-current" />
+                    Thí Điểm Gom 19 Lớp HĐTN Ngay
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Filter Tabs and Search */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+                  <div className="inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold gap-1">
+                    <button
+                      onClick={() => setDiffFilterTab('ALL')}
+                      className={`px-3 py-1.5 rounded-lg transition-all ${
+                        diffFilterTab === 'ALL'
+                          ? 'bg-purple-700 text-white shadow-xs font-bold'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      Tất cả GV thay đổi ({teacherDeltas.length})
+                    </button>
+                    <button
+                      onClick={() => setDiffFilterTab('GAINED')}
+                      className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 ${
+                        diffFilterTab === 'GAINED'
+                          ? 'bg-emerald-600 text-white shadow-xs font-bold'
+                          : 'text-emerald-700 hover:text-emerald-900'
+                      }`}
+                    >
+                      <TrendingUp className="w-3.5 h-3.5" />
+                      GV được tăng tiết (+{gainedTeachersCount})
+                    </button>
+                    <button
+                      onClick={() => setDiffFilterTab('LOST')}
+                      className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 ${
+                        diffFilterTab === 'LOST'
+                          ? 'bg-rose-600 text-white shadow-xs font-bold'
+                          : 'text-rose-700 hover:text-rose-900'
+                      }`}
+                    >
+                      <TrendingDown className="w-3.5 h-3.5" />
+                      GV được giảm tiết (-{lostTeachersCount})
+                    </button>
+                    <button
+                      onClick={() => setDiffFilterTab('SLOTS')}
+                      className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 ${
+                        diffFilterTab === 'SLOTS'
+                          ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      Chi tiết 19 lớp đổi tiết ({slotDifferences.length})
+                    </button>
+                  </div>
+
+                  {/* Search box */}
+                  <div className="relative w-full sm:w-64">
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder="Tìm tên giáo viên, mã, tổ..."
+                      value={diffSearchTerm}
+                      onChange={(e) => setDiffSearchTerm(e.target.value)}
+                      className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                </div>
+
+                {/* Sub-View 1: Teachers Workload Delta Table */}
+                {diffFilterTab !== 'SLOTS' && (
+                  <div className="overflow-x-auto border border-slate-200 rounded-xl shadow-2xs">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead>
+                        <tr className="bg-slate-100/90 text-slate-700 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
+                          <th className="py-2.5 px-3 w-12 text-center">STT</th>
+                          <th className="py-2.5 px-3 min-w-[180px]">Họ và Tên Giáo Viên</th>
+                          <th className="py-2.5 px-3 min-w-[140px]">Tổ Chuyên Môn</th>
+                          <th className="py-2.5 px-3 w-24 text-center">Định Mức</th>
+                          <th className="py-2.5 px-3 w-28 text-center bg-slate-200/60">
+                            Tiết Tuần Gốc
+                          </th>
+                          <th className="py-2.5 px-3 w-28 text-center bg-purple-100/70 text-purple-900 font-extrabold">
+                            Tiết Tuần Mới
+                          </th>
+                          <th className="py-2.5 px-3 w-28 text-center">Biến Động Tuần</th>
+                          <th className="py-2.5 px-3 w-32 text-center bg-purple-50 text-purple-900">
+                            Cân Đối Tuần
+                          </th>
+                          <th className="py-2.5 px-3 w-32 text-center">Biến Động Cả Năm</th>
+                          <th className="py-2.5 px-3 min-w-[220px]">Các Tiết / Lớp Được Điều Chỉnh</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {filteredTeacherDeltas.map((item, idx) => {
+                          const isGained = item.weeklyDelta > 0;
+                          return (
+                            <tr
+                              key={item.teacherId}
+                              className={`hover:bg-purple-50/30 transition-colors ${
+                                isGained ? 'bg-emerald-50/15' : 'bg-rose-50/15'
+                              }`}
+                            >
+                              <td className="py-2.5 px-3 text-center text-slate-500 font-medium">
+                                {idx + 1}
+                              </td>
+                              <td className="py-2.5 px-3">
+                                <div className="font-bold text-slate-900 flex items-center gap-1.5">
+                                  {item.teacherName}
+                                  {isGained ? (
+                                    <span className="p-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px]" title="Được tăng thêm tiết">
+                                      <TrendingUp className="w-3 h-3" />
+                                    </span>
+                                  ) : (
+                                    <span className="p-0.5 bg-rose-100 text-rose-700 rounded text-[10px]" title="Được giảm bớt tiết">
+                                      <TrendingDown className="w-3 h-3" />
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-[11px] text-slate-500 font-mono">
+                                  {item.teacherCode} • {item.campus}
+                                </div>
+                              </td>
+                              <td className="py-2.5 px-3 text-slate-600">
+                                {item.departmentName}
+                              </td>
+                              <td className="py-2.5 px-3 text-center font-bold text-slate-700">
+                                {item.effectiveStandard}t
+                              </td>
+                              <td className="py-2.5 px-3 text-center font-semibold text-slate-600 bg-slate-50">
+                                {item.oldWeeklyTeaching}t/tuần
+                              </td>
+                              <td className="py-2.5 px-3 text-center font-black text-purple-900 bg-purple-50/60 text-sm">
+                                {item.newWeeklyTeaching}t/tuần
+                              </td>
+                              <td className="py-2.5 px-3 text-center">
+                                <span
+                                  className={`px-2 py-1 rounded-lg font-black text-xs inline-flex items-center gap-1 ${
+                                    isGained
+                                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                      : 'bg-rose-100 text-rose-800 border border-rose-300'
+                                  }`}
+                                >
+                                  {isGained ? `+${item.weeklyDelta}t` : `${item.weeklyDelta}t`}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-center">
+                                <div
+                                  className={`font-black text-xs ${
+                                    item.newWeeklyBalance < 0
+                                      ? 'text-rose-600'
+                                      : item.newWeeklyBalance > 0
+                                      ? 'text-blue-700'
+                                      : 'text-emerald-600'
+                                  }`}
+                                >
+                                  {item.newWeeklyBalance > 0 ? `+${item.newWeeklyBalance}t` : `${item.newWeeklyBalance}t`}
+                                </div>
+                                <div className="text-[10px] text-slate-400">
+                                  Cũ: {item.oldWeeklyBalance > 0 ? `+${item.oldWeeklyBalance}t` : `${item.oldWeeklyBalance}t`}
+                                </div>
+                              </td>
+                              <td className="py-2.5 px-3 text-center">
+                                <span
+                                  className={`font-bold text-xs ${
+                                    isGained ? 'text-emerald-700' : 'text-rose-700'
+                                  }`}
+                                >
+                                  {isGained ? `+${item.yearDelta}t` : `${item.yearDelta}t`} / năm
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-slate-700">
+                                {isGained && item.classesGained.length > 0 && (
+                                  <div className="space-y-0.5">
+                                    <div className="text-[11px] font-bold text-emerald-800">
+                                      + Nhận thêm {item.classesGained.length} tiết:
+                                    </div>
+                                    <div className="flex flex-wrap gap-1">
+                                      {item.classesGained.map((cl, cIdx) => (
+                                        <span
+                                          key={cIdx}
+                                          className="px-1.5 py-0.5 bg-emerald-50 text-emerald-900 border border-emerald-200 rounded text-[10px] font-medium"
+                                        >
+                                          {cl}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                                {!isGained && item.classesLost.length > 0 && (
+                                  <div className="space-y-0.5">
+                                    <div className="text-[11px] font-bold text-rose-800">
+                                      - Chuyển giao {item.classesLost.length} tiết:
+                                    </div>
+                                    <div className="flex flex-wrap gap-1">
+                                      {item.classesLost.map((cl, cIdx) => (
+                                        <span
+                                          key={cIdx}
+                                          className="px-1.5 py-0.5 bg-rose-50 text-rose-900 border border-rose-200 rounded text-[10px] font-medium"
+                                        >
+                                          {cl}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* Sub-View 2: Specific Slot by Slot Diffs Table (19 Lớp HĐTN) */}
+                {diffFilterTab === 'SLOTS' && (
+                  <div className="overflow-x-auto border border-slate-200 rounded-xl shadow-2xs">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead>
+                        <tr className="bg-slate-100/90 text-slate-700 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
+                          <th className="py-2.5 px-3 w-12 text-center">STT</th>
+                          <th className="py-2.5 px-3 w-20 text-center font-black text-slate-900">
+                            Lớp
+                          </th>
+                          <th className="py-2.5 px-3 min-w-[150px]">Môn / Nội Dung</th>
+                          <th className="py-2.5 px-3 w-32 text-center">Thời Gian TKB</th>
+                          <th className="py-2.5 px-3 min-w-[160px] bg-rose-50 text-rose-900 font-bold">
+                            Giáo Viên Ban Đầu (TKB Gốc)
+                          </th>
+                          <th className="py-2.5 px-2 w-10 text-center">
+                            <ArrowRight className="w-4 h-4 text-slate-400 mx-auto" />
+                          </th>
+                          <th className="py-2.5 px-3 min-w-[180px] bg-emerald-50 text-emerald-900 font-black">
+                            Giáo Viên Dự Thảo Mới (Nhận Gom)
+                          </th>
+                          <th className="py-2.5 px-3 min-w-[200px]">Căn Cứ / Lý Do Ưu Tiên</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {slotDifferences.map((item, idx) => (
+                          <tr key={item.slotId} className="hover:bg-slate-50 transition-colors">
+                            <td className="py-2.5 px-3 text-center text-slate-500 font-medium">
+                              {idx + 1}
+                            </td>
+                            <td className="py-2.5 px-3 text-center">
+                              <span className="px-2 py-1 bg-purple-100 text-purple-900 font-black rounded-lg border border-purple-200 text-xs">
+                                {item.className}
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-3 font-semibold text-slate-800">
+                              {item.subjectName}
+                            </td>
+                            <td className="py-2.5 px-3 text-center text-slate-600 font-mono">
+                              Thứ {item.dayOfWeek} • Tiết {item.period} ({item.session})
+                            </td>
+                            <td className="py-2.5 px-3 bg-rose-50/50">
+                              <div className="font-bold text-rose-900 line-through decoration-rose-500">
+                                {item.oldTeacherName}
+                              </div>
+                              <div className="text-[10px] text-rose-600 font-mono">
+                                {item.oldTeacherCode}
+                              </div>
+                            </td>
+                            <td className="py-2.5 px-2 text-center">
+                              <ArrowRight className="w-4 h-4 text-emerald-600 mx-auto" />
+                            </td>
+                            <td className="py-2.5 px-3 bg-emerald-50/60">
+                              <div className="font-black text-emerald-900 text-sm flex items-center gap-1">
+                                {item.newTeacherName}
+                                <Check className="w-3.5 h-3.5 text-emerald-600 inline" />
+                              </div>
+                              <div className="text-[11px] text-emerald-700 font-mono">
+                                {item.newTeacherCode}
+                              </div>
+                            </td>
+                            <td className="py-2.5 px-3 text-slate-700">
+                              {item.reason ? (
+                                <span className="px-2 py-0.5 bg-blue-50 text-blue-900 border border-blue-200 rounded text-[11px] font-medium">
+                                  {item.reason}
+                                </span>
+                              ) : (
+                                <span className="text-slate-500 italic">Được phân công lại</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* 3. FULL VISUAL CALCULATION ENGINE (SỐ TIẾT THỰC DẠY THEO BẢN DỰ THẢO) */}
       <WeeklyTeachingLogView
         config={config}
         teachers={teachers}
@@ -563,10 +1116,10 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
         isAdmin={isAdmin}
         storageKeyPrefix={DRAFT_SANDBOX_ADJUSTMENT_PREFIX}
         customTitle="Dự Thảo Phân Công Mới (Số Tiết Thực Dạy)"
-        customDescription="Số liệu phân công chuyên môn và số tiết thừa/thiếu được tính toán tự động trong không gian Dự Thảo độc lập"
+        customDescription="Bảng tính thừa thiếu tiết cả năm và từng tuần của 101 giáo viên theo phương án phân công mới trong Dự Thảo"
       />
 
-      {/* Modal: Đổi Giáo viên cho Lớp & Môn thử nghiệm */}
+      {/* 4. MODAL: ĐỔI GIÁO VIÊN LỚP & MÔN THỬ NGHIỆM */}
       {isReassignModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
           <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-150">
