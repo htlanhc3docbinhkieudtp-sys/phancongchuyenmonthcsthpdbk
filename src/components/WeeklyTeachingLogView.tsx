@@ -49,6 +49,7 @@ interface WeeklyTeachingLogViewProps {
   customTitle?: string;
   customDescription?: string;
   bannerExtra?: React.ReactNode;
+  defaultLevelScope?: LevelScope;
 }
 
 type ViewMode = 'WEEKLY_DETAIL' | 'MULTI_WEEK';
@@ -87,6 +88,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   customTitle,
   customDescription,
   bannerExtra,
+  defaultLevelScope,
 }) => {
   const effectiveAdjustmentKey = storageKeyPrefix
     ? `${storageKeyPrefix}_adjustments_v1`
@@ -141,8 +143,8 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     return isNaN(num) || num < 1 || num > 35 ? 1 : num;
   }, [isMultiWeekPeriod, selectedPeriod, currentWeek, startWeek, endWeek]);
 
-  // Level scope - defaults to 'THPT' as explicitly instructed by user
-  const [levelScope, setLevelScope] = useState<LevelScope>('THPT');
+  // Level scope - defaults to 'THPT' or defaultLevelScope
+  const [levelScope, setLevelScope] = useState<LevelScope>(defaultLevelScope || 'THPT');
   const [showCurriculumNotes, setShowCurriculumNotes] = useState(false);
 
   // View mode: Weekly Detail (Excel Template) vs Multi-week Overview

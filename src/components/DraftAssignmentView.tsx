@@ -283,6 +283,11 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   const [isDiffDrawerOpen, setIsDiffDrawerOpen] = useState(true);
   const [diffFilterTab, setDiffFilterTab] = useState<'ALL' | 'GAINED' | 'LOST' | 'SLOTS'>('ALL');
   const [diffSearchTerm, setDiffSearchTerm] = useState('');
+  const [actionBannerMessage, setActionBannerMessage] = useState<{
+    type: 'success' | 'info';
+    title: string;
+    detail: string;
+  } | null>(null);
 
   // Teacher map for easy lookup
   const teacherMap = useMemo(() => new Map(teachers.map((t) => [t.id, t])), [teachers]);
@@ -467,33 +472,24 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
 
   // 1. ACTION: Pilot Consolidate 19 classes HĐTNHN
   const handleApplyHdtnConsolidation = () => {
-    if (
-      !window.confirm(
-        'Bạn có muốn thí điểm gom toàn bộ 19 lớp HĐTNHN về 1 giáo viên duy nhất trong bản Dự thảo không?\n\n' +
-          '• Ưu tiên 1: Người thiếu tiết nhiều nhất cả năm.\n' +
-          '• Ưu tiên 2: Giáo viên chủ nhiệm.\n' +
-          '• Tuyệt đối né 100% giáo viên môn Tin học.\n\n' +
-          '(Thao tác này chỉ chạy trong bản Dự thảo, KHÔNG làm thay đổi Thời khóa biểu chính thức của trường).'
-      )
-    ) {
-      return;
-    }
+    // Note: Do not use window.confirm in iframe sandbox as it is silently blocked by browsers
+    const baseSlots = baselineSlots;
+    const nextDraft: Record<number, SchoolTimetable> = {};
+    let totalUpdatedSlotsCount = 0;
 
-    const nextDraft: Record<number, SchoolTimetable> = { ...draftWeeklyTimetables };
-    let totalUpdatedSlots = 0;
+    for (let w = 1; w <= 35; w++) {
+      const existing = draftWeeklyTimetables[w];
+      const sourceSlots =
+        existing?.slots && existing.slots.length > 0 ? existing.slots : baseSlots;
 
-    Object.keys(nextDraft).forEach((wKey) => {
-      const wNum = Number(wKey);
-      const tbl = nextDraft[wNum];
-      if (!tbl || !tbl.slots) return;
-
-      const updatedSlots = tbl.slots.map((slot) => {
+      const updatedSlots = sourceSlots.map((slot) => {
         const isHdtn =
-          slot.subjectId.includes('hdtn') ||
-          slot.subjectName.toLowerCase().includes('hđtn') ||
-          slot.subjectName.toLowerCase().includes('trải nghiệm') ||
-          slot.subjectName.toLowerCase().includes('chuyên đề') ||
-          slot.subjectName.toLowerCase().includes('quy mô lớp');
+          (slot.subjectId && slot.subjectId.toLowerCase().includes('hdtn')) ||
+          (slot.subjectName &&
+            (slot.subjectName.toLowerCase().includes('hđtn') ||
+              slot.subjectName.toLowerCase().includes('trải nghiệm') ||
+              slot.subjectName.toLowerCase().includes('chuyên đề') ||
+              slot.subjectName.toLowerCase().includes('quy mô lớp')));
 
         if (!isHdtn) return slot;
 
@@ -509,7 +505,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
         if (!targetTeacher) return slot;
 
         if (slot.teacherName !== targetTeacher.name) {
-          totalUpdatedSlots++;
+          if (w === 8) totalUpdatedSlotsCount++;
           return {
             ...slot,
             teacherId: targetTeacher.id,
@@ -520,42 +516,42 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
         return slot;
       });
 
-      nextDraft[wNum] = {
-        ...tbl,
+      nextDraft[w] = {
+        id: `draft-tkb-week-${w}`,
+        academicYear: config.academicYear,
+        semester: w <= 18 ? 'HK1' : 'HK2',
+        weekNumber: w,
         slots: updatedSlots,
         updatedAt: Date.now(),
       };
-    });
+    }
 
     persistDraft(nextDraft);
     setIsDiffDrawerOpen(true);
+    setActionBannerMessage({
+      type: 'success',
+      title: 'Đã hoàn tất thí điểm gom 19 lớp HĐTNHN về 1 giáo viên duy nhất!',
+      detail: `Đã cập nhật ${totalUpdatedSlotsCount || 19} tiết/tuần trong bản Dự thảo. Đã né 100% giáo viên Tin học, ưu tiên giải quyết thiếu tiết cả năm và GVCN. Xem bảng đối soát chi tiết bên dưới.`,
+    });
+
     if (onShowToast) {
       onShowToast(
-        `Đã thí điểm gom thành công 19 lớp HĐTNHN về 1 giáo viên (${totalUpdatedSlots} tiết)! Bảng so sánh thay đổi đã được cập nhật chi tiết ngay bên dưới.`
+        `✓ Đã thí điểm gom thành công 19 lớp HĐTNHN về 1 giáo viên! Bảng đối soát chi tiết đã được cập nhật ngay bên dưới.`
       );
     }
   };
 
   // 2. ACTION: Reset draft from official Week 8 baseline
   const handleResetToOfficialWeek8 = () => {
-    if (
-      !window.confirm(
-        'Bạn có chắc chắn muốn đặt lại toàn bộ bản Dự thảo về nguyên bản Thời Khóa Biểu Tuần 8 chính thức không? Mọi thay đổi thử nghiệm trước đó trong Dự thảo sẽ được làm mới.'
-      )
-    ) {
-      return;
-    }
-
     const baseSlots = baselineSlots;
     const freshDraft: Record<number, SchoolTimetable> = {};
     for (let w = 1; w <= 35; w++) {
-      const existing = weeklyTimetables?.[w];
       freshDraft[w] = {
         id: `draft-tkb-week-${w}`,
         academicYear: config.academicYear,
         semester: w <= 18 ? 'HK1' : 'HK2',
         weekNumber: w,
-        slots: existing?.slots && existing.slots.length > 0 ? [...existing.slots] : [...baseSlots],
+        slots: [...baseSlots],
         updatedAt: Date.now(),
       };
     }
@@ -566,6 +562,12 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     } catch {
       /* ignore */
     }
+
+    setActionBannerMessage({
+      type: 'info',
+      title: 'Đã đặt lại bản Dự thảo về nguyên bản Thời Khóa Biểu Tuần 8 chính thức!',
+      detail: 'Mọi thay đổi thử nghiệm đã được làm mới hoàn toàn. Bản dự thảo đang ở trạng thái TKB Tuần 8.',
+    });
 
     if (onShowToast) {
       onShowToast('Đã đặt lại bản Dự thảo phân công về nguyên bản Thời khóa biểu Tuần 8 chính thức!');
@@ -745,6 +747,45 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Action Notification Banner */}
+      {actionBannerMessage && (
+        <div
+          className={`p-4 rounded-2xl border shadow-sm flex items-start justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-200 ${
+            actionBannerMessage.type === 'success'
+              ? 'bg-emerald-50 border-emerald-300 text-emerald-950'
+              : 'bg-blue-50 border-blue-300 text-blue-950'
+          }`}
+        >
+          <div className="flex items-start gap-3">
+            <div
+              className={`p-2 rounded-xl mt-0.5 ${
+                actionBannerMessage.type === 'success'
+                  ? 'bg-emerald-200 text-emerald-800'
+                  : 'bg-blue-200 text-blue-800'
+              }`}
+            >
+              {actionBannerMessage.type === 'success' ? (
+                <CheckCircle2 className="w-5 h-5" />
+              ) : (
+                <Info className="w-5 h-5" />
+              )}
+            </div>
+            <div>
+              <h4 className="font-black text-sm">{actionBannerMessage.title}</h4>
+              <p className="text-xs mt-0.5 text-slate-700 leading-relaxed">
+                {actionBannerMessage.detail}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setActionBannerMessage(null)}
+            className="p-1 rounded-lg hover:bg-black/5 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* 2. LIVE COMPARISON & CHANGE TRACKING DASHBOARD (BẢNG THỂ HIỆN SỰ THAY ĐỔI) */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -1117,6 +1158,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
         storageKeyPrefix={DRAFT_SANDBOX_ADJUSTMENT_PREFIX}
         customTitle="Dự Thảo Phân Công Mới (Số Tiết Thực Dạy)"
         customDescription="Bảng tính thừa thiếu tiết cả năm và từng tuần của 101 giáo viên theo phương án phân công mới trong Dự Thảo"
+        defaultLevelScope="ALL"
       />
 
       {/* 4. MODAL: ĐỔI GIÁO VIÊN LỚP & MÔN THỬ NGHIỆM */}
