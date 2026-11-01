@@ -57,108 +57,113 @@ interface DraftAssignmentViewProps {
   onShowToast?: (message: string) => void;
 }
 
-const DRAFT_SANDBOX_STORAGE_KEY = 'docbinhkieu_draft_sandbox_weekly_timetables_v2';
-const DRAFT_SANDBOX_ADJUSTMENT_PREFIX = 'docbinhkieu_draft_sandbox_v2';
+const DRAFT_SANDBOX_STORAGE_KEY = 'docbinhkieu_draft_sandbox_weekly_timetables_v3';
+const DRAFT_SANDBOX_ADJUSTMENT_PREFIX = 'docbinhkieu_draft_sandbox_v3';
 
-// 19 lớp HĐTNHN cần gom gọn theo đề xuất
+// 19 lớp HĐTNHN cần gom gọn về 1 người dạy duy nhất:
+// NGUYÊN TẮC:
+// 1. Áp dụng thay đổi từ Tuần 10 đến Tuần 35 (26 tuần thực dạy). Tuần 1 đến 9 giữ nguyên số tiết đã thực dạy.
+// 2. 100% người nhận lớp là GIÁO VIÊN THIẾU TIẾT (Ưu tiên 1), ưu tiên GVCN nếu thiếu tiết (Ưu tiên 2).
+// 3. Tuyệt đối KHÔNG giao cho giáo viên đang thừa tiết (Toàn +39t, Thảo +35t, Tài +15t, Cẩm +51t, Ngân +51t, Phương +13t,...).
+// 4. Tuyệt đối NÉ 100% môn Tin học (Bùi Kim Phướng, Mai Phước Lộc).
 const CONSOLIDATION_19_CLASSES_MAP: Record<
   string,
   { teacherName: string; teacherCode: string; teacherId?: string; roleReason: string }
 > = {
-  '6A1': {
-    teacherName: 'Hồ Thị Ngọc Tài',
-    teacherCode: 'Tài.HTN (6A1)',
-    roleReason: 'GVCN 6A1 • Đang âm -3t/tuần (-108t/năm)',
-  },
-  '6A3': {
-    teacherName: 'Nguyễn Thị Cẩm Nhung',
-    teacherCode: 'Nhung.NTC (9A1)',
-    roleReason: 'Né môn Tin học (Bùi Kim Phướng) • Âm -4t/tuần (-144t/năm)',
-  },
-  '6A4': {
-    teacherName: 'Nguyễn Thanh Hùng',
-    teacherCode: 'Hùng.NThanh (6A4)',
-    roleReason: 'GVCN 6A4 • Đang âm -4t/tuần (-144t/năm)',
-  },
-  '6A6': {
-    teacherName: 'Lê Kim Ngân',
-    teacherCode: 'Ngân.LK (6A5)',
-    roleReason: 'Âm -4t/tuần (-144t/năm) • GVCN Lê Thị Bình đã đủ 19t định mức',
+  '8A1': {
+    teacherName: 'Nguyễn Thái Hùng',
+    teacherCode: 'Hùng.NThái (8A1)',
+    roleReason: 'Ưu tiên 1 & 2: GVCN 8A1 • Đang thiếu -70t/năm • Nhận trọn vẹn 2 tiết 8A1',
   },
   '7A1': {
     teacherName: 'Nguyễn Văn Ngoan',
     teacherCode: 'Ngoan.NV (7A1)',
-    roleReason: 'Né Tin học (Bùi Kim Phướng) • GVCN 7A1 • Âm nặng -6t/tuần (-216t/năm)',
-  },
-  '7A2': {
-    teacherName: 'Trần Thị Cẩm',
-    teacherCode: 'Cẩm.TT (7A6)',
-    roleReason: 'Né Tin học (Mai Phước Lộc) • Đang âm -4t/tuần (-144t/năm)',
+    roleReason: 'Né Tin học (Bùi Kim Phướng) • GVCN 7A1 • Đang thiếu -70t/năm',
   },
   '7A3': {
     teacherName: 'Nguyễn Quốc Nguyễn',
     teacherCode: 'Nguyễn.NQ (7A3)',
-    roleReason: 'GVCN 7A3 • Âm nặng -6t/tuần (-216t/năm)',
-  },
-  '7A4': {
-    teacherName: 'Lê Ngọc Ẩn',
-    teacherCode: 'Ẩn.LN (7A4)',
-    roleReason: 'GVCN 7A4 • Đang âm -4t/tuần (-144t/năm)',
-  },
-  '7A5': {
-    teacherName: 'Lê Thái Phương',
-    teacherCode: 'Phương.LT (9A6)',
-    roleReason: 'Ưu tiên 1: Âm nhiều tiết nhất toàn trường (-7t/tuần, -252t/năm)',
-  },
-  '8A1': {
-    teacherName: 'Nguyễn Thái Hùng',
-    teacherCode: 'Hùng.NThái (8A1)',
-    roleReason: 'GVCN 8A1 • Âm nặng -6t/tuần (-216t/năm)',
-  },
-  '8A2': {
-    teacherName: 'Trần Phi Hải',
-    teacherCode: 'Hải.TP (8A2)',
-    roleReason: 'GVCN 8A2 • Âm nặng -5t/tuần (-180t/năm)',
-  },
-  '8A3': {
-    teacherName: 'Nguyễn Thị Xe',
-    teacherCode: 'Xe.NT',
-    roleReason: 'GVCN 8A3 • Đang âm -4t/tuần (-144t/năm)',
-  },
-  '8A4': {
-    teacherName: 'Nguyễn Kim Ngân',
-    teacherCode: 'Ngân.NK (8A4)',
-    roleReason: 'GVCN 8A4 • Đang âm -3t/tuần (-108t/năm)',
-  },
-  '8A5': {
-    teacherName: 'Võ Hoàng Toàn',
-    teacherCode: 'Toàn.VH (8A5)',
-    roleReason: 'GVCN 8A5 • Âm nặng -6t/tuần (-216t/năm)',
-  },
-  '8A6': {
-    teacherName: 'Huỳnh Thanh Dân',
-    teacherCode: 'Dân.HT (8A6)',
-    roleReason: 'GVCN 8A6 • Đang âm -4t/tuần (-144t/năm)',
-  },
-  '9A2': {
-    teacherName: 'Trần Thị Hậu',
-    teacherCode: 'Hậu.TTH (9A2)',
-    roleReason: 'GVCN 9A2 • Đang âm -3t/tuần • Giúp GVCN nắm trọn vẹn lớp cuối cấp',
-  },
-  '9A3': {
-    teacherName: 'Lê Thái Phương',
-    teacherCode: 'Phương.LT (9A6)',
-    roleReason: 'Ưu tiên 1: Âm nhiều tiết nhất toàn trường (-7t/tuần, -252t/năm)',
+    roleReason: 'Rút Trần Thị Cẩm (thừa +51t) • GVCN 7A3 • Đang thiếu -70t/năm',
   },
   '9A4': {
     teacherName: 'Nguyễn Văn Tài',
     teacherCode: 'Tài.NV (9A4)',
-    roleReason: 'GVCN 9A4 • Âm nặng -6t/tuần (-216t/năm)',
+    roleReason: 'Rút Lê Thái Phương (thừa +13t) • GVCN 9A4 • Đang thiếu -70t/năm',
+  },
+  '8A2': {
+    teacherName: 'Trần Phi Hải',
+    teacherCode: 'Hải.TP (8A2)',
+    roleReason: 'Ưu tiên 1: Thiếu nặng -143t/năm • GVCN 8A2 • Nhận trọn vẹn 2 tiết',
+  },
+  '9A3': {
+    teacherName: 'Trần Phi Hải',
+    teacherCode: 'Hải.TP (8A2)',
+    roleReason: 'Ưu tiên 1: Thiếu nặng -143t/năm • Rút Lê Thái Phương (thừa +13t) • Nhận 9A3',
+  },
+  '8A4': {
+    teacherName: 'Nguyễn Kim Ngân',
+    teacherCode: 'Ngân.NK (8A4)',
+    roleReason: 'GVCN 8A4 • Đang thiếu -24t/năm • Bù đủ chuẩn định mức (+2t)',
+  },
+  '9A2': {
+    teacherName: 'Trần Thị Hậu',
+    teacherCode: 'Hậu.TTH (9A2)',
+    roleReason: 'GVCN 9A2 • Đang thiếu -7t/năm • Rút Nguyễn Thị Cẩm Nhung (thừa)',
+  },
+  '8A3': {
+    teacherName: 'Trần Thị Hậu',
+    teacherCode: 'Hậu.TTH (9A2)',
+    roleReason: 'Đang thiếu -7t/năm • Tránh giao cô Xe (0t) bị thừa tiết',
+  },
+  '8A6': {
+    teacherName: 'Trần Thị Hậu',
+    teacherCode: 'Hậu.TTH (9A2)',
+    roleReason: 'Đang thiếu -7t/năm • Rút Huỳnh Thanh Dân (thừa +2t)',
+  },
+  '8A5': {
+    teacherName: 'Trần Thị Hậu',
+    teacherCode: 'Hậu.TTH (9A2)',
+    roleReason: 'Đang thiếu -7t/năm • Rút Võ Hoàng Toàn (thừa +39t) để giảm tải',
+  },
+  '6A4': {
+    teacherName: 'Nguyễn Thị Thắm',
+    teacherCode: 'Thắm.NT (6A2)',
+    roleReason: 'Ưu tiên 1: Đang thiếu -7t/năm • Tránh giao Thầy Hùng (0t) bị thừa tiết',
+  },
+  '7A2': {
+    teacherName: 'Nguyễn Thành Tín',
+    teacherCode: 'Tín.NT (9A10)',
+    roleReason: 'Ưu tiên 1: Đang thiếu -105t/năm • Né Tin học (Mai Phước Lộc) • Rút Cẩm (+51t)',
+  },
+  '6A3': {
+    teacherName: 'Trần Kim Phương',
+    teacherCode: 'Phương.TK (7A7)',
+    roleReason: 'Ưu tiên 1: Đang thiếu -35t/năm • Né Tin học (Bùi Kim Phướng) • Rút Nhung (+2t)',
+  },
+  '6A6': {
+    teacherName: 'Nguyễn Thị Lụa',
+    teacherCode: 'Lụa.NT (6A10)',
+    roleReason: 'Ưu tiên 1: Đang thiếu -35t/năm • Rút Lê Thị Bình (+70t) & Lê Kim Ngân (+51t)',
+  },
+  '7A4': {
+    teacherName: 'Lê Văn Chính',
+    teacherCode: 'Chính.LV (7A9)',
+    roleReason: 'Ưu tiên 1: Đang thiếu -35t/năm • Cùng Tổ GDTC • Tránh giao Ẩn (0t) • Rút Cẩm (+51t)',
+  },
+  '7A5': {
+    teacherName: 'Châu Thị Kim Hà',
+    teacherCode: 'Hà.CTK',
+    roleReason: 'Ưu tiên 1: Đang thiếu -105t/năm • Rút Lê Thái Phương (+13t) & Cẩm (+51t)',
   },
   '9A5': {
-    teacherName: 'Hồ Mai Thảo',
-    teacherCode: 'Thảo.HM (9A5)',
-    roleReason: 'GVCN 9A5 • Đang âm -3t/tuần (-108t/năm)',
+    teacherName: 'Trương Văn Nghĩa',
+    teacherCode: 'Nghĩa.TV (TP)',
+    roleReason: 'Ưu tiên 1: Đang thiếu -70t/năm • Rút Hồ Mai Thảo (+35t) & Phương (+13t)',
+  },
+  '6A1': {
+    teacherName: 'Đinh Thị Giàu',
+    teacherCode: 'Giàu.ĐT (9A8)',
+    roleReason: 'Ưu tiên 1: Đang thiếu -26t/năm • Rút Hồ Thị Ngọc Tài (+15t) & Nhung (+2t)',
   },
 };
 
@@ -320,7 +325,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   // Check if HĐTN is already consolidated in the draft
   const isHdtnConsolidatedInDraft = useMemo(() => {
     const sampleWeekSlots =
-      draftWeeklyTimetables[8]?.slots ||
+      draftWeeklyTimetables[10]?.slots ||
       draftWeeklyTimetables[currentWeek]?.slots ||
       [];
     const slots8A1Hdtn = sampleWeekSlots.filter(
@@ -334,10 +339,12 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
 
   // =========================================================================
   // OFFICIAL CALCULATION ENGINE: RUN WORKLOAD ENGINE FOR BASELINE & DRAFT
+  // Đánh giá tại Tuần 10 (thời điểm phân công mới bắt đầu có hiệu lực đến Tuần 35)
+  // Các tuần từ 1 đến 9 đã thực dạy được giữ nguyên 100%.
   // =========================================================================
   const baseActualWorkloads = useMemo(() => {
     return calculateAllActualWorkloads(
-      currentWeek || 8,
+      10,
       teachers,
       departments,
       classes,
@@ -350,11 +357,11 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       1,
       35
     );
-  }, [currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable]);
+  }, [teachers, departments, classes, subjects, config, weeklyTimetables, timetable]);
 
   const draftActualWorkloads = useMemo(() => {
     return calculateAllActualWorkloads(
-      currentWeek || 8,
+      10,
       teachers,
       departments,
       classes,
@@ -367,14 +374,14 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       1,
       35
     );
-  }, [currentWeek, teachers, departments, classes, subjects, config, draftWeeklyTimetables, draftMasterTimetable]);
+  }, [teachers, departments, classes, subjects, config, draftWeeklyTimetables, draftMasterTimetable]);
 
   // =========================================================================
   // CORE ENGINE: CALCULATE PRECISE DIFFERENCES (SLOT DIFFS & TEACHER DELTAS)
   // =========================================================================
   const { slotDifferences, teacherDeltas, totalSlotChangesCount, annualImpact } = useMemo(() => {
     const currentDraftSlots =
-      draftWeeklyTimetables[8]?.slots ||
+      draftWeeklyTimetables[10]?.slots ||
       draftWeeklyTimetables[currentWeek]?.slots ||
       [];
 
@@ -474,19 +481,19 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     // Sort deltas: teachers gained most at top, then teachers lost most
     deltas.sort((a, b) => b.yearDelta - a.yearDelta || b.weeklyDelta - a.weeklyDelta);
 
-    // 1. Gained Group (13 GVCN)
-    const gainedList = deltas.filter((d) => d.weeklyDelta > 0);
+    // 1. Gained Group (Giáo viên thiếu tiết được bù)
+    const gainedList = deltas.filter((d) => d.yearDelta > 0 || d.weeklyDelta > 0);
     const gainedCount = gainedList.length;
-    const gainedTotalWeekly = gainedList.reduce((acc, d) => acc + d.weeklyDelta, 0);
-    const gainedTotalYear = gainedTotalWeekly * 35;
+    const gainedTotalWeekly = gainedList.reduce((acc, d) => acc + Math.max(0, d.weeklyDelta), 0);
+    const gainedTotalYear = gainedList.reduce((acc, d) => acc + Math.max(0, d.yearDelta), 0);
     const gainedOldDeficitYear = gainedList.reduce((acc, d) => acc + Math.min(0, d.oldYearBalance), 0);
     const gainedNewDeficitYear = gainedList.reduce((acc, d) => acc + Math.min(0, d.newYearBalance), 0);
 
-    // 2. Lost Group (7 GV)
-    const lostList = deltas.filter((d) => d.weeklyDelta < 0);
+    // 2. Lost Group (Giáo viên giảm tiết do né Tin học hoặc giảm tải thừa tiết)
+    const lostList = deltas.filter((d) => d.yearDelta < 0 || d.weeklyDelta < 0);
     const lostCount = lostList.length;
-    const lostTotalWeekly = Math.abs(lostList.reduce((acc, d) => acc + d.weeklyDelta, 0));
-    const lostTotalYear = lostTotalWeekly * 35;
+    const lostTotalWeekly = Math.abs(lostList.reduce((acc, d) => acc + Math.min(0, d.weeklyDelta), 0));
+    const lostTotalYear = Math.abs(lostList.reduce((acc, d) => acc + Math.min(0, d.yearDelta), 0));
     const tinHocLostYear = lostList
       .filter((d) => d.teacherName === 'Bùi Kim Phướng' || d.teacherName === 'Mai Phước Lộc')
       .reduce((acc, d) => acc + Math.abs(d.yearDelta), 0);
@@ -640,6 +647,20 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       const sourceSlots =
         existing?.slots && existing.slots.length > 0 ? existing.slots : baseSlots;
 
+      // Tuần 1 đến 9: Đã thực dạy xong, giữ nguyên 100% không thay đổi!
+      if (w < 10) {
+        nextDraft[w] = {
+          id: `draft-tkb-week-${w}`,
+          academicYear: config.academicYear,
+          semester: 'HK1',
+          weekNumber: w,
+          slots: [...sourceSlots],
+          updatedAt: Date.now(),
+        };
+        continue;
+      }
+
+      // Tuần 10 đến 35: Áp dụng phân công mới gom 19 lớp về 1 người dạy
       const updatedSlots = sourceSlots.map((slot) => {
         const isHdtn =
           (slot.subjectId && slot.subjectId.toLowerCase().includes('hdtn')) ||
@@ -663,7 +684,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
         if (!targetTeacher) return slot;
 
         if (slot.teacherName !== targetTeacher.name) {
-          if (w === 8) totalUpdatedSlotsCount++;
+          if (w === 10) totalUpdatedSlotsCount++;
           return {
             ...slot,
             teacherId: targetTeacher.id,
@@ -688,13 +709,13 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     setIsDiffDrawerOpen(true);
     setActionBannerMessage({
       type: 'success',
-      title: 'Đã hoàn tất thí điểm gom 19 lớp HĐTNHN về 1 giáo viên duy nhất!',
-      detail: `Đã cập nhật ${totalUpdatedSlotsCount || 19} tiết/tuần trong bản Dự thảo. Đã né 100% giáo viên Tin học, ưu tiên giải quyết thiếu tiết cả năm và GVCN. Xem bảng đối soát chi tiết bên dưới.`,
+      title: 'Đã hoàn tất thí điểm gom 19 lớp HĐTNHN về 1 giáo viên duy nhất (Từ Tuần 10)!',
+      detail: `Áp dụng thay đổi từ Tuần 10 đến Tuần 35 (26 tuần thực dạy). Tuần 1 đến 9 đã dạy được bảo toàn nguyên trạng. Đã gom trọn vẹn 19 lớp cho người thiếu tiết cả năm & GVCN, né 100% môn Tin học và không giao thêm cho người thừa tiết.`,
     });
 
     if (onShowToast) {
       onShowToast(
-        `✓ Đã thí điểm gom thành công 19 lớp HĐTNHN về 1 giáo viên! Bảng đối soát chi tiết đã được cập nhật ngay bên dưới.`
+        `✓ Đã thí điểm gom 19 lớp HĐTNHN áp dụng từ Tuần 10 đến Tuần 35! Bảng đối soát chi tiết đã được cập nhật ngay bên dưới.`
       );
     }
   };
@@ -735,6 +756,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   // 3. ACTION: Single Class/Subject Reassignment
   const currentClassSlots = useMemo(() => {
     const sampleSlots =
+      draftWeeklyTimetables[10]?.slots ||
       draftWeeklyTimetables[currentWeek]?.slots ||
       draftWeeklyTimetables[8]?.slots ||
       [];
@@ -778,7 +800,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
 
   const handleApplySingleReassignment = () => {
     if (!selectedClassId || !selectedSubjectId || !selectedNewTeacherId) {
-      alert('Vui lòng chọn đầy đủ Lớp, Môn học và Giáo viên mới.');
+      if (onShowToast) onShowToast('Vui lòng chọn đầy đủ Lớp, Môn học và Giáo viên mới.');
       return;
     }
 
@@ -1023,10 +1045,10 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                       </div>
                       <div>
                         <h4 className="font-black text-sm tracking-tight text-white flex items-center gap-2">
-                          Tổng Thừa Thiếu Cả Năm Học (35 Tuần) Sau Khi Thay Đổi
+                          Tổng Thừa Thiếu Cả Năm Học Sau Khi Thay Đổi (Từ Tuần 10 Đến Tuần 35)
                         </h4>
                         <p className="text-[11px] text-purple-200">
-                          Bức tranh toàn cảnh sau khi gom 19 lớp HĐTNHN về 1 GV duy nhất
+                          Áp dụng trong 26 tuần thực dạy (Tuần 10 ➔ Tuần 35). Các tuần từ 1 đến 9 đã dạy được giữ nguyên 100%.
                         </p>
                       </div>
                     </div>
@@ -1042,26 +1064,26 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
 
                   {/* 4 Overview Impact Metric Cards */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {/* Card 1: Bù thiếu cho GVCN */}
+                    {/* Card 1: Bù thiếu cho GV thiếu tiết */}
                     <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-white/10 space-y-1">
                       <div className="flex items-center justify-between text-xs text-purple-200">
-                        <span className="font-semibold">Bù Thiếu Cho 13 GVCN</span>
+                        <span className="font-semibold">Bù Tiết Cho GV Thiếu Tiết</span>
                         <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 font-bold rounded-full text-[10px]">
-                          +13t/tuần
+                          +{annualImpact.gainedCount} GV
                         </span>
                       </div>
                       <div className="text-xl font-black text-emerald-400">
                         +{annualImpact.gainedTotalYear} tiết/năm
                       </div>
                       <p className="text-[11px] text-slate-300 leading-tight">
-                        Tổng thiếu nhóm giảm từ <b className="text-rose-300">{annualImpact.gainedOldDeficitYear}t</b> ➔ còn <b className="text-emerald-300">{annualImpact.gainedNewDeficitYear}t</b> (giảm 22% áp lực).
+                        Bù trực tiếp cho các thầy cô thiếu tiết (Thầy Tín +52t, Hải +52t, Nghĩa +52t, Hùng +26t, Ngoan +26t, Tài +26t, Nguyễn +26t,...).
                       </p>
                     </div>
 
                     {/* Card 2: Né môn Tin học */}
                     <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-white/10 space-y-1">
                       <div className="flex items-center justify-between text-xs text-purple-200">
-                        <span className="font-semibold">Rút 100% Khỏi Tin Học</span>
+                        <span className="font-semibold">Né 100% Môn Tin Học</span>
                         <span className="px-2 py-0.5 bg-blue-500/20 text-blue-300 font-bold rounded-full text-[10px]">
                           Đạt chuẩn
                         </span>
@@ -1070,11 +1092,11 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                         -{annualImpact.tinHocLostYear} tiết/năm
                       </div>
                       <p className="text-[11px] text-slate-300 leading-tight">
-                        Thầy Phướng (-70t) & Thầy Lộc (-35t) được rút 100% khỏi HĐTN, tập trung đúng Tin học.
+                        Thầy Phướng (-52t) & Thầy Lộc (-26t) được rút 100% khỏi HĐTN trong 26 tuần, tập trung đúng chuyên môn Tin học.
                       </p>
                     </div>
 
-                    {/* Card 3: Giảm tải khối 8 & 9 */}
+                    {/* Card 3: Gom gọn 1 người / lớp */}
                     <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-white/10 space-y-1">
                       <div className="flex items-center justify-between text-xs text-purple-200">
                         <span className="font-semibold">Gọn 1 Người / Lớp</span>
@@ -1086,7 +1108,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                         100% Đạt Chuẩn
                       </div>
                       <p className="text-[11px] text-slate-300 leading-tight">
-                        Chấm dứt việc 1 lớp có 2 GV; Cô Hậu giảm tải 5 lớp (-{annualImpact.hauLostYear}t/năm), giữ 9A2.
+                        Chỉ giao cho người thiếu tiết, rút các GV thừa tiết (Toàn, Thảo, Cẩm, Ngân, Bình,...) để giảm tải, tránh thừa càng thừa.
                       </p>
                     </div>
 
@@ -1562,12 +1584,12 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
         classes={classes}
         subjects={subjects}
         weeklyTimetables={draftWeeklyTimetables}
-        currentWeek={currentWeek}
+        currentWeek={10}
         timetable={draftMasterTimetable}
         isAdmin={isAdmin}
         storageKeyPrefix={DRAFT_SANDBOX_ADJUSTMENT_PREFIX}
         customTitle="Dự Thảo Phân Công Mới (Số Tiết Thực Dạy)"
-        customDescription="Bảng tính thừa thiếu tiết cả năm và từng tuần của 101 giáo viên theo phương án phân công mới trong Dự Thảo"
+        customDescription="Bảng tính thừa thiếu tiết cả năm (35 tuần) và từng tuần theo phân công mới áp dụng từ Tuần 10 đến Tuần 35 (26 tuần). Tuần 1 đến 9 giữ nguyên số tiết đã thực dạy."
         defaultLevelScope="ALL"
       />
 
