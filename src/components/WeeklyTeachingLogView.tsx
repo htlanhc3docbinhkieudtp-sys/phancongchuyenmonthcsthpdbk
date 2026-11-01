@@ -33,7 +33,18 @@ import {
   Check,
   RotateCcw,
   ChevronDown,
+  Sparkles,
+  Zap,
 } from 'lucide-react';
+
+export interface ChangedTeacherInfo {
+  deltaYear: number;
+  deltaWeekly: number;
+  oldYearBalance?: number;
+  newYearBalance?: number;
+  type?: 'GAINED' | 'LOST' | 'MODIFIED';
+  reason?: string;
+}
 
 interface WeeklyTeachingLogViewProps {
   config: SchoolConfig;
@@ -50,6 +61,7 @@ interface WeeklyTeachingLogViewProps {
   customDescription?: string;
   bannerExtra?: React.ReactNode;
   defaultLevelScope?: LevelScope;
+  changedTeachersMap?: Map<string, ChangedTeacherInfo>;
 }
 
 type ViewMode = 'WEEKLY_DETAIL' | 'MULTI_WEEK';
@@ -89,6 +101,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   customDescription,
   bannerExtra,
   defaultLevelScope,
+  changedTeachersMap,
 }) => {
   const effectiveAdjustmentKey = storageKeyPrefix
     ? `${storageKeyPrefix}_adjustments_v1`
@@ -157,6 +170,8 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDept, setSelectedDept] = useState<string>('ALL');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
+  type ChangeFilter = 'ALL' | 'CHANGED' | 'UNCHANGED';
+  const [changeFilter, setChangeFilter] = useState<ChangeFilter>('ALL');
 
   // Display style: Full name (Tô Thị Lắm) by default as requested by user
   const [useShortName, setUseShortName] = useState<boolean>(false);
@@ -297,9 +312,35 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
         }
       }
 
+      // Filter by change status when in draft sandbox view
+      if (changedTeachersMap) {
+        const isChanged = changedTeachersMap.has(item.teacherId);
+        if (changeFilter === 'CHANGED' && !isChanged) return false;
+        if (changeFilter === 'UNCHANGED' && isChanged) return false;
+      }
+
       return true;
     });
-  }, [allWorkloads, levelScope, selectedDept, statusFilter, searchTerm]);
+  }, [allWorkloads, levelScope, selectedDept, statusFilter, searchTerm, changedTeachersMap, changeFilter]);
+
+  // Statistics for changed vs unchanged teachers
+  const changedTeachersStats = useMemo(() => {
+    if (!changedTeachersMap) return null;
+    let changed = 0;
+    let unchanged = 0;
+    allWorkloads.forEach((w) => {
+      if (levelScope === 'THPT' && w.level !== 'THPT') return;
+      if (levelScope === 'THCS' && w.level !== 'THCS') return;
+      if (levelScope === 'THCS_DBK' && (w.level !== 'THCS' || w.campus !== 'THCSDBK')) return;
+      if (levelScope === 'THCS_TK' && (w.level !== 'THCS' || w.campus !== 'THCSTK')) return;
+      if (changedTeachersMap.has(w.teacherId)) {
+        changed++;
+      } else {
+        unchanged++;
+      }
+    });
+    return { changed, unchanged, total: changed + unchanged };
+  }, [changedTeachersMap, allWorkloads, levelScope]);
 
   // Department list filtered by selected level / campus
   const availableDepartments = useMemo(() => {
@@ -867,6 +908,72 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
               </button>
             </div>
           )}
+
+          {/* Changed vs Unchanged Filter & Visual Legend (Active in Sandbox Draft View) */}
+          {changedTeachersMap && changedTeachersStats && (
+            <div className="col-span-full bg-gradient-to-r from-purple-50 via-indigo-50/70 to-slate-50 border border-purple-200/90 rounded-xl p-3 text-xs shadow-2xs space-y-2.5 mt-1">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                {/* Visual Legend */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-black text-purple-950 uppercase tracking-wide flex items-center gap-1.5 text-[11px]">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-700" />
+                    Tô màu nhận diện phân công mới:
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-950 border border-emerald-300 font-bold text-xs shadow-2xs">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block animate-pulse"></span>
+                    Tô xanh lá: Được bù tiết (+26t hoặc +52t)
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-100 text-amber-950 border border-amber-300 font-bold text-xs shadow-2xs">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-600 inline-block"></span>
+                    Tô vàng cam: Giảm tiết (Né Tin học / giảm tải)
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 font-medium text-xs">
+                    <span className="w-2.5 h-2.5 rounded-full bg-slate-300 inline-block"></span>
+                    Màu trắng: Giữ nguyên phân công
+                  </span>
+                </div>
+
+                {/* Quick Filter: All vs Changed vs Unchanged */}
+                <div className="inline-flex items-center gap-1 bg-white p-1 rounded-xl border border-purple-200 shadow-2xs self-start lg:self-auto shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setChangeFilter('ALL')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      changeFilter === 'ALL'
+                        ? 'bg-purple-900 text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    }`}
+                  >
+                    Tất cả ({changedTeachersStats.total})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setChangeFilter('CHANGED')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      changeFilter === 'CHANGED'
+                        ? 'bg-purple-600 text-white shadow-xs'
+                        : 'text-purple-700 hover:bg-purple-50 font-bold'
+                    }`}
+                  >
+                    <Zap className="w-3.5 h-3.5 fill-current" />
+                    <span>⚡ Có thay đổi ({changedTeachersStats.changed} GV)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setChangeFilter('UNCHANGED')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      changeFilter === 'UNCHANGED'
+                        ? 'bg-slate-700 text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    }`}
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>✓ Giữ nguyên ({changedTeachersStats.unchanged} GV)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -1237,8 +1344,25 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                               rowSpan={rowCount}
                               className="border border-slate-300 px-3 py-2 text-center font-bold text-slate-900 bg-slate-50/40 align-middle"
                             >
-                              <div className="font-bold text-sm text-slate-900">
-                                {displayName}
+                              <div className="font-bold text-sm text-slate-900 flex items-center justify-center gap-1.5 flex-wrap">
+                                <span>{displayName}</span>
+                                {changedTeachersMap && (
+                                  changedTeachersMap.has(teacherWorkload.teacherId) ? (
+                                    (changedTeachersMap.get(teacherWorkload.teacherId)!.deltaYear > 0) ? (
+                                      <span className="px-1.5 py-0.5 rounded text-[10px] font-black bg-emerald-600 text-white shadow-2xs">
+                                        ⚡ +{changedTeachersMap.get(teacherWorkload.teacherId)!.deltaYear}t
+                                      </span>
+                                    ) : (
+                                      <span className="px-1.5 py-0.5 rounded text-[10px] font-black bg-amber-600 text-white shadow-2xs">
+                                        ⚡ {changedTeachersMap.get(teacherWorkload.teacherId)!.deltaYear}t
+                                      </span>
+                                    )
+                                  ) : (
+                                    <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200">
+                                      Giữ nguyên
+                                    </span>
+                                  )
+                                )}
                               </div>
                               <div className="text-[10px] text-slate-500 font-normal">
                                 {teacherWorkload.departmentName}
@@ -1762,21 +1886,66 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                       ? 'text-rose-700'
                       : 'text-slate-600';
 
+                  const changeInfo = changedTeachersMap?.get(w.teacherId);
+                  const isChanged = !!changeInfo;
+
+                  let rowClasses = 'group hover:bg-slate-50/80 transition-colors';
+                  if (isChanged) {
+                    if (changeInfo.deltaYear > 0) {
+                      rowClasses = 'group bg-emerald-50/70 hover:bg-emerald-100/70 transition-colors border-l-4 border-l-emerald-600';
+                    } else if (changeInfo.deltaYear < 0) {
+                      rowClasses = 'group bg-amber-50/70 hover:bg-amber-100/70 transition-colors border-l-4 border-l-amber-500';
+                    } else {
+                      rowClasses = 'group bg-purple-50/60 hover:bg-purple-100/70 transition-colors border-l-4 border-l-purple-600';
+                    }
+                  }
+
                   return (
                     <tr
                       key={w.teacherId}
-                      className="group hover:bg-slate-50/80 transition-colors"
+                      className={rowClasses}
                     >
-                      <td className="border border-slate-300 px-2 py-1.5 text-center text-slate-500 font-medium sticky left-0 z-10 bg-white group-hover:bg-slate-50">
+                      <td className={`border border-slate-300 px-2 py-1.5 text-center font-medium sticky left-0 z-10 ${
+                        isChanged
+                          ? changeInfo.deltaYear > 0
+                            ? 'bg-emerald-100 text-emerald-950 font-black'
+                            : 'bg-amber-100 text-amber-950 font-black'
+                          : 'bg-white text-slate-500 group-hover:bg-slate-50'
+                      }`}>
                         {idx + 1}
                       </td>
-                      <td className="border border-slate-300 px-3 py-1.5 font-bold text-slate-900 sticky left-10 z-10 bg-white group-hover:bg-slate-50 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]">
-                        {w.teacherName}
-                        {w.callingName && w.callingName !== w.teacherName && (
-                          <span className="text-[10px] text-slate-400 font-normal ml-1">
-                            ({w.callingName})
-                          </span>
-                        )}
+                      <td className={`border border-slate-300 px-3 py-1.5 font-bold sticky left-10 z-10 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] ${
+                        isChanged
+                          ? changeInfo.deltaYear > 0
+                            ? 'bg-emerald-100/90 text-emerald-950'
+                            : 'bg-amber-100/90 text-amber-950'
+                          : 'bg-white text-slate-900 group-hover:bg-slate-50'
+                      }`}>
+                        <div className="flex flex-col">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span>{w.teacherName}</span>
+                            {isChanged ? (
+                              changeInfo.deltaYear > 0 ? (
+                                <span className="px-1.5 py-0.5 rounded-md text-[10px] font-black bg-emerald-600 text-white shadow-2xs inline-flex items-center gap-0.5">
+                                  ⚡ +{changeInfo.deltaYear}t
+                                </span>
+                              ) : (
+                                <span className="px-1.5 py-0.5 rounded-md text-[10px] font-black bg-amber-600 text-white shadow-2xs inline-flex items-center gap-0.5">
+                                  ⚡ {changeInfo.deltaYear}t
+                                </span>
+                              )
+                            ) : changedTeachersMap ? (
+                              <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200">
+                                Giữ nguyên
+                              </span>
+                            ) : null}
+                          </div>
+                          {w.callingName && w.callingName !== w.teacherName && (
+                            <span className="text-[10px] text-slate-500 font-normal">
+                              ({w.callingName})
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="border border-slate-300 px-3 py-1.5 text-slate-700">
                         {w.departmentName}
@@ -1797,6 +1966,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                           ((w.weeklyTotals?.[wk] ?? 0) - w.standardPeriods);
                         const teachingP = w.weeklyTeaching?.[wk] ?? 0;
                         const totalP = w.weeklyTotals?.[wk] ?? 0;
+                        const isDraftAdjustedWeek = isChanged && wk >= 10;
 
                         return (
                           <td
@@ -1804,11 +1974,15 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                             className={`border border-slate-300 px-1 py-1 text-center text-[11px] ${
                               String(wk) === selectedPeriod
                                 ? 'bg-yellow-100/70 font-bold'
+                                : isDraftAdjustedWeek
+                                ? changeInfo.deltaYear > 0
+                                  ? 'bg-emerald-50/80 font-semibold'
+                                  : 'bg-amber-50/80 font-semibold'
                                 : ''
                             } ${wk === 18 && isFullYearView ? 'border-r-2 border-r-slate-400' : ''}`}
                             title={`Tuần ${wk}: Dạy ${teachingP}t + KN ${w.reductionPeriods}t = ${totalP}t (Định mức: ${w.standardPeriods}t) -> Thừa/thiếu: ${
                               bal > 0 ? `+${bal}` : bal
-                            } tiết`}
+                            } tiết${isDraftAdjustedWeek ? ' (Phân công mới từ Tuần 10)' : ''}`}
                           >
                             <div className="flex flex-col items-center justify-center min-h-[30px]">
                               {cellDisplayMode === 'BALANCE' ? (
@@ -1864,17 +2038,31 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                       >
                         {cumBal > 0 ? `+${cumBal}` : cumBal}
                       </td>
-                      <td className="border border-slate-300 px-2 py-1.5 text-center bg-slate-50/60">
+                      <td className={`border border-slate-300 px-2 py-1.5 text-center ${
+                        isChanged
+                          ? changeInfo.deltaYear > 0
+                            ? 'bg-emerald-100/70'
+                            : 'bg-amber-100/70'
+                          : 'bg-slate-50/60'
+                      }`}>
                         <div className={`text-sm font-extrabold ${semColor}`}>
                           {semBal > 0 ? `+${semBal}` : semBal}
                         </div>
-                        <div className="text-[10px] font-medium text-slate-500">
-                          {semBal > 0
-                            ? (isFullYearView ? 'Thừa cả năm' : 'Thừa tiết')
-                            : semBal < 0
-                            ? (isFullYearView ? 'Thiếu cả năm' : 'Thiếu tiết')
-                            : 'Đủ chuẩn'}
-                        </div>
+                        {isChanged ? (
+                          <div className="text-[10px] font-bold mt-0.5">
+                            <span className={changeInfo.deltaYear > 0 ? 'text-emerald-800' : 'text-amber-900'}>
+                              (Gốc: {changeInfo.oldYearBalance !== undefined ? (changeInfo.oldYearBalance > 0 ? `+${changeInfo.oldYearBalance}` : changeInfo.oldYearBalance) : '—'}t | {changeInfo.deltaYear > 0 ? `+${changeInfo.deltaYear}t` : `${changeInfo.deltaYear}t`})
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="text-[10px] font-medium text-slate-500">
+                            {semBal > 0
+                              ? (isFullYearView ? 'Thừa cả năm' : 'Thừa tiết')
+                              : semBal < 0
+                              ? (isFullYearView ? 'Thiếu cả năm' : 'Thiếu tiết')
+                              : 'Đủ chuẩn'}
+                          </div>
+                        )}
                       </td>
                     </tr>
                   );

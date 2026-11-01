@@ -8,7 +8,7 @@ import {
   SchoolTimetable,
   TimetableSlot,
 } from '../types';
-import { WeeklyTeachingLogView } from './WeeklyTeachingLogView';
+import { WeeklyTeachingLogView, ChangedTeacherInfo } from './WeeklyTeachingLogView';
 import { OFFICIAL_WEEK_8_SLOTS } from '../data/officialWeek8Timetable';
 import { OFFICIAL_WEEK_7_SLOTS } from '../data/officialWeek7Timetable';
 import {
@@ -634,6 +634,28 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   // Summary counts
   const gainedTeachersCount = useMemo(() => teacherDeltas.filter((t) => t.weeklyDelta > 0).length, [teacherDeltas]);
   const lostTeachersCount = useMemo(() => teacherDeltas.filter((t) => t.weeklyDelta < 0).length, [teacherDeltas]);
+
+  // Map of changed teachers to pass into WeeklyTeachingLogView for visual highlighting & 3-way filtering
+  const changedTeachersMap = useMemo(() => {
+    if (totalSlotChangesCount === 0) return undefined;
+    const map = new Map<string, ChangedTeacherInfo>();
+    teacherDeltas.forEach((d) => {
+      map.set(d.teacherId, {
+        deltaYear: d.yearDelta,
+        deltaWeekly: d.weeklyDelta,
+        oldYearBalance: d.oldYearBalance,
+        newYearBalance: d.newYearBalance,
+        type: d.yearDelta > 0 ? 'GAINED' : d.yearDelta < 0 ? 'LOST' : 'MODIFIED',
+        reason:
+          d.classesGained.length > 0
+            ? `Nhận lớp ${d.classesGained.join(', ')}`
+            : d.classesLost.length > 0
+            ? `Rút khỏi ${d.classesLost.join(', ')}`
+            : undefined,
+      });
+    });
+    return map;
+  }, [teacherDeltas, totalSlotChangesCount]);
 
   // 1. ACTION: Pilot Consolidate 19 classes HĐTNHN
   const handleApplyHdtnConsolidation = () => {
@@ -1591,6 +1613,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
         customTitle="Dự Thảo Phân Công Mới (Số Tiết Thực Dạy)"
         customDescription="Bảng tính thừa thiếu tiết cả năm (35 tuần) và từng tuần theo phân công mới áp dụng từ Tuần 10 đến Tuần 35 (26 tuần). Tuần 1 đến 9 giữ nguyên số tiết đã thực dạy."
         defaultLevelScope="ALL"
+        changedTeachersMap={changedTeachersMap}
       />
 
       {/* 4. MODAL: ĐỔI GIÁO VIÊN LỚP & MÔN THỬ NGHIỆM */}
