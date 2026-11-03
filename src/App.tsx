@@ -28,6 +28,7 @@ import { buildOfficialWeek5Timetable, loadOfficialWeek5Timetable } from './data/
 import { buildOfficialWeek6Timetable, loadOfficialWeek6Timetable } from './data/officialWeek6Timetable';
 import { buildOfficialWeek7Timetable, loadOfficialWeek7Timetable } from './data/officialWeek7Timetable';
 import { buildOfficialWeek8Timetable, loadOfficialWeek8Timetable } from './data/officialWeek8Timetable';
+import { buildOfficialWeek9Timetable, loadOfficialWeek9Timetable } from './data/officialWeek9Timetable';
 import {
   calculateTeacherWorkloads,
   auditAssignmentConflicts
@@ -429,6 +430,7 @@ export default function App() {
           parsed[6] = buildOfficialWeek6Timetable(initialSchoolConfig.academicYear);
           parsed[7] = buildOfficialWeek7Timetable(initialSchoolConfig.academicYear);
           parsed[8] = buildOfficialWeek8Timetable(initialSchoolConfig.academicYear);
+          parsed[9] = buildOfficialWeek9Timetable(initialSchoolConfig.academicYear);
 
           return parsed;
         }
@@ -449,6 +451,7 @@ export default function App() {
     const week6Tkb = buildOfficialWeek6Timetable(initialSchoolConfig.academicYear);
     const week7Tkb = buildOfficialWeek7Timetable(initialSchoolConfig.academicYear);
     const week8Tkb = buildOfficialWeek8Timetable(initialSchoolConfig.academicYear);
+    const week9Tkb = buildOfficialWeek9Timetable(initialSchoolConfig.academicYear);
 
     if (emergencyW1) {
       try {
@@ -462,7 +465,8 @@ export default function App() {
             5: week5Tkb,
             6: week6Tkb,
             7: week7Tkb,
-            8: week8Tkb
+            8: week8Tkb,
+            9: week9Tkb
           };
         }
       } catch { /* ignore */ }
@@ -478,7 +482,8 @@ export default function App() {
       5: week5Tkb,
       6: week6Tkb,
       7: week7Tkb,
-      8: week8Tkb
+      8: week8Tkb,
+      9: week9Tkb
     };
   });
 
@@ -556,7 +561,10 @@ export default function App() {
     if (currentWeek === 8) {
       return buildOfficialWeek8Timetable(config.academicYear);
     }
-    // Weeks 9 to 35: Empty by default as requested by user
+    if (currentWeek === 9) {
+      return buildOfficialWeek9Timetable(config.academicYear);
+    }
+    // Weeks 10 to 35: Empty by default as requested by user
     return createEmptyTimetableForWeek(currentWeek, config.academicYear);
   }, [weeklyTimetables, currentWeek, config.academicYear, classes, subjects, teachers, assignments, config]);
 
@@ -743,6 +751,19 @@ export default function App() {
           }
         })
         .catch(error => console.error('Failed to load official week 8 timetable', error));
+
+      return () => {
+        isMounted = false;
+      };
+    } else if (currentWeek === 9) {
+      let isMounted = true;
+      loadOfficialWeek9Timetable(config.academicYear, initialClasses, initialSubjects, initialTeachers)
+        .then(week9 => {
+          if (isMounted) {
+            setWeeklyTimetables(prev => ({ ...prev, 9: week9 }));
+          }
+        })
+        .catch(error => console.error('Failed to load official week 9 timetable', error));
 
       return () => {
         isMounted = false;

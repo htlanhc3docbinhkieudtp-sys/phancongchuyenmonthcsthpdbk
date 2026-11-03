@@ -2,6 +2,7 @@ import { Teacher, Department, ClassGroup, Subject, SchoolConfig, TimetableSlot }
 import { calculateAllActualWorkloads, TeacherActualWorkload } from './actualTeachingHoursHelper';
 import { OFFICIAL_WEEK_7_SLOTS } from '../data/officialWeek7Timetable';
 import { OFFICIAL_WEEK_8_SLOTS } from '../data/officialWeek8Timetable';
+import { OFFICIAL_WEEK_9_SLOTS } from '../data/officialWeek9Timetable';
 
 export type ExamPeriodType = 'GK1' | 'CK1' | 'GK2' | 'CK2';
 
@@ -259,7 +260,7 @@ export function getEligibleInvigilatorsRankedByDeficit(
   departments: Department[],
   classes: ClassGroup[],
   config: SchoolConfig,
-  slots: TimetableSlot[] = OFFICIAL_WEEK_7_SLOTS,
+  slots: TimetableSlot[] = OFFICIAL_WEEK_9_SLOTS,
   subjects: Subject[] = []
 ): Array<{
   teacher: Teacher;
@@ -325,7 +326,7 @@ export function generateAutoInvigilationAssignments(
   departments: Department[],
   classes: ClassGroup[],
   config: SchoolConfig,
-  slots: TimetableSlot[] = OFFICIAL_WEEK_7_SLOTS
+  slots: TimetableSlot[] = OFFICIAL_WEEK_9_SLOTS
 ): Record<string, InvigilatorAssignment[]> {
   const ranked = getEligibleInvigilatorsRankedByDeficit(teachers, departments, classes, config, slots);
   const result: Record<string, InvigilatorAssignment[]> = {};
