@@ -999,6 +999,15 @@ export function calculateTeacherSingleWeek(
         if ((teacher.id === 'tch-td-5' || teacher.name === 'Lê Minh Đạt') && (d.type === 'TongPhuTrachDoi' || d.name?.includes('Tổng phụ trách'))) return;
         // TPT Đội đã được add nhãn TPT Đội ở trên và định mức đã được hạ về 6 tiết/tuần
         if (d.type === 'TongPhuTrachDoi' || d.name?.includes('Tổng phụ trách')) return;
+
+        // Cô Phan Thị Ngọc Thơ: Phó Bí thư đoàn trường chỉ bắt đầu tính từ Tuần 10
+        if (
+          (teacher.id === 'tch-khtn-7' || teacher.name === 'Phan Thị Ngọc Thơ') &&
+          (d.type === 'PhoBiThuDoan' || d.name?.includes('Phó Bí thư đoàn') || d.name?.includes('Bí thư đoàn'))
+        ) {
+          if (weekNumber < 10) return;
+        }
+
         let red = d.reductionPeriods;
         if (red === undefined || red === null) {
           if (d.type === 'ToTruong') red = 3;
@@ -1031,8 +1040,15 @@ export function calculateTeacherSingleWeek(
       }
 
       if (teacher.role === 'PhoBiThuDoan' || teacher.code?.includes('(PBT')) {
-        if (!dutyList.includes('Phó Bí thư đoàn')) dutyList.push('Phó Bí thư đoàn');
-        reductionPeriods += 6;
+        if (teacher.id === 'tch-khtn-7' || teacher.name === 'Phan Thị Ngọc Thơ') {
+          if (weekNumber >= 10) {
+            if (!dutyList.includes('Phó Bí thư đoàn')) dutyList.push('Phó Bí thư đoàn');
+            reductionPeriods += 6;
+          }
+        } else {
+          if (!dutyList.includes('Phó Bí thư đoàn')) dutyList.push('Phó Bí thư đoàn');
+          reductionPeriods += 6;
+        }
       } else if (teacher.role === 'BiThuDoan' || teacher.code?.includes('(BT')) {
         if (!dutyList.includes('Bí thư đoàn')) dutyList.push('Bí thư đoàn');
         reductionPeriods += 12;
@@ -1059,6 +1075,30 @@ export function calculateTeacherSingleWeek(
       if (!dutyList.includes('Con nhỏ')) {
         dutyList.push('Con nhỏ');
         reductionPeriods += 3;
+      }
+    }
+
+    // 1/ Cô Phan Thị Ngọc Thơ (tch-khtn-7): Giữ nhiệm vụ Phó Bí thư đoàn trường, cộng 06 tiết kiêm nhiệm/tuần bắt đầu từ Tuần 10
+    if (teacher.id === 'tch-khtn-7' || teacher.name === 'Phan Thị Ngọc Thơ') {
+      if (weekNumber >= 10) {
+        if (!dutyList.includes('Phó Bí thư đoàn')) {
+          dutyList.push('Phó Bí thư đoàn');
+          reductionPeriods += 6;
+        }
+      } else {
+        const idx = dutyList.indexOf('Phó Bí thư đoàn');
+        if (idx !== -1) {
+          dutyList.splice(idx, 1);
+          reductionPeriods -= 6;
+        }
+      }
+    }
+
+    // 2/ Thầy Võ Ngọc Đình Văn (tch-khtn-15): Cộng 08 tiết kiêm nhiệm/tuần tính từ Tuần 01 do kiêm nhiệm vai trò Hỗ trợ tổng phụ trách đội
+    if (teacher.id === 'tch-khtn-15' || teacher.name === 'Võ Ngọc Đình Văn') {
+      if (!dutyList.includes('Hỗ trợ TPT Đội')) {
+        dutyList.push('Hỗ trợ TPT Đội');
+        reductionPeriods += 8;
       }
     }
 

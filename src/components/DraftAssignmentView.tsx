@@ -63,8 +63,8 @@ interface DraftAssignmentViewProps {
   onShowToast?: (message: string) => void;
 }
 
-const DRAFT_SANDBOX_STORAGE_KEY = 'docbinhkieu_draft_sandbox_weekly_timetables_v5';
-const DRAFT_SANDBOX_ADJUSTMENT_PREFIX = 'docbinhkieu_draft_sandbox_v5';
+const DRAFT_SANDBOX_STORAGE_KEY = 'docbinhkieu_draft_sandbox_weekly_timetables_v6';
+const DRAFT_SANDBOX_ADJUSTMENT_PREFIX = 'docbinhkieu_draft_sandbox_v6';
 
 // 19 lớp HĐTNHN cần gom gọn về 1 người dạy duy nhất:
 // NGUYÊN TẮC:

@@ -177,8 +177,8 @@ export const KHTN_8_CLASS_ASSIGNMENTS: KhtnClassAssignment[] = [
     lyTeacherName: 'Trần Thị Hậu',
     hoaTeacherId: 'tch-khtn-12',
     hoaTeacherName: 'Võ Hoàng Toàn',
-    sinhTeacherId: 'tch-khtn-12',
-    sinhTeacherName: 'Võ Hoàng Toàn',
+    sinhTeacherId: 'tch-khtn-17',
+    sinhTeacherName: 'Nguyễn Kim Ngân',
   },
   {
     classId: 'cls-8a7',

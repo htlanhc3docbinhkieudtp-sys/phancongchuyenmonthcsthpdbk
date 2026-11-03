@@ -877,10 +877,18 @@ export const officialStaffList: Teacher[] = [
     campus: 'THPTDBK',
     departmentId: 'dept-khtn',
     primarySubjectId: 'sub-hoa',
-    role: 'GVBM',
-    duties: [],
+    role: 'PhoBiThuDoan',
+    duties: [
+      {
+        id: 'duty-tho-pbt-doan',
+        type: 'PhoBiThuDoan',
+        name: 'Phó Bí thư đoàn trường',
+        reductionPeriods: 6,
+        notes: 'Phó Bí thư đoàn trường (+6 tiết/tuần bắt đầu từ Tuần 10)',
+      },
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Hóa học (Khối 10-12) - GVCN 12CB1',
+    notes: 'THPTDBK - Hóa học (Khối 10-12) - GVCN 12CB1 - Phó Bí thư đoàn trường (từ Tuần 10: +6t)',
   },
   {
     id: 'tch-khtn-8',
@@ -984,8 +992,17 @@ export const officialStaffList: Teacher[] = [
     departmentId: 'dept-khtn',
     primarySubjectId: 'sub-khtn-cs',
     role: 'GVBM',
+    duties: [
+      {
+        id: 'duty-van-ht-tpt',
+        type: 'Khac',
+        name: 'Hỗ trợ TPT Đội',
+        reductionPeriods: 8,
+        notes: 'Kiêm nhiệm vai trò Hỗ trợ tổng phụ trách đội (+8 tiết/tuần từ Tuần 01)',
+      },
+    ],
     baseStandardPeriods: 19,
-    notes: 'THCSTK - KHTN (Khối 6-9)',
+    notes: 'THCSTK - KHTN (Khối 6-9) - Hỗ trợ TPT Đội (+8t/tuần từ Tuần 01)',
   },
   {
     id: 'tch-khtn-16',

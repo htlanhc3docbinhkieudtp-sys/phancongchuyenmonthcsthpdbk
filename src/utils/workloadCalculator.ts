@@ -139,6 +139,15 @@ export const STANDARD_DUTIES_PRESETS: DutyPreset[] = [
     badgeBg: 'bg-slate-100 border-slate-300',
     badgeColor: 'text-slate-800',
     description: 'Thành viên Ban thanh tra nhân dân (giảm 1 tiết/tuần)'
+  },
+  {
+    type: 'Khac',
+    name: 'Hỗ trợ TPT Đội',
+    defaultReduction: 8,
+    shortLabel: 'Hỗ trợ TPT Đội',
+    badgeBg: 'bg-indigo-50 border-indigo-200',
+    badgeColor: 'text-indigo-800',
+    description: 'Hỗ trợ Tổng phụ trách Đội (+8 tiết/tuần)'
   }
 ];
 
