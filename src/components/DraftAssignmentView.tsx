@@ -46,6 +46,8 @@ import {
   Cpu,
   Bot,
   Brain,
+  Lightbulb,
+  GraduationCap,
 } from 'lucide-react';
 
 interface DraftAssignmentViewProps {
@@ -289,30 +291,34 @@ export const DEFAULT_AI_CLASS_ASSIGNMENTS: Record<
   },
 
   // --- Điểm THCS Đốc Binh Kiều (24 lớp) ---
-  '6A1': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '6A2': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '6A3': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK (GVCN 6A3)' },
-  '6A4': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '6A5': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '6A6': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '7A1': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '7A2': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '7A3': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '7A4': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '7A5': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '7A6': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '8A1': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '8A2': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '8A3': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '8A4': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '8A5': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '8A6': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '9A1': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '9A2': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '9A3': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '9A4': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '9A5': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
-  '9A6': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK' },
+  // Khối 6 (6 lớp) -> Cô Bùi Kim Phướng (GVCN 6A3)
+  '6A1': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 6 THCS DBK (GVCN 6A3) • Trực tiếp phụ trách AI Khối 6' },
+  '6A2': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 6 THCS DBK (GVCN 6A3) • Trực tiếp phụ trách AI Khối 6' },
+  '6A3': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 6 THCS DBK (GVCN 6A3) • Trực tiếp phụ trách AI Khối 6' },
+  '6A4': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 6 THCS DBK (GVCN 6A3) • Trực tiếp phụ trách AI Khối 6' },
+  '6A5': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 6 THCS DBK (GVCN 6A3) • Trực tiếp phụ trách AI Khối 6' },
+  '6A6': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 6 THCS DBK (GVCN 6A3) • Trực tiếp phụ trách AI Khối 6' },
+  // Khối 7 (6 lớp) -> Thầy Mai Phước Lộc (GV dạy Tin học Khối 7, GVCN 7A2)
+  '7A1': { teacherId: 'tch-av-13', teacherName: 'Mai Phước Lộc', teacherCode: 'Lộc.MP (7A2)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 7 THCS DBK (GVCN 7A2) • Trực tiếp phụ trách AI Khối 7' },
+  '7A2': { teacherId: 'tch-av-13', teacherName: 'Mai Phước Lộc', teacherCode: 'Lộc.MP (7A2)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 7 THCS DBK (GVCN 7A2) • Trực tiếp phụ trách AI Khối 7' },
+  '7A3': { teacherId: 'tch-av-13', teacherName: 'Mai Phước Lộc', teacherCode: 'Lộc.MP (7A2)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 7 THCS DBK (GVCN 7A2) • Trực tiếp phụ trách AI Khối 7' },
+  '7A4': { teacherId: 'tch-av-13', teacherName: 'Mai Phước Lộc', teacherCode: 'Lộc.MP (7A2)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 7 THCS DBK (GVCN 7A2) • Trực tiếp phụ trách AI Khối 7' },
+  '7A5': { teacherId: 'tch-av-13', teacherName: 'Mai Phước Lộc', teacherCode: 'Lộc.MP (7A2)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 7 THCS DBK (GVCN 7A2) • Trực tiếp phụ trách AI Khối 7' },
+  '7A6': { teacherId: 'tch-av-13', teacherName: 'Mai Phước Lộc', teacherCode: 'Lộc.MP (7A2)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 7 THCS DBK (GVCN 7A2) • Trực tiếp phụ trách AI Khối 7' },
+  // Khối 8 (6 lớp) -> Thầy Mai Phước Lộc (Phụ trách AI Khối 8 để cân bằng 12 lớp - 12 lớp với Cô Phướng)
+  '8A1': { teacherId: 'tch-av-13', teacherName: 'Mai Phước Lộc', teacherCode: 'Lộc.MP (7A2)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK • Phụ trách AI Khối 8 để cân bằng tải với Cô Phướng' },
+  '8A2': { teacherId: 'tch-av-13', teacherName: 'Mai Phước Lộc', teacherCode: 'Lộc.MP (7A2)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK • Phụ trách AI Khối 8 để cân bằng tải với Cô Phướng' },
+  '8A3': { teacherId: 'tch-av-13', teacherName: 'Mai Phước Lộc', teacherCode: 'Lộc.MP (7A2)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK • Phụ trách AI Khối 8 để cân bằng tải với Cô Phướng' },
+  '8A4': { teacherId: 'tch-av-13', teacherName: 'Mai Phước Lộc', teacherCode: 'Lộc.MP (7A2)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK • Phụ trách AI Khối 8 để cân bằng tải với Cô Phướng' },
+  '8A5': { teacherId: 'tch-av-13', teacherName: 'Mai Phước Lộc', teacherCode: 'Lộc.MP (7A2)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK • Phụ trách AI Khối 8 để cân bằng tải với Cô Phướng' },
+  '8A6': { teacherId: 'tch-av-13', teacherName: 'Mai Phước Lộc', teacherCode: 'Lộc.MP (7A2)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học THCS DBK • Phụ trách AI Khối 8 để cân bằng tải với Cô Phướng' },
+  // Khối 9 (6 lớp) -> Cô Bùi Kim Phướng (GV Tin học THCS DBK)
+  '9A1': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 9 THCS DBK • Phụ trách AI Khối 9' },
+  '9A2': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 9 THCS DBK • Phụ trách AI Khối 9' },
+  '9A3': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 9 THCS DBK • Phụ trách AI Khối 9' },
+  '9A4': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 9 THCS DBK • Phụ trách AI Khối 9' },
+  '9A5': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 9 THCS DBK • Phụ trách AI Khối 9' },
+  '9A6': { teacherId: 'tch-av-14', teacherName: 'Bùi Kim Phướng', teacherCode: 'Phướng.BK (6A3)', campus: 'THCS Đốc Binh Kiều', note: 'GV Tin học Khối 9 THCS DBK • Phụ trách AI Khối 9' },
 
   // --- Điểm THCS Tân Kiều (15 lớp) ---
   '6A7': { teacherId: 'tch-av-16', teacherName: 'Lê Phước Hậu', teacherCode: 'Hậu.LP (8A9)', campus: 'THCS Tân Kiều', note: 'GV Tin học THCS Tân Kiều' },
@@ -573,6 +579,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
 
   // AI Assignment Drawer & Custom class-teacher mapping
   const [isAiAssignmentDrawerOpen, setIsAiAssignmentDrawerOpen] = useState(true);
+  const [isStrategyDrawerOpen, setIsStrategyDrawerOpen] = useState(true);
   const [aiCampusFilterTab, setAiCampusFilterTab] = useState<'ALL' | 'THPT' | 'THCS_DBK' | 'THCS_TK'>('ALL');
   const [aiCustomClassTeacherMap, setAiCustomClassTeacherMap] = useState<Record<string, string>>(() => {
     const initialMap: Record<string, string> = {};
@@ -1103,6 +1110,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     let hieuClassCount = 0;
     let lienClassCount = 0;
     let diemClassCount = 0;
+    let locClassCount = 0; // Thầy Mai Phước Lộc
     let phuongClassCount = 0;
     let hauClassCount = 0;
 
@@ -1112,6 +1120,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       else if (tId === 'tch-av-2') hieuClassCount++;
       else if (tId === 'tch-av-8') lienClassCount++;
       else if (tId === 'tch-av-9') diemClassCount++;
+      else if (tId === 'tch-av-13') locClassCount++;
       else if (tId === 'tch-av-14') phuongClassCount++;
       else if (tId === 'tch-av-16') hauClassCount++;
     });
@@ -1125,6 +1134,8 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       lienPeriods: lienClassCount * 12,
       diemClassCount,
       diemPeriods: diemClassCount * 12,
+      locClassCount,
+      locPeriods: locClassCount * 12,
       phuongClassCount,
       phuongPeriods: phuongClassCount * 12,
       hauClassCount,
@@ -1281,6 +1292,111 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     });
     setAiCustomClassTeacherMap(nextMap);
     handleApplyAiAssignment(nextMap);
+  };
+
+  const handlePresetLocClasses = (locClasses: string[]) => {
+    const nextMap = { ...aiCustomClassTeacherMap };
+    locClasses.forEach((c) => {
+      nextMap[c] = 'tch-av-13'; // Thầy Mai Phước Lộc
+    });
+    // With other DBK classes not in locClasses, if they were previously Lộc, restore to default/Phướng
+    const dbkClasses = ['6A1', '6A2', '6A3', '6A4', '6A5', '6A6', '7A1', '7A2', '7A3', '7A4', '7A5', '7A6', '8A1', '8A2', '8A3', '8A4', '8A5', '8A6', '9A1', '9A2', '9A3', '9A4', '9A5', '9A6'];
+    dbkClasses.forEach((c) => {
+      if (!locClasses.includes(c) && nextMap[c] === 'tch-av-13') {
+        nextMap[c] = DEFAULT_AI_CLASS_ASSIGNMENTS[c]?.teacherId === 'tch-av-13' ? 'tch-av-14' : (DEFAULT_AI_CLASS_ASSIGNMENTS[c]?.teacherId || 'tch-av-14');
+      }
+    });
+    setAiCustomClassTeacherMap(nextMap);
+    handleApplyAiAssignment(nextMap);
+  };
+
+  const handlePresetHieuCrossCampus = (classesForHieu: string[]) => {
+    const nextMap = { ...aiCustomClassTeacherMap };
+    classesForHieu.forEach((c) => {
+      nextMap[c] = 'tch-av-2'; // Thầy Nguyễn Trung Hiếu
+    });
+    setAiCustomClassTeacherMap(nextMap);
+    handleApplyAiAssignment(nextMap);
+  };
+
+  const handleApplyComprehensiveStrategicPlan = () => {
+    // Phương án tối ưu hóa chiến lược toàn diện cho cả 53 lớp môn AI:
+    // 1. Thầy Mai Phước Lộc nhận 12 lớp (K7: 7A1-7A6 + K8: 8A1-8A6) -> 144 tiết HK2
+    // 2. Cô Bùi Kim Phướng nhận 12 lớp (K6: 6A1-6A6 + K9: 9A1-9A6) -> 144 tiết HK2 (Cân bằng 50/50 DBK)
+    // 3. Thầy Nguyễn Trung Hiếu (THPT) chi viện 8 lớp Tân Kiều (K8: 8A7-8A10 + K9: 9A7-9A10) -> 96 tiết HK2
+    // 4. Thầy Lê Phước Hậu nhận 7 lớp Tân Kiều (K6: 6A7-6A10 + K7: 7A7-7A9) -> 84 tiết HK2
+    // 5. Thầy Nguyễn Minh Trí (PHT) nhận 2 lớp THPT (12CB4, 12CB5) -> 24 tiết HK2
+    // 6. Cô Đào Thị Ngọc Liên nhận Khối 11 THPT (11CB1-11CB4) -> 48 tiết HK2
+    // 7. Cô Lê Thị Thu Diễm nhận Khối 10 THPT (10CB1-10CB4) -> 48 tiết HK2
+    // 8. Thầy Nguyễn Trung Hiếu nhận thêm 10CB5 (lớp thầy đang dạy Tin học) -> 12 tiết HK2
+    const strategicMap: Record<string, string> = {
+      // THPT (14 lớp)
+      '12CB5': 'tch-bgh-2', // Thầy Nguyễn Minh Trí (PHT)
+      '12CB4': 'tch-bgh-2', // Thầy Nguyễn Minh Trí (PHT)
+      '12CB1': 'tch-av-2',  // Thầy Nguyễn Trung Hiếu
+      '12CB2': 'tch-av-2',  // Thầy Nguyễn Trung Hiếu
+      '12CB3': 'tch-av-2',  // Thầy Nguyễn Trung Hiếu
+      '10CB5': 'tch-av-2',  // Thầy Nguyễn Trung Hiếu
+      '11CB1': 'tch-av-8',  // Cô Đào Thị Ngọc Liên
+      '11CB2': 'tch-av-8',  // Cô Đào Thị Ngọc Liên
+      '11CB3': 'tch-av-8',  // Cô Đào Thị Ngọc Liên
+      '11CB4': 'tch-av-8',  // Cô Đào Thị Ngọc Liên
+      '10CB1': 'tch-av-9',  // Cô Lê Thị Thu Diễm
+      '10CB2': 'tch-av-9',  // Cô Lê Thị Thu Diễm
+      '10CB3': 'tch-av-9',  // Cô Lê Thị Thu Diễm
+      '10CB4': 'tch-av-9',  // Cô Lê Thị Thu Diễm
+
+      // THCS Đốc Binh Kiều (24 lớp: Cân bằng tuyệt đối 12 - 12)
+      '7A1': 'tch-av-13',   // Thầy Mai Phước Lộc
+      '7A2': 'tch-av-13',
+      '7A3': 'tch-av-13',
+      '7A4': 'tch-av-13',
+      '7A5': 'tch-av-13',
+      '7A6': 'tch-av-13',
+      '8A1': 'tch-av-13',
+      '8A2': 'tch-av-13',
+      '8A3': 'tch-av-13',
+      '8A4': 'tch-av-13',
+      '8A5': 'tch-av-13',
+      '8A6': 'tch-av-13',
+      '6A1': 'tch-av-14',   // Cô Bùi Kim Phướng
+      '6A2': 'tch-av-14',
+      '6A3': 'tch-av-14',
+      '6A4': 'tch-av-14',
+      '6A5': 'tch-av-14',
+      '6A6': 'tch-av-14',
+      '9A1': 'tch-av-14',
+      '9A2': 'tch-av-14',
+      '9A3': 'tch-av-14',
+      '9A4': 'tch-av-14',
+      '9A5': 'tch-av-14',
+      '9A6': 'tch-av-14',
+
+      // THCS Tân Kiều (15 lớp: Thầy Hiếu chi viện 8 lớp, Thầy Hậu 7 lớp)
+      '8A7': 'tch-av-2',    // Thầy Nguyễn Trung Hiếu (Chi viện)
+      '8A8': 'tch-av-2',
+      '8A9': 'tch-av-2',
+      '8A10': 'tch-av-2',
+      '9A7': 'tch-av-2',
+      '9A8': 'tch-av-2',
+      '9A9': 'tch-av-2',
+      '9A10': 'tch-av-2',
+      '6A7': 'tch-av-16',   // Thầy Lê Phước Hậu
+      '6A8': 'tch-av-16',
+      '6A9': 'tch-av-16',
+      '6A10': 'tch-av-16',
+      '7A7': 'tch-av-16',
+      '7A8': 'tch-av-16',
+      '7A9': 'tch-av-16',
+    };
+
+    setAiCustomClassTeacherMap(strategicMap);
+    handleApplyAiAssignment(strategicMap);
+    setActionBannerMessage({
+      type: 'success',
+      title: 'Đã áp dụng toàn diện Bộ Giải Pháp Chiến Lược Môn Tin Học & Môn Trí Tuệ AI!',
+      detail: 'Đã phân bổ Thầy Mai Phước Lộc 12 lớp (K7+8 DBK), Cô Bùi Kim Phướng 12 lớp (K6+9 DBK), Thầy Hiếu chi viện 8 lớp Tân Kiều (K8+9 TK), Thầy Hậu 7 lớp Tân Kiều (K6+7 TK), Thầy Trí (PHT) 2 lớp THPT (12CB4, 12CB5). Toàn bộ 53 lớp đã được cân bằng tối ưu!',
+    });
   };
 
   // 3. ACTION: Single Class/Subject Reassignment
@@ -1456,6 +1572,23 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
               </span>
             </button>
 
+            {/* Hiến Kế Môn Tin Học & AI */}
+            <button
+              onClick={() => setIsStrategyDrawerOpen(!isStrategyDrawerOpen)}
+              className={`px-3.5 py-2 rounded-xl font-bold text-xs shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
+                isStrategyDrawerOpen
+                  ? 'bg-amber-400 hover:bg-amber-500 text-slate-950 font-black shadow-amber-400/20'
+                  : 'bg-white/10 hover:bg-white/20 text-amber-200 hover:text-white border border-amber-400/40 font-bold'
+              }`}
+              title="Xem chuyên đề hiến kế & bộ giải pháp chiến lược tối ưu định mức môn Tin học (không thừa giờ)"
+            >
+              <Lightbulb className="w-4 h-4 text-amber-600 fill-amber-300" />
+              <span>Hiến Kế Tin Học & AI</span>
+              <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-black/20">
+                {isStrategyDrawerOpen ? 'Đang mở' : 'Xem'}
+              </span>
+            </button>
+
             {/* 3. Custom reassign class/subject */}
             <button
               onClick={() => setIsReassignModalOpen(true)}
@@ -1581,120 +1714,254 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
             </div>
           </div>
 
-          {/* 4 Cards Overview of AI Workload Impact */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* 6 Cards Overview of AI Workload Impact */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2.5">
             {/* Card 1: Thầy Nguyễn Minh Trí (PHT) */}
             <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-purple-400/40 space-y-1">
               <div className="flex items-center justify-between text-xs text-purple-200">
                 <span className="font-bold flex items-center gap-1">
                   <UserCheck className="w-3.5 h-3.5 text-purple-300" />
-                  Thầy Nguyễn Minh Trí (PHT)
+                  Thầy Trí (PHT)
                 </span>
-                <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 font-black rounded-full text-[10px]">
-                  {aiStats.triClassCount} lớp ({aiStats.triPeriods}t/HK2)
+                <span className="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-300 font-black rounded-full text-[10px]">
+                  {aiStats.triClassCount} lớp
                 </span>
               </div>
-              <div className="text-xl font-black text-emerald-400">
-                +{aiStats.triPeriods} tiết/HK2
+              <div className="text-lg font-black text-emerald-400">
+                +{aiStats.triPeriods}t/HK2
               </div>
-              <p className="text-[11px] text-purple-100 leading-tight">
-                Giảng dạy {aiStats.triClassCount * 2 + 2}t/tuần ở Tuần 19-24 (2t HĐTN + {aiStats.triClassCount * 2}t AI). Định mức cả năm được bù từ -70t lên {-70 + aiStats.triPeriods}t!
+              <p className="text-[10px] text-purple-100 leading-tight">
+                Dạy {aiStats.triClassCount * 2}t AI/w ở T19-24. Bù định mức cả năm từ -70t lên {-70 + aiStats.triPeriods}t!
               </p>
             </div>
 
-            {/* Card 2: Thầy Nguyễn Trung Hiếu (Tổ phó) */}
-            <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-white/10 space-y-1">
+            {/* Card 2: Thầy Mai Phước Lộc (THCS DBK) */}
+            <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-amber-400/40 space-y-1">
               <div className="flex items-center justify-between text-xs text-purple-200">
-                <span className="font-bold">Thầy Nguyễn Trung Hiếu</span>
-                <span className="px-2 py-0.5 bg-blue-500/20 text-blue-300 font-bold rounded-full text-[10px]">
-                  {aiStats.hieuClassCount} lớp ({aiStats.hieuPeriods}t/HK2)
+                <span className="font-bold flex items-center gap-1 text-amber-200">
+                  <GraduationCap className="w-3.5 h-3.5 text-amber-300" />
+                  Thầy Mai Phước Lộc
+                </span>
+                <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-300 font-black rounded-full text-[10px]">
+                  {aiStats.locClassCount} lớp
                 </span>
               </div>
-              <div className="text-xl font-black text-blue-300">
-                +{aiStats.hieuPeriods} tiết/HK2
+              <div className="text-lg font-black text-amber-300">
+                +{aiStats.locPeriods}t/HK2
               </div>
-              <p className="text-[11px] text-slate-300 leading-tight">
-                Tổ phó Tin học bù từ -175t còn {-175 + aiStats.hieuPeriods}t/năm, giải quyết triệt để tình trạng thiếu tiết sâu nhất trường.
+              <p className="text-[10px] text-amber-100 leading-tight">
+                GV Tin Khối 7 THCS DBK (GVCN 7A2). Nhận AI Khối 7 + 8, chia đôi tải 50/50 với Cô Phướng!
               </p>
             </div>
 
-            {/* Card 3: Cô Liên & Cô Diễm */}
-            <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-white/10 space-y-1">
+            {/* Card 3: Cô Bùi Kim Phướng (THCS DBK) */}
+            <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-pink-400/40 space-y-1">
               <div className="flex items-center justify-between text-xs text-purple-200">
-                <span className="font-bold">Cô Liên & Cô Diễm (Tin THPT)</span>
-                <span className="px-2 py-0.5 bg-amber-500/20 text-amber-300 font-bold rounded-full text-[10px]">
-                  {aiStats.lienClassCount + aiStats.diemClassCount} lớp ({aiStats.lienPeriods + aiStats.diemPeriods}t)
+                <span className="font-bold text-pink-200">Cô Bùi Kim Phướng</span>
+                <span className="px-1.5 py-0.5 bg-pink-500/20 text-pink-300 font-bold rounded-full text-[10px]">
+                  {aiStats.phuongClassCount} lớp
                 </span>
               </div>
-              <div className="text-xl font-black text-amber-300">
-                Mỗi cô +{aiStats.lienPeriods} tiết/HK2
+              <div className="text-lg font-black text-pink-300">
+                +{aiStats.phuongPeriods}t/HK2
               </div>
-              <p className="text-[11px] text-slate-300 leading-tight">
-                Chia đều Khối 11 (Cô Liên: {aiStats.lienClassCount} lớp) và Khối 10 (Cô Diễm: {aiStats.diemClassCount} lớp), không bị dồn thừa tiết.
+              <p className="text-[10px] text-pink-100 leading-tight">
+                GV Tin THCS DBK (GVCN 6A3). Được Thầy Lộc chia sẻ 12 lớp, giảm tải vượt trần thành công!
               </p>
             </div>
 
-            {/* Card 4: Hai điểm THCS */}
-            <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-white/10 space-y-1">
+            {/* Card 4: Thầy Lê Phước Hậu (THCS TK) */}
+            <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-cyan-400/40 space-y-1">
               <div className="flex items-center justify-between text-xs text-purple-200">
-                <span className="font-bold">Hai Điểm THCS (39 lớp)</span>
-                <span className="px-2 py-0.5 bg-pink-500/20 text-pink-300 font-bold rounded-full text-[10px]">
-                  {aiStats.phuongClassCount + aiStats.hauClassCount} lớp
+                <span className="font-bold text-cyan-200">Thầy Lê Phước Hậu</span>
+                <span className="px-1.5 py-0.5 bg-cyan-500/20 text-cyan-300 font-bold rounded-full text-[10px]">
+                  {aiStats.hauClassCount} lớp
                 </span>
               </div>
-              <div className="text-xl font-black text-pink-300">
-                {aiStats.phuongPeriods + aiStats.hauPeriods} tiết/HK2
+              <div className="text-lg font-black text-cyan-300">
+                +{aiStats.hauPeriods}t/HK2
               </div>
-              <p className="text-[11px] text-slate-300 leading-tight">
-                Cô Phướng ({aiStats.phuongClassCount} lớp THCS DBK) và Thầy Hậu ({aiStats.hauClassCount} lớp THCS TK) phụ trách đúng địa bàn.
+              <p className="text-[10px] text-cyan-100 leading-tight">
+                GV Tin duy nhất THCS Tân Kiều. Được Thầy Hiếu THPT chi viện các lớp khối 8-9.
+              </p>
+            </div>
+
+            {/* Card 5: Thầy Nguyễn Trung Hiếu (Tổ phó) */}
+            <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-blue-400/40 space-y-1">
+              <div className="flex items-center justify-between text-xs text-purple-200">
+                <span className="font-bold text-blue-200">Thầy Trung Hiếu</span>
+                <span className="px-1.5 py-0.5 bg-blue-500/20 text-blue-300 font-bold rounded-full text-[10px]">
+                  {aiStats.hieuClassCount} lớp
+                </span>
+              </div>
+              <div className="text-lg font-black text-blue-300">
+                +{aiStats.hieuPeriods}t/HK2
+              </div>
+              <p className="text-[10px] text-blue-100 leading-tight">
+                Tổ phó Tin học (Điểm chính). Bù thiếu -175t/năm & sẵn sàng dạy chéo cấp chi viện Tân Kiều!
+              </p>
+            </div>
+
+            {/* Card 6: Cô Liên & Cô Diễm */}
+            <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-white/10 space-y-1">
+              <div className="flex items-center justify-between text-xs text-purple-200">
+                <span className="font-bold">Cô Liên & Cô Diễm</span>
+                <span className="px-1.5 py-0.5 bg-purple-500/20 text-purple-300 font-bold rounded-full text-[10px]">
+                  {aiStats.lienClassCount + aiStats.diemClassCount} lớp
+                </span>
+              </div>
+              <div className="text-lg font-black text-purple-300">
+                +{aiStats.lienPeriods + aiStats.diemPeriods}t
+              </div>
+              <p className="text-[10px] text-slate-300 leading-tight">
+                Phụ trách AI Khối 11 (Cô Liên: {aiStats.lienClassCount}l) & Khối 10 (Cô Diễm: {aiStats.diemClassCount}l).
               </p>
             </div>
           </div>
 
-          {/* Presets for Thầy Nguyễn Minh Trí */}
-          <div className="bg-white/5 rounded-xl p-3 border border-white/10 space-y-2">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div className="text-xs font-bold text-purple-200 flex items-center gap-1.5">
+          {/* Interactive Presets for Quick Configuration */}
+          <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 space-y-2.5">
+            <div className="text-xs font-bold text-purple-200 flex items-center justify-between gap-2 border-b border-white/10 pb-2">
+              <div className="flex items-center gap-1.5">
                 <Brain className="w-4 h-4 text-amber-300" />
-                <span>Phương Án Phân Công Lớp Môn AI Cho Thầy Nguyễn Minh Trí (PHT):</span>
+                <span className="uppercase tracking-wider">Kịch Bản Phân Công AI Nhanh Cho Từng Giáo Viên & Điểm Trường:</span>
               </div>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <button
-                  type="button"
-                  onClick={() => handlePresetTriClasses(['12CB4', '12CB5'])}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    aiStats.triClassCount === 2
-                      ? 'bg-amber-400 text-slate-950 shadow-xs'
-                      : 'bg-white/10 text-white hover:bg-white/20'
-                  }`}
-                  title="Thầy Trí dạy 2 lớp Khối 12: 12CB4 và 12CB5 (24 tiết HK2)"
-                >
-                  ⭐ Thầy Trí nhận 2 lớp (12CB4, 12CB5) [Khuyên dùng]
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handlePresetTriClasses(['12CB5'])}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    aiStats.triClassCount === 1
-                      ? 'bg-amber-400 text-slate-950 shadow-xs'
-                      : 'bg-white/10 text-white hover:bg-white/20'
-                  }`}
-                  title="Thầy Trí dạy đúng 1 lớp 12CB5 (12 tiết HK2)"
-                >
-                  Thầy Trí nhận 1 lớp (12CB5) [Chuẩn 4t/w]
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handlePresetTriClasses(['11CB4', '12CB4', '12CB5'])}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    aiStats.triClassCount === 3
-                      ? 'bg-amber-400 text-slate-950 shadow-xs'
-                      : 'bg-white/10 text-white hover:bg-white/20'
-                  }`}
-                  title="Thầy Trí dạy 3 lớp: 11CB4, 12CB4, 12CB5 (36 tiết HK2)"
-                >
-                  Thầy Trí nhận 3 lớp (11CB4, 12CB4, 12CB5) [Bù mạnh]
-                </button>
+              <button
+                type="button"
+                onClick={handleApplyComprehensiveStrategicPlan}
+                className="px-3 py-1 bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-400 hover:from-amber-500 hover:to-teal-500 text-slate-950 font-black text-xs rounded-lg shadow-sm transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                title="Áp dụng ngay giải pháp cân bằng toàn diện: Thầy Lộc 12 lớp, Cô Phướng 12 lớp, Thầy Hiếu chi viện Tân Kiều 8 lớp, Thầy Trí 2 lớp THPT"
+              >
+                <Sparkles className="w-3.5 h-3.5 fill-current" />
+                ⭐ Áp Dụng Toàn Diện 4 Hiến Kế (Tối Ưu 100%)
+              </button>
+            </div>
+
+            {/* Presets Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1">
+              {/* Presets Thầy Nguyễn Minh Trí */}
+              <div className="bg-black/20 rounded-lg p-2.5 border border-white/5 space-y-1.5">
+                <div className="text-[11px] font-bold text-purple-300 flex items-center gap-1">
+                  <UserCheck className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Thầy Nguyễn Minh Trí (PHT):</span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  <button
+                    type="button"
+                    onClick={() => handlePresetTriClasses(['12CB4', '12CB5'])}
+                    className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer ${
+                      aiStats.triClassCount === 2
+                        ? 'bg-amber-400 text-slate-950 shadow-xs'
+                        : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
+                  >
+                    2 lớp (12CB4, 12CB5) [24t]
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handlePresetTriClasses(['12CB5'])}
+                    className={`px-2 py-1 rounded text-[11px] font-medium transition-all cursor-pointer ${
+                      aiStats.triClassCount === 1
+                        ? 'bg-amber-400 text-slate-950 font-bold'
+                        : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
+                  >
+                    1 lớp (12CB5) [12t]
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handlePresetTriClasses(['11CB4', '12CB4', '12CB5'])}
+                    className={`px-2 py-1 rounded text-[11px] font-medium transition-all cursor-pointer ${
+                      aiStats.triClassCount === 3
+                        ? 'bg-amber-400 text-slate-950 font-bold'
+                        : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
+                  >
+                    3 lớp [36t]
+                  </button>
+                </div>
+              </div>
+
+              {/* Presets Thầy Mai Phước Lộc */}
+              <div className="bg-black/20 rounded-lg p-2.5 border border-white/5 space-y-1.5">
+                <div className="text-[11px] font-bold text-amber-300 flex items-center gap-1">
+                  <GraduationCap className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Thầy Mai Phước Lộc (THCS DBK):</span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handlePresetLocClasses([
+                        '7A1', '7A2', '7A3', '7A4', '7A5', '7A6',
+                        '8A1', '8A2', '8A3', '8A4', '8A5', '8A6',
+                      ])
+                    }
+                    className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer ${
+                      aiStats.locClassCount === 12
+                        ? 'bg-amber-400 text-slate-950 shadow-xs'
+                        : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
+                    title="Cân bằng 50/50 THCS Đốc Binh Kiều: Thầy Lộc 12 lớp (K7+8), Cô Phướng 12 lớp (K6+9)"
+                  >
+                    ⭐ Cân bằng 12 lớp (K7+K8) [144t]
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handlePresetLocClasses(['7A1', '7A2', '7A3', '7A4', '7A5', '7A6'])
+                    }
+                    className={`px-2 py-1 rounded text-[11px] font-medium transition-all cursor-pointer ${
+                      aiStats.locClassCount === 6
+                        ? 'bg-amber-400 text-slate-950 font-bold'
+                        : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
+                    title="Thầy Lộc phụ trách đúng 6 lớp Khối 7 mà thầy đang dạy Tin học"
+                  >
+                    Khối 7 (6 lớp) [72t]
+                  </button>
+                </div>
+              </div>
+
+              {/* Presets Thầy Nguyễn Trung Hiếu chi viện Tân Kiều */}
+              <div className="bg-black/20 rounded-lg p-2.5 border border-white/5 space-y-1.5">
+                <div className="text-[11px] font-bold text-blue-300 flex items-center gap-1">
+                  <Building2 className="w-3.5 h-3.5 text-blue-400" />
+                  <span>Thầy Nguyễn Trung Hiếu (Chi viện Tân Kiều):</span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handlePresetHieuCrossCampus([
+                        '12CB1', '12CB2', '12CB3', '10CB5',
+                        '8A7', '8A8', '8A9', '8A10', '9A7', '9A8', '9A9', '9A10',
+                      ])
+                    }
+                    className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer ${
+                      aiStats.hieuClassCount >= 10
+                        ? 'bg-blue-400 text-slate-950 shadow-xs'
+                        : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
+                    title="Thầy Hiếu từ THPT xuống dạy chéo chi viện 8 lớp Khối 8-9 Tân Kiều"
+                  >
+                    ⭐ Chi viện 8 lớp Tân Kiều (K8+K9)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handlePresetHieuCrossCampus(['12CB1', '12CB2', '12CB3', '10CB5'])
+                    }
+                    className={`px-2 py-1 rounded text-[11px] font-medium transition-all cursor-pointer ${
+                      aiStats.hieuClassCount === 4
+                        ? 'bg-blue-400 text-slate-950 font-bold'
+                        : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
+                    title="Chỉ dạy 4 lớp tại Điểm chính THPT"
+                  >
+                    Chỉ dạy THPT (4 lớp)
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1848,11 +2115,14 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                                 </option>
                               </optgroup>
                               <optgroup label="Điểm THCS Đốc Binh Kiều & Tân Kiều">
+                                <option value="tch-av-13">
+                                  Thầy Mai Phước Lộc (GV Tin học THCS DBK - GVCN 7A2)
+                                </option>
                                 <option value="tch-av-14">
-                                  Cô Bùi Kim Phướng (GV Tin THCS DBK)
+                                  Cô Bùi Kim Phướng (GV Tin THCS DBK - GVCN 6A3)
                                 </option>
                                 <option value="tch-av-16">
-                                  Thầy Lê Phước Hậu (GV Tin THCS TK)
+                                  Thầy Lê Phước Hậu (GV Tin THCS TK - GVCN 8A9)
                                 </option>
                               </optgroup>
                             </select>
@@ -1876,7 +2146,402 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
         </div>
       )}
 
-      {/* 2. LIVE COMPARISON & CHANGE TRACKING DASHBOARD (BẢNG THỂ HIỆN SỰ THAY ĐỔI) */}
+      {/* 1.6. STRATEGIC RECOMMENDATIONS & SIMULATION DASHBOARD (CHUYÊN ĐỀ HIẾN KẾ & BỘ GIẢI PHÁP TỐI ƯU MÔN TIN HỌC) */}
+      {isStrategyDrawerOpen && (
+        <div className="bg-gradient-to-br from-amber-950/90 via-slate-900 to-indigo-950 text-white rounded-2xl p-4 sm:p-5 shadow-lg border border-amber-500/40 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-gradient-to-tr from-amber-500 to-yellow-500 text-slate-950 rounded-xl shadow-md">
+                <Lightbulb className="w-6 h-6 fill-current" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-base font-black tracking-tight text-white flex items-center gap-2">
+                    Chuyên Đề Hiến Kế & Bộ Giải Pháp Chiến Lược: Tối Ưu Hóa Định Mức Môn Tin Học & AI
+                  </h3>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-black text-xs flex items-center gap-1 shadow-2xs">
+                    <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
+                    Chống Bội Chi Thừa Giờ & Vượt Trần 200 Giờ
+                  </span>
+                </div>
+                <p className="text-xs text-amber-100/90 mt-1 max-w-4xl leading-relaxed">
+                  Căn cứ <b>Thông tư 28/2009/TT-BGDĐT</b>, <b>Thông tư 15/2020/TT-BGDĐT</b> và <b>Thông tư 20/2023/TT-BGDĐT</b> về định mức tiết dạy, chế độ giảm trừ kiêm nhiệm và cơ chế phân công giảng dạy liên cấp trong trường phổ thông nhiều cấp học.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 self-start sm:self-center shrink-0 flex-wrap">
+              <button
+                type="button"
+                onClick={handleApplyComprehensiveStrategicPlan}
+                className="px-4 py-2 bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-400 hover:from-amber-500 hover:to-teal-500 text-slate-950 text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                title="Bấm để áp dụng trọn vẹn toàn bộ 4 giải pháp chiến lược vào bản dự thảo ngay tức thì"
+              >
+                <Sparkles className="w-4 h-4 fill-current" />
+                Áp Dụng Toàn Diện 4 Hiến Kế
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsStrategyDrawerOpen(false)}
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                title="Thu gọn chuyên đề hiến kế"
+              >
+                <ChevronUp className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* 1. Root Cause Breakdown (Báo động thực trạng) */}
+          <div className="bg-white/5 rounded-xl p-3.5 border border-amber-500/20 space-y-2">
+            <div className="flex items-center gap-2 text-xs font-black text-amber-300 uppercase tracking-wide">
+              <AlertCircle className="w-4 h-4 text-rose-400" />
+              <span>Báo Động Thực Trạng: Vì Sao Môn Tin Học Bị Thừa Giờ Khổng Lồ (+280t Đến +420t/Năm)?</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-200">
+              <div className="bg-black/30 p-2.5 rounded-lg border border-white/5 space-y-1">
+                <div className="font-bold text-rose-300 flex items-center gap-1">
+                  <span>1. Nghịch Lý Bị Kẹp Định Mức Do Làm GVCN</span>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  Cả 3 giáo viên Tin học THCS (<b>Cô Phướng</b> - 6A3, <b>Thầy Hậu</b> - 8A9, <b>Thầy Lộc</b> - 7A2) đều bị phân làm GVCN, kéo định mức xuống <b>15 tiết/tuần</b>. Trong khi số lớp Tin học tại chỗ quá đông (24 lớp DBK, 15 lớp TK), khiến toàn bộ 4 tiết/tuần định mức bị biến thành <b>tiết thừa giờ phải trả tiền (+140t/năm/người)</b>!
+                </p>
+              </div>
+
+              <div className="bg-black/30 p-2.5 rounded-lg border border-white/5 space-y-1">
+                <div className="font-bold text-amber-300 flex items-center gap-1">
+                  <span>2. Mất Cân Đối Giữa THPT & THCS</span>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  Điểm chính THPT có 3 GV Tin học (Hiếu, Liên, Diễm) cho 14 lớp (tải nhẹ 10-14t/tuần). <b>Thầy Hiếu</b> thậm chí đang <b>thiếu sâu -175 tiết/năm</b>. Ngược lại, <b>Thầy Hậu</b> một mình gánh trọn 15 lớp Tân Kiều (+280t) và <b>Cô Phướng</b> gánh 18 lớp DBK (+420t, vượt trần 200h luật định)!
+                </p>
+              </div>
+
+              <div className="bg-black/30 p-2.5 rounded-lg border border-white/5 space-y-1">
+                <div className="font-bold text-purple-300 flex items-center gap-1">
+                  <span>3. Nguy Cơ "Vỡ Quỹ Thời Gian" Khi Thêm Môn AI</span>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  Môn Trí Tuệ AI (12 tiết/HK2 x 53 lớp = <b>636 tiết toàn trường</b>). Nếu dồn tiếp cho GV Tin học cơ sở mà không tái cấu trúc, Điểm THCS Đốc Binh Kiều và Tân Kiều sẽ rơi vào tình trạng kiệt sức và vượt ngân sách chi trả phụ cấp thừa giờ!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* 2. Four Strategic Pillars (4 Trụ cột hiến kế) */}
+          <div className="space-y-2.5">
+            <div className="text-xs font-black text-amber-300 uppercase tracking-wide flex items-center gap-1.5">
+              <Zap className="w-4 h-4 text-amber-400 fill-current" />
+              <span>4 Hiến Kế Chiến Lược Căn Cơ Đã Được Cụ Thể Hóa & Tính Toán:</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              {/* Hiến Kế 1 */}
+              <div className="bg-white/10 backdrop-blur-xs p-3.5 rounded-xl border border-amber-400/30 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-black text-amber-300 flex items-center gap-1.5 text-xs">
+                    <span className="w-5 h-5 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-black text-[11px]">1</span>
+                    "Giải Phóng Định Mức": Rút Kiêm Nhiệm Chủ Nhiệm Cho GV Tin Học
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[10px]">
+                    Giảm ngay 140t/người
+                  </span>
+                </div>
+                <div className="text-slate-200 text-[11px] space-y-1 leading-relaxed">
+                  <p>
+                    • <b>Hành động:</b> Rút vai trò GVCN lớp 6A3 của Cô Bùi Kim Phướng và lớp 8A9 của Thầy Lê Phước Hậu. Chuyển giao chủ nhiệm cho các thầy cô bộ môn đang <b>thiếu tiết nặng (-70t đến -143t/năm)</b> như Thầy Trần Phi Hải (-143t), Thầy Nguyễn Thành Tín (-105t), Cô Châu Thị Kim Hà (-105t), Thầy Trương Văn Nghĩa (-70t).
+                  </p>
+                  <p className="text-amber-200">
+                    • <b>Hiệu quả kép:</b> Trả lại định mức chuẩn 19 tiết/tuần. Giảm ngay lập tức <b>140 tiết thừa giờ/người/năm</b> (tiết kiệm ngân sách tối thiểu 280-420 tiết). Đồng thời giáo viên nhận lớp chủ nhiệm cũng lập tức xóa sạch tình trạng thiếu giờ!
+                  </p>
+                </div>
+              </div>
+
+              {/* Hiến Kế 2 */}
+              <div className="bg-white/10 backdrop-blur-xs p-3.5 rounded-xl border border-blue-400/30 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-black text-blue-300 flex items-center gap-1.5 text-xs">
+                    <span className="w-5 h-5 rounded-full bg-blue-400 text-slate-950 flex items-center justify-center font-black text-[11px]">2</span>
+                    "Dạy Chéo Cấp": Thầy Cô THPT Chi Viện Điểm THCS Tân Kiều
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-bold text-[10px]">
+                    Căn cứ TT 20/2023
+                  </span>
+                </div>
+                <div className="text-slate-200 text-[11px] space-y-1 leading-relaxed">
+                  <p>
+                    • <b>Hành động:</b> Cử <b>Thầy Nguyễn Trung Hiếu</b> (Tổ phó Tin học THPT, đang thiếu -175t/năm) từ Điểm chính xuống hỗ trợ Điểm THCS Tân Kiều: nhận dạy chéo 8 lớp (Khối 8: 8A7-8A10 và Khối 9: 9A7-9A10).
+                  </p>
+                  <p className="text-blue-200">
+                    • <b>Sắp xếp TKB:</b> Bố trí toàn bộ các tiết của Thầy Hiếu tại Tân Kiều tập trung trọn vẹn trong <b>1 ngày (ví dụ Thứ Năm)</b> hoặc 2 buổi sáng. Thầy Hiếu bù đủ định mức 16-17t/tuần, Thầy Hậu giảm tải từ 23t xuống 10.5t/tuần, chấm dứt kiệt sức!
+                  </p>
+                </div>
+              </div>
+
+              {/* Hiến Kế 3 */}
+              <div className="bg-white/10 backdrop-blur-xs p-3.5 rounded-xl border border-purple-400/30 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-black text-purple-300 flex items-center gap-1.5 text-xs">
+                    <span className="w-5 h-5 rounded-full bg-purple-400 text-slate-950 flex items-center justify-center font-black text-[11px]">3</span>
+                    "Cân Bằng Nội Bộ 50/50" Tại Điểm Đốc Binh Kiều (Thầy Lộc & Cô Phướng)
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold text-[10px]">
+                    12 lớp - 12 lớp
+                  </span>
+                </div>
+                <div className="text-slate-200 text-[11px] space-y-1 leading-relaxed">
+                  <p>
+                    • <b>Hành động:</b> Chia đều 24 lớp DBK:
+                    <br />- <b>Thầy Mai Phước Lộc:</b> Phụ trách Khối 7 (6 lớp) + nhận thêm Khối 8 (6 lớp) = 12 lớp Tin học & AI.
+                    <br />- <b>Cô Bùi Kim Phướng:</b> Phụ trách Khối 6 (6 lớp) + Khối 9 (6 lớp) = 12 lớp Tin học & AI.
+                  </p>
+                  <p className="text-purple-200">
+                    • <b>Hiệu quả:</b> Cả 2 thầy cô dạy đúng 18 tiết/tuần (chuẩn định mức 19t), không ai bị dồn việc, công bằng tuyệt đối.
+                  </p>
+                </div>
+              </div>
+
+              {/* Hiến Kế 4 */}
+              <div className="bg-white/10 backdrop-blur-xs p-3.5 rounded-xl border border-emerald-400/30 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-black text-emerald-300 flex items-center gap-1.5 text-xs">
+                    <span className="w-5 h-5 rounded-full bg-emerald-400 text-slate-950 flex items-center justify-center font-black text-[11px]">4</span>
+                    Ban Giám Hiệu Trực Tiếp Tham Gia Giảng Dạy Môn AI (Thầy Trí - PHT)
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[10px]">
+                    Chuẩn 4t/tuần
+                  </span>
+                </div>
+                <div className="text-slate-200 text-[11px] space-y-1 leading-relaxed">
+                  <p>
+                    • <b>Hành động:</b> <b>Thầy Nguyễn Minh Trí (PHT)</b> trực tiếp nhận từ 2 đến 3 lớp AI Khối 12 (12CB4, 12CB5) tại Điểm chính.
+                  </p>
+                  <p className="text-emerald-200">
+                    • <b>Hiệu quả:</b> Hoàn thành xuất sắc nhiệm vụ giảng dạy thực tế 4t/tuần của PHT theo quy định, vừa giải phóng 24-36 tiết cho GV Tin học THPT để thầy cô có quỹ thời gian chi viện cho 2 điểm THCS.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. Interactive Simulation Matrix (Bảng so sánh trước vs sau) */}
+          <div className="bg-white rounded-xl text-slate-900 overflow-hidden border border-amber-200 shadow-sm p-3.5 space-y-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-2">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-amber-600" />
+                <span className="font-black text-xs text-slate-900">
+                  Bảng Mô Phỏng Đối Soát: Tình Trạng Giáo Viên Tin Học & AI (TRƯỚC vs SAU KHI ÁP DỤNG HIẾN KẾ)
+                </span>
+              </div>
+              <span className="text-[11px] text-slate-500 font-medium">
+                (Số liệu được tính toán chuẩn hóa trên chu kỳ 35 tuần cả năm & 6 tuần môn AI HK2)
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="bg-slate-100 text-slate-700 font-bold uppercase text-[10px] border-b border-slate-300">
+                    <th className="py-2 px-3">Giáo Viên</th>
+                    <th className="py-2 px-3">Điểm Trường</th>
+                    <th className="py-2 px-3 text-center">Định Mức</th>
+                    <th className="py-2 px-3 text-center">Hiện Trạng (Tuần 9)</th>
+                    <th className="py-2 px-3 text-center text-rose-700 bg-rose-50">Trước Hiến Kế (Nguy cơ)</th>
+                    <th className="py-2 px-3 text-center text-emerald-800 bg-emerald-50">Sau Khi Áp Dụng Hiến Kế</th>
+                    <th className="py-2 px-3">Đánh Giá & Lợi Ích Mang Lại</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-xs">
+                  {/* Thầy Mai Phước Lộc */}
+                  <tr className="hover:bg-amber-50/50 transition-colors">
+                    <td className="py-2.5 px-3 font-bold text-slate-900 flex items-center gap-1.5">
+                      <GraduationCap className="w-4 h-4 text-amber-600 shrink-0" />
+                      <div>
+                        <span>Thầy Mai Phước Lộc</span>
+                        <div className="text-[10px] text-slate-500 font-normal">GVCN 7A2 • Dạy Tin học 7</div>
+                      </div>
+                    </td>
+                    <td className="py-2 px-3 text-slate-700">THCS Đốc Binh Kiều</td>
+                    <td className="py-2 px-3 text-center font-mono">15t (CN) / 19t</td>
+                    <td className="py-2 px-3 text-center font-mono">9t/w (6 lớp)</td>
+                    <td className="py-2 px-3 text-center text-rose-700 bg-rose-50/60 font-semibold text-[11px]">
+                      0 lớp AI • Bị bỏ sót
+                    </td>
+                    <td className="py-2 px-3 text-center text-emerald-800 bg-emerald-50/80 font-black text-[11px]">
+                      Nhận K7 + K8 (12 lớp AI = 144t)
+                    </td>
+                    <td className="py-2 px-3 text-[11px] text-slate-700">
+                      <span className="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900 font-bold mr-1">Tối ưu</span>
+                      Dạy 18t/w (K7+K8), cân bằng 50/50 với Cô Phướng, không bị quá tải.
+                    </td>
+                  </tr>
+
+                  {/* Cô Bùi Kim Phướng */}
+                  <tr className="hover:bg-amber-50/50 transition-colors">
+                    <td className="py-2.5 px-3 font-bold text-slate-900 flex items-center gap-1.5">
+                      <div className="w-2 h-2 rounded-full bg-pink-500 shrink-0" />
+                      <div>
+                        <span>Cô Bùi Kim Phướng</span>
+                        <div className="text-[10px] text-slate-500 font-normal">GVCN 6A3 • Dạy Tin học 6,8,9</div>
+                      </div>
+                    </td>
+                    <td className="py-2 px-3 text-slate-700">THCS Đốc Binh Kiều</td>
+                    <td className="py-2 px-3 text-center font-mono">15t (CN) -&gt; 19t</td>
+                    <td className="py-2 px-3 text-center font-mono text-rose-600 font-bold">27t/w (18 lớp)</td>
+                    <td className="py-2 px-3 text-center text-rose-700 bg-rose-50/60 font-black text-[11px]">
+                      Thừa +420t (Vượt trần 200h)
+                    </td>
+                    <td className="py-2 px-3 text-center text-emerald-800 bg-emerald-50/80 font-black text-[11px]">
+                      Rút CN + Còn 12 lớp (18t/w)
+                    </td>
+                    <td className="py-2 px-3 text-[11px] text-slate-700">
+                      <span className="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900 font-bold mr-1">Thoát quá tải</span>
+                      Giảm 140t thừa do rút CN, Thầy Lộc chia sẻ K8, trở về mức an toàn chuẩn.
+                    </td>
+                  </tr>
+
+                  {/* Thầy Lê Phước Hậu */}
+                  <tr className="hover:bg-amber-50/50 transition-colors">
+                    <td className="py-2.5 px-3 font-bold text-slate-900 flex items-center gap-1.5">
+                      <div className="w-2 h-2 rounded-full bg-cyan-500 shrink-0" />
+                      <div>
+                        <span>Thầy Lê Phước Hậu</span>
+                        <div className="text-[10px] text-slate-500 font-normal">GVCN 8A9 • Dạy toàn bộ TK</div>
+                      </div>
+                    </td>
+                    <td className="py-2 px-3 text-slate-700">THCS Tân Kiều</td>
+                    <td className="py-2 px-3 text-center font-mono">15t (CN) -&gt; 19t</td>
+                    <td className="py-2 px-3 text-center font-mono text-rose-600 font-bold">23t/w (15 lớp)</td>
+                    <td className="py-2 px-3 text-center text-rose-700 bg-rose-50/60 font-black text-[11px]">
+                      Thừa +280t (Gánh 1 mình)
+                    </td>
+                    <td className="py-2 px-3 text-center text-emerald-800 bg-emerald-50/80 font-black text-[11px]">
+                      Rút CN + Còn 7 lớp K6-7 (10.5t)
+                    </td>
+                    <td className="py-2 px-3 text-[11px] text-slate-700">
+                      <span className="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900 font-bold mr-1">Cứu nguy</span>
+                      Thầy Hiếu THPT gánh hộ 8 lớp K8-K9, Thầy Hậu hồi phục sức khỏe giảng dạy.
+                    </td>
+                  </tr>
+
+                  {/* Thầy Nguyễn Trung Hiếu */}
+                  <tr className="hover:bg-amber-50/50 transition-colors">
+                    <td className="py-2.5 px-3 font-bold text-slate-900 flex items-center gap-1.5">
+                      <div className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
+                      <div>
+                        <span>Thầy Nguyễn Trung Hiếu</span>
+                        <div className="text-[10px] text-slate-500 font-normal">Tổ phó Tin học THPT</div>
+                      </div>
+                    </td>
+                    <td className="py-2 px-3 text-slate-700">THPT -&gt; Chi viện TK</td>
+                    <td className="py-2 px-3 text-center font-mono">16t/tuần</td>
+                    <td className="py-2 px-3 text-center font-mono text-amber-600">~10t/w</td>
+                    <td className="py-2 px-3 text-center text-rose-700 bg-rose-50/60 font-semibold text-[11px]">
+                      Thiếu -175t/năm (Sâu nhất)
+                    </td>
+                    <td className="py-2 px-3 text-center text-emerald-800 bg-emerald-50/80 font-black text-[11px]">
+                      Chi viện 8 lớp TK (Dồn 1 ngày)
+                    </td>
+                    <td className="py-2 px-3 text-[11px] text-slate-700">
+                      <span className="px-1.5 py-0.5 rounded bg-blue-100 text-blue-900 font-bold mr-1">Chi viện</span>
+                      Bù đủ 100% định mức, xóa hoàn toàn thiếu tiết, khẳng định vai trò Tổ phó.
+                    </td>
+                  </tr>
+
+                  {/* Thầy Nguyễn Minh Trí */}
+                  <tr className="hover:bg-amber-50/50 transition-colors bg-purple-50/40">
+                    <td className="py-2.5 px-3 font-bold text-purple-950 flex items-center gap-1.5">
+                      <UserCheck className="w-4 h-4 text-purple-700 shrink-0" />
+                      <div>
+                        <span>Thầy Nguyễn Minh Trí</span>
+                        <div className="text-[10px] text-purple-600 font-semibold">Phó Hiệu Trưởng (PHT)</div>
+                      </div>
+                    </td>
+                    <td className="py-2 px-3 text-slate-700">Điểm chính THPT</td>
+                    <td className="py-2 px-3 text-center font-mono">4t/tuần</td>
+                    <td className="py-2 px-3 text-center font-mono">2t/w (HĐTN)</td>
+                    <td className="py-2 px-3 text-center text-amber-700 bg-amber-50/60 font-medium text-[11px]">
+                      Thiếu -70t/năm
+                    </td>
+                    <td className="py-2 px-3 text-center text-emerald-800 bg-emerald-50/80 font-black text-[11px]">
+                      Dạy 2 lớp AI (12CB4, 12CB5)
+                    </td>
+                    <td className="py-2 px-3 text-[11px] text-purple-950 font-semibold">
+                      <span className="px-1.5 py-0.5 rounded bg-purple-200 text-purple-900 font-bold mr-1">Gương mẫu</span>
+                      Đạt đủ chuẩn 4t/w, giảm tải GV Tin THPT để thầy cô có thời gian chi viện THCS.
+                    </td>
+                  </tr>
+
+                  {/* Cô Liên & Diễm */}
+                  <tr className="hover:bg-amber-50/50 transition-colors">
+                    <td className="py-2.5 px-3 font-bold text-slate-900 flex items-center gap-1.5">
+                      <div className="w-2 h-2 rounded-full bg-purple-400 shrink-0" />
+                      <div>
+                        <span>Cô Liên & Cô Diễm</span>
+                        <div className="text-[10px] text-slate-500 font-normal">GV Tin học 11 & 10 (THPT)</div>
+                      </div>
+                    </td>
+                    <td className="py-2 px-3 text-slate-700">Điểm chính THPT</td>
+                    <td className="py-2 px-3 text-center font-mono">13t (CN)</td>
+                    <td className="py-2 px-3 text-center font-mono">12t/w</td>
+                    <td className="py-2 px-3 text-center text-slate-600 font-medium text-[11px]">
+                      Cân đối (+35t/năm)
+                    </td>
+                    <td className="py-2 px-3 text-center text-emerald-800 bg-emerald-50/80 font-black text-[11px]">
+                      Dạy AI Khối 11 & Khối 10
+                    </td>
+                    <td className="py-2 px-3 text-[11px] text-slate-700">
+                      <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-900 font-bold mr-1">Ổn định</span>
+                      Giữ nguyên ổn định chuyên môn, sẵn sàng hỗ trợ chuyên đề cho cấp THCS.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Quick action bar inside table */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200">
+              <span className="text-[11px] font-bold text-slate-700">
+                Lựa chọn phương án áp dụng nhanh:
+              </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={handleApplyComprehensiveStrategicPlan}
+                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-lg shadow-xs transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Áp Dụng Toàn Diện (Khuyên Dùng)
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handlePresetLocClasses([
+                      '7A1', '7A2', '7A3', '7A4', '7A5', '7A6',
+                      '8A1', '8A2', '8A3', '8A4', '8A5', '8A6',
+                    ])
+                  }
+                  className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-lg border border-slate-300 transition-all cursor-pointer"
+                >
+                  Chỉ Cân Bằng Đốc Binh Kiều (Thầy Lộc 12l - Cô Phướng 12l)
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handlePresetHieuCrossCampus([
+                      '12CB1', '12CB2', '12CB3', '10CB5',
+                      '8A7', '8A8', '8A9', '8A10', '9A7', '9A8', '9A9', '9A10',
+                    ])
+                  }
+                  className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-lg border border-slate-300 transition-all cursor-pointer"
+                >
+                  Chỉ Thầy Hiếu Chi Viện Tân Kiều (8 lớp K8-K9)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         {/* Panel Header */}
         <div className="p-4 bg-slate-50/80 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
