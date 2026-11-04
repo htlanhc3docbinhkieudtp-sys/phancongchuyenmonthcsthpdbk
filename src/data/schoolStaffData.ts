@@ -590,16 +590,24 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-ls-6',
     name: 'Trần Phước Hòa',
-    code: 'Hòa.TP',
+    code: 'Hòa.TP (TK HĐSP)',
     gender: 'Nam',
     birthDate: '11/2/1982',
     campus: 'THPTDBK',
     departmentId: 'dept-khxh',
     primarySubjectId: 'sub-dia',
     role: 'GVBM',
-    duties: [],
+    duties: [
+      {
+        id: 'duty-ls6-tkhdsp',
+        type: 'ThuKyHoiDong',
+        name: 'Thư ký HĐSP',
+        reductionPeriods: 2,
+        notes: 'Kiêm nhiệm Thư ký Hội đồng sư phạm (+2t/tuần)'
+      }
+    ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Địa lý (Khối 10-12)',
+    notes: 'THPTDBK - Địa lý (Khối 10-12) - Thư ký HĐSP (+2t/tuần)',
   },
   {
     id: 'tch-ls-7',
@@ -836,24 +844,16 @@ export const officialStaffList: Teacher[] = [
   {
     id: 'tch-khtn-5',
     name: 'Cao Văn Tùng',
-    code: 'Tùng.CV (PC-10CB1)',
+    code: 'Tùng.CV (10CB1)',
     gender: 'Nam',
     birthDate: '7/17/1980',
     campus: 'THPTDBK',
     departmentId: 'dept-khtn',
     primarySubjectId: 'sub-sinh',
-    role: 'PhoCap',
-    duties: [
-      {
-        id: 'duty-k5-phocap',
-        type: 'PhoCap',
-        name: 'Phổ cập giáo dục',
-        reductionPeriods: 4,
-        notes: 'Kiêm Phổ cập giáo dục (-4t)'
-      }
-    ],
+    role: 'GVBM',
+    duties: [],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Sinh học (Khối 10-12) - GVCN 10CB1 - Kiêm Phổ cập giáo dục (+4t)',
+    notes: 'THPTDBK - Sinh học (Khối 10-12) - GVCN 10CB1 (Đã bỏ kiêm nhiệm phổ cập do Sở không cho phép quy đổi)',
   },
   {
     id: 'tch-khtn-6',

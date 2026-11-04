@@ -993,8 +993,8 @@ export function calculateTeacherSingleWeek(
       teacher.duties.forEach((d) => {
         // Loại bỏ nếu có nhầm lẫn loại HieuTruong / PhoHieuTruong trong duties
         if (d.type === 'HieuTruong' || d.type === 'PhoHieuTruong') return;
-        // Phổ cập chỉ duy nhất Thầy Cao Văn Tùng phụ trách
-        if (d.type === 'PhoCap' && teacher.id !== 'tch-khtn-5' && teacher.name !== 'Cao Văn Tùng') return;
+        // Sở GD&ĐT không cho phép quy đổi tiết cho phổ cập nên loại bỏ hoàn toàn PhoCap
+        if (d.type === 'PhoCap') return;
         if ((teacher.id === 'tch-khtn-9' || teacher.name === 'Trần Thị Kiều') && d.type === 'ConNho') return;
         if ((teacher.id === 'tch-td-5' || teacher.name === 'Lê Minh Đạt') && (d.type === 'TongPhuTrachDoi' || d.name?.includes('Tổng phụ trách'))) return;
         // TPT Đội đã được add nhãn TPT Đội ở trên và định mức đã được hạ về 6 tiết/tuần
@@ -1012,7 +1012,8 @@ export function calculateTeacherSingleWeek(
         if (red === undefined || red === null) {
           if (d.type === 'ToTruong') red = 3;
           else if (d.type === 'ToPho') red = 1;
-          else if (d.type === 'PhoCap') red = 4;
+          else if (d.type === 'PhoCap') red = 0;
+          else if (d.type === 'ThuKyHoiDong' || d.type === 'ThuKyHDSP' || d.name?.includes('Thư ký')) red = 2;
           else if (d.type === 'ConNho') red = 3;
           else if (d.type === 'PhoBiThuDoan') red = 6;
           else if (d.type === 'BiThuDoan') red = 12;
@@ -1021,6 +1022,7 @@ export function calculateTeacherSingleWeek(
         reductionPeriods += red;
         const label = d.type === 'ToTruong' ? 'Tổ trưởng' :
                       d.type === 'ToPho' ? 'Tổ phó' :
+                      (d.type === 'ThuKyHoiDong' || d.type === 'ThuKyHDSP' || d.name?.includes('Thư ký')) ? 'Thư ký HĐSP' :
                       d.type === 'PhoCap' ? 'Phổ cập' :
                       d.type === 'ConNho' ? 'Con nhỏ' :
                       d.type === 'PhoBiThuDoan' ? 'Phó Bí thư đoàn' :
@@ -1054,10 +1056,7 @@ export function calculateTeacherSingleWeek(
         reductionPeriods += 12;
       }
 
-      if ((teacher.role === 'PhoCap' || teacher.code?.includes('PC-') || teacher.code?.toLowerCase().includes('phổ cập')) && (teacher.id === 'tch-khtn-5' || teacher.name === 'Cao Văn Tùng')) {
-        if (!dutyList.includes('Phổ cập')) dutyList.push('Phổ cập');
-        reductionPeriods += 4;
-      }
+      // Thầy Cao Văn Tùng: Sở GD&ĐT không cho phép quy đổi tiết cho phổ cập nên không tính giảm trừ
 
       if ((teacher.role === 'ConNho' || teacher.code?.toLowerCase().includes('con nhỏ')) && teacher.id !== 'tch-khtn-9' && teacher.name !== 'Trần Thị Kiều') {
         if (!dutyList.includes('Con nhỏ')) dutyList.push('Con nhỏ');
@@ -1099,6 +1098,23 @@ export function calculateTeacherSingleWeek(
       if (!dutyList.includes('Hỗ trợ TPT Đội')) {
         dutyList.push('Hỗ trợ TPT Đội');
         reductionPeriods += 8;
+      }
+    }
+
+    // 3/ Thầy Trần Phước Hòa (tch-ls-6): Thư ký HĐSP tính kiêm nhiệm 02 tiết/tuần từ Tuần 01
+    if (teacher.id === 'tch-ls-6' || teacher.name === 'Trần Phước Hòa') {
+      if (!dutyList.includes('Thư ký HĐSP')) {
+        dutyList.push('Thư ký HĐSP');
+        reductionPeriods += 2;
+      }
+    }
+
+    // Đảm bảo Thầy Cao Văn Tùng (tch-khtn-5): Sở không cho quy đổi tiết cho phổ cập
+    if (teacher.id === 'tch-khtn-5' || teacher.name === 'Cao Văn Tùng') {
+      const pcIdx = dutyList.indexOf('Phổ cập');
+      if (pcIdx !== -1) {
+        dutyList.splice(pcIdx, 1);
+        reductionPeriods -= 4;
       }
     }
 

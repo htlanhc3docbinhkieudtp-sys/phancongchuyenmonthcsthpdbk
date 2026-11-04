@@ -15,6 +15,7 @@ import { OFFICIAL_WEEK_7_SLOTS } from '../data/officialWeek7Timetable';
 import {
   calculateAllActualWorkloads,
   TeacherActualWorkload,
+  getSlotsForWeek,
 } from '../utils/actualTeachingHoursHelper';
 import {
   Sparkles,
@@ -63,8 +64,8 @@ interface DraftAssignmentViewProps {
   onShowToast?: (message: string) => void;
 }
 
-const DRAFT_SANDBOX_STORAGE_KEY = 'docbinhkieu_draft_sandbox_weekly_timetables_v6';
-const DRAFT_SANDBOX_ADJUSTMENT_PREFIX = 'docbinhkieu_draft_sandbox_v6';
+const DRAFT_SANDBOX_STORAGE_KEY = 'docbinhkieu_draft_sandbox_clean_v10';
+const DRAFT_SANDBOX_ADJUSTMENT_PREFIX = 'docbinhkieu_draft_sandbox_clean_v10';
 
 // 19 lớp HĐTNHN cần gom gọn về 1 người dạy duy nhất:
 // NGUYÊN TẮC:
@@ -403,11 +404,47 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     );
   }, [weeklyTimetables, timetable]);
 
-  // 2. Independent Sandbox Weekly Timetables State
+  // Helper to create a pristine copy directly from actual teaching timetable
+  const createCleanDraftFromActual = (): Record<number, SchoolTimetable> => {
+    const cleanDraft: Record<number, SchoolTimetable> = {};
+    for (let w = 1; w <= 35; w++) {
+      const sourceSlots = getSlotsForWeek(w, weeklyTimetables, timetable);
+      cleanDraft[w] = {
+        id: `draft-tkb-week-${w}`,
+        academicYear: config.academicYear,
+        semester: w <= 18 ? 'HK1' : 'HK2',
+        weekNumber: w,
+        slots: [...sourceSlots],
+        updatedAt: Date.now(),
+      };
+    }
+    return cleanDraft;
+  };
+
+  // 2. Independent Sandbox Weekly Timetables State (100% clean copy of Actual Teaching)
   const [draftWeeklyTimetables, setDraftWeeklyTimetables] = useState<
     Record<number, SchoolTimetable>
   >(() => {
     try {
+      // Clear legacy cluttered draft storages to ensure a fresh, clean start
+      [
+        'docbinhkieu_draft_sandbox_weekly_timetables_v1',
+        'docbinhkieu_draft_sandbox_weekly_timetables_v2',
+        'docbinhkieu_draft_sandbox_weekly_timetables_v3',
+        'docbinhkieu_draft_sandbox_weekly_timetables_v4',
+        'docbinhkieu_draft_sandbox_weekly_timetables_v5',
+        'docbinhkieu_draft_sandbox_weekly_timetables_v6',
+        'docbinhkieu_draft_sandbox_weekly_timetables_v7',
+        'docbinhkieu_draft_sandbox_weekly_timetables_v8',
+        'docbinhkieu_draft_sandbox_weekly_timetables_v9',
+      ].forEach((k) => {
+        try {
+          localStorage.removeItem(k);
+        } catch {
+          /* ignore */
+        }
+      });
+
       const saved = localStorage.getItem(DRAFT_SANDBOX_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -419,118 +456,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       /* ignore */
     }
 
-    const baseSlots = baselineSlots;
-    const initialDraft: Record<number, SchoolTimetable> = {};
-    const tByName = new Map<string, Teacher>();
-    teachers.forEach((t) => tByName.set(t.name, t));
-    const tById = new Map<string, Teacher>();
-    teachers.forEach((t) => tById.set(t.id, t));
-
-    for (let w = 1; w <= 35; w++) {
-      const existing = weeklyTimetables?.[w];
-      const sourceSlots =
-        existing?.slots && existing.slots.length > 0 ? [...existing.slots] : [...baseSlots];
-
-      // Tuần 1 đến 9: Đã thực dạy xong, bảo toàn nguyên trạng 100%
-      if (w < 10) {
-        initialDraft[w] = {
-          id: `draft-tkb-week-${w}`,
-          academicYear: config.academicYear,
-          semester: 'HK1',
-          weekNumber: w,
-          slots: sourceSlots,
-          updatedAt: Date.now(),
-        };
-        continue;
-      }
-
-      // Tuần 10 đến 35: Áp dụng phân công mới gom 19 lớp HĐTNHN về 1 người thiếu tiết
-      let updatedSlots = sourceSlots.map((slot) => {
-        const isHdtn =
-          (slot.subjectId && slot.subjectId.toLowerCase().includes('hdtn')) ||
-          (slot.subjectName &&
-            (slot.subjectName.toLowerCase().includes('hđtn') ||
-              slot.subjectName.toLowerCase().includes('trải nghiệm') ||
-              slot.subjectName.toLowerCase().includes('chuyên đề') ||
-              slot.subjectName.toLowerCase().includes('quy mô lớp')));
-
-        if (!isHdtn) return slot;
-
-        const targetConsolidation = CONSOLIDATION_19_CLASSES_MAP[slot.className];
-        if (!targetConsolidation) return slot;
-
-        const targetTeacher = tByName.get(targetConsolidation.teacherName);
-        if (!targetTeacher) return slot;
-
-        if (slot.teacherName !== targetTeacher.name) {
-          return {
-            ...slot,
-            teacherId: targetTeacher.id,
-            teacherName: targetTeacher.name,
-            teacherCode: targetTeacher.code,
-          };
-        }
-        return slot;
-      });
-
-      // Tuần 19 đến 24 (6 tuần HK2): Áp dụng phân công môn Trí tuệ nhân tạo (AI) 2 tiết/tuần
-      if (w >= 19 && w <= 24) {
-        const aiSlotsToAdd: TimetableSlot[] = [];
-        classes.forEach((cls, cIdx) => {
-          const aiConfig = DEFAULT_AI_CLASS_ASSIGNMENTS[cls.name];
-          if (!aiConfig) return;
-          const assignedTeacher = tById.get(aiConfig.teacherId);
-          if (!assignedTeacher) return;
-
-          const session: 'SANG' | 'CHIEU' =
-            cls.level === 'THPT'
-              ? 'SANG'
-              : ['6A1', '6A2', '6A3', '8A1', '8A2', '8A3', '6A7', '6A8', '8A7', '8A8'].includes(cls.name)
-              ? 'SANG'
-              : 'CHIEU';
-
-          aiSlotsToAdd.push({
-            id: `slot-ai-${cls.name}-w${w}-1`,
-            classId: cls.id,
-            className: cls.name,
-            teacherId: assignedTeacher.id,
-            teacherName: assignedTeacher.name,
-            teacherCode: assignedTeacher.code,
-            subjectId: 'sub-ai',
-            subjectName: 'Trí tuệ nhân tạo (AI)',
-            dayOfWeek: (cIdx % 4) + 2,
-            session,
-            period: 4,
-          });
-
-          aiSlotsToAdd.push({
-            id: `slot-ai-${cls.name}-w${w}-2`,
-            classId: cls.id,
-            className: cls.name,
-            teacherId: assignedTeacher.id,
-            teacherName: assignedTeacher.name,
-            teacherCode: assignedTeacher.code,
-            subjectId: 'sub-ai',
-            subjectName: 'Trí tuệ nhân tạo (AI)',
-            dayOfWeek: ((cIdx + 2) % 4) + 2,
-            session,
-            period: 5,
-          });
-        });
-
-        updatedSlots = [...updatedSlots, ...aiSlotsToAdd];
-      }
-
-      initialDraft[w] = {
-        id: `draft-tkb-week-${w}`,
-        academicYear: config.academicYear,
-        semester: w <= 18 ? 'HK1' : 'HK2',
-        weekNumber: w,
-        slots: updatedSlots,
-        updatedAt: Date.now(),
-      };
-    }
-    return initialDraft;
+    return createCleanDraftFromActual();
   });
 
   // Master draft timetable for fallback
@@ -567,19 +493,23 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   const [applyScope, setApplyScope] = useState<'CURRENT_ONWARD' | 'ALL_SEMESTER'>('CURRENT_ONWARD');
 
   // UI State for Change Tracking Panel
-  const [isDiffDrawerOpen, setIsDiffDrawerOpen] = useState(true);
+  const [isDiffDrawerOpen, setIsDiffDrawerOpen] = useState(false);
   const [diffFilterTab, setDiffFilterTab] = useState<'ALL' | 'GAINED' | 'LOST' | 'SLOTS'>('ALL');
   const [diffSearchTerm, setDiffSearchTerm] = useState('');
   const [actionBannerMessage, setActionBannerMessage] = useState<{
     type: 'success' | 'info';
     title: string;
     detail: string;
-  } | null>(null);
+  } | null>({
+    type: 'info',
+    title: 'Tab Dự Thảo Đã Được Làm Sạch Hoàn Toàn • Sao Chép Y Nguyên Từ Tab Số Tiết Thực Dạy',
+    detail: 'Dữ liệu đã được đồng bộ đầy đủ và chính xác đến Tuần 9. Trạng thái hiện tại trùng khớp 100% với thực tế dạy học, sẵn sàng để phân công thí điểm lại từ đầu theo từng bước hướng dẫn của Thầy!',
+  });
   const [showAnnualBreakdownTable, setShowAnnualBreakdownTable] = useState(false);
 
-  // AI Assignment Drawer & Custom class-teacher mapping
-  const [isAiAssignmentDrawerOpen, setIsAiAssignmentDrawerOpen] = useState(true);
-  const [isStrategyDrawerOpen, setIsStrategyDrawerOpen] = useState(true);
+  // AI Assignment Drawer & Custom class-teacher mapping (Closed by default for clean workspace)
+  const [isAiAssignmentDrawerOpen, setIsAiAssignmentDrawerOpen] = useState(false);
+  const [isStrategyDrawerOpen, setIsStrategyDrawerOpen] = useState(false);
   const [aiCampusFilterTab, setAiCampusFilterTab] = useState<'ALL' | 'THPT' | 'THCS_DBK' | 'THCS_TK'>('ALL');
   const [aiCustomClassTeacherMap, setAiCustomClassTeacherMap] = useState<Record<string, string>>(() => {
     const initialMap: Record<string, string> = {};
@@ -1071,21 +1001,9 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     }
   };
 
-  // 2. ACTION: Reset draft from official Week 8 baseline
-  const handleResetToOfficialWeek8 = () => {
-    const baseSlots = baselineSlots;
-    const freshDraft: Record<number, SchoolTimetable> = {};
-    for (let w = 1; w <= 35; w++) {
-      freshDraft[w] = {
-        id: `draft-tkb-week-${w}`,
-        academicYear: config.academicYear,
-        semester: w <= 18 ? 'HK1' : 'HK2',
-        weekNumber: w,
-        slots: [...baseSlots],
-        updatedAt: Date.now(),
-      };
-    }
-
+  // 2. ACTION: Reset draft to clean copy of Actual Teaching Hours
+  const handleResetToCleanActual = () => {
+    const freshDraft = createCleanDraftFromActual();
     persistDraft(freshDraft);
     try {
       localStorage.removeItem(DRAFT_SANDBOX_STORAGE_KEY);
@@ -1095,14 +1013,16 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
 
     setActionBannerMessage({
       type: 'info',
-      title: 'Đã đặt lại bản Dự thảo về nguyên bản Thời Khóa Biểu Tuần 8 chính thức!',
-      detail: 'Mọi thay đổi thử nghiệm đã được làm mới hoàn toàn. Bản dự thảo đang ở trạng thái TKB Tuần 8.',
+      title: 'Đã xóa sạch tab Dự Thảo và sao chép y nguyên từ tab Số Tiết Thực Dạy!',
+      detail: 'Toàn bộ 35 tuần (cập nhật đầy đủ chi tiết đến Tuần 9) đã được đồng bộ chuẩn xác 100%. Bản dự thảo đang ở trạng thái sạch sẽ sẵn sàng để Thầy bắt đầu phân công thí điểm từng bước.',
     });
 
     if (onShowToast) {
-      onShowToast('Đã đặt lại bản Dự thảo phân công về nguyên bản Thời khóa biểu Tuần 8 chính thức!');
+      onShowToast('✓ Đã làm sạch tab Dự thảo và sao chép y nguyên từ Số tiết thực dạy (cập nhật đầy đủ đến Tuần 9)!');
     }
   };
+
+  const handleResetToOfficialWeek8 = handleResetToCleanActual;
 
   // AI Assignment Summary Stats
   const aiStats = useMemo(() => {
@@ -1516,97 +1436,86 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
               </span>
               {totalSlotChangesCount > 0 ? (
                 <span className="px-2.5 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold text-xs rounded-full flex items-center gap-1 animate-pulse">
-                  ⚡ Đã có {totalSlotChangesCount} tiết thay đổi so với TKB gốc
+                  ⚡ Đã có {totalSlotChangesCount} tiết thay đổi
                 </span>
               ) : (
-                <span className="px-2.5 py-0.5 bg-slate-500/20 text-slate-300 border border-slate-500/40 font-medium text-xs rounded-full">
-                  Chưa có thay đổi (Nguyên bản Tuần 8)
+                <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold text-xs rounded-full flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  Đồng bộ 100% với Số Tiết Thực Dạy (Tuần 1 - 9)
                 </span>
               )}
             </div>
 
             <h2 className="text-lg font-black tracking-tight text-white flex items-center gap-2">
-              Bảng Phân Công Chuyên Môn Dự Thảo & Thử Nghiệm Số Tiết
+              Dự Thảo Phân Công Mới (Môi Trường Thí Điểm Làm Sạch)
             </h2>
             <p className="text-xs text-purple-200/90 max-w-3xl leading-relaxed">
-              Không gian <b>thử nghiệm an toàn (Sandbox)</b> giúp Thầy chạy thử các phương án phân công mới, 
-              đối chiếu số tiết thừa/thiếu trước và sau khi thay đổi của từng giáo viên. Mọi điều chỉnh tại đây 
-              <b> tuyệt đối không làm ảnh hưởng</b> đến dữ liệu thời khóa biểu đang vận hành.
+              Tab này đã được làm sạch hoàn toàn theo yêu cầu của Thầy. Dữ liệu sao chép y nguyên từ tab <b>Số Tiết Thực Dạy</b> (cập nhật đầy đủ chi tiết đến Tuần 9). Mọi phân công thí điểm sẽ được thực hiện lại từ đầu theo từng bước hướng dẫn của Thầy!
             </p>
           </div>
 
           {/* Action buttons */}
           <div className="flex flex-wrap items-center gap-2 self-start lg:self-center">
-            {/* 1. Quick pilot HĐTNHN 19 classes */}
+            {/* 1. Reset / Sync from Actual Teaching */}
             <button
-              onClick={handleApplyHdtnConsolidation}
-              className={`px-3.5 py-2 rounded-xl font-bold text-xs shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
-                isHdtnConsolidatedInDraft
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                  : 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black'
-              }`}
-              title="Thí điểm gom gọn 19 lớp HĐTNHN về 1 người (ưu tiên thiếu tiết & GVCN, né Tin học)"
+              onClick={handleResetToCleanActual}
+              className="px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+              title="Xóa mọi thay đổi thử nghiệm và sao chép lại y nguyên từ Số Tiết Thực Dạy"
             >
-              <Zap className="w-4 h-4 fill-current" />
-              {isHdtnConsolidatedInDraft ? 'Áp Lại Gom 19 Lớp HĐTN' : 'Thí Điểm Gom 19 Lớp HĐTN'}
+              <RotateCcw className="w-4 h-4 text-emerald-600" />
+              Sao Chép Lại Từ Số Tiết Thực Dạy
             </button>
 
-            {/* 2. Quick Pilot AI Button */}
-            <button
-              onClick={() => setIsAiAssignmentDrawerOpen(!isAiAssignmentDrawerOpen)}
-              className={`px-3.5 py-2 rounded-xl font-bold text-xs shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
-                isAiCurrentlyInDraft
-                  ? 'bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black shadow-purple-500/30'
-                  : 'bg-white/10 hover:bg-white/20 text-purple-200 hover:text-white border border-purple-400/40 font-bold'
-              }`}
-              title="Thí điểm phân công môn Trí tuệ nhân tạo (AI) 12 tiết/HK2 (Tuần 19-24)"
-            >
-              <Cpu className="w-4 h-4 text-purple-200" />
-              <span>{isAiCurrentlyInDraft ? 'Môn AI (12t/HK2): Đang Bật' : 'Thí Điểm Môn AI (HK2)'}</span>
-              <span
-                className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
-                  isAiCurrentlyInDraft ? 'bg-white/20 text-white' : 'bg-purple-500/30 text-purple-200'
-                }`}
-              >
-                {isAiCurrentlyInDraft ? 'Bật' : 'Tắt'}
-              </span>
-            </button>
-
-            {/* Hiến Kế Môn Tin Học & AI */}
-            <button
-              onClick={() => setIsStrategyDrawerOpen(!isStrategyDrawerOpen)}
-              className={`px-3.5 py-2 rounded-xl font-bold text-xs shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
-                isStrategyDrawerOpen
-                  ? 'bg-amber-400 hover:bg-amber-500 text-slate-950 font-black shadow-amber-400/20'
-                  : 'bg-white/10 hover:bg-white/20 text-amber-200 hover:text-white border border-amber-400/40 font-bold'
-              }`}
-              title="Xem chuyên đề hiến kế & bộ giải pháp chiến lược tối ưu định mức môn Tin học (không thừa giờ)"
-            >
-              <Lightbulb className="w-4 h-4 text-amber-600 fill-amber-300" />
-              <span>Hiến Kế Tin Học & AI</span>
-              <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-black/20">
-                {isStrategyDrawerOpen ? 'Đang mở' : 'Xem'}
-              </span>
-            </button>
-
-            {/* 3. Custom reassign class/subject */}
+            {/* 2. Custom reassign class/subject */}
             <button
               onClick={() => setIsReassignModalOpen(true)}
-              className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+              className="px-3.5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
               title="Thử nghiệm đổi giáo viên cho từng lớp, từng môn trong bản Dự thảo"
             >
               <ArrowRightLeft className="w-4 h-4" />
               Đổi GV Lớp & Môn Thử Nghiệm
             </button>
 
-            {/* 4. Reset to Week 8 */}
+            {/* 3. Quick pilot HĐTNHN 19 classes (Optional) */}
             <button
-              onClick={handleResetToOfficialWeek8}
-              className="px-3 py-2 bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 border border-white/20"
-              title="Đặt lại bản Dự thảo về đúng TKB Tuần 8 chính thức"
+              onClick={handleApplyHdtnConsolidation}
+              className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
+                isHdtnConsolidatedInDraft
+                  ? 'bg-blue-600/80 hover:bg-blue-700 text-white'
+                  : 'bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white border border-white/20'
+              }`}
+              title="Thí điểm gom gọn 19 lớp HĐTNHN về 1 người (ưu tiên thiếu tiết & GVCN, né Tin học)"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
-              Tải Lại TKB Tuần 8
+              <Zap className="w-3.5 h-3.5 fill-current text-amber-300" />
+              {isHdtnConsolidatedInDraft ? 'Đã Gom 19 Lớp HĐTN' : 'Thử Gom 19 Lớp HĐTN'}
+            </button>
+
+            {/* 4. Quick Pilot AI Button (Optional) */}
+            <button
+              onClick={() => setIsAiAssignmentDrawerOpen(!isAiAssignmentDrawerOpen)}
+              className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
+                isAiCurrentlyInDraft
+                  ? 'bg-purple-600/80 hover:bg-purple-700 text-white font-bold'
+                  : 'bg-white/10 hover:bg-white/20 text-purple-200 hover:text-white border border-purple-400/40'
+              }`}
+              title="Thí điểm phân công môn Trí tuệ nhân tạo (AI) 12 tiết/HK2 (Tuần 19-24)"
+            >
+              <Cpu className="w-3.5 h-3.5 text-purple-200" />
+              <span>{isAiCurrentlyInDraft ? 'Môn AI (HK2): Đang Bật' : 'Môn AI (HK2)'}</span>
+            </button>
+
+            {/* 5. Hiến Kế Môn Tin Học & AI */}
+            <button
+              onClick={() => setIsStrategyDrawerOpen(!isStrategyDrawerOpen)}
+              className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
+                isStrategyDrawerOpen
+                  ? 'bg-amber-400 text-slate-950 font-black'
+                  : 'bg-white/10 hover:bg-white/20 text-amber-200 hover:text-white border border-amber-400/40'
+              }`}
+              title="Xem chuyên đề hiến kế & bộ giải pháp chiến lược tối ưu định mức môn Tin học (không thừa giờ)"
+            >
+              <Lightbulb className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+              <span>Hiến Kế Tin Học</span>
             </button>
           </div>
         </div>
@@ -2586,25 +2495,24 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
         {isDiffDrawerOpen && (
           <div className="p-4 space-y-4">
             {totalSlotChangesCount === 0 ? (
-              <div className="bg-amber-50/60 border border-amber-200 rounded-xl p-4 text-center space-y-2">
-                <div className="inline-flex p-2 bg-amber-100 text-amber-700 rounded-full">
-                  <Info className="w-5 h-5" />
+              <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-4 text-center space-y-2">
+                <div className="inline-flex p-2 bg-emerald-100 text-emerald-700 rounded-full">
+                  <CheckCircle2 className="w-5 h-5" />
                 </div>
-                <h4 className="text-sm font-bold text-amber-900">
-                  Bản Dự Thảo Đang Giống 100% Với Thời Khóa Biểu Gốc (Tuần 8)
+                <h4 className="text-sm font-bold text-emerald-900">
+                  Bản Dự Thảo Đang Trùng Khớp 100% Với Tab "Số Tiết Thực Dạy" (Đầy Đủ Đến Tuần 9)
                 </h4>
-                <p className="text-xs text-amber-700 max-w-lg mx-auto">
-                  Chưa có tiết nào được điều chỉnh. Thầy hãy bấm nút{' '}
-                  <b>"Thí Điểm Gom 19 Lớp HĐTN"</b> ở trên hoặc bấm{' '}
-                  <b>"Đổi GV Lớp & Môn Thử Nghiệm"</b> để xem bảng phân tích thay đổi số tiết hiển thị tại đây!
+                <p className="text-xs text-emerald-700 max-w-lg mx-auto">
+                  Tab Dự Thảo đã được làm sạch hoàn toàn. Hiện chưa có điều chỉnh nào. Thầy hãy bấm nút{' '}
+                  <b>"Đổi GV Lớp & Môn Thử Nghiệm"</b> hoặc chỉ đạo phân công môn/lớp tiếp theo để xem bảng phân tích thay đổi số tiết hiển thị tại đây!
                 </p>
                 <div className="pt-1">
                   <button
-                    onClick={handleApplyHdtnConsolidation}
-                    className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-xs transition-all inline-flex items-center gap-1.5 cursor-pointer"
+                    onClick={() => setIsReassignModalOpen(true)}
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-black text-xs rounded-xl shadow-xs transition-all inline-flex items-center gap-1.5 cursor-pointer"
                   >
-                    <Zap className="w-4 h-4 fill-current" />
-                    Thí Điểm Gom 19 Lớp HĐTN Ngay
+                    <ArrowRightLeft className="w-4 h-4" />
+                    Đổi GV Lớp & Môn Thử Nghiệm
                   </button>
                 </div>
               </div>
