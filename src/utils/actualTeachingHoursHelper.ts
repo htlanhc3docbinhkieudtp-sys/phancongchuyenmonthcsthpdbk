@@ -1009,24 +1009,25 @@ export function calculateTeacherSingleWeek(
         }
 
         let red = d.reductionPeriods;
+        const dType = d.type as string;
         if (red === undefined || red === null) {
-          if (d.type === 'ToTruong') red = 3;
-          else if (d.type === 'ToPho') red = 1;
-          else if (d.type === 'PhoCap') red = 0;
-          else if (d.type === 'ThuKyHoiDong' || d.type === 'ThuKyHDSP' || d.name?.includes('Thư ký')) red = 2;
-          else if (d.type === 'ConNho') red = 3;
-          else if (d.type === 'PhoBiThuDoan') red = 6;
-          else if (d.type === 'BiThuDoan') red = 12;
+          if (dType === 'ToTruong') red = 3;
+          else if (dType === 'ToPho') red = 1;
+          else if (dType === 'PhoCap') red = 0;
+          else if (dType === 'ThuKyHoiDong' || dType === 'ThuKyHDSP' || d.name?.includes('Thư ký')) red = 2;
+          else if (dType === 'ConNho') red = 3;
+          else if (dType === 'PhoBiThuDoan') red = 6;
+          else if (dType === 'BiThuDoan') red = 12;
           else red = 0;
         }
         reductionPeriods += red;
-        const label = d.type === 'ToTruong' ? 'Tổ trưởng' :
-                      d.type === 'ToPho' ? 'Tổ phó' :
-                      (d.type === 'ThuKyHoiDong' || d.type === 'ThuKyHDSP' || d.name?.includes('Thư ký')) ? 'Thư ký HĐSP' :
-                      d.type === 'PhoCap' ? 'Phổ cập' :
-                      d.type === 'ConNho' ? 'Con nhỏ' :
-                      d.type === 'PhoBiThuDoan' ? 'Phó Bí thư đoàn' :
-                      d.type === 'BiThuDoan' ? 'Bí thư đoàn' : d.name;
+        const label = dType === 'ToTruong' ? 'Tổ trưởng' :
+                      dType === 'ToPho' ? 'Tổ phó' :
+                      (dType === 'ThuKyHoiDong' || dType === 'ThuKyHDSP' || d.name?.includes('Thư ký')) ? 'Thư ký HĐSP' :
+                      dType === 'PhoCap' ? 'Phổ cập' :
+                      dType === 'ConNho' ? 'Con nhỏ' :
+                      dType === 'PhoBiThuDoan' ? 'Phó Bí thư đoàn' :
+                      dType === 'BiThuDoan' ? 'Bí thư đoàn' : d.name;
         if (!dutyList.includes(label)) {
           dutyList.push(label);
         }

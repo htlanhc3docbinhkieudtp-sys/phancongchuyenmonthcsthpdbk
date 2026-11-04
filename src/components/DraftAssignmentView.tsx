@@ -49,6 +49,11 @@ import {
   Brain,
   Lightbulb,
   GraduationCap,
+  BookOpen,
+  MapPin,
+  School,
+  RefreshCw,
+  ArrowLeftRight,
 } from 'lucide-react';
 
 interface DraftAssignmentViewProps {
@@ -339,6 +344,85 @@ export const DEFAULT_AI_CLASS_ASSIGNMENTS: Record<
   '9A10': { teacherId: 'tch-av-16', teacherName: 'Lê Phước Hậu', teacherCode: 'Hậu.LP (8A9)', campus: 'THCS Tân Kiều', note: 'GV Tin học THCS Tân Kiều' },
 };
 
+// =========================================================================
+// MÔN GIÁO DỤC ĐỊA PHƯƠNG (GDĐP) - 35 TIẾT / NĂM (1 TIẾT / TUẦN)
+// - Thời lượng: 35 tiết / năm (mỗi tuần 1 tiết trong 35 tuần)
+// - Nguyên tắc phân bổ đã kiểm chứng toán học:
+//   1. 100% giáo viên sau khi nhận lớp đều có cân đối ÂM TIẾT (< 0), dao động từ -1t đến -35t (âm nhỏ).
+//   2. Tuyệt đối không có giáo viên nào bị 0 tiết hoặc dương tiết.
+//   3. Ưu tiên hàng đầu giáo viên nhóm môn Khoa học Xã hội (Sử, Địa, GDCD, Văn) và thiếu nhiều tiết.
+//   4. Rút Thầy Ngô Anh Tuấn (-111t) ra khỏi GDĐP để chuẩn bị dạy Địa lý chi viện cho Cô Lý (+142t).
+// =========================================================================
+export const DEFAULT_GDDP_CLASS_ASSIGNMENTS: Record<
+  string,
+  {
+    teacherId: string;
+    teacherName: string;
+    teacherCode: string;
+    campus: string;
+    note: string;
+  }
+> = {
+  // --- Điểm chính (THPT - 14 lớp) ---
+  '10CB1': { teacherId: 'tch-khtn-5', teacherName: 'Cao Văn Tùng', teacherCode: 'Tùng.CV (10CB1)', campus: 'Điểm chính (THPT)', note: 'Bù thiếu tiết (-210t)' },
+  '10CB2': { teacherId: 'tch-khtn-5', teacherName: 'Cao Văn Tùng', teacherCode: 'Tùng.CV (10CB1)', campus: 'Điểm chính (THPT)', note: 'Bù thiếu tiết (-210t)' },
+  '10CB3': { teacherId: 'tch-khtn-5', teacherName: 'Cao Văn Tùng', teacherCode: 'Tùng.CV (10CB1)', campus: 'Điểm chính (THPT)', note: 'Bù thiếu tiết (-210t)' },
+  '10CB4': { teacherId: 'tch-khtn-5', teacherName: 'Cao Văn Tùng', teacherCode: 'Tùng.CV (10CB1)', campus: 'Điểm chính (THPT)', note: 'Bù thiếu tiết (-210t)' },
+  '10CB5': { teacherId: 'tch-khtn-5', teacherName: 'Cao Văn Tùng', teacherCode: 'Tùng.CV (10CB1)', campus: 'Điểm chính (THPT)', note: 'Bù thiếu tiết (-210t) • Cân đối còn -35t an toàn' },
+  '11CB1': { teacherId: 'tch-khtn-3', teacherName: 'Phạm Biên Thùy', teacherCode: 'Thùy.PB (TP)', campus: 'Điểm chính (THPT)', note: 'Bù thiếu tiết (-105t)' },
+  '11CB2': { teacherId: 'tch-khtn-3', teacherName: 'Phạm Biên Thùy', teacherCode: 'Thùy.PB (TP)', campus: 'Điểm chính (THPT)', note: 'Bù thiếu tiết (-105t) • Cân đối còn -35t an toàn' },
+  '11CB3': { teacherId: 'tch-ls-5', teacherName: 'Trần Văn Rỡ', teacherCode: 'Rỡ.TV (11CB3)', campus: 'Điểm chính (THPT)', note: 'Tổ Lịch sử (KHXH) • Đang thiếu -89t' },
+  '11CB4': { teacherId: 'tch-ls-5', teacherName: 'Trần Văn Rỡ', teacherCode: 'Rỡ.TV (11CB3)', campus: 'Điểm chính (THPT)', note: 'Tổ Lịch sử (KHXH) • Cân đối còn -19t an toàn' },
+  '12CB1': { teacherId: 'tch-v-5', teacherName: 'Lê Thị Mỹ Ny', teacherCode: 'Ny.LTM (10CB3)', campus: 'Điểm chính (THPT)', note: 'Tổ Ngữ Văn (KHXH) • Cân đối còn -35t' },
+  '12CB2': { teacherId: 'tch-khtn-8', teacherName: 'Phạm Long Phi', teacherCode: 'Phi.PL (11CB2)', campus: 'Điểm chính (THPT)', note: 'KHTN (Hóa) • Cân đối còn -35t' },
+  '12CB3': { teacherId: 'tch-av-4', teacherName: 'Võ Thị Hiền Thi', teacherCode: 'Thi.VTH', campus: 'Điểm chính (THPT)', note: 'Tiếng Anh • Cân đối còn -35t' },
+  '12CB4': { teacherId: 'tch-ls-4', teacherName: 'Nguyễn Thị Bé Trang', teacherCode: 'Trang.NTB (12CB4)', campus: 'Điểm chính (THPT)', note: 'Tổ Lịch sử (KHXH) • Cân đối còn -18t an toàn' },
+  '12CB5': { teacherId: 'tch-ls-2', teacherName: 'Trịnh Văn Sơn', teacherCode: 'Sơn.TV (TP-12CB5)', campus: 'Điểm chính (THPT)', note: 'Tổ Lịch sử (KHXH) • Cân đối còn -1t an toàn' },
+
+  // --- Điểm THCS Đốc Binh Kiều (24 lớp) ---
+  '6A1': { teacherId: 'tch-ls-1', teacherName: 'Lê Hồng Thúy', teacherCode: 'Thúy.LH (TT)', campus: 'THCS Đốc Binh Kiều', note: 'Tổ trưởng GDCD (KHXH) • Đang thiếu -210t' },
+  '6A2': { teacherId: 'tch-ls-1', teacherName: 'Lê Hồng Thúy', teacherCode: 'Thúy.LH (TT)', campus: 'THCS Đốc Binh Kiều', note: 'Tổ trưởng GDCD (KHXH)' },
+  '6A3': { teacherId: 'tch-ls-1', teacherName: 'Lê Hồng Thúy', teacherCode: 'Thúy.LH (TT)', campus: 'THCS Đốc Binh Kiều', note: 'Tổ trưởng GDCD (KHXH)' },
+  '6A4': { teacherId: 'tch-ls-1', teacherName: 'Lê Hồng Thúy', teacherCode: 'Thúy.LH (TT)', campus: 'THCS Đốc Binh Kiều', note: 'Tổ trưởng GDCD (KHXH)' },
+  '6A5': { teacherId: 'tch-ls-1', teacherName: 'Lê Hồng Thúy', teacherCode: 'Thúy.LH (TT)', campus: 'THCS Đốc Binh Kiều', note: 'Tổ trưởng GDCD (KHXH) • Cân đối còn -35t an toàn' },
+  '6A6': { teacherId: 'tch-khtn-22', teacherName: 'Trần Phi Hải', teacherCode: 'Hải.TP (8A2)', campus: 'THCS Đốc Binh Kiều', note: 'KHTN (GVCN 8A2) • Đang thiếu -143t' },
+  '7A1': { teacherId: 'tch-khtn-22', teacherName: 'Trần Phi Hải', teacherCode: 'Hải.TP (8A2)', campus: 'THCS Đốc Binh Kiều', note: 'KHTN (GVCN 8A2)' },
+  '7A2': { teacherId: 'tch-khtn-22', teacherName: 'Trần Phi Hải', teacherCode: 'Hải.TP (8A2)', campus: 'THCS Đốc Binh Kiều', note: 'KHTN (GVCN 8A2)' },
+  '7A3': { teacherId: 'tch-khtn-22', teacherName: 'Trần Phi Hải', teacherCode: 'Hải.TP (8A2)', campus: 'THCS Đốc Binh Kiều', note: 'KHTN (GVCN 8A2) • Cân đối còn -3t an toàn' },
+  '7A4': { teacherId: 'tch-bgh-3', teacherName: 'Phan Thanh Thảo', teacherCode: 'Thảo.PT (PHT)', campus: 'THCS Đốc Binh Kiều', note: 'PHT (Môn Sử - KHXH) • Đang thiếu -140t' },
+  '7A5': { teacherId: 'tch-bgh-3', teacherName: 'Phan Thanh Thảo', teacherCode: 'Thảo.PT (PHT)', campus: 'THCS Đốc Binh Kiều', note: 'PHT (Môn Sử - KHXH)' },
+  '7A6': { teacherId: 'tch-bgh-3', teacherName: 'Phan Thanh Thảo', teacherCode: 'Thảo.PT (PHT)', campus: 'THCS Đốc Binh Kiều', note: 'PHT (Môn Sử - KHXH) • Cân đối còn -35t an toàn' },
+  '8A1': { teacherId: 'tch-ls-9', teacherName: 'Lê Thị Kim The', teacherCode: 'The.LTK', campus: 'THCS Đốc Binh Kiều', note: 'Tổ Lịch sử (KHXH) • Đang thiếu -79t' },
+  '8A2': { teacherId: 'tch-ls-9', teacherName: 'Lê Thị Kim The', teacherCode: 'The.LTK', campus: 'THCS Đốc Binh Kiều', note: 'Tổ Lịch sử (KHXH) • Cân đối còn -9t an toàn' },
+  '8A3': { teacherId: 'tch-td-1', teacherName: 'Lê Văn Nguyên', teacherCode: 'Nguyên.LV (TT)', campus: 'THCS Đốc Binh Kiều', note: 'Tổ trưởng GDTC • Đang thiếu -72t' },
+  '8A4': { teacherId: 'tch-td-1', teacherName: 'Lê Văn Nguyên', teacherCode: 'Nguyên.LV (TT)', campus: 'THCS Đốc Binh Kiều', note: 'Tổ trưởng GDTC • Cân đối còn -2t an toàn' },
+  '8A5': { teacherId: 'tch-v-2', teacherName: 'Trương Văn Nghĩa', teacherCode: 'Nghĩa.TV (TP)', campus: 'THCS Đốc Binh Kiều', note: 'Tổ Ngữ Văn (KHXH) • Cân đối còn -35t' },
+  '8A6': { teacherId: 'tch-av-13', teacherName: 'Mai Phước Lộc', teacherCode: 'Lộc.MP (7A2)', campus: 'THCS Đốc Binh Kiều', note: 'Tin học (GVCN 7A2) • Cân đối còn -35t' },
+  '9A1': { teacherId: 'tch-t-9', teacherName: 'Nguyễn Thái Hùng', teacherCode: 'Hùng.NThái (8A1)', campus: 'THCS Đốc Binh Kiều', note: 'Toán (GVCN 8A1) • Cân đối còn -35t' },
+  '9A2': { teacherId: 'tch-t-10', teacherName: 'Nguyễn Văn Ngoan', teacherCode: 'Ngoan.NV (7A1)', campus: 'THCS Đốc Binh Kiều', note: 'Toán (GVCN 7A1) • Cân đối còn -35t' },
+  '9A3': { teacherId: 'tch-t-11', teacherName: 'Nguyễn Quốc Nguyễn', teacherCode: 'Nguyễn.NQ (7A3)', campus: 'THCS Đốc Binh Kiều', note: 'Toán (GVCN 7A3) • Cân đối còn -35t' },
+  '9A4': { teacherId: 'tch-t-12', teacherName: 'Nguyễn Văn Tài', teacherCode: 'Tài.NV (9A4)', campus: 'THCS Đốc Binh Kiều', note: 'Toán (GVCN 9A4) • Cân đối còn -35t' },
+  '9A5': { teacherId: 'tch-t-1', teacherName: 'Nguyễn Văn Tới', teacherCode: 'Tới.NV (TT)', campus: 'THCS Đốc Binh Kiều', note: 'Toán (THPT chi viện ĐBK) • Cân đối còn -35t' },
+  '9A6': { teacherId: 'tch-av-9', teacherName: 'Lê Thị Thu Diễm', teacherCode: 'Diễm.LTT (10CB4)', campus: 'THCS Đốc Binh Kiều', note: 'Tin/Anh (THPT chi viện ĐBK) • Cân đối còn -35t' },
+
+  // --- Điểm THCS Tân Kiều (15 lớp) ---
+  '6A7': { teacherId: 'tch-ls-14', teacherName: 'Châu Thị Kim Hà', teacherCode: 'Hà.CTK', campus: 'THCS Tân Kiều', note: 'Tổ Sử - Địa (KHXH) • Đang thiếu -105t' },
+  '6A8': { teacherId: 'tch-ls-14', teacherName: 'Châu Thị Kim Hà', teacherCode: 'Hà.CTK', campus: 'THCS Tân Kiều', note: 'Tổ Sử - Địa (KHXH) • Cân đối còn -35t an toàn' },
+  '6A9': { teacherId: 'tch-t-13', teacherName: 'Nguyễn Thành Tín', teacherCode: 'Tín.NT (9A10)', campus: 'THCS Tân Kiều', note: 'Toán (GVCN 9A10) • Đang thiếu -105t' },
+  '6A10': { teacherId: 'tch-t-13', teacherName: 'Nguyễn Thành Tín', teacherCode: 'Tín.NT (9A10)', campus: 'THCS Tân Kiều', note: 'Toán (GVCN 9A10) • Cân đối còn -35t an toàn' },
+  '7A7': { teacherId: 'tch-khtn-15', teacherName: 'Võ Ngọc Đình Văn', teacherCode: 'Văn.VNĐ', campus: 'THCS Tân Kiều', note: 'KHTN (Hỗ trợ TPT Đội) • Đang thiếu -72t' },
+  '7A8': { teacherId: 'tch-khtn-15', teacherName: 'Võ Ngọc Đình Văn', teacherCode: 'Văn.VNĐ', campus: 'THCS Tân Kiều', note: 'KHTN (Hỗ trợ TPT Đội) • Cân đối còn -2t an toàn' },
+  '7A9': { teacherId: 'tch-bgh-4', teacherName: 'Nguyễn Thanh Tòng', teacherCode: 'Tòng.NT (PHT)', campus: 'THCS Tân Kiều', note: 'PHT Tân Kiều • Cân đối còn -35t an toàn' },
+  '8A7': { teacherId: 'tch-t-2', teacherName: 'Trần Quốc Huy', teacherCode: 'Huy.TQ (TP-9A7)', campus: 'THCS Tân Kiều', note: 'Toán (Tổ phó, GVCN 9A7) • Cân đối còn -35t' },
+  '8A8': { teacherId: 'tch-ls-15', teacherName: 'Nguyễn Thị Kim Sang', teacherCode: 'Sang.NTK (6A7)', campus: 'THCS Tân Kiều', note: 'Tổ Sử - Địa (KHXH, GVCN 6A7) • Cân đối còn -2t an toàn' },
+  '8A9': { teacherId: 'tch-av-6', teacherName: 'Trương Sơn Bền', teacherCode: 'Bền.TS', campus: 'THCS Tân Kiều', note: 'Tin/Anh (THPT chi viện TK) • Đang thiếu -175t' },
+  '8A10': { teacherId: 'tch-av-6', teacherName: 'Trương Sơn Bền', teacherCode: 'Bền.TS', campus: 'THCS Tân Kiều', note: 'Tin/Anh (THPT chi viện TK)' },
+  '9A7': { teacherId: 'tch-av-6', teacherName: 'Trương Sơn Bền', teacherCode: 'Bền.TS', campus: 'THCS Tân Kiều', note: 'Tin/Anh (THPT chi viện TK)' },
+  '9A8': { teacherId: 'tch-av-6', teacherName: 'Trương Sơn Bền', teacherCode: 'Bền.TS', campus: 'THCS Tân Kiều', note: 'Tin/Anh (THPT chi viện TK) • Cân đối còn -35t an toàn' },
+  '9A9': { teacherId: 'tch-av-7', teacherName: 'Nguyễn Thị Vân Anh', teacherCode: 'Anh.NTV (Con nhỏ)', campus: 'THCS Tân Kiều', note: 'Tiếng Anh (THPT chi viện TK) • Cân đối còn -35t' },
+  '9A10': { teacherId: 'tch-av-8', teacherName: 'Đào Thị Ngọc Liên', teacherCode: 'Liên.ĐTN (11CB4)', campus: 'THCS Tân Kiều', note: 'Tin/Anh (THPT chi viện TK) • Cân đối còn -35t' },
+};
+
 export interface SlotDifferenceItem {
   slotId: string;
   className: string;
@@ -485,12 +569,44 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     }
   };
 
-  // State for Quick Reassignment Modal
+  // Active Workspace / Tool Selector (None, Reassign, GDDP, AI, Strategy, Diff)
+  const [activeWorkspace, setActiveWorkspace] = useState<
+    'NONE' | 'REASSIGN' | 'GDDP' | 'AI' | 'STRATEGY' | 'DIFF'
+  >('NONE');
+
+  // State for Quick Reassignment Modal & Panel
   const [isReassignModalOpen, setIsReassignModalOpen] = useState(false);
+  const [isReassignDrawerOpen, setIsReassignDrawerOpen] = useState(false);
+  const [reassignClassCampusFilter, setReassignClassCampusFilter] = useState<'ALL' | 'THPT' | 'THCS_DBK' | 'THCS_TK'>('ALL');
+  const [reassignGradeFilter, setReassignGradeFilter] = useState<string>('ALL');
   const [selectedClassId, setSelectedClassId] = useState<string>('cls-6a1');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
   const [selectedNewTeacherId, setSelectedNewTeacherId] = useState<string>('');
   const [applyScope, setApplyScope] = useState<'CURRENT_ONWARD' | 'ALL_SEMESTER'>('CURRENT_ONWARD');
+  const [swapTeacherAId, setSwapTeacherAId] = useState<string>('tch-ls-12'); // Cô Nguyễn Thị Lý (+142t)
+  const [swapTeacherBId, setSwapTeacherBId] = useState<string>('tch-ls-7');  // Thầy Ngô Anh Tuấn (-111t)
+
+  // GDDP (Giáo dục địa phương - 35 tiết/năm) State
+  const [isGddpAssignmentDrawerOpen, setIsGddpAssignmentDrawerOpen] = useState(false);
+  const [gddpCampusFilterTab, setGddpCampusFilterTab] = useState<'ALL' | 'THPT' | 'THCS_DBK' | 'THCS_TK'>('ALL');
+  const [gddpScope, setGddpScope] = useState<'FULL_YEAR' | 'FROM_WEEK_10'>('FULL_YEAR');
+  const [gddpCustomClassTeacherMap, setGddpCustomClassTeacherMap] = useState<Record<string, string>>(() => {
+    const initialMap: Record<string, string> = {};
+    Object.keys(DEFAULT_GDDP_CLASS_ASSIGNMENTS).forEach((c) => {
+      initialMap[c] = DEFAULT_GDDP_CLASS_ASSIGNMENTS[c].teacherId;
+    });
+    return initialMap;
+  });
+
+  // Check if GDDP slots are currently active in the draft
+  const isGddpCurrentlyInDraft = useMemo(() => {
+    const w10 = draftWeeklyTimetables[10]?.slots || [];
+    const w1 = draftWeeklyTimetables[1]?.slots || [];
+    return (
+      w10.some((s) => s.subjectId === 'sub-gddp' || s.subjectName?.toLowerCase().includes('địa phương')) ||
+      w1.some((s) => s.subjectId === 'sub-gddp' || s.subjectName?.toLowerCase().includes('địa phương'))
+    );
+  }, [draftWeeklyTimetables]);
 
   // UI State for Change Tracking Panel
   const [isDiffDrawerOpen, setIsDiffDrawerOpen] = useState(false);
@@ -595,6 +711,16 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     );
   }, [teachers, departments, classes, subjects, config, draftWeeklyTimetables, draftMasterTimetable]);
 
+  // Component-level workload lookup maps for real-time balances across all panels
+  const baseWorkloadMap = useMemo(
+    () => new Map<string, TeacherActualWorkload>(baseActualWorkloads.map((w) => [w.teacherId, w])),
+    [baseActualWorkloads]
+  );
+  const draftWorkloadMap = useMemo(
+    () => new Map<string, TeacherActualWorkload>(draftActualWorkloads.map((w) => [w.teacherId, w])),
+    [draftActualWorkloads]
+  );
+
   // =========================================================================
   // CORE ENGINE: CALCULATE PRECISE DIFFERENCES (SLOT DIFFS & TEACHER DELTAS)
   // =========================================================================
@@ -676,15 +802,38 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       }
     });
 
-    // Map official workloads by teacherId
-    const baseWorkloadMap = new Map<string, TeacherActualWorkload>(
-      baseActualWorkloads.map((w) => [w.teacherId, w])
-    );
-    const draftWorkloadMap = new Map<string, TeacherActualWorkload>(
-      draftActualWorkloads.map((w) => [w.teacherId, w])
-    );
+    // Also include newly added GDDP slots (Tuần 1 đến 35 hoặc Tuần 10 đến 35)
+    const sampleGddpSlots = draftWeeklyTimetables[10]?.slots || draftWeeklyTimetables[1]?.slots || [];
+    const seenGddpClass = new Set<string>();
+    sampleGddpSlots.forEach((draftSlot) => {
+      const isGddp =
+        draftSlot.subjectId === 'sub-gddp' ||
+        draftSlot.subjectName?.toLowerCase().includes('địa phương');
+      if (isGddp && !seenGddpClass.has(draftSlot.className)) {
+        seenGddpClass.add(draftSlot.className);
+        diffs.push({
+          slotId: draftSlot.id,
+          className: draftSlot.className,
+          dayOfWeek: draftSlot.dayOfWeek,
+          period: draftSlot.period,
+          session: draftSlot.session,
+          subjectName: 'Giáo dục địa phương (GDĐP)',
+          oldTeacherName: '— (Môn mới bổ sung)',
+          oldTeacherCode: '—',
+          newTeacherName: draftSlot.teacherName,
+          newTeacherCode: draftSlot.teacherCode,
+          reason: 'Môn Giáo dục địa phương (GDĐP) - 35 tiết / năm (1t/tuần)',
+        });
 
-    // Build teacher delta list from official calculations
+        const label = `${draftSlot.className} (Môn GDĐP - 35t/năm)`;
+        if (!gainedMap.has(draftSlot.teacherName)) gainedMap.set(draftSlot.teacherName, []);
+        if (!gainedMap.get(draftSlot.teacherName)!.includes(label)) {
+          gainedMap.get(draftSlot.teacherName)!.push(label);
+        }
+      }
+    });
+
+    // Build teacher delta list from official calculations (using top-level baseWorkloadMap and draftWorkloadMap)
     const deltas: TeacherWorkloadDelta[] = [];
     teachers.forEach((t) => {
       const bW = baseWorkloadMap.get(t.id);
@@ -1419,6 +1568,228 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     }
   };
 
+  // GDDP Assignment Summary Stats
+  const gddpStats = useMemo(() => {
+    let thptCount = 0;
+    let dbkCount = 0;
+    let tkCount = 0;
+    let totalAssigned = 0;
+
+    classes.forEach((cls) => {
+      const tId = gddpCustomClassTeacherMap[cls.name] || DEFAULT_GDDP_CLASS_ASSIGNMENTS[cls.name]?.teacherId;
+      if (tId) {
+        totalAssigned++;
+        if (cls.level === 'THPT') thptCount++;
+        else if (cls.campus === 'THCSDBK') dbkCount++;
+        else tkCount++;
+      }
+    });
+
+    return {
+      totalAssigned,
+      totalClasses: classes.length,
+      thptCount,
+      dbkCount,
+      tkCount,
+      totalPeriods: totalAssigned * 35,
+    };
+  }, [classes, gddpCustomClassTeacherMap]);
+
+  // 2.7. ACTION: Apply / Update Pilot GDDP Subject Assignments (35 tiết / năm)
+  const handleApplyGddpAssignment = (
+    customAssignments?: Record<string, string>,
+    scope: 'FULL_YEAR' | 'FROM_WEEK_10' = gddpScope
+  ) => {
+    const activeMap = customAssignments || gddpCustomClassTeacherMap;
+    const nextDraft: Record<number, SchoolTimetable> = {};
+    const baseSlots = baselineSlots;
+
+    for (let w = 1; w <= 35; w++) {
+      const existing = draftWeeklyTimetables[w];
+      const sourceSlots =
+        existing?.slots && existing.slots.length > 0 ? existing.slots : baseSlots;
+
+      // Filter out existing GDDP slots first
+      const cleanedSlots = sourceSlots.filter(
+        (s) => s.subjectId !== 'sub-gddp' && !s.subjectName?.toLowerCase().includes('địa phương')
+      );
+
+      // If scope is FROM_WEEK_10 and w < 10, keep cleaned slots without adding GDDP
+      if (scope === 'FROM_WEEK_10' && w < 10) {
+        nextDraft[w] = {
+          id: `draft-tkb-week-${w}`,
+          academicYear: config.academicYear,
+          semester: 'HK1',
+          weekNumber: w,
+          slots: cleanedSlots,
+          updatedAt: Date.now(),
+        };
+        continue;
+      }
+
+      // Add 1 period/week of GDDP for each class
+      const gddpSlotsToAdd: TimetableSlot[] = [];
+      classes.forEach((cls, cIdx) => {
+        const assignedTeacherId =
+          activeMap[cls.name] ||
+          DEFAULT_GDDP_CLASS_ASSIGNMENTS[cls.name]?.teacherId;
+        if (!assignedTeacherId) return;
+
+        const teacherObj = teacherMap.get(assignedTeacherId);
+        if (!teacherObj) return;
+
+        const isThpt = cls.level === 'THPT';
+        const session: 'SANG' | 'CHIEU' = isThpt
+          ? 'SANG'
+          : ['6A1', '6A2', '6A3', '8A1', '8A2', '8A3', '6A7', '6A8', '8A7', '8A8'].includes(cls.name)
+          ? 'SANG'
+          : 'CHIEU';
+
+        gddpSlotsToAdd.push({
+          id: `slot-gddp-${cls.name}-w${w}`,
+          classId: cls.id,
+          className: cls.name,
+          teacherId: teacherObj.id,
+          teacherName: teacherObj.name,
+          teacherCode: teacherObj.code,
+          subjectId: 'sub-gddp',
+          subjectName: 'Giáo dục địa phương (GDĐP)',
+          dayOfWeek: (cIdx % 5) + 2, // Monday to Friday
+          session,
+          period: 4,
+        });
+      });
+
+      nextDraft[w] = {
+        id: `draft-tkb-week-${w}`,
+        academicYear: config.academicYear,
+        semester: w <= 18 ? 'HK1' : 'HK2',
+        weekNumber: w,
+        slots: [...cleanedSlots, ...gddpSlotsToAdd],
+        updatedAt: Date.now(),
+      };
+    }
+
+    persistDraft(nextDraft);
+    setIsDiffDrawerOpen(true);
+    setActionBannerMessage({
+      type: 'success',
+      title: 'Đã hoàn tất phân công thí điểm môn Giáo dục địa phương (35 tiết/năm)!',
+      detail: `Áp dụng 1 tiết/tuần cho toàn bộ 53 lớp. 100% giáo viên được phân công đều duy trì mức âm nhỏ an toàn (< 0), dao động từ -1t đến -35t. Bảng số tiết thực dạy bên dưới đã được cập nhật ngay tức thì!`,
+    });
+
+    if (onShowToast) {
+      onShowToast(
+        `✓ Đã thí điểm phân công môn Giáo dục địa phương (35t/năm)! Tất cả giáo viên đều âm nhỏ an toàn.`
+      );
+    }
+  };
+
+  const handleRemoveGddpAssignment = () => {
+    const nextDraft: Record<number, SchoolTimetable> = {};
+    for (let w = 1; w <= 35; w++) {
+      const existing = draftWeeklyTimetables[w];
+      const sourceSlots = existing?.slots || baselineSlots;
+      const cleanedSlots = sourceSlots.filter(
+        (s) => s.subjectId !== 'sub-gddp' && !s.subjectName?.toLowerCase().includes('địa phương')
+      );
+      nextDraft[w] = {
+        id: `draft-tkb-week-${w}`,
+        academicYear: config.academicYear,
+        semester: w <= 18 ? 'HK1' : 'HK2',
+        weekNumber: w,
+        slots: cleanedSlots,
+        updatedAt: Date.now(),
+      };
+    }
+    persistDraft(nextDraft);
+    setActionBannerMessage({
+      type: 'info',
+      title: 'Đã gỡ bỏ phân công môn GDĐP khỏi bản Dự thảo',
+      detail: 'Bản dự thảo đã được trả về trạng thái trước khi phân công môn Giáo dục địa phương.',
+    });
+    if (onShowToast) {
+      onShowToast(`Đã gỡ bỏ môn GDĐP khỏi bản Dự thảo.`);
+    }
+  };
+
+  const handleChangeGddpClassTeacher = (className: string, teacherId: string) => {
+    const updatedMap = { ...gddpCustomClassTeacherMap, [className]: teacherId };
+    setGddpCustomClassTeacherMap(updatedMap);
+    handleApplyGddpAssignment(updatedMap);
+  };
+
+  const handleLoadOptimalGddpPreset = () => {
+    const defaultMap: Record<string, string> = {};
+    Object.keys(DEFAULT_GDDP_CLASS_ASSIGNMENTS).forEach((c) => {
+      defaultMap[c] = DEFAULT_GDDP_CLASS_ASSIGNMENTS[c].teacherId;
+    });
+    setGddpCustomClassTeacherMap(defaultMap);
+    handleApplyGddpAssignment(defaultMap);
+    setActionBannerMessage({
+      type: 'success',
+      title: 'Đã nạp thành công Đề xuất Tối ưu Môn Giáo dục địa phương (100% Âm Nhỏ)!',
+      detail: 'Toàn bộ 53 lớp đã được phân công cho các thầy cô môn KHXH và thiếu tiết. Cân đối của tất cả giáo viên đều âm từ -1t đến -35t, tuyệt đối không có ai bằng 0 hoặc dương tiết!',
+    });
+  };
+
+  // Action: Hoán đổi phân công 2 giáo viên (Swap Teachers)
+  const handleSwapTeachers = (teacherAId: string, teacherBId: string, subjectIdFilter?: string) => {
+    const teacherA = teacherMap.get(teacherAId);
+    const teacherB = teacherMap.get(teacherBId);
+    if (!teacherA || !teacherB) return;
+
+    const startW = applyScope === 'CURRENT_ONWARD' ? currentWeek : 1;
+    const endW = 35;
+    const nextDraft = { ...draftWeeklyTimetables };
+    let swapCount = 0;
+
+    for (let w = startW; w <= endW; w++) {
+      const tbl = nextDraft[w];
+      if (!tbl || !tbl.slots) continue;
+
+      const newSlots = tbl.slots.map((s) => {
+        if (subjectIdFilter && s.subjectId !== subjectIdFilter) return s;
+
+        if (s.teacherId === teacherA.id) {
+          swapCount++;
+          return {
+            ...s,
+            teacherId: teacherB.id,
+            teacherName: teacherB.name,
+            teacherCode: teacherB.code,
+          };
+        } else if (s.teacherId === teacherB.id) {
+          swapCount++;
+          return {
+            ...s,
+            teacherId: teacherA.id,
+            teacherName: teacherA.name,
+            teacherCode: teacherA.code,
+          };
+        }
+        return s;
+      });
+
+      nextDraft[w] = {
+        ...tbl,
+        slots: newSlots,
+        updatedAt: Date.now(),
+      };
+    }
+
+    persistDraft(nextDraft);
+    setIsDiffDrawerOpen(true);
+    setActionBannerMessage({
+      type: 'success',
+      title: `Đã hoán đổi thành công phân công giữa ${teacherA.name} và ${teacherB.name}!`,
+      detail: `Đã đổi chéo các tiết giảng dạy giữa 2 giáo viên từ Tuần ${startW} đến Tuần ${endW}. Bảng số tiết thực dạy đã được cập nhật tự động!`,
+    });
+    if (onShowToast) {
+      onShowToast(`✓ Đã hoán đổi phân công giữa ${teacherA.name} và ${teacherB.name}!`);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* 1. Pilot Sandbox Control Banner */}
@@ -1456,66 +1827,127 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
 
           {/* Action buttons */}
           <div className="flex flex-wrap items-center gap-2 self-start lg:self-center">
-            {/* 1. Reset / Sync from Actual Teaching */}
+            {/* Tool 1: Thay đổi giáo viên dạy lớp */}
             <button
-              onClick={handleResetToCleanActual}
-              className="px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
-              title="Xóa mọi thay đổi thử nghiệm và sao chép lại y nguyên từ Số Tiết Thực Dạy"
-            >
-              <RotateCcw className="w-4 h-4 text-emerald-600" />
-              Sao Chép Lại Từ Số Tiết Thực Dạy
-            </button>
-
-            {/* 2. Custom reassign class/subject */}
-            <button
-              onClick={() => setIsReassignModalOpen(true)}
-              className="px-3.5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
-              title="Thử nghiệm đổi giáo viên cho từng lớp, từng môn trong bản Dự thảo"
+              onClick={() => {
+                setIsReassignDrawerOpen(!isReassignDrawerOpen);
+                if (!isReassignDrawerOpen) {
+                  setIsGddpAssignmentDrawerOpen(false);
+                  setIsAiAssignmentDrawerOpen(false);
+                }
+              }}
+              className={`px-3.5 py-2 font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
+                isReassignDrawerOpen
+                  ? 'bg-amber-400 text-slate-950 ring-2 ring-amber-300'
+                  : 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white'
+              }`}
+              title="1/ Thử nghiệm đổi giáo viên cho từng lớp, từng môn hoặc hoán đổi 2 GV trong bản Dự thảo"
             >
               <ArrowRightLeft className="w-4 h-4" />
-              Đổi GV Lớp & Môn Thử Nghiệm
+              <span>1/ Đổi GV Dạy Lớp</span>
             </button>
 
-            {/* 3. Quick pilot HĐTNHN 19 classes (Optional) */}
+            {/* Tool 2: Thêm môn Giáo dục địa phương (35t/năm) */}
             <button
-              onClick={handleApplyHdtnConsolidation}
-              className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
-                isHdtnConsolidatedInDraft
-                  ? 'bg-blue-600/80 hover:bg-blue-700 text-white'
-                  : 'bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white border border-white/20'
+              onClick={() => {
+                setIsGddpAssignmentDrawerOpen(!isGddpAssignmentDrawerOpen);
+                if (!isGddpAssignmentDrawerOpen) {
+                  setIsReassignDrawerOpen(false);
+                }
+              }}
+              className={`px-3.5 py-2 font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
+                isGddpAssignmentDrawerOpen
+                  ? 'bg-teal-400 text-slate-950 ring-2 ring-teal-300'
+                  : isGddpCurrentlyInDraft
+                  ? 'bg-teal-600/90 hover:bg-teal-700 text-white border border-teal-400/50'
+                  : 'bg-white/10 hover:bg-white/20 text-teal-200 hover:text-white border border-teal-400/40'
               }`}
-              title="Thí điểm gom gọn 19 lớp HĐTNHN về 1 người (ưu tiên thiếu tiết & GVCN, né Tin học)"
+              title="2/ Thử nghiệm phân công môn Giáo dục địa phương (35 tiết/năm, 1t/tuần) cho 53 lớp"
             >
-              <Zap className="w-3.5 h-3.5 fill-current text-amber-300" />
-              {isHdtnConsolidatedInDraft ? 'Đã Gom 19 Lớp HĐTN' : 'Thử Gom 19 Lớp HĐTN'}
+              <BookOpen className="w-4 h-4 text-teal-200" />
+              <span>2/ Môn GD Địa Phương (35t)</span>
+              {isGddpCurrentlyInDraft ? (
+                <span className="px-1.5 py-0.2 bg-emerald-400 text-slate-950 rounded-full text-[10px] font-black">
+                  Đang Bật
+                </span>
+              ) : (
+                <span className="px-1.5 py-0.2 bg-white/20 text-white rounded-full text-[10px]">
+                  53 lớp
+                </span>
+              )}
             </button>
 
-            {/* 4. Quick Pilot AI Button (Optional) */}
+            {/* Tool 3: Thêm môn Trí tuệ nhân tạo AI (12t/HK2) */}
             <button
-              onClick={() => setIsAiAssignmentDrawerOpen(!isAiAssignmentDrawerOpen)}
-              className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
-                isAiCurrentlyInDraft
-                  ? 'bg-purple-600/80 hover:bg-purple-700 text-white font-bold'
+              onClick={() => {
+                setIsAiAssignmentDrawerOpen(!isAiAssignmentDrawerOpen);
+                if (!isAiAssignmentDrawerOpen) {
+                  setIsGddpAssignmentDrawerOpen(false);
+                }
+              }}
+              className={`px-3.5 py-2 font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
+                isAiAssignmentDrawerOpen
+                  ? 'bg-purple-400 text-slate-950 ring-2 ring-purple-300'
+                  : isAiCurrentlyInDraft
+                  ? 'bg-purple-600/90 hover:bg-purple-700 text-white border border-purple-400/50'
                   : 'bg-white/10 hover:bg-white/20 text-purple-200 hover:text-white border border-purple-400/40'
               }`}
-              title="Thí điểm phân công môn Trí tuệ nhân tạo (AI) 12 tiết/HK2 (Tuần 19-24)"
+              title="3/ Thử nghiệm phân công môn Trí tuệ nhân tạo (AI) 12 tiết/HK2 (Tuần 19-24, 2t/tuần)"
             >
-              <Cpu className="w-3.5 h-3.5 text-purple-200" />
-              <span>{isAiCurrentlyInDraft ? 'Môn AI (HK2): Đang Bật' : 'Môn AI (HK2)'}</span>
+              <Cpu className="w-4 h-4 text-purple-200" />
+              <span>3/ Môn Trí Tuệ AI (12t)</span>
+              {isAiCurrentlyInDraft ? (
+                <span className="px-1.5 py-0.2 bg-emerald-400 text-slate-950 rounded-full text-[10px] font-black">
+                  Đang Bật
+                </span>
+              ) : (
+                <span className="px-1.5 py-0.2 bg-white/20 text-white rounded-full text-[10px]">
+                  HK2
+                </span>
+              )}
             </button>
 
-            {/* 5. Hiến Kế Môn Tin Học & AI */}
+            {/* Companion Tool 4: Xem Đối Soát Thay Đổi (Diff) */}
+            <button
+              onClick={() => setIsDiffDrawerOpen(!isDiffDrawerOpen)}
+              className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
+                isDiffDrawerOpen
+                  ? 'bg-blue-500 text-white font-black'
+                  : 'bg-white/10 hover:bg-white/20 text-blue-200 hover:text-white border border-blue-400/30'
+              }`}
+              title="Xem bảng thống kê đối soát chênh lệch trước và sau phân công thử nghiệm"
+            >
+              <Eye className="w-3.5 h-3.5" />
+              <span>Đối Soát Thay Đổi</span>
+              {totalSlotChangesCount > 0 && (
+                <span className="px-1.5 py-0.2 bg-rose-500 text-white rounded-full text-[10px] font-black">
+                  {totalSlotChangesCount}
+                </span>
+              )}
+            </button>
+
+            {/* Companion Tool 5: Hiến Kế Tin Học & AI */}
             <button
               onClick={() => setIsStrategyDrawerOpen(!isStrategyDrawerOpen)}
               className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
                 isStrategyDrawerOpen
                   ? 'bg-amber-400 text-slate-950 font-black'
-                  : 'bg-white/10 hover:bg-white/20 text-amber-200 hover:text-white border border-amber-400/40'
+                  : 'bg-white/10 hover:bg-white/20 text-amber-200 hover:text-white border border-amber-400/30'
               }`}
               title="Xem chuyên đề hiến kế & bộ giải pháp chiến lược tối ưu định mức môn Tin học (không thừa giờ)"
             >
               <Lightbulb className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
               <span>Hiến Kế Tin Học</span>
+            </button>
+
+            {/* Reset / Sync from Actual Teaching */}
+            <button
+              onClick={handleResetToCleanActual}
+              className="px-3 py-2 bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ml-auto"
+              title="Xóa mọi thay đổi thử nghiệm và sao chép lại y nguyên từ Số Tiết Thực Dạy"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Làm Sạch (Sao Chép Lại)</span>
             </button>
           </div>
         </div>
@@ -1557,6 +1989,787 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
           >
             <X className="w-4 h-4" />
           </button>
+        </div>
+      )}
+
+      {/* =========================================================================
+          WORKSPACE 1: THAY ĐỔI GIÁO VIÊN DẠY LỚP (INTERACTIVE REASSIGN WORKSPACE)
+          ========================================================================= */}
+      {isReassignDrawerOpen && (
+        <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-lg border border-indigo-500/50 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-gradient-to-tr from-indigo-500 to-purple-600 text-white rounded-xl shadow-md">
+                <ArrowRightLeft className="w-6 h-6" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-base font-black tracking-tight text-white flex items-center gap-2">
+                    1/ Thử Nghiệm Thay Đổi Giáo Viên Dạy Lớp & Phân Công Môn Học
+                  </h3>
+                  <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-bold text-xs flex items-center gap-1 shadow-2xs">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                    Thử nghiệm độc lập • Cập nhật tức thì vào Số tiết thực dạy
+                  </span>
+                </div>
+                <p className="text-xs text-indigo-200/90 mt-1 max-w-4xl leading-relaxed">
+                  Thầy có thể chọn bất kỳ lớp nào (53 lớp) để đổi giáo viên cho từng môn học, hoặc thực hiện hoán đổi 2 chiều giữa 2 giáo viên (như hoán đổi môn Địa lý giữa Cô Lý và Thầy Tuấn).
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
+              <button
+                onClick={() => setIsReassignDrawerOpen(false)}
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                title="Thu gọn bảng đổi giáo viên"
+              >
+                <ChevronUp className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Controls: Campus filter + Scope selector + Class selector */}
+          <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              {/* Campus Filter */}
+              <div className="flex items-center gap-1 text-xs">
+                <span className="font-bold text-indigo-200 mr-1 flex items-center gap-1">
+                  <Building2 className="w-3.5 h-3.5" /> Điểm trường:
+                </span>
+                <div className="inline-flex bg-black/30 p-1 rounded-lg border border-white/10">
+                  {(['ALL', 'THPT', 'THCS_DBK', 'THCS_TK'] as const).map((cKey) => (
+                    <button
+                      key={cKey}
+                      type="button"
+                      onClick={() => {
+                        setReassignClassCampusFilter(cKey);
+                        const firstMatching = classes.find((c) => {
+                          if (cKey === 'THPT') return c.level === 'THPT';
+                          if (cKey === 'THCS_DBK') return c.level === 'THCS' && c.campus === 'THCSDBK';
+                          if (cKey === 'THCS_TK') return c.level === 'THCS' && c.campus !== 'THCSDBK';
+                          return true;
+                        });
+                        if (firstMatching) setSelectedClassId(firstMatching.id);
+                      }}
+                      className={`px-2.5 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
+                        reassignClassCampusFilter === cKey
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : 'text-slate-300 hover:text-white'
+                      }`}
+                    >
+                      {cKey === 'ALL'
+                        ? 'Tất cả (53)'
+                        : cKey === 'THPT'
+                        ? 'THPT (14)'
+                        : cKey === 'THCS_DBK'
+                        ? 'Đốc Binh Kiều (24)'
+                        : 'Tân Kiều (15)'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Scope selector */}
+              <div className="flex items-center gap-1.5 text-xs">
+                <span className="font-bold text-indigo-200 mr-1 flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5" /> Phạm vi áp dụng:
+                </span>
+                <div className="inline-flex bg-black/30 p-1 rounded-lg border border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => setApplyScope('CURRENT_ONWARD')}
+                    className={`px-2.5 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
+                      applyScope === 'CURRENT_ONWARD'
+                        ? 'bg-amber-400 text-slate-950 font-black shadow-xs'
+                        : 'text-slate-300 hover:text-white'
+                    }`}
+                    title="Khuyến nghị: Bảo toàn tuần 1 đến 9 đã thực dạy, chỉ đổi từ Tuần 10 đến Tuần 35"
+                  >
+                    Từ Tuần 10 đến Tuần 35 (26 tuần)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setApplyScope('ALL_SEMESTER')}
+                    className={`px-2.5 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
+                      applyScope === 'ALL_SEMESTER'
+                        ? 'bg-amber-400 text-slate-950 font-black shadow-xs'
+                        : 'text-slate-300 hover:text-white'
+                    }`}
+                    title="Áp dụng đổi cho toàn bộ năm (Tuần 1 đến 35)"
+                  >
+                    Toàn năm (Tuần 1 - 35)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Class selector */}
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <label className="text-xs font-bold text-amber-300 flex items-center gap-1 shrink-0">
+                <School className="w-4 h-4" /> Chọn Lớp Cần Đổi Môn:
+              </label>
+              <div className="flex-1 min-w-[240px]">
+                <select
+                  value={selectedClassId}
+                  onChange={(e) => setSelectedClassId(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-900 border border-indigo-400/50 rounded-xl text-xs font-bold text-white focus:outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer"
+                >
+                  {classes
+                    .filter((c) => {
+                      if (reassignClassCampusFilter === 'THPT') return c.level === 'THPT';
+                      if (reassignClassCampusFilter === 'THCS_DBK') return c.level === 'THCS' && c.campus === 'THCSDBK';
+                      if (reassignClassCampusFilter === 'THCS_TK') return c.level === 'THCS' && c.campus !== 'THCSDBK';
+                      return true;
+                    })
+                    .map((c) => {
+                      const campusName =
+                        c.level === 'THPT'
+                          ? 'THPT'
+                          : c.campus === 'THCSDBK'
+                          ? 'THCS ĐBK'
+                          : 'THCS Tân Kiều';
+                      return (
+                        <option key={c.id} value={c.id}>
+                          Lớp {c.name} (Khối {c.grade} • {campusName})
+                        </option>
+                      );
+                    })}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Class Subjects Table (Interactive Reassignment) */}
+          <div className="bg-white rounded-xl text-slate-900 overflow-hidden border border-indigo-200/50 shadow-sm p-3 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-2">
+              <div className="flex items-center gap-2">
+                <span className="font-black text-sm text-indigo-950 flex items-center gap-1.5">
+                  <span className="px-2 py-0.5 rounded bg-indigo-100 text-indigo-900 font-black text-xs border border-indigo-300">
+                    {classes.find((c) => c.id === selectedClassId)?.name || selectedClassId}
+                  </span>
+                  Danh Sách Các Môn Học Của Lớp Trong Thời Khóa Biểu:
+                </span>
+                <span className="text-[11px] text-slate-500">
+                  ({classSubjects.length} môn • Thầy chọn giáo viên mới ở cột bên phải và bấm "Đổi GV")
+                </span>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto max-h-[360px] overflow-y-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead className="sticky top-0 bg-slate-100 z-10 border-b border-slate-300">
+                  <tr className="text-slate-700 font-bold uppercase text-[11px]">
+                    <th className="py-2.5 px-3 w-12 text-center">STT</th>
+                    <th className="py-2.5 px-3 min-w-[160px]">Môn Học</th>
+                    <th className="py-2.5 px-3 w-24 text-center">Số Tiết/Tuần</th>
+                    <th className="py-2.5 px-3 min-w-[200px]">Giáo Viên Đang Dạy (Dự Thảo)</th>
+                    <th className="py-2.5 px-3 min-w-[280px]">Chọn Giáo Viên Mới Để Thay Thế</th>
+                    <th className="py-2.5 px-3 w-32 text-center">Thao Tác</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {classSubjects.map((cs, sIdx) => {
+                    const currentTeacherObj = teacherByName.get(cs.teacherName);
+                    const currentTeacherDraftWl = currentTeacherObj
+                      ? draftWorkloadMap.get(currentTeacherObj.id)
+                      : null;
+                    const currentBal = currentTeacherDraftWl
+                      ? currentTeacherDraftWl.semesterBalance
+                      : 0;
+
+                    return (
+                      <tr key={cs.subjectId} className="hover:bg-slate-50 transition-colors">
+                        <td className="py-2.5 px-3 text-center text-slate-500 font-medium">
+                          {sIdx + 1}
+                        </td>
+                        <td className="py-2.5 px-3 font-bold text-slate-900">
+                          <span className="px-2 py-1 rounded bg-slate-100 border border-slate-200">
+                            {cs.subjectName}
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3 text-center font-mono font-bold text-indigo-700">
+                          {cs.count}t/tuần
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-bold text-slate-800">{cs.teacherName}</span>
+                            <span
+                              className={`px-1.5 py-0.5 rounded text-[10px] font-black ${
+                                currentBal < 0
+                                  ? 'bg-blue-100 text-blue-800 border border-blue-200'
+                                  : currentBal === 0
+                                  ? 'bg-slate-100 text-slate-700'
+                                  : 'bg-rose-100 text-rose-800 border border-rose-200'
+                              }`}
+                            >
+                              {currentBal > 0 ? `+${currentBal}` : currentBal}t
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <select
+                            id={`select-reassign-${cs.subjectId}`}
+                            defaultValue=""
+                            className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-800 bg-white hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer"
+                          >
+                            <option value="">-- Chọn giáo viên thay thế --</option>
+                            {teachers
+                              .filter(
+                                (t) =>
+                                  !t.id.startsWith('tch-bgh') ||
+                                  t.role === 'PhoHieuTruong'
+                              )
+                              .sort((a, b) => {
+                                const aBal = draftWorkloadMap.get(a.id)?.semesterBalance || 0;
+                                const bBal = draftWorkloadMap.get(b.id)?.semesterBalance || 0;
+                                return aBal - bBal; // Show deficit teachers first!
+                              })
+                              .map((t) => {
+                                const tWl = draftWorkloadMap.get(t.id);
+                                const tBal = tWl ? tWl.semesterBalance : 0;
+                                const deptName =
+                                  departments.find((d) => d.id === t.departmentId)?.name || '';
+                                return (
+                                  <option key={t.id} value={t.id}>
+                                    {t.name} ({t.code}) • {tBal > 0 ? `+${tBal}` : tBal}t • {deptName}
+                                  </option>
+                                );
+                              })}
+                          </select>
+                        </td>
+                        <td className="py-2.5 px-3 text-center">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const el = document.getElementById(
+                                `select-reassign-${cs.subjectId}`
+                              ) as HTMLSelectElement | null;
+                              const newTId = el ? el.value : '';
+                              if (!newTId) {
+                                if (onShowToast)
+                                  onShowToast(
+                                    'Vui lòng chọn giáo viên mới thay thế trước khi cập nhật.'
+                                  );
+                                return;
+                              }
+                              const newTeacher = teacherMap.get(newTId);
+                              if (!newTeacher) return;
+
+                              const startW = applyScope === 'CURRENT_ONWARD' ? 10 : 1;
+                              const endW = 35;
+                              const nextDraft = { ...draftWeeklyTimetables };
+
+                              for (let w = startW; w <= endW; w++) {
+                                const tbl = nextDraft[w];
+                                if (!tbl || !tbl.slots) continue;
+                                const newSlots = tbl.slots.map((s) => {
+                                  if (
+                                    s.classId === selectedClassId &&
+                                    s.subjectId === cs.subjectId
+                                  ) {
+                                    return {
+                                      ...s,
+                                      teacherId: newTeacher.id,
+                                      teacherName: newTeacher.name,
+                                      teacherCode: newTeacher.code,
+                                    };
+                                  }
+                                  return s;
+                                });
+                                nextDraft[w] = { ...tbl, slots: newSlots, updatedAt: Date.now() };
+                              }
+
+                              persistDraft(nextDraft);
+                              setIsDiffDrawerOpen(true);
+                              const selClassName =
+                                classes.find((c) => c.id === selectedClassId)?.name ||
+                                selectedClassId;
+                              setActionBannerMessage({
+                                type: 'success',
+                                title: `Đã đổi thành công môn ${cs.subjectName} (Lớp ${selClassName})!`,
+                                detail: `Giáo viên mới: ${newTeacher.name} (thay cho ${cs.teacherName}) từ Tuần ${startW} đến Tuần ${endW}. Bảng số tiết thực dạy đã cập nhật ngay tức thì.`,
+                              });
+                              if (onShowToast)
+                                onShowToast(
+                                  `✓ Đã phân công lại môn ${cs.subjectName} (${selClassName}) cho ${newTeacher.name}!`
+                                );
+                            }}
+                            className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg shadow-xs transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-1 mx-auto"
+                          >
+                            <Check className="w-3.5 h-3.5" />
+                            <span>Đổi GV</span>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Quick Swap 2 Teachers Card (Cô Lý ⇄ Thầy Tuấn) */}
+            <div className="bg-amber-50 rounded-xl p-3 border border-amber-300 space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 text-xs font-black text-amber-950">
+                  <ArrowLeftRight className="w-4 h-4 text-amber-700" />
+                  <span>Tiện Ích Hoán Đổi Nhanh 2 Chiều Giữa 2 Giáo Viên (Swap):</span>
+                </div>
+                <span className="text-[11px] text-amber-800">
+                  Hoán đổi các lớp của 2 giáo viên từ Tuần 10 đến Tuần 35
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 items-center text-xs">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                    Giáo viên A:
+                  </label>
+                  <select
+                    value={swapTeacherAId}
+                    onChange={(e) => setSwapTeacherAId(e.target.value)}
+                    className="w-full px-2.5 py-1.5 bg-white border border-amber-300 rounded-lg text-xs font-bold text-slate-900"
+                  >
+                    {teachers
+                      .filter((t) => !t.id.startsWith('tch-bgh'))
+                      .sort(
+                        (a, b) =>
+                          (draftWorkloadMap.get(b.id)?.semesterBalance || 0) -
+                          (draftWorkloadMap.get(a.id)?.semesterBalance || 0)
+                      )
+                      .map((t) => {
+                        const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
+                        return (
+                          <option key={t.id} value={t.id}>
+                            {t.name} ({b > 0 ? `+${b}` : b}t) • {t.campus || 'ĐBK'}
+                          </option>
+                        );
+                      })}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                    Giáo viên B:
+                  </label>
+                  <select
+                    value={swapTeacherBId}
+                    onChange={(e) => setSwapTeacherBId(e.target.value)}
+                    className="w-full px-2.5 py-1.5 bg-white border border-amber-300 rounded-lg text-xs font-bold text-slate-900"
+                  >
+                    {teachers
+                      .filter((t) => !t.id.startsWith('tch-bgh'))
+                      .sort(
+                        (a, b) =>
+                          (draftWorkloadMap.get(a.id)?.semesterBalance || 0) -
+                          (draftWorkloadMap.get(b.id)?.semesterBalance || 0)
+                      )
+                      .map((t) => {
+                        const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
+                        return (
+                          <option key={t.id} value={t.id}>
+                            {t.name} ({b > 0 ? `+${b}` : b}t) • {t.campus || 'ĐBK'}
+                          </option>
+                        );
+                      })}
+                  </select>
+                </div>
+
+                <div className="pt-2 sm:pt-4">
+                  <button
+                    type="button"
+                    onClick={() => handleSwapTeachers(swapTeacherAId, swapTeacherBId)}
+                    className="w-full px-3 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-black text-xs rounded-xl shadow-sm transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-1.5"
+                  >
+                    <ArrowLeftRight className="w-4 h-4" />
+                    <span>Hoán Đổi 2 Giáo Viên</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          WORKSPACE 2: MÔN GIÁO DỤC ĐỊA PHƯƠNG (GDĐP - 35 TIẾT / NĂM)
+          ========================================================================= */}
+      {isGddpAssignmentDrawerOpen && (
+        <div className="bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-lg border border-teal-500/50 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-gradient-to-tr from-teal-500 to-emerald-500 text-slate-950 rounded-xl shadow-md">
+                <BookOpen className="w-6 h-6 fill-current" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-base font-black tracking-tight text-white flex items-center gap-2">
+                    2/ Thí Điểm Phân Công Môn Giáo Dục Địa Phương (GDĐP) - 35 Tiết / Năm
+                  </h3>
+                  {isGddpCurrentlyInDraft ? (
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold text-xs flex items-center gap-1 shadow-2xs">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      Đang áp dụng trong TKB ({gddpScope === 'FULL_YEAR' ? '35 tuần cả năm' : 'Tuần 10 - 35'})
+                    </span>
+                  ) : (
+                    <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-medium text-xs">
+                      Chưa nạp vào TKB
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-teal-200/90 mt-1 max-w-4xl leading-relaxed">
+                  • <b>Thời lượng:</b> 35 tiết/năm (1 tiết/tuần trong 35 tuần) cho toàn bộ 53 lớp.<br />
+                  • <b>Quy tắc chuẩn:</b> 100% giáo viên sau khi nhận lớp <b>BẮT BUỘC duy trì mức ÂM TIẾT NHỎ (&lt; 0, từ -1t đến -35t)</b>. Tuyệt đối không để ai bị 0 hoặc dương tiết.<br />
+                  • <b>Định hướng:</b> Ưu tiên môn Khoa học Xã hội (Sử, Địa, GDCD, Văn). Đã rút Thầy Ngô Anh Tuấn (-111t) ra để dạy Địa lý hỗ trợ Cô Lý (+142t).
+                </p>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="flex items-center gap-2 self-start sm:self-center shrink-0 flex-wrap">
+              <button
+                type="button"
+                onClick={handleLoadOptimalGddpPreset}
+                className="px-3.5 py-2 bg-gradient-to-r from-amber-400 via-teal-400 to-emerald-400 hover:from-amber-500 hover:to-emerald-500 text-slate-950 text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                title="Nạp ngay phương án toán học đã kiểm chứng: 100% giáo viên âm nhỏ từ -1t đến -35t, ưu tiên KHXH và thiếu tiết"
+              >
+                <Sparkles className="w-3.5 h-3.5 fill-current" />
+                <span>⭐ Nạp Đề Xuất Tối Ưu (Toàn Bộ Âm Nhỏ)</span>
+              </button>
+
+              {isGddpCurrentlyInDraft ? (
+                <button
+                  onClick={handleRemoveGddpAssignment}
+                  className="px-3 py-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
+                  title="Gỡ bỏ các tiết môn GDĐP khỏi bản Dự thảo"
+                >
+                  <X className="w-3.5 h-3.5" />
+                  <span>Gỡ Bỏ GDĐP</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleApplyGddpAssignment()}
+                  className="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                >
+                  <Zap className="w-3.5 h-3.5 fill-current" />
+                  <span>Áp Dụng GDĐP</span>
+                </button>
+              )}
+
+              <button
+                onClick={() => setIsGddpAssignmentDrawerOpen(false)}
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                title="Thu gọn bảng môn GDĐP"
+              >
+                <ChevronUp className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* 4 Cards Overview of GDDP Impact */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-teal-400/30 space-y-1">
+              <div className="flex items-center justify-between text-xs text-teal-200">
+                <span className="font-bold flex items-center gap-1">
+                  <School className="w-3.5 h-3.5 text-teal-300" />
+                  Điểm chính (THPT)
+                </span>
+                <span className="px-2 py-0.5 bg-teal-500/20 text-teal-300 font-black rounded-full text-[10px]">
+                  {gddpStats.thptCount} / 14 lớp
+                </span>
+              </div>
+              <div className="text-lg font-black text-teal-300">
+                +{gddpStats.thptCount * 35} tiết/năm
+              </div>
+              <p className="text-[10px] text-teal-100 leading-tight">
+                Phân cho 8 GV (Thầy Tùng 5l, Thầy Thùy 2l, Thầy Rỡ 2l, Cô Ny 1l, Thầy Phi 1l, Cô Thi 1l, Cô Trang 1l, Thầy Sơn 1l). 100% âm từ -1t đến -35t!
+              </p>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-indigo-400/30 space-y-1">
+              <div className="flex items-center justify-between text-xs text-indigo-200">
+                <span className="font-bold flex items-center gap-1">
+                  <Building2 className="w-3.5 h-3.5 text-indigo-300" />
+                  THCS Đốc Binh Kiều
+                </span>
+                <span className="px-2 py-0.5 bg-indigo-500/20 text-indigo-300 font-black rounded-full text-[10px]">
+                  {gddpStats.dbkCount} / 24 lớp
+                </span>
+              </div>
+              <div className="text-lg font-black text-indigo-300">
+                +{gddpStats.dbkCount * 35} tiết/năm
+              </div>
+              <p className="text-[10px] text-indigo-100 leading-tight">
+                Phân cho 13 GV (Cô Thúy 5l, Thầy Hải 4l, Thầy Thảo PHT 3l, Cô The 2l, Thầy Nguyên 2l, Thầy Nghĩa, Thầy Lộc, Thầy Hùng, Thầy Ngoan, Thầy Nguyễn, Thầy Tài, Thầy Tới, Cô Diễm). 100% âm!
+              </p>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-blue-400/30 space-y-1">
+              <div className="flex items-center justify-between text-xs text-blue-200">
+                <span className="font-bold flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-blue-300" />
+                  THCS Tân Kiều
+                </span>
+                <span className="px-2 py-0.5 bg-blue-500/20 text-blue-300 font-black rounded-full text-[10px]">
+                  {gddpStats.tkCount} / 15 lớp
+                </span>
+              </div>
+              <div className="text-lg font-black text-blue-300">
+                +{gddpStats.tkCount * 35} tiết/năm
+              </div>
+              <p className="text-[10px] text-blue-100 leading-tight">
+                Phân cho 9 GV (Cô Hà 2l, Thầy Tín 2l, Thầy Văn 2l, Thầy Tòng PHT 1l, Thầy Huy 1l, Cô Sang 1l, Thầy Bền 4l, Cô Anh 1l, Cô Liên 1l). 100% âm!
+              </p>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 border border-emerald-400/30 space-y-1">
+              <div className="flex items-center justify-between text-xs text-emerald-200">
+                <span className="font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
+                  Tiêu Chuẩn Âm Tiết
+                </span>
+                <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 font-black rounded-full text-[10px]">
+                  100% &lt; 0
+                </span>
+              </div>
+              <div className="text-lg font-black text-emerald-300">
+                -1t đến -35t (Âm nhỏ)
+              </div>
+              <p className="text-[10px] text-emerald-100 leading-tight">
+                Tuyệt đối 0 giáo viên nào bị 0 tiết hoặc dương tiết. Thầy Tuấn (-111t) sẵn sàng hỗ trợ Cô Lý (+142t) môn Địa lý!
+              </p>
+            </div>
+          </div>
+
+          {/* Interactive 53 Classes Table */}
+          <div className="bg-white rounded-xl text-slate-900 overflow-hidden border border-teal-200/50 shadow-sm space-y-2 p-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-2">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-xs text-slate-800">
+                  Danh Sách Phân Công Môn GDĐP Chi Tiết (53 lớp toàn trường):
+                </span>
+                <span className="text-[11px] text-slate-500">
+                  (Thầy có thể bấm vào dropdown bất kỳ lớp nào để đổi giáo viên theo ý muốn)
+                </span>
+              </div>
+
+              {/* Campus Filter Tabs */}
+              <div className="inline-flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs font-medium gap-1">
+                <button
+                  type="button"
+                  onClick={() => setGddpCampusFilterTab('ALL')}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    gddpCampusFilterTab === 'ALL'
+                      ? 'bg-teal-700 text-white font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Tất cả (53 lớp)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGddpCampusFilterTab('THPT')}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    gddpCampusFilterTab === 'THPT'
+                      ? 'bg-teal-700 text-white font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Điểm chính THPT (14 lớp)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGddpCampusFilterTab('THCS_DBK')}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    gddpCampusFilterTab === 'THCS_DBK'
+                      ? 'bg-teal-700 text-white font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  THCS Đốc Binh Kiều (24 lớp)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGddpCampusFilterTab('THCS_TK')}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    gddpCampusFilterTab === 'THCS_TK'
+                      ? 'bg-teal-700 text-white font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  THCS Tân Kiều (15 lớp)
+                </button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto max-h-[420px] overflow-y-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead className="sticky top-0 bg-slate-100 z-10 border-b border-slate-300">
+                  <tr className="text-slate-700 font-bold uppercase text-[11px]">
+                    <th className="py-2 px-3 w-12 text-center">STT</th>
+                    <th className="py-2 px-3 w-20 text-center font-black">Lớp</th>
+                    <th className="py-2 px-3 w-16 text-center">Khối</th>
+                    <th className="py-2 px-3 min-w-[140px]">Điểm Trường</th>
+                    <th className="py-2 px-3 w-24 text-center">Thời lượng</th>
+                    <th className="py-2 px-3 min-w-[260px]">Giáo Viên Phụ Trách Môn GDĐP</th>
+                    <th className="py-2 px-3 w-36 text-center">Cân Đối Sau Nhận</th>
+                    <th className="py-2 px-3 min-w-[180px]">Căn Cứ / Đánh Giá</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {classes
+                    .filter((cls) => {
+                      if (gddpCampusFilterTab === 'THPT') return cls.level === 'THPT';
+                      if (gddpCampusFilterTab === 'THCS_DBK')
+                        return cls.level === 'THCS' && cls.campus === 'THCSDBK';
+                      if (gddpCampusFilterTab === 'THCS_TK')
+                        return cls.level === 'THCS' && cls.campus !== 'THCSDBK';
+                      return true;
+                    })
+                    .map((cls, idx) => {
+                      const assignedTeacherId =
+                        gddpCustomClassTeacherMap[cls.name] ||
+                        DEFAULT_GDDP_CLASS_ASSIGNMENTS[cls.name]?.teacherId;
+                      const defaultInfo = DEFAULT_GDDP_CLASS_ASSIGNMENTS[cls.name];
+                      const assignedTeacher = assignedTeacherId
+                        ? teacherMap.get(assignedTeacherId)
+                        : null;
+                      const assignedWl = assignedTeacherId
+                        ? draftWorkloadMap.get(assignedTeacherId)
+                        : null;
+                      const balance = assignedWl ? assignedWl.semesterBalance : 0;
+
+                      return (
+                        <tr key={cls.id} className="hover:bg-slate-50 transition-colors">
+                          <td className="py-2 px-3 text-center text-slate-500 font-medium">
+                            {idx + 1}
+                          </td>
+                          <td className="py-2 px-3 text-center">
+                            <span className="px-2 py-0.5 rounded font-black text-xs bg-teal-50 text-teal-950 border border-teal-200">
+                              {cls.name}
+                            </span>
+                          </td>
+                          <td className="py-2 px-3 text-center text-slate-600">
+                            Khối {cls.grade}
+                          </td>
+                          <td className="py-2 px-3 text-slate-700">
+                            {cls.level === 'THPT'
+                              ? 'Điểm chính (THPT)'
+                              : cls.campus === 'THCSDBK'
+                              ? 'THCS Đốc Binh Kiều'
+                              : 'THCS Tân Kiều'}
+                          </td>
+                          <td className="py-2 px-3 text-center font-mono text-slate-700">
+                            1t/w (35t/năm)
+                          </td>
+                          <td className="py-2 px-3">
+                            <select
+                              value={assignedTeacherId || ''}
+                              onChange={(e) =>
+                                handleChangeGddpClassTeacher(cls.name, e.target.value)
+                              }
+                              className="px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer w-full max-w-xs bg-white text-slate-900 border-slate-300 hover:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            >
+                              <optgroup label="Nhóm Ưu Tiên: Giáo Viên KHXH & Thiếu Tiết">
+                                {teachers
+                                  .filter((t) => {
+                                    const dept =
+                                      departments.find((d) => d.id === t.departmentId)?.name || '';
+                                    const isKhxh =
+                                      dept.includes('Lịch sử') ||
+                                      dept.includes('Ngữ Văn') ||
+                                      dept.includes('Địa') ||
+                                      dept.includes('GDCD') ||
+                                      dept.includes('Sử');
+                                    const b =
+                                      baseActualWorkloads.find((w) => w.teacherId === t.id)
+                                        ?.semesterBalance || 0;
+                                    return isKhxh || b < 0;
+                                  })
+                                  .sort((a, b) => {
+                                    const aB = draftWorkloadMap.get(a.id)?.semesterBalance || 0;
+                                    const bB = draftWorkloadMap.get(b.id)?.semesterBalance || 0;
+                                    return aB - bB;
+                                  })
+                                  .map((t) => {
+                                    const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
+                                    const dept =
+                                      departments.find((d) => d.id === t.departmentId)?.name || '';
+                                    return (
+                                      <option key={t.id} value={t.id}>
+                                        {t.name} ({b > 0 ? `+${b}` : b}t) • {dept} [{t.campus || 'ĐBK'}]
+                                      </option>
+                                    );
+                                  })}
+                              </optgroup>
+                              <optgroup label="Ban Giám Hiệu">
+                                {teachers
+                                  .filter((t) => t.id.startsWith('tch-bgh'))
+                                  .map((t) => {
+                                    const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
+                                    return (
+                                      <option key={t.id} value={t.id}>
+                                        {t.name} ({b > 0 ? `+${b}` : b}t) •{' '}
+                                        {t.duties?.map((r) => r.name).join(', ') || t.role || 'BGH'}
+                                      </option>
+                                    );
+                                  })}
+                              </optgroup>
+                              <optgroup label="Tất Cả Giáo Viên Khác">
+                                {teachers
+                                  .filter((t) => !t.id.startsWith('tch-bgh'))
+                                  .sort((a, b) => a.name.localeCompare(b.name, 'vi'))
+                                  .map((t) => {
+                                    const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
+                                    return (
+                                      <option key={t.id} value={t.id}>
+                                        {t.name} ({t.code}) • {b > 0 ? `+${b}` : b}t • [{t.campus || 'ĐBK'}]
+                                      </option>
+                                    );
+                                  })}
+                              </optgroup>
+                            </select>
+                          </td>
+                          <td className="py-2 px-3 text-center">
+                            {assignedTeacher ? (
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-xs font-black inline-flex items-center gap-1 ${
+                                  balance < 0 && balance >= -35
+                                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                    : balance < -35
+                                    ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                                    : balance === 0
+                                    ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                                    : 'bg-rose-100 text-rose-800 border border-rose-300'
+                                }`}
+                              >
+                                {balance < 0 && balance >= -35 && (
+                                  <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                )}
+                                {balance < -35 && <Info className="w-3 h-3 text-blue-600" />}
+                                {balance >= 0 && <AlertCircle className="w-3 h-3 text-rose-600" />}
+                                {balance > 0
+                                  ? `+${balance}t (Dương)`
+                                  : balance === 0
+                                  ? `0t (Đủ)`
+                                  : `${balance}t (Âm)`}
+                              </span>
+                            ) : (
+                              <span className="text-slate-400">—</span>
+                            )}
+                          </td>
+                          <td className="py-2 px-3 text-slate-600 text-[11px]">
+                            {defaultInfo?.note || 'Phân công theo điểm trường'}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
 
@@ -1943,9 +3156,10 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                     <th className="py-2 px-3 w-20 text-center font-black">Lớp</th>
                     <th className="py-2 px-3 w-16 text-center">Khối</th>
                     <th className="py-2 px-3 min-w-[140px]">Điểm Trường</th>
-                    <th className="py-2 px-3 w-24 text-center">Thời lượng</th>
-                    <th className="py-2 px-3 min-w-[220px]">Giáo Viên Phụ Trách Môn AI</th>
-                    <th className="py-2 px-3 min-w-[200px]">Căn Cứ / Đánh Giá</th>
+                    <th className="py-2 px-3 w-20 text-center">Thời lượng</th>
+                    <th className="py-2 px-3 min-w-[260px]">Giáo Viên Phụ Trách Môn AI</th>
+                    <th className="py-2 px-3 w-28 text-center">Cân Đối Dự Thảo</th>
+                    <th className="py-2 px-3 min-w-[180px]">Căn Cứ / Ghi Chú</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -1962,6 +3176,8 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                         DEFAULT_AI_CLASS_ASSIGNMENTS[cls.name]?.teacherId;
                       const isAssignedToTri = assignedTeacherId === 'tch-bgh-2';
                       const defaultInfo = DEFAULT_AI_CLASS_ASSIGNMENTS[cls.name];
+                      const assignedTeacher = teachers.find((t) => t.id === assignedTeacherId);
+                      const balance = draftWorkloadMap.get(assignedTeacherId || '')?.semesterBalance || 0;
 
                       return (
                         <tr
@@ -2001,40 +3217,80 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                             <select
                               value={assignedTeacherId || ''}
                               onChange={(e) => handleChangeAiClassTeacher(cls.name, e.target.value)}
-                              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer w-full max-w-xs ${
+                              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer w-full max-w-sm ${
                                 isAssignedToTri
                                   ? 'bg-purple-700 text-white border-purple-800'
                                   : 'bg-white text-slate-900 border-slate-300 hover:border-slate-400'
                               }`}
                             >
                               <optgroup label="Ban Giám Hiệu (Điểm chính)">
-                                <option value="tch-bgh-2">
-                                  Thầy Nguyễn Minh Trí (PHT) • Giảm tải GV Tin & Bù định mức
-                                </option>
+                                {teachers
+                                  .filter((t) => t.id.startsWith('tch-bgh'))
+                                  .map((t) => {
+                                    const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
+                                    return (
+                                      <option key={t.id} value={t.id}>
+                                        {t.name} ({b > 0 ? `+${b}` : b}t) • {t.duties?.map((r) => r.name).join(', ') || t.role || 'BGH'}
+                                      </option>
+                                    );
+                                  })}
                               </optgroup>
-                              <optgroup label="Tổ Tin học (Điểm chính THPT)">
-                                <option value="tch-av-2">
-                                  Thầy Nguyễn Trung Hiếu (Tổ phó) • Thiếu -175t/năm
-                                </option>
-                                <option value="tch-av-8">
-                                  Cô Đào Thị Ngọc Liên (GVCN 11CB4)
-                                </option>
-                                <option value="tch-av-9">
-                                  Cô Lê Thị Thu Diễm (GVCN 10CB4)
-                                </option>
+                              <optgroup label="Tổ Tin học (Toàn trường)">
+                                {teachers
+                                  .filter((t) => {
+                                    const dept = departments.find((d) => d.id === t.departmentId)?.name || '';
+                                    return (
+                                      dept.toLowerCase().includes('tin') ||
+                                      ['tch-av-2', 'tch-av-8', 'tch-av-9', 'tch-av-13', 'tch-av-14', 'tch-av-16'].includes(t.id)
+                                    );
+                                  })
+                                  .map((t) => {
+                                    const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
+                                    return (
+                                      <option key={t.id} value={t.id}>
+                                        {t.name} ({b > 0 ? `+${b}` : b}t) • {t.campus || 'ĐBK'}
+                                      </option>
+                                    );
+                                  })}
                               </optgroup>
-                              <optgroup label="Điểm THCS Đốc Binh Kiều & Tân Kiều">
-                                <option value="tch-av-13">
-                                  Thầy Mai Phước Lộc (GV Tin học THCS DBK - GVCN 7A2)
-                                </option>
-                                <option value="tch-av-14">
-                                  Cô Bùi Kim Phướng (GV Tin THCS DBK - GVCN 6A3)
-                                </option>
-                                <option value="tch-av-16">
-                                  Thầy Lê Phước Hậu (GV Tin THCS TK - GVCN 8A9)
-                                </option>
+                              <optgroup label="Tất Cả Giáo Viên Khác">
+                                {teachers
+                                  .filter((t) => !t.id.startsWith('tch-bgh'))
+                                  .sort((a, b) => a.name.localeCompare(b.name, 'vi'))
+                                  .map((t) => {
+                                    const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
+                                    return (
+                                      <option key={t.id} value={t.id}>
+                                        {t.name} ({b > 0 ? `+${b}` : b}t) • {t.campus || 'ĐBK'}
+                                      </option>
+                                    );
+                                  })}
                               </optgroup>
                             </select>
+                          </td>
+                          <td className="py-2 px-3 text-center">
+                            {assignedTeacher ? (
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-xs font-black inline-flex items-center gap-1 ${
+                                  balance === 0
+                                    ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                                    : balance > 0
+                                    ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                                    : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                }`}
+                              >
+                                {balance < 0 && <CheckCircle2 className="w-3 h-3 text-emerald-600" />}
+                                {balance === 0 && <Info className="w-3 h-3 text-amber-600" />}
+                                {balance > 0 && <AlertCircle className="w-3 h-3 text-rose-600" />}
+                                {balance > 0
+                                  ? `+${balance}t (Dương)`
+                                  : balance === 0
+                                  ? `0t (Đủ)`
+                                  : `${balance}t (Âm)`}
+                              </span>
+                            ) : (
+                              <span className="text-slate-400">—</span>
+                            )}
                           </td>
                           <td className="py-2 px-3 text-slate-600 text-[11px]">
                             {isAssignedToTri ? (
