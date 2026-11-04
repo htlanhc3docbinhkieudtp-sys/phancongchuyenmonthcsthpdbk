@@ -29,6 +29,10 @@ import {
   CONG_NGHE_9_CLASS_ASSIGNMENTS,
 } from '../data/congNgheCurriculumSchedule';
 import {
+  SU_6_WEEKS,
+  DIA_6_WEEKS,
+  SU_7_WEEKS,
+  DIA_7_WEEKS,
   SU_8_WEEKS,
   DIA_8_WEEKS,
   SU_9_WEEKS,
@@ -343,6 +347,9 @@ export function adjustCongNgheSlotsForWeek(
 
 /**
  * Adjust Lịch sử - Địa lí slots for Grade 8 and Grade 9 according to the weekly curriculum distribution:
+ * - Khối 6 & Khối 7 (105t/năm: Sử 49t, Địa 56t cho các lớp phân công tách 2 GV):
+ *   + HK1 (54t = Sử 25t + Địa 29t): T1 (Sử 1, Địa 2), T2-4 (Sử 2, Địa 1), T5-9 (Sử 1, Địa 2), T10-13 (Sử 2, Địa 1), T14-18 (Sử 1, Địa 2)
+ *   + HK2 (51t = Sử 24t + Địa 27t): T19-22 (Sử 2, Địa 1), T23-27 (Sử 1, Địa 2), T28-30 (Sử 2, Địa 1), T31-35 (Sử 1, Địa 2)
  * - Khối 8 (105t/năm: Sử 50t, Địa 55t):
  *   + HK1 (54t = Sử 26t + Địa 28t): T1-4 (Sử 2, Địa 1), T5-9 (Sử 1, Địa 2), T10-13 (Sử 2, Địa 1), T14-18 (Sử 1, Địa 2)
  *   + HK2 (51t = Sử 24t + Địa 27t): T19-22 (Sử 2, Địa 1), T23-27 (Sử 1, Địa 2), T28-30 (Sử 2, Địa 1), T31-35 (Sử 1, Địa 2)
@@ -354,22 +361,35 @@ export function adjustLsdlSlotsForWeek(
   baseSlots: TimetableSlot[],
   weekNumber: number
 ): TimetableSlot[] {
-  const pSu8 = SU_8_WEEKS[weekNumber] ?? (weekNumber <= 4 ? 2 : (weekNumber <= 9 ? 1 : (weekNumber <= 13 ? 2 : 1)));
-  const pDia8 = DIA_8_WEEKS[weekNumber] ?? (weekNumber <= 4 ? 1 : (weekNumber <= 9 ? 2 : (weekNumber <= 13 ? 1 : 2)));
-  const pSu9 = SU_9_WEEKS[weekNumber] ?? (weekNumber <= 4 ? 2 : (weekNumber <= 9 ? 1 : (weekNumber <= 13 ? 2 : 1)));
-  const pDia9 = DIA_9_WEEKS[weekNumber] ?? (weekNumber <= 4 ? 1 : (weekNumber <= 9 ? 2 : (weekNumber <= 13 ? 1 : 2)));
+  const isHk1 = weekNumber >= 1 && weekNumber <= 18;
+  const pSu6 = SU_6_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? (weekNumber === 1 ? 1 : 2) : 1) : 1);
+  const pDia6 = DIA_6_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? (weekNumber === 1 ? 2 : 1) : 2) : 2);
 
+  const pSu7 = SU_7_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? (weekNumber === 1 ? 1 : 2) : 1) : 1);
+  const pDia7 = DIA_7_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? (weekNumber === 1 ? 2 : 1) : 2) : 2);
+
+  const pSu8 = SU_8_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 2 : 1) : 1);
+  const pDia8 = DIA_8_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 1 : 2) : 2);
+
+  const pSu9 = SU_9_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 2 : 1) : 1);
+  const pDia9 = DIA_9_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 1 : 2) : 2);
+
+  // Danh sách các lớp phân công tách 2 GV (Sử riêng, Địa riêng)
+  const lsdl6SplitClasses = LSDL_ALL_CLASS_ASSIGNMENTS.filter((c) => c.grade === '6' && c.type === 'SPLIT');
+  const lsdl7SplitClasses = LSDL_ALL_CLASS_ASSIGNMENTS.filter((c) => c.grade === '7' && c.type === 'SPLIT');
   const lsdl8Classes = LSDL_ALL_CLASS_ASSIGNMENTS.filter((c) => c.grade === '8');
   const lsdl9Classes = LSDL_ALL_CLASS_ASSIGNMENTS.filter((c) => c.grade === '9');
 
-  const k89ClassIds = new Set([
+  const splitClassIds = new Set([
+    ...lsdl6SplitClasses.map((c) => c.classId),
+    ...lsdl7SplitClasses.map((c) => c.classId),
     ...lsdl8Classes.map((c) => c.classId),
     ...lsdl9Classes.map((c) => c.classId),
   ]);
 
-  // Filter out existing LSDL slots for Grade 8 and 9, keep other slots
+  // Lọc bỏ các slot LSDL của các lớp tách GV để tạo lại đúng số tiết theo phân phối tuần
   const nonLsdlSlots = baseSlots.filter((s) => {
-    if (!k89ClassIds.has(s.classId)) return true;
+    if (!splitClassIds.has(s.classId)) return true;
     const sub = (s.subjectId || '').toLowerCase();
     const name = (s.subjectName || '').toLowerCase();
     const isLsdl =
@@ -387,69 +407,75 @@ export function adjustLsdlSlotsForWeek(
 
   const adaptedSlots: TimetableSlot[] = [...nonLsdlSlots];
 
-  // Add precise slots for Grade 8
-  for (const c of lsdl8Classes) {
-    for (let i = 0; i < pSu8; i++) {
-      adaptedSlots.push({
-        id: `slot-ls8-su-${c.classId}-w${weekNumber}-${i}`,
-        classId: c.classId,
-        className: c.className,
-        teacherId: c.historyTeacherId!,
-        teacherName: c.historyTeacherName,
-        subjectId: 'sub-su',
-        subjectName: 'Lịch sử',
-        dayOfWeek: 2 + i * 2,
-        session: 'SANG',
-        period: 3,
-      });
-    }
-    for (let i = 0; i < pDia8; i++) {
-      adaptedSlots.push({
-        id: `slot-ls8-dia-${c.classId}-w${weekNumber}-${i}`,
-        classId: c.classId,
-        className: c.className,
-        teacherId: c.geographyTeacherId!,
-        teacherName: c.geographyTeacherName,
-        subjectId: 'sub-dia',
-        subjectName: 'Địa lí',
-        dayOfWeek: 3 + i * 2,
-        session: 'SANG',
-        period: 4,
-      });
-    }
-  }
+  // Hàm sinh slot cho từng nhóm lớp, kế thừa giáo viên hiện hành từ baseSlots (đáp ứng hoán đổi/đổi GV trong dự thảo)
+  const addSplitGradeSlots = (
+    classList: typeof LSDL_ALL_CLASS_ASSIGNMENTS,
+    pSu: number,
+    pDia: number,
+    grade: string,
+    session: 'SANG' | 'CHIEU'
+  ) => {
+    for (const c of classList) {
+      // Tìm giáo viên Sử và Địa đang phụ trách lớp trong baseSlots (nếu đã phân công mới/hoán đổi)
+      const existingSu = baseSlots.find(
+        (s) =>
+          s.classId === c.classId &&
+          (s.subjectId === 'sub-su' || s.subjectName?.toLowerCase().includes('lịch sử') || s.subjectName?.toLowerCase().includes('sử'))
+      );
+      const suTeacherId = existingSu?.teacherId || c.historyTeacherId!;
+      const suTeacherName = existingSu?.teacherName || c.historyTeacherName;
+      const suTeacherCode = existingSu?.teacherCode || suTeacherName;
 
-  // Add precise slots for Grade 9
-  for (const c of lsdl9Classes) {
-    for (let i = 0; i < pSu9; i++) {
-      adaptedSlots.push({
-        id: `slot-ls9-su-${c.classId}-w${weekNumber}-${i}`,
-        classId: c.classId,
-        className: c.className,
-        teacherId: c.historyTeacherId!,
-        teacherName: c.historyTeacherName,
-        subjectId: 'sub-su',
-        subjectName: 'Lịch sử',
-        dayOfWeek: 2 + i * 2,
-        session: 'SANG',
-        period: 3,
-      });
+      const existingDia = baseSlots.find(
+        (s) =>
+          s.classId === c.classId &&
+          (s.subjectId === 'sub-dia' || s.subjectName?.toLowerCase().includes('địa lí') || s.subjectName?.toLowerCase().includes('địa lý'))
+      );
+      const diaTeacherId = existingDia?.teacherId || c.geographyTeacherId!;
+      const diaTeacherName = existingDia?.teacherName || c.geographyTeacherName;
+      const diaTeacherCode = existingDia?.teacherCode || diaTeacherName;
+
+      // Sinh slot Lịch sử
+      for (let i = 0; i < pSu; i++) {
+        adaptedSlots.push({
+          id: `slot-ls${grade}-su-${c.classId}-w${weekNumber}-${i}`,
+          classId: c.classId,
+          className: c.className,
+          teacherId: suTeacherId,
+          teacherName: suTeacherName,
+          teacherCode: suTeacherCode,
+          subjectId: 'sub-su',
+          subjectName: 'Lịch sử',
+          dayOfWeek: 2 + i * 2,
+          session,
+          period: 3,
+        });
+      }
+
+      // Sinh slot Địa lí
+      for (let i = 0; i < pDia; i++) {
+        adaptedSlots.push({
+          id: `slot-ls${grade}-dia-${c.classId}-w${weekNumber}-${i}`,
+          classId: c.classId,
+          className: c.className,
+          teacherId: diaTeacherId,
+          teacherName: diaTeacherName,
+          teacherCode: diaTeacherCode,
+          subjectId: 'sub-dia',
+          subjectName: 'Địa lí',
+          dayOfWeek: 3 + i * 2,
+          session,
+          period: 4,
+        });
+      }
     }
-    for (let i = 0; i < pDia9; i++) {
-      adaptedSlots.push({
-        id: `slot-ls9-dia-${c.classId}-w${weekNumber}-${i}`,
-        classId: c.classId,
-        className: c.className,
-        teacherId: c.geographyTeacherId!,
-        teacherName: c.geographyTeacherName,
-        subjectId: 'sub-dia',
-        subjectName: 'Địa lí',
-        dayOfWeek: 3 + i * 2,
-        session: 'SANG',
-        period: 4,
-      });
-    }
-  }
+  };
+
+  // Áp dụng cho từng khối lớp
+  addSplitGradeSlots(lsdl6SplitClasses, pSu6, pDia6, '6', 'CHIEU');
+  addSplitGradeSlots(lsdl7SplitClasses, pSu7, pDia7, '7', 'CHIEU');
+  addSplitGradeSlots(lsdl8Classes, pSu8, pDia8, '8', 'SANG');
+  addSplitGradeSlots(lsdl9Classes, pSu9, pDia9, '9', 'SANG');
 
   return adaptedSlots;
 }

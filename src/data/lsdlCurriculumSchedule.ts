@@ -79,6 +79,20 @@ export const DIA_8_WEEKS: Record<number, number> = {
   31: 2, 32: 2, 33: 2, 34: 2, 35: 2,
 };
 
+// Bảng số tiết Sử Khối 6 & 7 từng tuần (35 tuần: HK1: 25t, HK2: 24t, Cả năm: 49t - Tuần 1 TKB thực tế xếp Sử 1t, Địa 2t)
+export const SU_6_WEEKS: Record<number, number> = {
+  ...SU_8_WEEKS,
+  1: 1,
+};
+
+export const DIA_6_WEEKS: Record<number, number> = {
+  ...DIA_8_WEEKS,
+  1: 2,
+};
+
+export const SU_7_WEEKS: Record<number, number> = SU_6_WEEKS;
+export const DIA_7_WEEKS: Record<number, number> = DIA_6_WEEKS;
+
 // Bảng số tiết Sử Khối 9 từng tuần (35 tuần, HK1: 26t, HK2: 26t, Cả năm: 52t)
 export const SU_9_WEEKS: Record<number, number> = {
   // HK1 (26t)
@@ -513,6 +527,10 @@ export function getLsdlPeriodsForTeacherInWeek(
   }[];
 } {
   const isHk1 = weekNumber >= 1 && weekNumber <= 18;
+  const su6 = SU_6_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? (weekNumber === 1 ? 1 : 2) : 1) : 1);
+  const dia6 = DIA_6_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? (weekNumber === 1 ? 2 : 1) : 2) : 2);
+  const su7 = SU_7_WEEKS[weekNumber] ?? su6;
+  const dia7 = DIA_7_WEEKS[weekNumber] ?? dia6;
   const su8 = SU_8_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 2 : 1) : 1);
   const dia8 = DIA_8_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 1 : 2) : 2);
   const su9 = SU_9_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 2 : 1) : 1);
@@ -535,9 +553,10 @@ export function getLsdlPeriodsForTeacherInWeek(
     } else if (as.type === 'SPLIT') {
       if (as.historyTeacherId === teacherId) {
         let p = 0;
-        if (as.grade === '6' || as.grade === '7') {
-          // Tuần 1 & 2 TKB xếp Sử 2 tiết
-          p = 2;
+        if (as.grade === '6') {
+          p = su6;
+        } else if (as.grade === '7') {
+          p = su7;
         } else if (as.grade === '8') {
           p = su8;
         } else if (as.grade === '9') {
@@ -554,9 +573,10 @@ export function getLsdlPeriodsForTeacherInWeek(
 
       if (as.geographyTeacherId === teacherId) {
         let p = 0;
-        if (as.grade === '6' || as.grade === '7') {
-          // Tuần 1 & 2 TKB xếp Địa 1 tiết
-          p = 1;
+        if (as.grade === '6') {
+          p = dia6;
+        } else if (as.grade === '7') {
+          p = dia7;
         } else if (as.grade === '8') {
           p = dia8;
         } else if (as.grade === '9') {
