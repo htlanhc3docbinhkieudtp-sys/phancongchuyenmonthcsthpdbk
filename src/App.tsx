@@ -590,7 +590,7 @@ export default function App() {
     if (saved === 'homeroom') {
       return 'concurrent_duties';
     }
-    if ((saved === 'exam_proposer' || saved === 'exam_evaluation') && initialRole !== 'admin') {
+    if ((saved === 'exam_proposer' || saved === 'exam_evaluation' || saved === 'draft_assignment') && initialRole !== 'admin') {
       return 'timetable';
     }
     if (saved && allowedTabs.includes(saved)) {
@@ -606,9 +606,9 @@ export default function App() {
     }
   }, [isGuest, activeTab]);
 
-  // Guard: Non-admin users cannot access 'exam_proposer' or 'exam_evaluation'
+  // Guard: Non-admin users cannot access 'exam_proposer', 'exam_evaluation', or 'draft_assignment'
   useEffect(() => {
-    if (!isAdmin && (activeTab === 'exam_proposer' || activeTab === 'exam_evaluation')) {
+    if (!isAdmin && (activeTab === 'exam_proposer' || activeTab === 'exam_evaluation' || activeTab === 'draft_assignment')) {
       setActiveTab('timetable');
     }
   }, [isAdmin, activeTab]);
@@ -620,6 +620,14 @@ export default function App() {
   }, [activeTab]);
 
   const handleTabChange = (tab: ActiveTabType) => {
+    if (tab === 'draft_assignment' && !isAdmin) {
+      setLoginModalMode('admin');
+      setLoginPromptReason(
+        'Tab "Dự thảo phân công mới" là không gian làm việc nội bộ của Ban Giám hiệu, chỉ dành riêng cho Quản trị viên để thử nghiệm phân công chuyên môn.'
+      );
+      setIsLoginModalOpen(true);
+      return;
+    }
     if (tab === 'exam_proposer' && !isAdmin) {
       setLoginModalMode('admin');
       setLoginPromptReason(
@@ -2017,20 +2025,44 @@ export default function App() {
           />
         )}
 
-        {/* Tab: Dự Thảo Phân Công Mới (Sandbox Thí Điểm) */}
+        {/* Tab: Dự Thảo Phân Công Mới (Sandbox Thí Điểm - Chỉ dành riêng cho BGH / Quản Trị Viên) */}
         {activeTab === 'draft_assignment' && (
-          <DraftAssignmentView
-            config={config}
-            teachers={teachers}
-            departments={departments}
-            classes={classes}
-            subjects={subjects}
-            weeklyTimetables={weeklyTimetables}
-            currentWeek={currentWeek}
-            timetable={timetable}
-            isAdmin={isAdmin}
-            onShowToast={showToast}
-          />
+          isAdmin ? (
+            <DraftAssignmentView
+              config={config}
+              teachers={teachers}
+              departments={departments}
+              classes={classes}
+              subjects={subjects}
+              weeklyTimetables={weeklyTimetables}
+              currentWeek={currentWeek}
+              timetable={timetable}
+              isAdmin={isAdmin}
+              onShowToast={showToast}
+            />
+          ) : (
+            <div className="max-w-xl mx-auto my-16 p-8 bg-white rounded-3xl border border-rose-200 shadow-md text-center">
+              <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <ShieldAlert className="w-8 h-8" />
+              </div>
+              <h2 className="text-xl font-black text-slate-900 mb-2">
+                Khu vực Bảo mật: Dự thảo phân công mới
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 mb-6 leading-relaxed">
+                Nội dung <strong>Dự thảo phân công mới</strong> là khu vực dự thảo thí điểm bảo mật của Ban Giám Hiệu. Tài khoản giáo viên và khách không được phép truy cập hoặc xem nội dung này. Vui lòng đăng nhập bằng tài khoản <strong>Quản trị viên (BGH)</strong>.
+              </p>
+              <button
+                onClick={() => {
+                  setLoginModalMode('admin');
+                  setLoginPromptReason('Vui lòng đăng nhập quyền Quản trị viên để truy cập Dự thảo phân công mới.');
+                  setIsLoginModalOpen(true);
+                }}
+                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs hover:shadow transition-all cursor-pointer"
+              >
+                Đăng nhập Quản trị viên
+              </button>
+            </div>
+          )
         )}
 
         {/* Tab: Tổng Hợp Trường */}

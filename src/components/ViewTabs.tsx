@@ -81,8 +81,9 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
       label: 'Dự thảo phân công mới',
       shortLabel: 'Dự Thảo Mới',
       icon: Sparkles,
-      badge: 'Thí điểm',
+      badge: 'Quản trị',
       isPublic: false,
+      adminOnly: true,
     },
     {
       id: 'summary',

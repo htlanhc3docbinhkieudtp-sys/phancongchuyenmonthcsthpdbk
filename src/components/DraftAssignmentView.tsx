@@ -471,7 +471,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   weeklyTimetables,
   currentWeek = 8,
   timetable,
-  isAdmin = true,
+  isAdmin = false,
   onShowToast,
 }) => {
   // 1. Baseline Slots from Official Timetable (Week 9 / Week 8 / Official Timetable)
@@ -1789,6 +1789,25 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       onShowToast(`✓ Đã hoán đổi phân công giữa ${teacherA.name} và ${teacherB.name}!`);
     }
   };
+
+  if (!isAdmin) {
+    return (
+      <div className="max-w-xl mx-auto my-16 p-8 bg-white rounded-3xl border border-rose-200 shadow-md text-center">
+        <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <ShieldAlert className="w-8 h-8" />
+        </div>
+        <h2 className="text-xl font-black text-slate-900 mb-2">
+          Khu vực Bảo mật: Dự thảo phân công mới
+        </h2>
+        <p className="text-xs sm:text-sm text-slate-600 mb-4 leading-relaxed">
+          Nội dung <strong>Dự thảo phân công mới</strong> là khu vực dự thảo thí điểm bảo mật của Ban Giám Hiệu. Tài khoản giáo viên và khách không được phép truy cập hoặc xem nội dung này.
+        </p>
+        <p className="text-xs text-slate-500 italic">
+          Vui lòng đăng nhập với tài khoản Quản trị viên để truy cập.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
