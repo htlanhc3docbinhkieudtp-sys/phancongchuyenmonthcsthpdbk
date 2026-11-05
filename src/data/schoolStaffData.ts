@@ -1128,7 +1128,7 @@ export const officialStaffList: Teacher[] = [
       },
     ],
     baseStandardPeriods: 19,
-    notes: 'THCSDBK - Công nghệ (Khối 6-9) - GVCN 6A5 - Nuôi con nhỏ dưới 12 tháng (-3 tiết/tuần)',
+    notes: 'THCSDBK - Công nghệ (Khối 6-9) - GVCN 6A5 - Nuôi con nhỏ dưới 12 tháng (áp dụng đến 14/03/2027 hết T26, từ T27 hết chế độ)',
   },
   {
     id: 'tch-khtn-25',
@@ -1293,7 +1293,7 @@ export const officialStaffList: Teacher[] = [
       }
     ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Tiếng Anh (Khối 10-12) - Nuôi con nhỏ dưới 12 tháng (+3t)',
+    notes: 'THPTDBK - Tiếng Anh (Khối 10-12) - Nuôi con nhỏ dưới 12 tháng (áp dụng đến tháng 12/2026, từ T18 hết chế độ)',
   },
   {
     id: 'tch-av-8',

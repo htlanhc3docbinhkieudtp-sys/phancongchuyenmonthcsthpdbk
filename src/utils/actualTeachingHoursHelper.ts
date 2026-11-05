@@ -1042,6 +1042,22 @@ export function calculateTeacherSingleWeek(
           if (weekNumber < 10) return;
         }
 
+        // Cô Nguyễn Thị Vân Anh (tch-av-7): Con nhỏ đến hết tháng 12/2026 (Tuần 17). Từ tháng 1/2027 (Tuần 18) hết chế độ con nhỏ
+        if (
+          (teacher.id === 'tch-av-7' || teacher.name === 'Nguyễn Thị Vân Anh') &&
+          (d.type === 'ConNho' || d.name?.includes('Con nhỏ') || d.name?.includes('con nhỏ'))
+        ) {
+          if (weekNumber >= 18) return;
+        }
+
+        // Cô Lê Kim Ngân (tch-khtn-24): Con nhỏ đến hết 14/03/2027 (hết Tuần 26). Từ 2 tuần cuối tháng 3 (Tuần 27) đến hết năm học hết chế độ con nhỏ
+        if (
+          (teacher.id === 'tch-khtn-24' || teacher.name === 'Lê Kim Ngân') &&
+          (d.type === 'ConNho' || d.name?.includes('Con nhỏ') || d.name?.includes('con nhỏ'))
+        ) {
+          if (weekNumber >= 27) return;
+        }
+
         let red = d.reductionPeriods;
         const dType = d.type as string;
         if (red === undefined || red === null) {
@@ -1096,8 +1112,17 @@ export function calculateTeacherSingleWeek(
       // Thầy Cao Văn Tùng: Sở GD&ĐT không cho phép quy đổi tiết cho phổ cập nên không tính giảm trừ
 
       if ((teacher.role === 'ConNho' || teacher.code?.toLowerCase().includes('con nhỏ')) && teacher.id !== 'tch-khtn-9' && teacher.name !== 'Trần Thị Kiều') {
-        if (!dutyList.includes('Con nhỏ')) dutyList.push('Con nhỏ');
-        reductionPeriods += 3;
+        let validConNho = true;
+        if ((teacher.id === 'tch-av-7' || teacher.name === 'Nguyễn Thị Vân Anh') && weekNumber >= 18) {
+          validConNho = false;
+        }
+        if ((teacher.id === 'tch-khtn-24' || teacher.name === 'Lê Kim Ngân') && weekNumber >= 27) {
+          validConNho = false;
+        }
+        if (validConNho) {
+          if (!dutyList.includes('Con nhỏ')) dutyList.push('Con nhỏ');
+          reductionPeriods += 3;
+        }
       }
     }
 
@@ -1106,11 +1131,35 @@ export function calculateTeacherSingleWeek(
       reductionPeriods += teacher.customReductionPeriods;
     }
 
-    // Đảm bảo Cô Lê Kim Ngân (tch-khtn-24) có kiêm nhiệm Con nhỏ (+3 tiết/tuần)
+    // Cô Lê Kim Ngân (tch-khtn-24): Thực hiện con nhỏ đến hết 14/03/2027 (hết Tuần 26). Từ 2 tuần cuối tháng 3 (Tuần 27) đến hết năm học hết chế độ con nhỏ
     if (teacher.id === 'tch-khtn-24' || teacher.name === 'Lê Kim Ngân') {
-      if (!dutyList.includes('Con nhỏ')) {
-        dutyList.push('Con nhỏ');
-        reductionPeriods += 3;
+      if (weekNumber <= 26) {
+        if (!dutyList.includes('Con nhỏ')) {
+          dutyList.push('Con nhỏ');
+          reductionPeriods += 3;
+        }
+      } else {
+        const idx = dutyList.indexOf('Con nhỏ');
+        if (idx !== -1) {
+          dutyList.splice(idx, 1);
+          reductionPeriods -= 3;
+        }
+      }
+    }
+
+    // Cô Nguyễn Thị Vân Anh (tch-av-7): Con nhỏ đến hết tháng 12/2026 (Tuần 17). Từ tháng 1/2027 (Tuần 18) đến hết năm học hết chế độ con nhỏ
+    if (teacher.id === 'tch-av-7' || teacher.name === 'Nguyễn Thị Vân Anh') {
+      if (weekNumber <= 17) {
+        if (!dutyList.includes('Con nhỏ')) {
+          dutyList.push('Con nhỏ');
+          reductionPeriods += 3;
+        }
+      } else {
+        const idx = dutyList.indexOf('Con nhỏ');
+        if (idx !== -1) {
+          dutyList.splice(idx, 1);
+          reductionPeriods -= 3;
+        }
       }
     }
 
