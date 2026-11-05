@@ -216,7 +216,7 @@ export const DEFAULT_AI_CLASS_ASSIGNMENTS: Record<
     teacherName: 'Nguyễn Trung Hiếu',
     teacherCode: 'Hiếu.NT (TP)',
     campus: 'Điểm chính (THPT)',
-    note: 'Thầy Hiếu (Tổ phó Tin): Bù thiếu tiết môn Tin học (-175t/năm)',
+    note: 'Thầy Hiếu (Tổ phó Tin & Phụ trách CNTT: +5t/tuần từ T10)',
   },
   '12CB2': {
     teacherId: 'tch-av-2',
@@ -2939,7 +2939,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                 +{aiStats.hieuPeriods}t/HK2
               </div>
               <p className="text-[10px] text-blue-100 leading-tight">
-                Tổ phó Tin học (Điểm chính). Bù thiếu -175t/năm & sẵn sàng dạy chéo cấp chi viện Tân Kiều!
+                Tổ phó Tin học • Phụ trách CNTT (+5t/tuần từ T10). Được tính thêm +130t kiêm nhiệm cả năm!
               </p>
             </div>
 

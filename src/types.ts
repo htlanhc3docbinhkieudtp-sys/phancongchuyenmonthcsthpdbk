@@ -53,6 +53,7 @@ export type DutyType =
   | 'ConNho'            // Nuôi con nhỏ dưới 12 tháng tuổi (-3t THPT / -4t THCS)
   | 'ChuTichCongDoan'   // Chủ tịch Công đoàn (-3t)
   | 'BanThanhTra'       // Ban thanh tra nhân dân (-1t)
+  | 'PhuTrachCNTT'      // Phụ trách công nghệ thông tin (-5t)
   | 'Khac';             // Kiêm nhiệm khác
 
 export interface ConcurrentDuty {

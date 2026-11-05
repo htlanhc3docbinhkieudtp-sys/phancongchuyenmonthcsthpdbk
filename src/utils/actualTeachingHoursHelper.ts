@@ -1034,6 +1034,14 @@ export function calculateTeacherSingleWeek(
           if (weekNumber < 10) return;
         }
 
+        // Thầy Nguyễn Trung Hiếu: Phụ trách CNTT (5 tiết/tuần) chỉ bắt đầu tính từ Tuần 10
+        if (
+          (teacher.id === 'tch-av-2' || teacher.name === 'Nguyễn Trung Hiếu') &&
+          (d.type === 'PhuTrachCNTT' || (d.type as string) === 'CNTT' || d.name?.includes('CNTT') || d.name?.includes('Công nghệ thông tin'))
+        ) {
+          if (weekNumber < 10) return;
+        }
+
         let red = d.reductionPeriods;
         const dType = d.type as string;
         if (red === undefined || red === null) {
@@ -1044,6 +1052,7 @@ export function calculateTeacherSingleWeek(
           else if (dType === 'ConNho') red = 3;
           else if (dType === 'PhoBiThuDoan') red = 6;
           else if (dType === 'BiThuDoan') red = 12;
+          else if (dType === 'PhuTrachCNTT' || dType === 'CNTT' || d.name?.includes('CNTT') || d.name?.includes('Công nghệ thông tin')) red = 5;
           else red = 0;
         }
         reductionPeriods += red;
@@ -1053,7 +1062,8 @@ export function calculateTeacherSingleWeek(
                       dType === 'PhoCap' ? 'Phổ cập' :
                       dType === 'ConNho' ? 'Con nhỏ' :
                       dType === 'PhoBiThuDoan' ? 'Phó Bí thư đoàn' :
-                      dType === 'BiThuDoan' ? 'Bí thư đoàn' : d.name;
+                      dType === 'BiThuDoan' ? 'Bí thư đoàn' :
+                      (dType === 'PhuTrachCNTT' || dType === 'CNTT' || d.name?.includes('CNTT') || d.name?.includes('Công nghệ thông tin')) ? 'Phụ trách CNTT' : d.name;
         if (!dutyList.includes(label)) {
           dutyList.push(label);
         }
@@ -1142,6 +1152,22 @@ export function calculateTeacherSingleWeek(
       if (pcIdx !== -1) {
         dutyList.splice(pcIdx, 1);
         reductionPeriods -= 4;
+      }
+    }
+
+    // 4/ Thầy Nguyễn Trung Hiếu (tch-av-2): Nhận nhiệm vụ phụ trách CNTT được tính 5 tiết/tuần từ Tuần 10 đến hết năm học
+    if (teacher.id === 'tch-av-2' || teacher.name === 'Nguyễn Trung Hiếu') {
+      if (weekNumber >= 10) {
+        if (!dutyList.includes('Phụ trách CNTT')) {
+          dutyList.push('Phụ trách CNTT');
+          reductionPeriods += 5;
+        }
+      } else {
+        const idx = dutyList.indexOf('Phụ trách CNTT');
+        if (idx !== -1) {
+          dutyList.splice(idx, 1);
+          reductionPeriods -= 5;
+        }
       }
     }
 

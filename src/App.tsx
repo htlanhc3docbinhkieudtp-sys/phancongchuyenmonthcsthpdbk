@@ -262,6 +262,33 @@ export default function App() {
         if (t.id === 'tch-khtn-15' || t.name === 'Võ Ngọc Đỉnh Văn') {
           return { ...updated, name: 'Võ Ngọc Đình Văn', code: 'Văn.VNĐ' };
         }
+        if (t.id === 'tch-av-2' || t.name === 'Nguyễn Trung Hiếu') {
+          return {
+            ...updated,
+            name: 'Nguyễn Trung Hiếu',
+            code: 'Hiếu.NT (TP-Tin)',
+            role: 'ToPho',
+            campus: 'THPTDBK',
+            duties: [
+              {
+                id: 'duty-av2-topho',
+                type: 'ToPho',
+                name: 'Tổ phó chuyên môn',
+                reductionPeriods: 1,
+                notes: 'Tổ phó Tổ Ngoại ngữ - Tin học (THPTDBK)'
+              },
+              {
+                id: 'duty-av2-cntt',
+                type: 'PhuTrachCNTT',
+                name: 'Phụ trách CNTT',
+                reductionPeriods: 5,
+                notes: 'Phụ trách công nghệ thông tin (5 tiết/tuần từ Tuần 10 đến hết năm học)'
+              }
+            ],
+            baseStandardPeriods: 17,
+            notes: 'THPTDBK - Tổ phó Tổ Tiếng Anh - Tin học (Khối 10-12) • Phụ trách CNTT (+5t/tuần từ T10)',
+          };
+        }
         if (t.id === 'tch-td-6' || t.name === 'Lê Ngọc Ẩn') {
           return {
             ...updated,

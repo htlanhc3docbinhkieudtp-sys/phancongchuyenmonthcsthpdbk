@@ -1199,10 +1199,17 @@ export const officialStaffList: Teacher[] = [
         name: 'Tổ phó chuyên môn',
         reductionPeriods: 1,
         notes: 'Tổ phó Tổ Ngoại ngữ - Tin học (THPTDBK)'
+      },
+      {
+        id: 'duty-av2-cntt',
+        type: 'PhuTrachCNTT',
+        name: 'Phụ trách CNTT',
+        reductionPeriods: 5,
+        notes: 'Phụ trách công nghệ thông tin (5 tiết/tuần từ Tuần 10 đến hết năm học)'
       }
     ],
     baseStandardPeriods: 17,
-    notes: 'THPTDBK - Tổ phó Tổ Tiếng Anh - Tin học (Khối 10-12)',
+    notes: 'THPTDBK - Tổ phó Tổ Tiếng Anh - Tin học (Khối 10-12) • Phụ trách CNTT (+5t/tuần từ T10)',
   },
   {
     id: 'tch-av-3',
