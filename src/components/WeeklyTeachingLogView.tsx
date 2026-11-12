@@ -804,11 +804,11 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
               <button
                 id="btn-export-excel"
                 onClick={handleExportExcel}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm transition-colors"
-                title="Xuất file Excel chuẩn văn bản hành chính có cột Ký xác nhận"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm transition-all hover:scale-[1.02]"
+                title="Xuất file Excel cao cấp chuẩn văn bản NĐ 30/2020/NĐ-CP: Có màu sắc trực quan, bảng thống kê KPI, định dạng sẵn trang in khổ ngang và 3 vị trí chữ ký"
               >
                 <FileSpreadsheet className="w-3.5 h-3.5" />
-                Xuất Excel
+                Xuất Excel (Chuẩn in ấn & Báo cáo)
               </button>
 
               <button

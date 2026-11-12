@@ -40,6 +40,10 @@ import {
   DIA_9_WEEKS,
   LSDL_ALL_CLASS_ASSIGNMENTS,
 } from '../data/lsdlCurriculumSchedule';
+import {
+  exportExecutiveMultiWeekExcel,
+  exportExecutiveWeeklyExcel,
+} from './executiveExcelExportHelper';
 
 export interface TeacherSubjectRow {
   classes: string;
@@ -1510,7 +1514,7 @@ export function calculateAllActualWorkloads(
  * and formal Vietnamese administrative document structure (Nghị định 30/2020/NĐ-CP)
  * including Department info, STT, "Ký xác nhận" column, and formal signature block.
  */
-export function exportActualWeeklyExcel(
+export async function exportActualWeeklyExcel(
   selectedWeek: number,
   workloads: TeacherActualWorkload[],
   config: SchoolConfig,
@@ -1518,328 +1522,36 @@ export function exportActualWeeklyExcel(
   deptName?: string,
   scopeLabel?: string,
   leaderName?: string
-) {
-  import('xlsx').then((XLSX) => {
-    const wb = XLSX.utils.book_new();
-
-    const rows: (string | number)[][] = [];
-    const merges: { s: { r: number; c: number }; e: { r: number; c: number } }[] = [];
-
-    const displayDept = (deptName && deptName !== 'ALL' && deptName !== 'Tất cả tổ chuyên môn')
-      ? deptName.toUpperCase()
-      : 'TOÀN TRƯỜNG';
-
-    // Auto-generate dynamic date string
-    const now = new Date();
-    const currentDateStr = `Đốc Binh Kiều, ngày ${now.getDate().toString().padStart(2, '0')} tháng ${(now.getMonth() + 1).toString().padStart(2, '0')} năm ${now.getFullYear()}`;
-
-    // 1. Formal Vietnamese Administrative Header (Rows 0 - 2)
-    // Left: Sở GD&ĐT, Tên trường, Tổ chuyên môn
-    // Right: Quốc hiệu, Tiêu ngữ (đã xóa ngày tháng ở trên vì chuyển xuống phần ký tên ở dưới)
-    rows.push([
-      'SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP', '', '', '',
-      'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM', '', '', '', ''
-    ]);
-    rows.push([
-      (config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU').toUpperCase(), '', '', '',
-      'Độc lập - Tự do - Hạnh phúc', '', '', '', ''
-    ]);
-    rows.push([
-      `TỔ CHUYÊN MÔN: ${displayDept}`, '', '', '', '', '', '', '', ''
-    ]);
-
-    // Merges for administrative header
-    merges.push({ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } });
-    merges.push({ s: { r: 0, c: 4 }, e: { r: 0, c: 8 } });
-    merges.push({ s: { r: 1, c: 0 }, e: { r: 1, c: 3 } });
-    merges.push({ s: { r: 1, c: 4 }, e: { r: 1, c: 8 } });
-    merges.push({ s: { r: 2, c: 0 }, e: { r: 2, c: 8 } });
-
-    rows.push([]); // Row 3 empty
-
-    // 2. Document Title (Rows 4 - 5)
-    rows.push([
-      `BẢNG THỐNG KÊ CHI TIẾT SỐ TIẾT THỰC DẠY HÀNG TUẦN - TUẦN ${selectedWeek}`,
-      '', '', '', '', '', '', '', ''
-    ]);
-    rows.push([
-      `(Áp dụng theo Thời Khóa Biểu thực tế • ${scopeLabel || 'Toàn trường'} • Năm học ${config.academicYear || '2026-2027'} • Kèm ký xác nhận)`,
-      '', '', '', '', '', '', '', ''
-    ]);
-    merges.push({ s: { r: 4, c: 0 }, e: { r: 4, c: 8 } });
-    merges.push({ s: { r: 5, c: 0 }, e: { r: 5, c: 8 } });
-
-    rows.push([]); // Row 6 empty
-
-    // 3. Table Header (Row 7)
-    rows.push([
-      'STT',
-      'Họ và tên GV',
-      'Lớp dạy',
-      'Môn dạy',
-      'Tiết dạy',
-      'Kiêm nhiệm & Giảm trừ',
-      'Tổng tiết',
-      `Thừa/thiếu đến tuần ${selectedWeek}`,
-      'Ký xác nhận'
-    ]);
-
-    // 4. Data Rows
-    workloads.forEach((t, tIdx) => {
-      const displayName = useShortName ? t.callingName : t.teacherName;
-      const rowCount = t.rows.length > 0 ? t.rows.length : 1;
-      const startRow = rows.length;
-      const dutiesText = t.duties !== '—'
-        ? (t.reductionPeriods > 0 ? `${t.duties} (+${t.reductionPeriods}t)` : t.duties)
-        : '—';
-      const balanceText = t.cumulativeBalance > 0
-        ? `+${t.cumulativeBalance}`
-        : `${t.cumulativeBalance}`;
-
-      if (t.rows.length === 0) {
-        rows.push([
-          tIdx + 1,
-          displayName,
-          '—',
-          '—',
-          0,
-          dutiesText,
-          t.totalPeriods,
-          balanceText,
-          '' // Ô để giáo viên ký tên trực tiếp
-        ]);
-      } else {
-        t.rows.forEach((subRow, idx) => {
-          if (idx === 0) {
-            rows.push([
-              tIdx + 1,
-              displayName,
-              subRow.classes,
-              subRow.subject,
-              subRow.periods,
-              dutiesText,
-              t.totalPeriods,
-              balanceText,
-              '' // Ô để giáo viên ký tên trực tiếp
-            ]);
-          } else {
-            rows.push([
-              '',
-              '',
-              subRow.classes,
-              subRow.subject,
-              subRow.periods,
-              '',
-              '',
-              '',
-              ''
-            ]);
-          }
-        });
-
-        if (rowCount > 1) {
-          // Merge STT (col 0)
-          merges.push({ s: { r: startRow, c: 0 }, e: { r: startRow + rowCount - 1, c: 0 } });
-          // Merge Tên GV (col 1)
-          merges.push({ s: { r: startRow, c: 1 }, e: { r: startRow + rowCount - 1, c: 1 } });
-          // Merge Kiêm nhiệm (col 5)
-          merges.push({ s: { r: startRow, c: 5 }, e: { r: startRow + rowCount - 1, c: 5 } });
-          // Merge Tổng tiết (col 6)
-          merges.push({ s: { r: startRow, c: 6 }, e: { r: startRow + rowCount - 1, c: 6 } });
-          // Merge Thừa/thiếu (col 7)
-          merges.push({ s: { r: startRow, c: 7 }, e: { r: startRow + rowCount - 1, c: 7 } });
-          // Merge Ký xác nhận (col 8)
-          merges.push({ s: { r: startRow, c: 8 }, e: { r: startRow + rowCount - 1, c: 8 } });
-        }
-      }
-    });
-
-    // 5. Summary Total Row
-    const totalTeachingAll = workloads.reduce(
-      (sum, w) => sum + w.teachingPeriods,
-      0
-    );
-    const totalReductionAll = workloads.reduce(
-      (sum, w) => sum + w.reductionPeriods,
-      0
-    );
-    const totalPeriodsAll = workloads.reduce((sum, w) => sum + w.totalPeriods, 0);
-    const surplusCount = workloads.filter((w) => w.cumulativeBalance > 0).length;
-    const deficitCount = workloads.filter((w) => w.cumulativeBalance < 0).length;
-
-    const summaryRowIdx = rows.length;
-    rows.push([
-      'TỔNG CỘNG',
-      `${workloads.length} giáo viên`,
-      '',
-      `Quy đổi kiêm nhiệm: ${totalReductionAll} tiết`,
-      totalTeachingAll,
-      `+${totalReductionAll} tiết KN`,
-      totalPeriodsAll,
-      `${surplusCount} thừa / ${deficitCount} thiếu`,
-      ''
-    ]);
-    merges.push({ s: { r: summaryRowIdx, c: 0 }, e: { r: summaryRowIdx, c: 1 } });
-
-    // 6. Formal Administrative Signature Block (2 Cột Cân Đối, Cùng Hàng Ngang)
-    rows.push([]);
-    rows.push([]);
-
-    // Dòng ngày tháng năm tự động bên phải
-    const dateRow = rows.length;
-    rows.push([
-      '', '', '', '',
-      '', currentDateStr, '', '', ''
-    ]);
-    merges.push({ s: { r: dateRow, c: 5 }, e: { r: dateRow, c: 8 } });
-
-    // Dòng chức danh: TỔ TRƯỞNG CHUYÊN MÔN và PHÓ HIỆU TRƯỞNG ngang hàng nhau
-    const signHeaderRow = rows.length;
-    rows.push([
-      'TỔ TRƯỞNG CHUYÊN MÔN', '', '', '',
-      '', 'PHÓ HIỆU TRƯỞNG', '', '', ''
-    ]);
-    rows.push([
-      '(Ký và ghi rõ họ tên)', '', '', '',
-      '', '(Ký và ghi rõ họ tên)', '', '', ''
-    ]);
-    merges.push({ s: { r: signHeaderRow, c: 0 }, e: { r: signHeaderRow, c: 3 } });
-    merges.push({ s: { r: signHeaderRow, c: 5 }, e: { r: signHeaderRow, c: 8 } });
-    merges.push({ s: { r: signHeaderRow + 1, c: 0 }, e: { r: signHeaderRow + 1, c: 3 } });
-    merges.push({ s: { r: signHeaderRow + 1, c: 5 }, e: { r: signHeaderRow + 1, c: 8 } });
-
-    // Các dòng trống để ký tay
-    rows.push([]);
-    rows.push([]);
-    rows.push([]);
-    rows.push([]);
-
-    // Dòng họ và tên
-    const signNameRow = rows.length;
-    rows.push([
-      leaderName || '', '', '', '',
-      '', 'Nguyễn Minh Trí', '', '', ''
-    ]);
-    merges.push({ s: { r: signNameRow, c: 0 }, e: { r: signNameRow, c: 3 } });
-    merges.push({ s: { r: signNameRow, c: 5 }, e: { r: signNameRow, c: 8 } });
-
-    // 7. Sheet Construction & Column Widths
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!merges'] = merges;
-    ws['!cols'] = [
-      { wch: 6 },  // 0: STT
-      { wch: 22 }, // 1: Họ và tên GV
-      { wch: 24 }, // 2: Lớp dạy
-      { wch: 30 }, // 3: Môn dạy
-      { wch: 10 }, // 4: Tiết dạy
-      { wch: 24 }, // 5: Kiêm nhiệm & Giảm trừ
-      { wch: 12 }, // 6: Tổng tiết
-      { wch: 16 }, // 7: Thừa/thiếu
-      { wch: 18 }, // 8: Ký xác nhận
-    ];
-
-    const cleanDept = displayDept.toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_');
-    const academicYearStr = config.academicYear ? config.academicYear.replace(/\s+/g, '_') : '2026_2027';
-
-    XLSX.utils.book_append_sheet(wb, ws, `Tuan_${selectedWeek}_${cleanDept.substring(0, 15)}`);
-    XLSX.writeFile(
-      wb,
-      `So_Tiet_Thuc_Day_Tuan_${selectedWeek}_${cleanDept}_${academicYearStr}.xlsx`
-    );
-  });
+): Promise<void> {
+  return exportExecutiveWeeklyExcel(
+    selectedWeek,
+    workloads,
+    config,
+    useShortName,
+    deptName,
+    scopeLabel,
+    leaderName
+  );
 }
 
 /**
  * Export Multi-Week Summary Matrix to Excel (Showing Weekly Balances & Semester Totals)
+ * Full 35-week executive spreadsheet with color-coded balances, KPI summary, zebra striping, and print layout.
  */
-export function exportActualMultiWeekExcel(
+export async function exportActualMultiWeekExcel(
   workloads: TeacherActualWorkload[],
   totalWeeks: number,
   config: SchoolConfig,
   startWeek: number = 1,
   endWeek?: number,
   semesterName: string = 'Học kỳ 1'
-) {
-  const effectiveEndWeek = endWeek || (startWeek === 19 ? 35 : startWeek + totalWeeks - 1);
-  const weekCount = effectiveEndWeek - startWeek + 1;
-
-  import('xlsx').then((XLSX) => {
-    const wb = XLSX.utils.book_new();
-    const rows: (string | number)[][] = [];
-
-    const isFullYear = startWeek === 1 && effectiveEndWeek >= 35;
-    const periodLabelUpper = isFullYear ? 'CẢ NĂM HỌC' : semesterName.toUpperCase();
-
-    rows.push([config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU']);
-    rows.push([
-      `BẢNG TỔNG HỢP THỪA/THIẾU TIẾT DẠY HÀNG TUẦN VÀ ${periodLabelUpper} (${weekCount} TUẦN: T${startWeek} ĐẾN T${effectiveEndWeek})`,
-    ]);
-    rows.push([
-      `Năm học: ${config.academicYear} • Ghi chú: Cột T${startWeek}..T${effectiveEndWeek} thể hiện số tiết thừa(+) hoặc thiếu(-) của từng tuần`,
-    ]);
-    rows.push([]);
-
-    const header = [
-      'STT',
-      'Họ và Tên',
-      'Tổ chuyên môn',
-      'Kiêm nhiệm',
-      'Định mức/T',
-    ];
-    for (let w = startWeek; w <= effectiveEndWeek; w++) {
-      header.push(`T${w}`);
-    }
-    header.push(
-      'Tổng Dạy',
-      'Tổng KN',
-      'Tổng Quy Đổi',
-      isFullYear ? 'Định Mức Năm' : 'Định Mức Kỳ',
-      isFullYear ? 'TỔNG THỪA/THIẾU CẢ NĂM' : 'TỔNG THỪA/THIẾU KỲ'
-    );
-    rows.push(header);
-
-    workloads.forEach((w, idx) => {
-      const row: (string | number)[] = [
-        idx + 1,
-        w.teacherName,
-        w.departmentName,
-        w.duties,
-        w.standardPeriods,
-      ];
-      for (let wk = startWeek; wk <= effectiveEndWeek; wk++) {
-        const bal = w.weeklyBalances?.[wk] ?? ((w.weeklyTotals[wk] ?? 0) - w.standardPeriods);
-        row.push(bal > 0 ? `+${bal}` : `${bal}`);
-      }
-      row.push(
-        w.semesterTotalTeaching,
-        w.reductionPeriods * weekCount,
-        w.semesterTotalPeriods,
-        w.semesterRequiredPeriods,
-        w.semesterBalance > 0 ? `+${w.semesterBalance}` : `${w.semesterBalance}`
-      );
-      rows.push(row);
-    });
-
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [
-      { wch: 6 },
-      { wch: 24 },
-      { wch: 24 },
-      { wch: 18 },
-      { wch: 12 },
-      ...Array(weekCount).fill({ wch: 7 }),
-      { wch: 12 },
-      { wch: 12 },
-      { wch: 14 },
-      { wch: 14 },
-      { wch: 18 },
-    ];
-
-    const safeSemName = isFullYear ? 'Ca_Nam_Hoc' : semesterName.replace(/\s+/g, '_');
-    XLSX.utils.book_append_sheet(wb, ws, `Thua_Thieu_${safeSemName}`);
-    XLSX.writeFile(
-      wb,
-      `Bang_Tong_Hop_Thua_Thieu_Tiet_Day_${safeSemName}_${(config.academicYear || '2026-2027').replace(/\s+/g, '_')}.xlsx`
-    );
-  });
+): Promise<void> {
+  return exportExecutiveMultiWeekExcel(
+    workloads,
+    totalWeeks,
+    config,
+    startWeek,
+    endWeek,
+    semesterName
+  );
 }
