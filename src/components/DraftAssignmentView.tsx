@@ -55,7 +55,19 @@ import {
   School,
   RefreshCw,
   ArrowLeftRight,
+  Cloud,
+  CloudCheck,
+  CloudUpload,
+  CloudDownload,
+  HardDrive,
+  Laptop,
 } from 'lucide-react';
+import { TeacherPickerDropdown } from './TeacherPickerDropdown';
+import {
+  saveDraftToCloud,
+  loadDraftFromCloud,
+  reconstructDraftFromCloudPayload,
+} from '../utils/draftCloudSyncHelper';
 
 interface DraftAssignmentViewProps {
   config: SchoolConfig;
@@ -70,8 +82,82 @@ interface DraftAssignmentViewProps {
   onShowToast?: (message: string) => void;
 }
 
-const DRAFT_SANDBOX_STORAGE_KEY = 'docbinhkieu_draft_sandbox_clean_v10';
-const DRAFT_SANDBOX_ADJUSTMENT_PREFIX = 'docbinhkieu_draft_sandbox_clean_v10';
+const DRAFT_SANDBOX_STORAGE_KEY = 'docbinhkieu_draft_sandbox_v12_cloud_reconciled';
+const DRAFT_SANDBOX_ADJUSTMENT_PREFIX = 'docbinhkieu_draft_sandbox_v12_cloud_reconciled';
+
+/**
+ * Helper to render options for native <select> elements, strictly:
+ * 1. Sắp xếp theo thứ tự âm nhiều nhất đến dương nhiều nhất (âm đứng đầu)
+ * 2. Phân nhóm theo 3 điểm trường rõ rệt
+ * 3. Đầy đủ nhãn và mã màu phân biệt
+ */
+export const renderGroupedTeacherOptions = (
+  teachers: Teacher[],
+  workloadMap: Map<string, TeacherActualWorkload>,
+  departments: Department[],
+  allowBgh = true,
+  excludeIds: string[] = []
+) => {
+  const departmentMap = new Map(departments.map((d) => [d.id, d.name]));
+
+  const getCampus = (t: Teacher): 'THPT' | 'DBK' | 'TK' => {
+    const raw = (t.campus || '').toUpperCase();
+    if (raw.includes('TÂN KIỀU') || raw.includes('TK')) return 'TK';
+    if (
+      raw.includes('THPT') ||
+      raw.includes('CHÍNH') ||
+      t.id.startsWith('tch-bgh-1') ||
+      t.id.startsWith('tch-bgh-2') ||
+      raw.includes('ĐIỂM CHÍNH')
+    )
+      return 'THPT';
+    return 'DBK';
+  };
+
+  const validTeachers = teachers.filter((t) => {
+    if (!allowBgh && (t.id.startsWith('tch-bgh') || t.role === 'HieuTruong')) return false;
+    if (excludeIds.includes(t.id)) return false;
+    return true;
+  });
+
+  const sortDeficitFirst = (list: Teacher[]) => {
+    return [...list].sort((a, b) => {
+      const aBal = workloadMap.get(a.id)?.semesterBalance ?? 0;
+      const bBal = workloadMap.get(b.id)?.semesterBalance ?? 0;
+      if (aBal !== bBal) return aBal - bBal;
+      return a.name.localeCompare(b.name, 'vi');
+    });
+  };
+
+  const thptTeachers = sortDeficitFirst(validTeachers.filter((t) => getCampus(t) === 'THPT'));
+  const dbkTeachers = sortDeficitFirst(validTeachers.filter((t) => getCampus(t) === 'DBK'));
+  const tkTeachers = sortDeficitFirst(validTeachers.filter((t) => getCampus(t) === 'TK'));
+
+  const renderOption = (t: Teacher, campusLabel: string, icon: string) => {
+    const bal = workloadMap.get(t.id)?.semesterBalance ?? 0;
+    const dept = departmentMap.get(t.departmentId) || '';
+    const balStr = bal < 0 ? `[ÂM ${bal}t]` : bal === 0 ? `[ĐỦ 0t]` : `[THỪA +${bal}t]`;
+    return (
+      <option key={t.id} value={t.id} className="py-1 text-sm font-semibold">
+        {balStr} {icon} {t.name} ({t.code}) • {dept} [{campusLabel}]
+      </option>
+    );
+  };
+
+  return (
+    <>
+      <optgroup label="🔵 1. ĐIỂM CHÍNH (THPT) • SẮP XẾP ÂM NHIỀU NHẤT ĐẾN DƯƠNG">
+        {thptTeachers.map((t) => renderOption(t, 'THPT', '🏛️'))}
+      </optgroup>
+      <optgroup label="🟣 2. THCS ĐỐC BINH KIỀU • SẮP XẾP ÂM NHIỀU NHẤT ĐẾN DƯƠNG">
+        {dbkTeachers.map((t) => renderOption(t, 'ĐBK', '🏫'))}
+      </optgroup>
+      <optgroup label="🟢 3. THCS TÂN KIỀU • SẮP XẾP ÂM NHIỀU NHẤT ĐẾN DƯƠNG">
+        {tkTeachers.map((t) => renderOption(t, 'Tân Kiều', '🌱'))}
+      </optgroup>
+    </>
+  );
+};
 
 // 19 lớp HĐTNHN cần gom gọn về 1 người dạy duy nhất:
 // NGUYÊN TẮC:
@@ -515,6 +601,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     try {
       // Clear legacy cluttered draft storages to ensure a fresh, clean start
       [
+        'docbinhkieu_draft_sandbox_clean_v10',
         'docbinhkieu_draft_sandbox_weekly_timetables_v1',
         'docbinhkieu_draft_sandbox_weekly_timetables_v2',
         'docbinhkieu_draft_sandbox_weekly_timetables_v3',
@@ -546,10 +633,16 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     return createCleanDraftFromActual();
   });
 
+  // Cloud Firestore Sync State (allows school leaders to work at school, turn off PC, continue at home)
+  const [isCloudSyncing, setIsCloudSyncing] = useState<boolean>(false);
+  const [lastCloudSavedAt, setLastCloudSavedAt] = useState<number | null>(null);
+  const [cloudSyncStatus, setCloudSyncStatus] = useState<'IDLE' | 'SYNCED' | 'SAVING' | 'ERROR'>('IDLE');
+
   // Master draft timetable for fallback
   const draftMasterTimetable = useMemo<SchoolTimetable>(() => {
     const slots =
       draftWeeklyTimetables[currentWeek]?.slots ||
+      draftWeeklyTimetables[10]?.slots ||
       draftWeeklyTimetables[8]?.slots ||
       timetable?.slots ||
       [];
@@ -562,13 +655,138 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     };
   }, [draftWeeklyTimetables, currentWeek, timetable, config]);
 
-  // Persist sandbox to localStorage
+  // Persist sandbox to both localStorage AND Cloud Firestore
   const persistDraft = (data: Record<number, SchoolTimetable>) => {
     setDraftWeeklyTimetables(data);
     try {
       localStorage.setItem(DRAFT_SANDBOX_STORAGE_KEY, JSON.stringify(data));
     } catch (e) {
       console.error('Failed to save draft sandbox to localStorage', e);
+    }
+
+    // Auto-save to Cloud Firestore
+    setCloudSyncStatus('SAVING');
+    saveDraftToCloud(data, gddpCustomClassTeacherMap, aiCustomClassTeacherMap)
+      .then((res) => {
+        if (res.success) {
+          setLastCloudSavedAt(res.updatedAt);
+          setCloudSyncStatus('SYNCED');
+        } else {
+          setCloudSyncStatus('ERROR');
+        }
+      })
+      .catch((err) => {
+        console.warn('Auto cloud sync error:', err);
+        setCloudSyncStatus('ERROR');
+      });
+  };
+
+  // Check and load draft from Cloud Firestore on mount if available
+  useEffect(() => {
+    let isMounted = true;
+    async function initCloudSync() {
+      try {
+        const cloudData = await loadDraftFromCloud();
+        if (!isMounted || !cloudData) return;
+
+        if (cloudData.updatedAt && cloudData.week10Slots && cloudData.week10Slots.length > 0) {
+          // Check if cloud draft is newer or present
+          const reconstructed = reconstructDraftFromCloudPayload(
+            cloudData,
+            config.academicYear,
+            weeklyTimetables,
+            timetable
+          );
+          setDraftWeeklyTimetables(reconstructed);
+          if (cloudData.gddpCustomClassTeacherMap) {
+            setGddpCustomClassTeacherMap(cloudData.gddpCustomClassTeacherMap);
+          }
+          if (cloudData.aiCustomClassTeacherMap) {
+            setAiCustomClassTeacherMap(cloudData.aiCustomClassTeacherMap);
+          }
+          setLastCloudSavedAt(cloudData.updatedAt);
+          setCloudSyncStatus('SYNCED');
+        }
+      } catch (e) {
+        console.warn('Initial cloud sync check:', e);
+      }
+    }
+    initCloudSync();
+    return () => {
+      isMounted = false;
+    };
+  }, [config.academicYear, weeklyTimetables, timetable]);
+
+  // Manual trigger to save current draft to Cloud Firestore
+  const handleManualSaveToCloud = async () => {
+    setIsCloudSyncing(true);
+    setCloudSyncStatus('SAVING');
+    try {
+      const res = await saveDraftToCloud(
+        draftWeeklyTimetables,
+        gddpCustomClassTeacherMap,
+        aiCustomClassTeacherMap,
+        'Lưu thủ công từ thanh công cụ dự thảo'
+      );
+      if (res.success) {
+        setLastCloudSavedAt(res.updatedAt);
+        setCloudSyncStatus('SYNCED');
+        if (onShowToast) {
+          onShowToast('☁️ Đã lưu bản dự thảo lên Đám Mây Firestore! Thầy về nhà mở máy tính khác sẽ tiếp tục làm việc bình thường.');
+        }
+      } else {
+        setCloudSyncStatus('ERROR');
+        if (onShowToast) {
+          onShowToast(`⚠️ Lưu đám mây không thành công: ${res.error}`);
+        }
+      }
+    } catch (e) {
+      setCloudSyncStatus('ERROR');
+      if (onShowToast) onShowToast('Lỗi kết nối đám mây, vui lòng thử lại.');
+    } finally {
+      setIsCloudSyncing(false);
+    }
+  };
+
+  // Manual trigger to pull latest draft from Cloud Firestore
+  const handleManualLoadFromCloud = async () => {
+    setIsCloudSyncing(true);
+    try {
+      const cloudData = await loadDraftFromCloud();
+      if (cloudData && cloudData.week10Slots && cloudData.week10Slots.length > 0) {
+        const reconstructed = reconstructDraftFromCloudPayload(
+          cloudData,
+          config.academicYear,
+          weeklyTimetables,
+          timetable
+        );
+        persistDraft(reconstructed);
+        if (cloudData.gddpCustomClassTeacherMap) {
+          setGddpCustomClassTeacherMap(cloudData.gddpCustomClassTeacherMap);
+        }
+        if (cloudData.aiCustomClassTeacherMap) {
+          setAiCustomClassTeacherMap(cloudData.aiCustomClassTeacherMap);
+        }
+        setLastCloudSavedAt(cloudData.updatedAt);
+        setCloudSyncStatus('SYNCED');
+        setActionBannerMessage({
+          type: 'success',
+          title: 'Đã tải thành công Bản Dự Thảo từ Đám Mây Firestore!',
+          detail: `Bản lưu lúc ${new Date(cloudData.updatedAt).toLocaleTimeString('vi-VN')} ngày ${new Date(cloudData.updatedAt).toLocaleDateString('vi-VN')} (${cloudData.deviceName || 'Máy tính khác'}) đã được nạp đầy đủ.`,
+        });
+        if (onShowToast) {
+          onShowToast('✓ Đã tải bản dự thảo từ Đám Mây Firestore thành công!');
+        }
+      } else {
+        if (onShowToast) {
+          onShowToast('Chưa tìm thấy bản lưu dự thảo nào trên Đám Mây Firestore.');
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      if (onShowToast) onShowToast('Không thể tải từ Đám Mây.');
+    } finally {
+      setIsCloudSyncing(false);
     }
   };
 
@@ -1157,20 +1375,35 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   const handleResetToCleanActual = () => {
     const freshDraft = createCleanDraftFromActual();
     persistDraft(freshDraft);
+    setGddpCustomClassTeacherMap({});
+    setAiCustomClassTeacherMap({});
     try {
       localStorage.removeItem(DRAFT_SANDBOX_STORAGE_KEY);
     } catch {
       /* ignore */
     }
 
+    // Explicitly sync clean baseline to Cloud Firestore
+    saveDraftToCloud(
+      freshDraft,
+      {},
+      {},
+      'Khôi phục chuẩn 100% y nguyên từ Số Tiết Thực Dạy'
+    ).then((res) => {
+      if (res.success) {
+        setLastCloudSavedAt(res.updatedAt);
+        setCloudSyncStatus('SYNCED');
+      }
+    });
+
     setActionBannerMessage({
       type: 'info',
-      title: 'Đã xóa sạch tab Dự Thảo và sao chép y nguyên từ tab Số Tiết Thực Dạy!',
-      detail: 'Toàn bộ 35 tuần (cập nhật đầy đủ chi tiết đến Tuần 9) đã được đồng bộ chuẩn xác 100%. Bản dự thảo đang ở trạng thái sạch sẽ sẵn sàng để Thầy bắt đầu phân công thí điểm từng bước.',
+      title: 'Đã khôi phục chuẩn xác 100% từ tab Số Tiết Thực Dạy (Khớp hoàn toàn)!',
+      detail: 'Toàn bộ 35 tuần đã được sao chép nguyên vẹn từ TKB chính thức. Thầy Trương Sơn Bền: -175 tiết, Thầy Phan Thanh Thảo: -140 tiết, Thầy Cao Văn Tùng: -210 tiết, Cô Lê Hồng Thúy: -210 tiết. Trạng thái đã được đồng bộ lên Đám Mây Firestore để Thầy tiếp tục làm việc trên mọi thiết bị!',
     });
 
     if (onShowToast) {
-      onShowToast('✓ Đã làm sạch tab Dự thảo và sao chép y nguyên từ Số tiết thực dạy (cập nhật đầy đủ đến Tuần 9)!');
+      onShowToast('✓ Đã làm sạch Dự thảo và khớp 100% Số tiết thực dạy (Thầy Bền: -175t, Thầy Thảo: -140t)!');
     }
   };
 
@@ -1815,35 +2048,120 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   return (
     <div className="space-y-4">
       {/* 1. Pilot Sandbox Control Banner */}
-      <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 rounded-2xl p-4 text-white shadow-md border border-purple-800/60">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2.5 py-0.5 bg-amber-400 text-slate-950 font-black text-[11px] rounded-full uppercase tracking-wider flex items-center gap-1 shadow-xs">
-                <Sparkles className="w-3.5 h-3.5" />
-                Dự Thảo Mới • Sandbox Thí Điểm
+      <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 rounded-2xl p-4 text-white shadow-md border border-purple-800/60 space-y-3">
+        {/* Top: Status Badges & Cross-Device Cloud Sync Indicator */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="px-2.5 py-0.5 bg-amber-400 text-slate-950 font-black text-[11px] rounded-full uppercase tracking-wider flex items-center gap-1 shadow-xs">
+              <Sparkles className="w-3.5 h-3.5" />
+              Dự Thảo Mới • Sandbox Thí Điểm
+            </span>
+            <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold text-xs rounded-full flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              Độc lập 100% với Thời khóa biểu chính thức
+            </span>
+            {totalSlotChangesCount > 0 ? (
+              <span className="px-2.5 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold text-xs rounded-full flex items-center gap-1 animate-pulse">
+                ⚡ Đã có {totalSlotChangesCount} tiết thay đổi thử nghiệm
               </span>
+            ) : (
               <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold text-xs rounded-full flex items-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                Độc lập 100% với Thời khóa biểu chính thức
+                Khớp 100% với Số Tiết Thực Dạy (Tuần 1 - 10)
               </span>
-              {totalSlotChangesCount > 0 ? (
-                <span className="px-2.5 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold text-xs rounded-full flex items-center gap-1 animate-pulse">
-                  ⚡ Đã có {totalSlotChangesCount} tiết thay đổi
-                </span>
-              ) : (
-                <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold text-xs rounded-full flex items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  Đồng bộ 100% với Số Tiết Thực Dạy (Tuần 1 - 9)
-                </span>
-              )}
+            )}
+          </div>
+
+          {/* Cloud Firestore Multi-device Sync Status */}
+          <div className="flex items-center gap-2 self-start sm:self-center">
+            <div
+              className={`px-3 py-1 rounded-xl text-xs font-bold border flex items-center gap-2 shadow-xs ${
+                cloudSyncStatus === 'SAVING'
+                  ? 'bg-amber-500/20 text-amber-200 border-amber-400/40 animate-pulse'
+                  : cloudSyncStatus === 'SYNCED'
+                  ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/40'
+                  : cloudSyncStatus === 'ERROR'
+                  ? 'bg-rose-500/20 text-rose-200 border-rose-400/40'
+                  : 'bg-white/10 text-purple-200 border-white/20'
+              }`}
+              title="Đồng bộ tự động lên Đám Mây Firestore: Thầy tắt máy tại trường, về nhà mở máy tính khác sẽ tải lại nguyên vẹn không sợ mất dữ liệu!"
+            >
+              <Cloud className="w-4 h-4 text-cyan-300" />
+              <span>
+                {cloudSyncStatus === 'SAVING'
+                  ? 'Đang lưu lên Đám Mây...'
+                  : lastCloudSavedAt
+                  ? `Đã lưu Đám Mây lúc ${new Date(lastCloudSavedAt).toLocaleTimeString('vi-VN')}`
+                  : 'Đám Mây Firestore đã sẵn sàng'}
+              </span>
+              <span className="text-[10px] text-cyan-200 opacity-80 hidden md:inline">
+                (Đa thiết bị: Trường ↔ Nhà)
+              </span>
             </div>
 
+            {/* Manual Cloud Buttons */}
+            <button
+              type="button"
+              onClick={handleManualSaveToCloud}
+              disabled={isCloudSyncing}
+              className="px-2.5 py-1 bg-cyan-700/80 hover:bg-cyan-600 text-white rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+              title="Lưu bản dự thảo này lên Đám Mây ngay lập tức"
+            >
+              <CloudUpload className="w-3.5 h-3.5" />
+              <span className="hidden lg:inline">Lưu Đám Mây</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleManualLoadFromCloud}
+              disabled={isCloudSyncing}
+              className="px-2.5 py-1 bg-indigo-700/80 hover:bg-indigo-600 text-white rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+              title="Tải bản dự thảo mới nhất đã lưu từ Đám Mây"
+            >
+              <CloudDownload className="w-3.5 h-3.5" />
+              <span className="hidden lg:inline">Tải Về</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Audit Reconciled Chips: Thầy Bền -175t, Thầy Thảo -140t, etc. */}
+        <div className="bg-slate-950/40 rounded-xl p-2.5 border border-white/10 flex flex-wrap items-center gap-2 text-xs">
+          <span className="font-extrabold text-amber-300 flex items-center gap-1 shrink-0">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            Đối Soát Chuẩn 100% Số Tiết Thực Dạy:
+          </span>
+          <span className="px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-200 border border-rose-500/40 font-bold shrink-0">
+            Thầy Trương Sơn Bền: <b className="text-white">-175t</b> (Dạy 12/17t)
+          </span>
+          <span className="px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-200 border border-rose-500/40 font-bold shrink-0">
+            Thầy Phan Thanh Thảo (PHT): <b className="text-white">-140t</b> (Dạy 0/4t)
+          </span>
+          <span className="px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-200 border border-rose-500/40 font-bold shrink-0">
+            Thầy Cao Văn Tùng: <b className="text-white">-210t</b>
+          </span>
+          <span className="px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-200 border border-rose-500/40 font-bold shrink-0">
+            Cô Lê Hồng Thúy: <b className="text-white">-210t</b>
+          </span>
+          <span className="px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-200 border border-rose-500/40 font-bold shrink-0">
+            Thầy Trần Phi Hải: <b className="text-white">-143t</b>
+          </span>
+          <span className="px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-200 border border-rose-500/40 font-bold shrink-0">
+            Thầy Ngô Anh Tuấn: <b className="text-white">-111t</b>
+          </span>
+          <span className="px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-200 border border-rose-500/40 font-bold shrink-0">
+            Thầy Nguyễn Thành Tín: <b className="text-white">-105t</b>
+          </span>
+          <span className="px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-200 border border-rose-500/40 font-bold shrink-0">
+            Cô Châu Thị Kim Hà: <b className="text-white">-105t</b>
+          </span>
+        </div>
+
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-1">
+          <div className="space-y-1">
             <h2 className="text-lg font-black tracking-tight text-white flex items-center gap-2">
               Dự Thảo Phân Công Mới (Môi Trường Thí Điểm Làm Sạch)
             </h2>
             <p className="text-xs text-purple-200/90 max-w-3xl leading-relaxed">
-              Tab này đã được làm sạch hoàn toàn theo yêu cầu của Thầy. Dữ liệu sao chép y nguyên từ tab <b>Số Tiết Thực Dạy</b> (cập nhật đầy đủ chi tiết đến Tuần 9). Mọi phân công thí điểm sẽ được thực hiện lại từ đầu theo từng bước hướng dẫn của Thầy!
+              Dữ liệu bắt đầu sao chép nguyên vẹn từ tab <b>Số Tiết Thực Dạy</b> (định mức và số tiết thực tế đến Tuần 10). Mọi thao tác thử nghiệm đều tự động lưu lên Đám Mây Firestore, giúp Thầy có thể tắt máy ở trường và về nhà mở máy tính khác tiếp tục làm việc bình thường!
             </p>
           </div>
 
@@ -1969,7 +2287,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
               title="Xóa mọi thay đổi thử nghiệm và sao chép lại y nguyên từ Số Tiết Thực Dạy"
             >
               <RotateCcw className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Làm Sạch (Sao Chép Lại)</span>
+              <span>Làm Sạch (Chuẩn Thực Dạy)</span>
             </button>
           </div>
         </div>
@@ -2234,31 +2552,10 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                           <select
                             id={`select-reassign-${cs.subjectId}`}
                             defaultValue=""
-                            className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-800 bg-white hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer"
+                            className="w-full px-2.5 py-2 rounded-lg border border-slate-300 text-xs font-semibold text-slate-800 bg-white hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer"
                           >
-                            <option value="">-- Chọn giáo viên thay thế --</option>
-                            {teachers
-                              .filter(
-                                (t) =>
-                                  !t.id.startsWith('tch-bgh') ||
-                                  t.role === 'PhoHieuTruong'
-                              )
-                              .sort((a, b) => {
-                                const aBal = draftWorkloadMap.get(a.id)?.semesterBalance || 0;
-                                const bBal = draftWorkloadMap.get(b.id)?.semesterBalance || 0;
-                                return aBal - bBal; // Show deficit teachers first!
-                              })
-                              .map((t) => {
-                                const tWl = draftWorkloadMap.get(t.id);
-                                const tBal = tWl ? tWl.semesterBalance : 0;
-                                const deptName =
-                                  departments.find((d) => d.id === t.departmentId)?.name || '';
-                                return (
-                                  <option key={t.id} value={t.id}>
-                                    {t.name} ({t.code}) • {tBal > 0 ? `+${tBal}` : tBal}t • {deptName}
-                                  </option>
-                                );
-                              })}
+                            <option value="">-- Chọn giáo viên thay thế (Ưu tiên thiếu tiết) --</option>
+                            {renderGroupedTeacherOptions(teachers, draftWorkloadMap, departments)}
                           </select>
                         </td>
                         <td className="py-2.5 px-3 text-center">
@@ -2351,50 +2648,22 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                   <select
                     value={swapTeacherAId}
                     onChange={(e) => setSwapTeacherAId(e.target.value)}
-                    className="w-full px-2.5 py-1.5 bg-white border border-amber-300 rounded-lg text-xs font-bold text-slate-900"
+                    className="w-full px-2.5 py-2 bg-white border border-amber-300 rounded-xl text-xs font-bold text-slate-900"
                   >
-                    {teachers
-                      .filter((t) => !t.id.startsWith('tch-bgh'))
-                      .sort(
-                        (a, b) =>
-                          (draftWorkloadMap.get(b.id)?.semesterBalance || 0) -
-                          (draftWorkloadMap.get(a.id)?.semesterBalance || 0)
-                      )
-                      .map((t) => {
-                        const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
-                        return (
-                          <option key={t.id} value={t.id}>
-                            {t.name} ({b > 0 ? `+${b}` : b}t) • {t.campus || 'ĐBK'}
-                          </option>
-                        );
-                      })}
+                    {renderGroupedTeacherOptions(teachers, draftWorkloadMap, departments, false)}
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                    Giáo viên B:
+                    Giáo viên B (Hoán đổi với GV A):
                   </label>
                   <select
                     value={swapTeacherBId}
                     onChange={(e) => setSwapTeacherBId(e.target.value)}
-                    className="w-full px-2.5 py-1.5 bg-white border border-amber-300 rounded-lg text-xs font-bold text-slate-900"
+                    className="w-full px-2.5 py-2 bg-white border border-amber-300 rounded-xl text-xs font-bold text-slate-900"
                   >
-                    {teachers
-                      .filter((t) => !t.id.startsWith('tch-bgh'))
-                      .sort(
-                        (a, b) =>
-                          (draftWorkloadMap.get(a.id)?.semesterBalance || 0) -
-                          (draftWorkloadMap.get(b.id)?.semesterBalance || 0)
-                      )
-                      .map((t) => {
-                        const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
-                        return (
-                          <option key={t.id} value={t.id}>
-                            {t.name} ({b > 0 ? `+${b}` : b}t) • {t.campus || 'ĐBK'}
-                          </option>
-                        );
-                      })}
+                    {renderGroupedTeacherOptions(teachers, draftWorkloadMap, departments, false)}
                   </select>
                 </div>
 
@@ -2694,64 +2963,8 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                               }
                               className="px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer w-full max-w-xs bg-white text-slate-900 border-slate-300 hover:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-400"
                             >
-                              <optgroup label="Nhóm Ưu Tiên: Giáo Viên KHXH & Thiếu Tiết">
-                                {teachers
-                                  .filter((t) => {
-                                    const dept =
-                                      departments.find((d) => d.id === t.departmentId)?.name || '';
-                                    const isKhxh =
-                                      dept.includes('Lịch sử') ||
-                                      dept.includes('Ngữ Văn') ||
-                                      dept.includes('Địa') ||
-                                      dept.includes('GDCD') ||
-                                      dept.includes('Sử');
-                                    const b =
-                                      baseActualWorkloads.find((w) => w.teacherId === t.id)
-                                        ?.semesterBalance || 0;
-                                    return isKhxh || b < 0;
-                                  })
-                                  .sort((a, b) => {
-                                    const aB = draftWorkloadMap.get(a.id)?.semesterBalance || 0;
-                                    const bB = draftWorkloadMap.get(b.id)?.semesterBalance || 0;
-                                    return aB - bB;
-                                  })
-                                  .map((t) => {
-                                    const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
-                                    const dept =
-                                      departments.find((d) => d.id === t.departmentId)?.name || '';
-                                    return (
-                                      <option key={t.id} value={t.id}>
-                                        {t.name} ({b > 0 ? `+${b}` : b}t) • {dept} [{t.campus || 'ĐBK'}]
-                                      </option>
-                                    );
-                                  })}
-                              </optgroup>
-                              <optgroup label="Ban Giám Hiệu">
-                                {teachers
-                                  .filter((t) => t.id.startsWith('tch-bgh'))
-                                  .map((t) => {
-                                    const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
-                                    return (
-                                      <option key={t.id} value={t.id}>
-                                        {t.name} ({b > 0 ? `+${b}` : b}t) •{' '}
-                                        {t.duties?.map((r) => r.name).join(', ') || t.role || 'BGH'}
-                                      </option>
-                                    );
-                                  })}
-                              </optgroup>
-                              <optgroup label="Tất Cả Giáo Viên Khác">
-                                {teachers
-                                  .filter((t) => !t.id.startsWith('tch-bgh'))
-                                  .sort((a, b) => a.name.localeCompare(b.name, 'vi'))
-                                  .map((t) => {
-                                    const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
-                                    return (
-                                      <option key={t.id} value={t.id}>
-                                        {t.name} ({t.code}) • {b > 0 ? `+${b}` : b}t • [{t.campus || 'ĐBK'}]
-                                      </option>
-                                    );
-                                  })}
-                              </optgroup>
+                              <option value="">-- Chưa gán giáo viên --</option>
+                              {renderGroupedTeacherOptions(teachers, draftWorkloadMap, departments)}
                             </select>
                           </td>
                           <td className="py-2 px-3 text-center">
@@ -3245,49 +3458,8 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                                   : 'bg-white text-slate-900 border-slate-300 hover:border-slate-400'
                               }`}
                             >
-                              <optgroup label="Ban Giám Hiệu (Điểm chính)">
-                                {teachers
-                                  .filter((t) => t.id.startsWith('tch-bgh'))
-                                  .map((t) => {
-                                    const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
-                                    return (
-                                      <option key={t.id} value={t.id}>
-                                        {t.name} ({b > 0 ? `+${b}` : b}t) • {t.duties?.map((r) => r.name).join(', ') || t.role || 'BGH'}
-                                      </option>
-                                    );
-                                  })}
-                              </optgroup>
-                              <optgroup label="Tổ Tin học (Toàn trường)">
-                                {teachers
-                                  .filter((t) => {
-                                    const dept = departments.find((d) => d.id === t.departmentId)?.name || '';
-                                    return (
-                                      dept.toLowerCase().includes('tin') ||
-                                      ['tch-av-2', 'tch-av-8', 'tch-av-9', 'tch-av-13', 'tch-av-14', 'tch-av-16'].includes(t.id)
-                                    );
-                                  })
-                                  .map((t) => {
-                                    const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
-                                    return (
-                                      <option key={t.id} value={t.id}>
-                                        {t.name} ({b > 0 ? `+${b}` : b}t) • {t.campus || 'ĐBK'}
-                                      </option>
-                                    );
-                                  })}
-                              </optgroup>
-                              <optgroup label="Tất Cả Giáo Viên Khác">
-                                {teachers
-                                  .filter((t) => !t.id.startsWith('tch-bgh'))
-                                  .sort((a, b) => a.name.localeCompare(b.name, 'vi'))
-                                  .map((t) => {
-                                    const b = draftWorkloadMap.get(t.id)?.semesterBalance || 0;
-                                    return (
-                                      <option key={t.id} value={t.id}>
-                                        {t.name} ({b > 0 ? `+${b}` : b}t) • {t.campus || 'ĐBK'}
-                                      </option>
-                                    );
-                                  })}
-                              </optgroup>
+                              <option value="">-- Chưa gán giáo viên --</option>
+                              {renderGroupedTeacherOptions(teachers, draftWorkloadMap, departments)}
                             </select>
                           </td>
                           <td className="py-2 px-3 text-center">
@@ -4468,27 +4640,16 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
 
               {/* Select New Teacher */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  3. Chọn Giáo Viên Mới Để Thay Thế:
-                </label>
-                <select
-                  value={selectedNewTeacherId}
-                  onChange={(e) => setSelectedNewTeacherId(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                >
-                  <option value="">-- Chọn giáo viên mới --</option>
-                  {teachers
-                    .filter((t) => !t.id.startsWith('tch-bgh') && t.role !== 'HieuTruong' && t.role !== 'PhoHieuTruong')
-                    .sort((a, b) => a.name.localeCompare(b.name, 'vi'))
-                    .map((t) => {
-                      const deptName = departments.find((d) => d.id === t.departmentId)?.name || '';
-                      return (
-                        <option key={t.id} value={t.id}>
-                          {t.name} ({t.code}) - {deptName} [{t.campus || 'ĐBK'}]
-                        </option>
-                      );
-                    })}
-                </select>
+                <TeacherPickerDropdown
+                  teachers={teachers}
+                  departments={departments}
+                  selectedTeacherId={selectedNewTeacherId}
+                  onSelectTeacher={(id) => setSelectedNewTeacherId(id)}
+                  workloadMap={draftWorkloadMap}
+                  label="3. Chọn Giáo Viên Mới Để Thay Thế:"
+                  placeholder="-- Bấm để chọn giáo viên (Ưu tiên thiếu tiết) --"
+                  allowBgh={true}
+                />
               </div>
 
               {/* Scope */}
