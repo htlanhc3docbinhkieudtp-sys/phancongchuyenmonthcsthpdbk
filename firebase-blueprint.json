@@ -63,6 +63,33 @@
         "updatedAt": { "type": "number", "description": "Timestamp of last modification" },
         "lastUpdatedBy": { "type": "string", "description": "User or administrator who saved the proposals" }
       }
+    },
+    "DraftAssignmentPlan": {
+      "title": "Draft Assignment Plan",
+      "description": "Cloud-synchronized sandbox draft assignment plan including GDĐP and AI maps and base Week 10 slots",
+      "type": "object",
+      "properties": {
+        "version": { "type": "number", "description": "Schema version of draft payload" },
+        "updatedAt": { "type": "number", "description": "Last modified timestamp" },
+        "lastUpdatedBy": { "type": "string", "description": "User identifier who saved the draft" },
+        "deviceName": { "type": "string", "description": "Device type that saved the draft" },
+        "description": { "type": "string", "description": "Save description note" },
+        "gddpCustomClassTeacherMap": { "type": "object", "description": "Class-to-teacher map for GDĐP" },
+        "aiCustomClassTeacherMap": { "type": "object", "description": "Class-to-teacher map for AI" },
+        "week10Slots": { "type": "array", "description": "Compacted Week 10 base timetable slots" },
+        "hasWeekBatches": { "type": "boolean", "description": "Flag indicating weekly deltas are stored in week_batches subcollection" },
+        "weekBatchIds": { "type": "array", "description": "List of active batch document IDs in week_batches subcollection" }
+      }
+    },
+    "DraftWeekBatchDoc": {
+      "title": "Draft Week Batch",
+      "description": "Partitioned batch of weekly draft timetable deltas kept strictly under 1MB Firestore limit",
+      "type": "object",
+      "properties": {
+        "batchId": { "type": "string", "description": "Batch identifier" },
+        "updatedAt": { "type": "number", "description": "Timestamp of batch write" },
+        "weekDeltas": { "type": "object", "description": "Map of weekNumber to kept base slot ranges and extra/modified slots" }
+      }
     }
   },
   "firestore": {
@@ -85,6 +112,14 @@
     "/exam_proposals/{academicYearDocId}": {
       "schema": "ExamProposalsDoc",
       "description": "Persistent cloud storage for exam maker proposals synchronized across all devices and computers"
+    },
+    "/draft_assignments/{planId}": {
+      "schema": "DraftAssignmentPlan",
+      "description": "Cloud-synchronized sandbox draft assignment plan"
+    },
+    "/draft_assignments/{planId}/week_batches/{batchId}": {
+      "schema": "DraftWeekBatchDoc",
+      "description": "Partitioned weekly draft deltas kept under 1MB Firestore document limit"
     }
   }
 }
