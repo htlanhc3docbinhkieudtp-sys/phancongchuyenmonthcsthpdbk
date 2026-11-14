@@ -1971,7 +1971,7 @@ export default function App() {
 
   // Webapp is in free view mode
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col text-slate-900 font-['Be_Vietnam_Pro',sans-serif] print:bg-white print:p-0 print:m-0">
+    <div className="min-h-screen overflow-x-clip bg-slate-100 flex flex-col text-slate-900 font-['Be_Vietnam_Pro',sans-serif] print:bg-white print:p-0 print:m-0">
       {/* Header with App Title, Stats & Actions */}
       <Header
         config={config}
@@ -2013,7 +2013,7 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 pb-16 print:p-0 print:m-0 print:w-full print:max-w-none">
-        <React.Suspense fallback={<div className="mx-auto max-w-7xl px-4 py-8 text-sm text-slate-500" role="status">Đang tải màn hình...</div>}>
+        <React.Suspense fallback={<div className="w-full px-3 sm:px-5 lg:px-6 py-8 text-sm text-slate-500" role="status">Đang tải màn hình...</div>}>
         {/* Tab: Thời Khóa Biểu Toàn Trường */}
         {activeTab === 'timetable' && (
           <SchoolTimetableView

@@ -433,7 +433,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
 
 
   return (
-    <div className="space-y-5 pb-16 print:p-0 print:m-0 print:space-y-4">
+    <div className="w-full px-2 sm:px-4 lg:px-6 py-4 space-y-5 pb-16 print:p-0 print:m-0 print:space-y-4">
       {/* 0. THANH ĐIỀU HƯỚNG 3 PHÂN HỆ KIỂM TRA & ĐÁNH GIÁ */}
       <div className="bg-slate-900 text-white rounded-2xl p-4 shadow-sm border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
         <div className="flex items-center gap-3">
@@ -441,7 +441,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-base sm:text-lg font-black uppercase tracking-tight text-white">
                 Kỳ Kiểm Tra & Đánh Giá Định Kỳ
               </h2>
@@ -731,7 +731,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
         {/* Nhóm bộ lọc bên trái */}
         <div className="flex flex-wrap items-center gap-2 flex-1">
           {/* Ô Tìm Kiếm vừa vặn */}
-          <div className="relative w-48 sm:w-56">
+          <div className="relative w-full sm:w-56">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
             <input
               type="text"
@@ -751,7 +751,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
           </div>
 
           {/* Chọn Cấp Học */}
-          <div className="inline-flex p-0.5 bg-slate-100 rounded-lg text-xs font-bold border border-slate-200/60">
+          <div className="inline-flex flex-wrap max-w-full gap-0.5 p-0.5 bg-slate-100 rounded-lg text-xs font-bold border border-slate-200/60">
             <button
               onClick={() => setLevelFilter('ALL')}
               className={`px-2.5 py-1 rounded-md cursor-pointer transition-all ${

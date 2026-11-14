@@ -143,7 +143,7 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
 
   return (
     <div className="bg-white border-b border-slate-200 shrink-0 sticky top-0 z-20 shadow-2xs print:hidden">
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 relative flex items-center">
+      <div className="w-full px-2 sm:px-4 lg:px-6 relative flex items-center">
         {/* Left Scroll Button if overflowing */}
         {canScrollLeft && (
           <button

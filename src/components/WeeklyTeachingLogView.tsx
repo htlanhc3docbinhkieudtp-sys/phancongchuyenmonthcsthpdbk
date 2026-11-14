@@ -563,7 +563,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   };
 
   return (
-    <div id="weekly-teaching-log-view" className="space-y-4">
+    <div id="weekly-teaching-log-view" className="w-full px-2 sm:px-4 lg:px-6 py-4 space-y-4 print:p-0">
       {bannerExtra && (
         <div className="print:hidden">
           {bannerExtra}
@@ -675,8 +675,8 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
         {/* View Mode & Week Selection Navigation */}
         <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
           {/* View Mode Switcher */}
-          <div className="flex items-center gap-2">
-            <div className="inline-flex bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs font-medium">
+          <div className="flex flex-wrap items-center gap-2 max-w-full">
+            <div className="inline-flex flex-wrap max-w-full gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs font-medium">
               <button
                 id="btn-mode-full-year"
                 onClick={() => handlePeriodChange('FULL_YEAR')}
@@ -748,7 +748,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
           </div>
 
           {/* Week Selector Controls */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
             <button
               id="btn-prev-week"
               onClick={handlePrevWeek}
@@ -759,13 +759,13 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
               <ChevronLeft className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-semibold text-slate-700">Chọn tuần / Học kỳ:</span>
+            <div className="flex items-center gap-1.5 flex-1 sm:flex-none min-w-0">
+              <span className="text-xs font-semibold text-slate-700 hidden sm:inline shrink-0">Chọn tuần / Học kỳ:</span>
               <select
                 id="select-active-week"
                 value={selectedPeriod}
                 onChange={(e) => handlePeriodChange(e.target.value)}
-                className="text-xs font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                className="w-full sm:w-auto min-w-0 text-xs font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-yellow-400"
               >
                 <optgroup label="Tổng quan toàn trường">
                   <option value="FULL_YEAR">★ Cả năm học 2026-2027 (Tuần 1 - Tuần 35)</option>
@@ -800,7 +800,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
             </button>
 
             {/* Export & Print */}
-            <div className="flex items-center gap-2 ml-2 border-l border-slate-200 pl-2">
+            <div className="flex flex-wrap items-center gap-2 ml-0 sm:ml-2 border-l-0 sm:border-l border-slate-200 pl-0 sm:pl-2 w-full sm:w-auto">
               <button
                 id="btn-export-excel"
                 onClick={handleExportExcel}
@@ -884,7 +884,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
           </div>
 
           {/* Info pill */}
-          <div className="flex items-center justify-end text-[11px] text-slate-500 font-medium pr-1">
+          <div className="flex items-center justify-start md:justify-end text-[11px] text-slate-500 font-medium pr-1 sm:col-span-2 md:col-span-1">
             <span>
               Định mức: THPT <strong>{config.standardThptPeriods || 17}t</strong>, THCS <strong>{config.standardThcsPeriods || 19}t</strong> (GVCN -4t, Tổ trưởng -3t, Tổ phó -1t, Phổ cập -4t, Con nhỏ -3t)
             </span>
@@ -892,7 +892,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
 
           {/* Helpful Department Selection Banner */}
           {selectedDept !== 'ALL' && (
-            <div className="col-span-full bg-indigo-50/80 border border-indigo-200 rounded-lg px-3 py-1.5 text-xs text-indigo-950 flex items-center justify-between">
+            <div className="col-span-full bg-indigo-50/80 border border-indigo-200 rounded-lg px-3 py-1.5 text-xs text-indigo-950 flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />
                 <span>
@@ -934,7 +934,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                 </div>
 
                 {/* Quick Filter: All vs Changed vs Unchanged */}
-                <div className="inline-flex items-center gap-1 bg-white p-1 rounded-xl border border-purple-200 shadow-2xs self-start lg:self-auto shrink-0">
+                <div className="inline-flex flex-wrap max-w-full items-center gap-1 bg-white p-1 rounded-xl border border-purple-200 shadow-2xs self-start lg:self-auto shrink-0">
                   <button
                     type="button"
                     onClick={() => setChangeFilter('ALL')}

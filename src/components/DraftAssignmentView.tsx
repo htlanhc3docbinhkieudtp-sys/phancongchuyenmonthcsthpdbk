@@ -2157,7 +2157,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="w-full px-2 sm:px-4 lg:px-6 py-4 space-y-4">
       {/* 1. Pilot Sandbox Control Banner */}
       <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 rounded-2xl p-4 text-white shadow-md border border-purple-800/60 space-y-3">
         {/* Top: Status Badges & Cross-Device Cloud Sync Indicator */}
@@ -2495,11 +2495,11 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
           <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
               {/* Campus Filter */}
-              <div className="flex items-center gap-1 text-xs">
+              <div className="flex flex-wrap items-center gap-1.5 text-xs">
                 <span className="font-bold text-indigo-200 mr-1 flex items-center gap-1">
                   <Building2 className="w-3.5 h-3.5" /> Điểm trường:
                 </span>
-                <div className="inline-flex bg-black/30 p-1 rounded-lg border border-white/10">
+                <div className="inline-flex flex-wrap max-w-full gap-1 bg-black/30 p-1 rounded-lg border border-white/10">
                   {(['ALL', 'THPT', 'THCS_DBK', 'THCS_TK'] as const).map((cKey) => (
                     <button
                       key={cKey}
@@ -2533,11 +2533,11 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
               </div>
 
               {/* Scope selector */}
-              <div className="flex items-center gap-1.5 text-xs">
+              <div className="flex flex-wrap items-center gap-1.5 text-xs">
                 <span className="font-bold text-indigo-200 mr-1 flex items-center gap-1">
                   <Calendar className="w-3.5 h-3.5" /> Phạm vi áp dụng:
                 </span>
-                <div className="inline-flex bg-black/30 p-1 rounded-lg border border-white/10">
+                <div className="inline-flex flex-wrap max-w-full gap-1 bg-black/30 p-1 rounded-lg border border-white/10">
                   <button
                     type="button"
                     onClick={() => setApplyScope('CURRENT_ONWARD')}
@@ -2571,7 +2571,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
               <label className="text-xs font-bold text-amber-300 flex items-center gap-1 shrink-0">
                 <School className="w-4 h-4" /> Chọn Lớp Cần Đổi Môn:
               </label>
-              <div className="flex-1 min-w-[240px]">
+              <div className="flex-1 min-w-0 sm:min-w-[240px] w-full sm:w-auto">
                 <select
                   value={selectedClassId}
                   onChange={(e) => setSelectedClassId(e.target.value)}
@@ -2967,7 +2967,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
               </div>
 
               {/* Campus Filter Tabs */}
-              <div className="inline-flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs font-medium gap-1">
+              <div className="inline-flex flex-wrap max-w-full items-center bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs font-medium gap-1">
                 <button
                   type="button"
                   onClick={() => setGddpCampusFilterTab('ALL')}
@@ -3454,7 +3454,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                 </span>
               </div>
               {/* Campus Filter Tabs */}
-              <div className="inline-flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs font-medium gap-1">
+              <div className="inline-flex flex-wrap max-w-full items-center bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs font-medium gap-1">
                 <button
                   type="button"
                   onClick={() => setAiCampusFilterTab('ALL')}
@@ -4307,7 +4307,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
 
                 {/* Filter Tabs and Search */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
-                  <div className="inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold gap-1">
+                  <div className="inline-flex flex-wrap max-w-full bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold gap-1">
                     <button
                       onClick={() => setDiffFilterTab('ALL')}
                       className={`px-3 py-1.5 rounded-lg transition-all ${

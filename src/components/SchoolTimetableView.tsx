@@ -525,9 +525,9 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       {/* 1. Header Banner */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2">
+      <div className="w-full px-2 sm:px-4 lg:px-6 pt-3">
         {/* Formal Vietnamese School Header for Print / PDF */}
         <div className="hidden print:block text-center pb-3 border-b border-slate-300 mb-3">
           <div className="flex justify-between items-start text-xs uppercase font-bold text-slate-800 mb-1">
@@ -550,17 +550,17 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
           </p>
         </div>
 
-        <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-4 print:hidden">
-          <div className="flex items-center gap-3.5">
-            <div className="p-3 bg-indigo-500/20 text-indigo-300 rounded-xl border border-indigo-400/30">
-              <Calendar className="w-6 h-6" />
+        <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-3.5 sm:p-5 shadow-sm border border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-4 print:hidden">
+          <div className="flex items-start sm:items-center gap-3 sm:gap-3.5">
+            <div className="p-2.5 sm:p-3 bg-indigo-500/20 text-indigo-300 rounded-xl border border-indigo-400/30 shrink-0">
+              <Calendar className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-base sm:text-lg font-black uppercase tracking-tight text-white">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-sm sm:text-base md:text-lg font-black uppercase tracking-tight text-white">
                   Thời Khóa Biểu Toàn Trường
                 </h2>
-                <span className="px-2 py-0.5 bg-indigo-600/80 text-[11px] font-bold rounded-full border border-indigo-400/30">
+                <span className="px-2 py-0.5 bg-indigo-600/80 text-[11px] font-bold rounded-full border border-indigo-400/30 whitespace-nowrap">
                   {config.semester || 'HK1'} • {config.academicYear || '2026 - 2027'}
                 </span>
               </div>
@@ -606,7 +606,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
 
       {/* Public Timetable Status Banner */}
       {isAdmin ? (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 print:hidden">
+        <div className="w-full px-2 sm:px-4 lg:px-6 print:hidden">
           <div className={`rounded-2xl p-3 sm:p-4 border shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
             config.allowPublicTimetable
               ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950'
@@ -664,7 +664,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
           </div>
         </div>
       ) : (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 print:hidden">
+        <div className="w-full px-2 sm:px-4 lg:px-6 print:hidden">
           <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-3 sm:p-4 text-indigo-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
             <div className="flex items-center gap-3">
               <div className="p-2.5 bg-indigo-600 text-white rounded-xl shrink-0">
@@ -693,13 +693,13 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
       )}
 
       {/* 2. Week Selection Toolbar & Primary Controls */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 print:hidden space-y-3">
+      <div className="w-full px-2 sm:px-4 lg:px-6 print:hidden space-y-3">
         {/* WEEK SELECTION BAR */}
-        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs space-y-3">
+        <div className="bg-white rounded-2xl p-3 sm:p-4 border border-slate-200 shadow-2xs space-y-3">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
             {/* Left: Week selector with dates */}
-            <div className="flex flex-wrap items-center gap-2.5">
-              <div className="flex items-center gap-1.5 bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 text-indigo-900">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full lg:w-auto">
+              <div className="flex items-center gap-1.5 bg-indigo-50 border border-indigo-200 rounded-xl px-2.5 sm:px-3 py-2 text-indigo-900">
                 <Calendar className="w-4 h-4 text-indigo-600" />
                 <span className="text-xs font-black uppercase tracking-wider">Chọn Tuần:</span>
               </div>
@@ -716,7 +716,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
               </button>
 
               {/* Week dropdown */}
-              <div className="relative min-w-[260px] sm:min-w-[300px]">
+              <div className="relative flex-1 min-w-[180px] sm:flex-none sm:min-w-[290px]">
                 <select
                   value={currentWeek}
                   onChange={(e) => onSelectWeek && onSelectWeek(Number(e.target.value))}
@@ -934,8 +934,8 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
           {/* Top row: View Mode Switcher + Campus Selector */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-slate-100 pb-3">
             {/* View Mode Buttons & Quality Evaluation Button */}
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="flex items-center bg-slate-100 p-1 rounded-xl gap-1">
+            <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+              <div className="flex flex-wrap items-center bg-slate-100 p-1 rounded-xl gap-1 w-full sm:w-auto">
                 <button
                   onClick={() => setViewMode('MASTER_GRID')}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
@@ -1004,7 +1004,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
             </div>
 
             {/* Campus Buttons */}
-            <div className="flex flex-wrap items-center bg-slate-100/80 p-1 rounded-xl border border-slate-200 gap-1">
+            <div className="flex flex-wrap items-center bg-slate-100/80 p-1 rounded-xl border border-slate-200 gap-1 w-full lg:w-auto">
               <button
                 onClick={() => { setSelectedCampus('ALL'); setSelectedGrade('ALL'); }}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
@@ -1248,7 +1248,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
       </div>
 
       {/* 3. Main Views */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="w-full px-2 sm:px-4 lg:px-6 space-y-6">
         {/* Empty Week Information Banner (Tuần để trống theo yêu cầu) */}
         {currentWeek > 1 && (!timetable.slots || timetable.slots.length === 0) && (
           <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 sm:p-5 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -1359,7 +1359,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                             <th className="py-2.5 px-3 w-16 border-r border-slate-200">Buổi</th>
                             <th className="py-2.5 px-2 w-14 border-r border-slate-200">Tiết</th>
                             {DAYS_OF_WEEK.map(d => (
-                              <th key={d.value} className="py-2.5 px-3 border-r border-slate-200 last:border-r-0 min-w-[130px]">
+                              <th key={d.value} className="py-2.5 px-2 sm:px-3 border-r border-slate-200 last:border-r-0 min-w-[100px] sm:min-w-[130px]">
                                 {d.label}
                               </th>
                             ))}
@@ -1686,7 +1686,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                             <th className="py-2.5 px-3 w-16 border-r border-slate-200">Buổi</th>
                             <th className="py-2.5 px-2 w-14 border-r border-slate-200">Tiết</th>
                             {DAYS_OF_WEEK.map(d => (
-                              <th key={d.value} className="py-2.5 px-3 border-r border-slate-200 last:border-r-0 min-w-[130px]">
+                              <th key={d.value} className="py-2.5 px-2 sm:px-3 border-r border-slate-200 last:border-r-0 min-w-[100px] sm:min-w-[130px]">
                                 {d.label}
                               </th>
                             ))}
@@ -1848,8 +1848,8 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         {viewMode === 'MASTER_GRID' && (
           <div className="bg-white rounded-2xl border border-slate-300 shadow-sm overflow-hidden">
             {/* 1. Administrative Document Header */}
-            <div className="bg-slate-50 border-b border-slate-300 p-4 sm:p-6 text-slate-900">
-              <div className="flex flex-col sm:flex-row justify-between items-start gap-4 pb-4 border-b border-slate-200">
+            <div className="bg-slate-50 border-b border-slate-300 p-3.5 sm:p-6 text-slate-900">
+              <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start gap-3 sm:gap-4 pb-4 border-b border-slate-200">
                 {/* Left Agency */}
                 <div className="text-center sm:text-left">
                   <div className="text-xs font-bold text-slate-600 uppercase tracking-wide">
@@ -2091,19 +2091,19 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                           <thead>
                             {/* Header Row 1: THỨ, BUỔI, TIẾT, and Class Names */}
                             <tr className="bg-slate-100 font-bold border-b border-slate-300 divide-x divide-slate-200">
-                              <th rowSpan={2} className="py-2.5 px-2 w-14 text-center bg-slate-200/90 text-slate-800 font-extrabold sticky left-0 z-20">
+                              <th rowSpan={2} className="py-2.5 px-1 sm:px-2 w-11 sm:w-14 text-center bg-slate-200/90 text-slate-800 font-extrabold sticky left-0 z-20">
                                 THỨ
                               </th>
-                              <th rowSpan={2} className="py-2.5 px-2 w-14 text-center bg-slate-200/90 text-slate-800 font-extrabold sticky left-14 z-20">
+                              <th rowSpan={2} className="py-2.5 px-1 sm:px-2 w-11 sm:w-14 text-center bg-slate-200/90 text-slate-800 font-extrabold sticky left-11 sm:left-14 z-20">
                                 BUỔI
                               </th>
-                              <th rowSpan={2} className="py-2.5 px-1.5 w-10 text-center bg-slate-200/90 text-slate-800 font-extrabold sticky left-28 z-20">
+                              <th rowSpan={2} className="py-2.5 px-1 sm:px-1.5 w-9 sm:w-10 text-center bg-slate-200/90 text-slate-800 font-extrabold sticky left-[5.5rem] sm:left-28 z-20">
                                 TIẾT
                               </th>
                               {group.classes.map(cls => (
                                 <th
                                   key={cls.id}
-                                  className="py-2.5 px-3 min-w-[130px] font-black text-indigo-950 bg-slate-100 text-sm"
+                                  className="py-2.5 px-2 sm:px-3 min-w-[105px] sm:min-w-[125px] font-black text-indigo-950 bg-slate-100 text-xs sm:text-sm"
                                 >
                                   {cls.name}
                                 </th>
@@ -2145,7 +2145,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                       {isFirstRowOfDay && (
                                         <td
                                           rowSpan={totalPeriodsForDay}
-                                          className="py-2 px-2 text-center font-black text-slate-800 bg-slate-100 sticky left-0 z-10 align-middle border-r border-slate-300"
+                                          className="py-2 px-1 sm:px-2 text-center font-black text-slate-800 bg-slate-100 sticky left-0 z-10 align-middle border-r border-slate-300 text-[11px] sm:text-xs"
                                         >
                                           {day.label}
                                         </td>
@@ -2155,14 +2155,14 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                                       {isFirstRowOfSession && (
                                         <td
                                           rowSpan={5}
-                                          className="py-2 px-1 text-center font-bold text-slate-700 bg-slate-50 sticky left-14 z-10 align-middle border-r border-slate-200 text-[11px]"
+                                          className="py-2 px-0.5 sm:px-1 text-center font-bold text-slate-700 bg-slate-50 sticky left-11 sm:left-14 z-10 align-middle border-r border-slate-200 text-[10px] sm:text-[11px]"
                                         >
                                           {sessLabel}
                                         </td>
                                       )}
 
                                       {/* Period cell */}
-                                      <td className="py-2 px-1 text-center font-bold text-slate-600 sticky left-28 z-10 bg-slate-50 align-middle border-r border-slate-200">
+                                      <td className="py-2 px-0.5 sm:px-1 text-center font-bold text-slate-600 sticky left-[5.5rem] sm:left-28 z-10 bg-slate-50 align-middle border-r border-slate-200 text-[11px] sm:text-xs">
                                         {period}
                                       </td>
 

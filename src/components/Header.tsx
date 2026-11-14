@@ -66,32 +66,32 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="bg-indigo-900 text-white sticky top-0 z-30 shadow-md shrink-0 print:hidden">
       {/* Top Main Nav Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
+      <div className="w-full px-3 sm:px-5 lg:px-6 min-h-14 py-2 sm:py-0 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 sm:gap-4">
         {/* Brand & School info */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
           <div className="shrink-0" title="Logo Trường THCS và THPT Đốc Binh Kiều">
             <img
               src="/logo.png"
               alt="Logo Trường THCS và THPT Đốc Binh Kiều"
-              className="w-10 h-10 object-contain rounded-full bg-white shadow-sm p-0.5 border-2 border-white/40"
+              className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-full bg-white shadow-sm p-0.5 border-2 border-white/40"
             />
           </div>
-          <div className="flex flex-col">
-            <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-indigo-200 leading-tight">
+          <div className="flex flex-col min-w-0">
+            <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-indigo-200 leading-tight truncate">
               Sở Giáo dục và Đào tạo Đồng Tháp
             </span>
-            <h1 className="text-xs sm:text-base font-extrabold tracking-tight uppercase text-white whitespace-nowrap leading-tight">
+            <h1 className="text-xs sm:text-sm md:text-base font-extrabold tracking-tight uppercase text-white truncate sm:whitespace-nowrap leading-tight">
               Trường THCS và THPT Đốc Binh Kiều
             </h1>
           </div>
         </div>
 
         {/* Academic Controls & Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2.5 shrink-0 ml-auto">
           {/* Year & Semester Selector Pill */}
-          <div className="flex items-center bg-indigo-800/90 rounded-lg p-1 border border-indigo-700/70 text-xs">
-            <div className="flex items-center gap-1 px-2 py-0.5 text-indigo-200">
-              <Calendar className="w-3 h-3 text-indigo-300" />
+          <div className="flex items-center bg-indigo-800/90 rounded-lg p-0.5 sm:p-1 border border-indigo-700/70 text-[11px] sm:text-xs">
+            <div className="flex items-center gap-1 px-1.5 sm:px-2 py-0.5 text-indigo-200">
+              <Calendar className="w-3 h-3 text-indigo-300 shrink-0 hidden sm:block" />
               <select
                 value={config.academicYear}
                 disabled={!isAdmin}
@@ -109,7 +109,7 @@ export const Header: React.FC<HeaderProps> = ({
               value={config.semester}
               disabled={!isAdmin}
               onChange={e => onUpdateConfig({ ...config, semester: e.target.value as any })}
-              className="bg-indigo-600 font-bold text-white px-2 py-0.5 rounded text-xs focus:outline-hidden cursor-pointer shadow-xs disabled:opacity-75 disabled:cursor-not-allowed"
+              className="bg-indigo-600 font-bold text-white px-1.5 sm:px-2 py-0.5 rounded text-[11px] sm:text-xs focus:outline-hidden cursor-pointer shadow-xs disabled:opacity-75 disabled:cursor-not-allowed"
               title={!isAdmin ? "Đăng nhập Quản trị để thay đổi học kỳ" : ""}
             >
               <option value="HK1" className="bg-slate-800 text-white">HK1</option>
@@ -157,9 +157,9 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Role Status & Auth Actions */}
           {isAdmin ? (
-            <div className="flex items-center gap-2 pl-2 border-l border-indigo-700/60">
+            <div className="flex items-center gap-1.5 sm:gap-2 pl-1.5 sm:pl-2 border-l border-indigo-700/60">
               <div
-                className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-xs font-bold"
+                className="flex items-center gap-1.5 px-2 sm:px-3 py-1 rounded-lg bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-xs font-bold"
                 title="Đang đăng nhập với quyền Quản trị viên (Toàn quyền)"
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
@@ -167,27 +167,27 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
               <button
                 onClick={onLogoutAdmin}
-                className="flex items-center gap-1 px-3 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 border border-rose-700/60 hover:border-rose-500 text-rose-200 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-xs active:scale-95"
+                className="flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 border border-rose-700/60 hover:border-rose-500 text-rose-200 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-xs active:scale-95"
                 title="Đăng xuất về chế độ xem tự do"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                <span>Đăng xuất</span>
+                <span className="hidden xs:inline sm:inline">Đăng xuất</span>
               </button>
             </div>
           ) : userRole === 'teacher' ? (
-            <div className="flex items-center gap-2 pl-2 border-l border-indigo-700/60">
+            <div className="flex items-center gap-1.5 sm:gap-2 pl-1.5 sm:pl-2 border-l border-indigo-700/60">
               <div
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-500/20 border border-teal-400/50 text-teal-200 text-xs font-bold"
+                className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg bg-teal-500/20 border border-teal-400/50 text-teal-200 text-xs font-bold"
                 title="Đang đăng nhập với quyền Giáo viên trường (Quyền xem tự do tất cả các tab nội bộ, không chỉnh sửa)"
               >
                 <GraduationCap className="w-3.5 h-3.5 text-teal-300" />
                 <span className="hidden sm:inline">Giáo viên (Chỉ xem)</span>
-                <span className="sm:hidden">GV (Chỉ xem)</span>
+                <span className="sm:hidden">GV</span>
               </div>
               <button
                 type="button"
                 onClick={onOpenAdminLogin}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-800 hover:bg-indigo-700 border border-indigo-600 text-indigo-100 text-xs font-medium transition-all cursor-pointer"
+                className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg bg-indigo-800 hover:bg-indigo-700 border border-indigo-600 text-indigo-100 text-xs font-medium transition-all cursor-pointer"
                 title="Chuyển sang quyền Quản trị viên"
               >
                 <KeyRound className="w-3 h-3 text-amber-300" />
@@ -195,30 +195,31 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
               <button
                 onClick={onLogoutAdmin}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-950/70 hover:bg-rose-900 border border-rose-700/60 text-rose-200 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-xs active:scale-95"
+                className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg bg-rose-950/70 hover:bg-rose-900 border border-rose-700/60 text-rose-200 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-xs active:scale-95"
                 title="Đăng xuất về chế độ xem tự do"
               >
                 <LogOut className="w-3 h-3" />
-                <span>Đăng xuất</span>
+                <span className="hidden sm:inline">Đăng xuất</span>
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-2 pl-2 border-l border-indigo-700/60">
+            <div className="flex items-center gap-1.5 sm:gap-2 pl-1.5 sm:pl-2 border-l border-indigo-700/60">
               <div
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-800/90 border border-indigo-700 text-indigo-200 text-xs font-semibold"
+                className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-800/90 border border-indigo-700 text-indigo-200 text-xs font-semibold"
                 title="Bạn đang ở chế độ xem tự do (Chỉ xem Thời khóa biểu)"
               >
                 <Eye className="w-3.5 h-3.5 text-indigo-300" />
-                <span className="hidden sm:inline">Chỉ xem TKB</span>
+                <span>Chỉ xem TKB</span>
               </div>
               <button
                 type="button"
                 onClick={onOpenAdminLogin}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-bold transition-all cursor-pointer shadow-sm active:scale-95"
+                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-bold transition-all cursor-pointer shadow-sm active:scale-95"
                 title="Đăng nhập tài khoản Giáo viên hoặc Quản trị viên để xem chi tiết công việc nội bộ"
               >
                 <KeyRound className="w-3.5 h-3.5" />
-                <span>Đăng nhập (GV / Quản trị)</span>
+                <span className="hidden sm:inline">Đăng nhập (GV / Quản trị)</span>
+                <span className="sm:hidden">Đăng nhập</span>
               </button>
             </div>
           )}
@@ -226,9 +227,9 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Sub Metrics Bar - High Density */}
-      <div className="bg-indigo-950/80 border-t border-indigo-800/80 px-4 sm:px-6 lg:px-8 py-1.5">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-indigo-200 text-[11px]">
+      <div className="bg-indigo-950/80 border-t border-indigo-800/80 px-3 sm:px-5 lg:px-6 py-1.5">
+        <div className="w-full flex flex-wrap items-center justify-between gap-2 sm:gap-3 text-xs">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-indigo-200 text-[11px]">
             <div className="flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5 text-indigo-400" />
               <span>Giáo viên:</span>

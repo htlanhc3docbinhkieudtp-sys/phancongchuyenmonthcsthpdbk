@@ -160,27 +160,27 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5">
+    <div className="w-full px-2 sm:px-4 lg:px-6 py-4 sm:py-5 space-y-4 sm:space-y-5">
       {/* Header & Main Navigation Bar */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200/80 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="p-2 bg-indigo-50 text-indigo-700 rounded-lg">
+          <div className="flex items-start sm:items-center gap-2.5">
+            <span className="p-2 bg-indigo-50 text-indigo-700 rounded-lg shrink-0">
               <BookOpen className="w-5 h-5" />
             </span>
             <div>
               <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
                 Khung Phân Phối Số Tiết GDPT 2018
               </h1>
-              <p className="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
+              <p className="text-xs text-slate-500 flex flex-wrap items-center gap-1.5 sm:gap-2 mt-0.5">
                 <span className="inline-flex items-center gap-1 font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">
                   <Calendar className="w-3 h-3" /> Học kỳ 1: 18 tuần
                 </span>
-                <span className="text-slate-300">•</span>
+                <span className="text-slate-300 hidden sm:inline">•</span>
                 <span className="inline-flex items-center gap-1 font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
                   <Calendar className="w-3 h-3" /> Học kỳ 2: 17 tuần
                 </span>
-                <span className="text-slate-300">•</span>
+                <span className="text-slate-300 hidden sm:inline">•</span>
                 <span className="text-slate-600 font-medium">Cả năm: 35 tuần</span>
               </p>
             </div>
@@ -190,7 +190,7 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
         {/* Action Buttons & Level Switcher */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Main Level Tabs */}
-          <div className="bg-slate-100 p-1 rounded-lg flex items-center gap-1">
+          <div className="bg-slate-100 p-1 rounded-lg flex flex-wrap items-center gap-1 w-full sm:w-auto">
             <button
               id="tab-thpt-btn"
               onClick={() => setActiveTab('thpt')}
@@ -324,9 +324,9 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
 
           {/* Filter & Explanation Banner */}
           <div className="bg-white p-3 rounded-xl border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs font-bold text-slate-700">Xem theo học kỳ:</span>
-              <div className="inline-flex bg-slate-100 p-0.5 rounded-lg text-xs font-semibold">
+              <div className="inline-flex flex-wrap max-w-full bg-slate-100 p-0.5 rounded-lg text-xs font-semibold gap-0.5">
                 <button
                   onClick={() => setThptSemesterFilter('all')}
                   className={`px-3 py-1 rounded-md transition-all cursor-pointer ${
@@ -367,7 +367,7 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
 
           {/* THPT Data Table */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-            <div className="p-3.5 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between">
+            <div className="p-3.5 bg-slate-50/80 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wide">
@@ -447,7 +447,7 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
                   {/* Category 2: Môn lựa chọn */}
                   <tr className="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-300">
                     <td colSpan={thptSemesterFilter === 'all' ? 7 : 6} className="p-2.5 bg-amber-50/60 text-amber-900">
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
                           <Layers className="w-3.5 h-3.5 text-amber-600" />
                           <span>II. MÔN HỌC LỰA CHỌN (Học sinh chọn 4 môn từ danh sách 9 môn học lựa chọn)</span>
@@ -493,7 +493,7 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
                   {/* Category 3: Chuyên đề lựa chọn */}
                   <tr className="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-300">
                     <td colSpan={thptSemesterFilter === 'all' ? 7 : 6} className="p-2.5 bg-purple-50/60 text-purple-900">
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
                           <Sparkles className="w-3.5 h-3.5 text-purple-600" />
                           <span>III. CHUYÊN ĐỀ HỌC TẬP LỰA CHỌN (3 cụm chuyên đề học tập của 3 môn học)</span>
@@ -694,9 +694,9 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
 
           {/* THCS View Mode Switcher */}
           <div className="bg-white p-3 rounded-xl border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs font-bold text-slate-700">Chế độ xem:</span>
-              <div className="inline-flex bg-slate-100 p-0.5 rounded-lg text-xs font-semibold">
+              <div className="inline-flex flex-wrap max-w-full bg-slate-100 p-0.5 rounded-lg text-xs font-semibold gap-0.5">
                 <button
                   onClick={() => setThcsViewMode('all_matrix')}
                   className={`px-3 py-1 rounded-md transition-all cursor-pointer ${
@@ -757,7 +757,7 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
 
           {/* THCS Full Matrix Table */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-            <div className="p-3.5 bg-teal-50/50 border-b border-teal-100 flex items-center justify-between">
+            <div className="p-3.5 bg-teal-50/50 border-b border-teal-100 flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-teal-600"></span>
                 <h3 className="text-xs sm:text-sm font-bold text-teal-950 uppercase tracking-wide">
@@ -1012,7 +1012,7 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
 
           {/* Grade Selector for Config */}
           <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs font-bold text-slate-700">Chọn khối cần xem / cấu hình:</span>
               <div className="flex flex-wrap items-center gap-1">
                 {(['10', '11', '12', '6', '7', '8', '9'] as GradeLevel[]).map(g => {

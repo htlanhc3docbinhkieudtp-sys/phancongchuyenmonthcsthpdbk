@@ -242,7 +242,7 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5 print:max-w-none print:p-0 print:m-0">
+    <div className="w-full px-2 sm:px-4 lg:px-6 py-4 sm:py-5 space-y-4 sm:space-y-5 print:max-w-none print:p-0 print:m-0">
       {/* Formal Administrative Header for Printing (Nghị định 30/2020/NĐ-CP) */}
       <div className="hidden print:block mb-4 text-black font-['Times_New_Roman',serif]">
         <table className="w-full border-none mb-3">
@@ -302,7 +302,7 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {/* Print Font Size Selector */}
           <div className="hidden sm:flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-2 py-1 text-[11px] text-slate-600">
             <span className="font-semibold text-slate-500">Cỡ in:</span>
@@ -443,17 +443,17 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
         </div>
 
         {/* Dropdowns & Search */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full md:w-auto">
             {/* Search */}
-            <div className="relative">
+            <div className="relative w-full sm:w-64 md:w-72">
               <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
                 placeholder="Tìm tên GV, mã, lớp CN, chức vụ..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-indigo-500 w-64 sm:w-72"
+                className="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-indigo-500 w-full"
               />
             </div>
 
@@ -461,7 +461,7 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
             <select
               value={selectedDept}
               onChange={e => setSelectedDept(e.target.value)}
-              className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-hidden cursor-pointer"
+              className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-hidden cursor-pointer w-full sm:w-auto"
             >
               <option value="ALL">Tất cả tổ chuyên môn</option>
               {departments.map(d => (
@@ -475,7 +475,7 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
             <select
               value={selectedCampus}
               onChange={e => setSelectedCampus(e.target.value)}
-              className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-hidden cursor-pointer"
+              className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-hidden cursor-pointer w-full sm:w-auto"
             >
               <option value="ALL">Tất cả điểm trường / Cấp</option>
               <option value="THPT">Cấp THPT (Điểm Đốc Binh Kiều)</option>
@@ -484,7 +484,7 @@ export const ConcurrentDutiesView: React.FC<ConcurrentDutiesViewProps> = ({
             </select>
           </div>
 
-          <div className="text-xs text-slate-500 font-semibold">
+          <div className="text-xs text-slate-500 font-semibold self-end md:self-auto">
             Hiển thị <span className="font-extrabold text-slate-900">{filteredTeachers.length}</span> giáo viên
           </div>
         </div>
