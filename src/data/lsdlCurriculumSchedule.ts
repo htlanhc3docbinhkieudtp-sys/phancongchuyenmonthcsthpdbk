@@ -79,15 +79,13 @@ export const DIA_8_WEEKS: Record<number, number> = {
   31: 2, 32: 2, 33: 2, 34: 2, 35: 2,
 };
 
-// Bảng số tiết Sử Khối 6 & 7 từng tuần (35 tuần: HK1: 25t, HK2: 24t, Cả năm: 49t - Tuần 1 TKB thực tế xếp Sử 1t, Địa 2t)
+// Bảng số tiết Sử & Địa Khối 6 & 7 từng tuần (35 tuần: HK1: Sử 26t, Địa 28t; HK2: Sử 24t, Địa 27t; Cả năm: Sử 50t, Địa 55t - đồng bộ theo TKB thực tế từ Tuần 1: Sử 2t, Địa 1t)
 export const SU_6_WEEKS: Record<number, number> = {
   ...SU_8_WEEKS,
-  1: 1,
 };
 
 export const DIA_6_WEEKS: Record<number, number> = {
   ...DIA_8_WEEKS,
-  1: 2,
 };
 
 export const SU_7_WEEKS: Record<number, number> = SU_6_WEEKS;
@@ -527,8 +525,8 @@ export function getLsdlPeriodsForTeacherInWeek(
   }[];
 } {
   const isHk1 = weekNumber >= 1 && weekNumber <= 18;
-  const su6 = SU_6_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? (weekNumber === 1 ? 1 : 2) : 1) : 1);
-  const dia6 = DIA_6_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? (weekNumber === 1 ? 2 : 1) : 2) : 2);
+  const su6 = SU_6_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 2 : 1) : 1);
+  const dia6 = DIA_6_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 1 : 2) : 2);
   const su7 = SU_7_WEEKS[weekNumber] ?? su6;
   const dia7 = DIA_7_WEEKS[weekNumber] ?? dia6;
   const su8 = SU_8_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 2 : 1) : 1);

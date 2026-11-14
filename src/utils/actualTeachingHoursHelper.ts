@@ -356,8 +356,8 @@ export function adjustCongNgheSlotsForWeek(
 
 /**
  * Adjust Lịch sử - Địa lí slots for Grade 8 and Grade 9 according to the weekly curriculum distribution:
- * - Khối 6 & Khối 7 (105t/năm: Sử 49t, Địa 56t cho các lớp phân công tách 2 GV):
- *   + HK1 (54t = Sử 25t + Địa 29t): T1 (Sử 1, Địa 2), T2-4 (Sử 2, Địa 1), T5-9 (Sử 1, Địa 2), T10-13 (Sử 2, Địa 1), T14-18 (Sử 1, Địa 2)
+ * - Khối 6 & Khối 7 (105t/năm: Sử 50t, Địa 55t cho các lớp phân công tách 2 GV):
+ *   + HK1 (54t = Sử 26t + Địa 28t): T1-4 (Sử 2, Địa 1), T5-9 (Sử 1, Địa 2), T10-13 (Sử 2, Địa 1), T14-18 (Sử 1, Địa 2)
  *   + HK2 (51t = Sử 24t + Địa 27t): T19-22 (Sử 2, Địa 1), T23-27 (Sử 1, Địa 2), T28-30 (Sử 2, Địa 1), T31-35 (Sử 1, Địa 2)
  * - Khối 8 (105t/năm: Sử 50t, Địa 55t):
  *   + HK1 (54t = Sử 26t + Địa 28t): T1-4 (Sử 2, Địa 1), T5-9 (Sử 1, Địa 2), T10-13 (Sử 2, Địa 1), T14-18 (Sử 1, Địa 2)
@@ -371,11 +371,11 @@ export function adjustLsdlSlotsForWeek(
   weekNumber: number
 ): TimetableSlot[] {
   const isHk1 = weekNumber >= 1 && weekNumber <= 18;
-  const pSu6 = SU_6_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? (weekNumber === 1 ? 1 : 2) : 1) : 1);
-  const pDia6 = DIA_6_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? (weekNumber === 1 ? 2 : 1) : 2) : 2);
+  const pSu6 = SU_6_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 2 : 1) : 1);
+  const pDia6 = DIA_6_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 1 : 2) : 2);
 
-  const pSu7 = SU_7_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? (weekNumber === 1 ? 1 : 2) : 1) : 1);
-  const pDia7 = DIA_7_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? (weekNumber === 1 ? 2 : 1) : 2) : 2);
+  const pSu7 = SU_7_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 2 : 1) : 1);
+  const pDia7 = DIA_7_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 1 : 2) : 2);
 
   const pSu8 = SU_8_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 2 : 1) : 1);
   const pDia8 = DIA_8_WEEKS[weekNumber] ?? (isHk1 ? (weekNumber <= 4 ? 1 : 2) : 2);
