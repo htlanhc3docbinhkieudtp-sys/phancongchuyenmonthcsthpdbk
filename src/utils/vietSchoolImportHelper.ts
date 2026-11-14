@@ -33,6 +33,7 @@ const THCS_DBK_TEACHER_LOOKUP: Record<string, { id: string; name: string; code: 
   'Sơn': { id: 'tch-ls-2', name: 'Trịnh Văn Sơn', code: 'Sơn.TV' },
   'Hòa': { id: 'tch-ls-6', name: 'Trần Phước Hòa', code: 'Hòa.TP' },
   'Tuấn': { id: 'tch-ls-7', name: 'Ngô Anh Tuấn', code: 'Tuấn.NA' },
+  'Thanh Thảo': { id: 'tch-bgh-3', name: 'Phan Thanh Thảo', code: 'Thảo.PT (PHT)' },
   // Tổ Toán
   'Tới': { id: 'tch-t-1', name: 'Nguyễn Văn Tới', code: 'Tới.NV' },
   'Lang': { id: 'tch-t-3', name: 'Nguyễn Thị Bích Lang', code: 'Lang.NTB' },
@@ -240,14 +241,43 @@ export function matchTeacher(
 
   // Disambiguation for "Văn" at Tân Kiều based on subject:
   // - Nguyễn Anh Văn (tch-td-12): Thể dục (GDTC), Âm nhạc
-  // - Võ Ngọc Đình Văn (tch-khtn-15): KHTN, Hóa học, Sinh học, Vật lí
+  // - Võ Ngọc Đình Văn (tch-khtn-15): KHTN, Hóa học, Sinh học, Vật lí, GDĐP
   if (clean === 'Văn' || clean === 'A.Văn' || clean === 'Đ.Văn' || clean === 'Văn(TK)') {
     const subUpper = (subjectText || '').toUpperCase();
     if (clean === 'A.Văn' || subUpper.includes('NHẠC') || subUpper.includes('GDTC') || subUpper.includes('THỂ DỤC')) {
       return { id: 'tch-td-12', name: 'Nguyễn Anh Văn', code: 'Văn.NA' };
     }
-    if (clean === 'Đ.Văn' || subUpper.includes('KHTN') || subUpper.includes('HÓA') || subUpper.includes('LÍ') || subUpper.includes('SINH')) {
+    if (
+      clean === 'Đ.Văn' ||
+      subUpper.includes('KHTN') ||
+      subUpper.includes('HÓA') ||
+      subUpper.includes('LÍ') ||
+      subUpper.includes('SINH') ||
+      subUpper.includes('GDĐP') ||
+      subUpper.includes('ĐỊA PHƯƠNG')
+    ) {
       return { id: 'tch-khtn-15', name: 'Võ Ngọc Đình Văn', code: 'Văn.VNĐ' };
+    }
+  }
+
+  // Disambiguation for "Quốc" based on subject / campus:
+  // - Trần Thị Mỹ Quốc (tch-td-10): Mỹ thuật (THCS ĐBK & TK)
+  // - Ngô Bảo Quốc (tch-av-5): Tiếng Anh / Ngoại ngữ (THPT) & GDĐP (THPT, THCS 8A2, 8A5)
+  if (clean === 'Quốc' || clean === 'Quốc(TK)' || clean === 'Quốc.NB' || clean === 'Quốc.TTM') {
+    const subUpper = (subjectText || '').toUpperCase();
+    if (clean === 'Quốc(TK)' || clean === 'Quốc.TTM' || subUpper.includes('MỸ THUẬT') || subUpper === 'MT' || subUpper.includes('VẼ')) {
+      return { id: 'tch-td-10', name: 'Trần Thị Mỹ Quốc', code: 'Quốc.TTM' };
+    }
+    if (
+      clean === 'Quốc.NB' ||
+      targetClass?.level === 'THPT' ||
+      targetClass?.campus === 'THPTDBK' ||
+      subUpper.includes('GDĐP') ||
+      subUpper.includes('ĐỊA PHƯƠNG') ||
+      subUpper.includes('NGOẠI NGỮ') ||
+      subUpper.includes('ANH')
+    ) {
+      return { id: 'tch-av-5', name: 'Ngô Bảo Quốc', code: 'Quốc.NB' };
     }
   }
 
@@ -439,7 +469,16 @@ export function matchSubject(
     return { id: 'sub-nghe-thuat', name: 'Nghệ thuật' };
   }
 
-  if (upper === 'GDĐP' || upper === 'GD DP' || upper === 'GD ĐỊA PHƯƠNG' || upper === 'GIÁO DỤC ĐỊA PHƯƠNG' || upper === 'ĐỊA PHƯƠNG' || upper.includes('ĐỊA PHƯƠNG')) {
+  if (
+    upper === 'GDĐP' ||
+    upper === 'ND GDĐP' ||
+    upper === 'GD DP' ||
+    upper === 'GD ĐỊA PHƯƠNG' ||
+    upper === 'GIÁO DỤC ĐỊA PHƯƠNG' ||
+    upper === 'ĐỊA PHƯƠNG' ||
+    upper.includes('GDĐP') ||
+    upper.includes('ĐỊA PHƯƠNG')
+  ) {
     return { id: 'sub-gddp', name: 'GD Địa phương' };
   }
   if (upper.startsWith('CĐ ') || upper.startsWith('CD ') || upper.startsWith('CHUYÊN ĐỀ ')) {

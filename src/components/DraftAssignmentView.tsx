@@ -9,6 +9,7 @@ import {
   TimetableSlot,
 } from '../types';
 import { WeeklyTeachingLogView, ChangedTeacherInfo } from './WeeklyTeachingLogView';
+import { OFFICIAL_WEEK_11_SLOTS } from '../data/officialWeek11Timetable';
 import { OFFICIAL_WEEK_10_SLOTS } from '../data/officialWeek10Timetable';
 import { OFFICIAL_WEEK_9_SLOTS } from '../data/officialWeek9Timetable';
 import { OFFICIAL_WEEK_8_SLOTS } from '../data/officialWeek8Timetable';
@@ -473,9 +474,11 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   isAdmin = false,
   onShowToast,
 }) => {
-  // 1. Baseline Slots from Official Timetable (Week 10 / Week 9 / Week 8 / Official Timetable)
+  // 1. Baseline Slots from Official Timetable (Week 11 / Week 10 / Week 9 / Week 8 / Official Timetable)
   const baselineSlots = useMemo<TimetableSlot[]>(() => {
     return (
+      weeklyTimetables?.[11]?.slots ||
+      OFFICIAL_WEEK_11_SLOTS ||
       weeklyTimetables?.[10]?.slots ||
       OFFICIAL_WEEK_10_SLOTS ||
       weeklyTimetables?.[9]?.slots ||

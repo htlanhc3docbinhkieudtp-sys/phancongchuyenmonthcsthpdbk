@@ -30,6 +30,7 @@ import { buildOfficialWeek7Timetable, loadOfficialWeek7Timetable } from './data/
 import { buildOfficialWeek8Timetable, loadOfficialWeek8Timetable } from './data/officialWeek8Timetable';
 import { buildOfficialWeek9Timetable, loadOfficialWeek9Timetable } from './data/officialWeek9Timetable';
 import { buildOfficialWeek10Timetable, loadOfficialWeek10Timetable } from './data/officialWeek10Timetable';
+import { buildOfficialWeek11Timetable, loadOfficialWeek11Timetable } from './data/officialWeek11Timetable';
 import {
   calculateTeacherWorkloads,
   auditAssignmentConflicts
@@ -396,7 +397,7 @@ export default function App() {
 
   const [currentWeek, setCurrentWeek] = useState<number>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_current_week`);
-    return saved ? Number(saved) : 10;
+    return saved ? Number(saved) : 11;
   });
 
   // Timetable is the Master Source of Truth
@@ -460,6 +461,7 @@ export default function App() {
           parsed[8] = buildOfficialWeek8Timetable(initialSchoolConfig.academicYear);
           parsed[9] = buildOfficialWeek9Timetable(initialSchoolConfig.academicYear);
           parsed[10] = buildOfficialWeek10Timetable(initialSchoolConfig.academicYear);
+          parsed[11] = buildOfficialWeek11Timetable(initialSchoolConfig.academicYear);
 
           return parsed;
         }
@@ -482,6 +484,7 @@ export default function App() {
     const week8Tkb = buildOfficialWeek8Timetable(initialSchoolConfig.academicYear);
     const week9Tkb = buildOfficialWeek9Timetable(initialSchoolConfig.academicYear);
     const week10Tkb = buildOfficialWeek10Timetable(initialSchoolConfig.academicYear);
+    const week11Tkb = buildOfficialWeek11Timetable(initialSchoolConfig.academicYear);
 
     if (emergencyW1) {
       try {
@@ -497,7 +500,8 @@ export default function App() {
             7: week7Tkb,
             8: week8Tkb,
             9: week9Tkb,
-            10: week10Tkb
+            10: week10Tkb,
+            11: week11Tkb
           };
         }
       } catch { /* ignore */ }
@@ -515,7 +519,8 @@ export default function App() {
       7: week7Tkb,
       8: week8Tkb,
       9: week9Tkb,
-      10: week10Tkb
+      10: week10Tkb,
+      11: week11Tkb
     };
   });
 
@@ -599,7 +604,10 @@ export default function App() {
     if (currentWeek === 10) {
       return buildOfficialWeek10Timetable(config.academicYear);
     }
-    // Weeks 11 to 35: Empty by default as requested by user
+    if (currentWeek === 11) {
+      return buildOfficialWeek11Timetable(config.academicYear);
+    }
+    // Weeks 12 to 35: Empty by default as requested by user
     return createEmptyTimetableForWeek(currentWeek, config.academicYear);
   }, [weeklyTimetables, currentWeek, config.academicYear, classes, subjects, teachers, assignments, config]);
 
@@ -820,6 +828,19 @@ export default function App() {
           }
         })
         .catch(error => console.error('Failed to load official week 10 timetable', error));
+
+      return () => {
+        isMounted = false;
+      };
+    } else if (currentWeek === 11) {
+      let isMounted = true;
+      loadOfficialWeek11Timetable(config.academicYear, initialClasses, initialSubjects, initialTeachers)
+        .then(week11 => {
+          if (isMounted) {
+            setWeeklyTimetables(prev => ({ ...prev, 11: week11 }));
+          }
+        })
+        .catch(error => console.error('Failed to load official week 11 timetable', error));
 
       return () => {
         isMounted = false;

@@ -19,6 +19,7 @@ import { buildOfficialWeek7Timetable, OFFICIAL_WEEK_7_SLOTS } from '../data/offi
 import { buildOfficialWeek8Timetable, OFFICIAL_WEEK_8_SLOTS } from '../data/officialWeek8Timetable';
 import { buildOfficialWeek9Timetable, OFFICIAL_WEEK_9_SLOTS } from '../data/officialWeek9Timetable';
 import { buildOfficialWeek10Timetable, OFFICIAL_WEEK_10_SLOTS } from '../data/officialWeek10Timetable';
+import { buildOfficialWeek11Timetable, OFFICIAL_WEEK_11_SLOTS } from '../data/officialWeek11Timetable';
 
 export {
   buildOfficialWeek2Timetable,
@@ -39,6 +40,8 @@ export {
   OFFICIAL_WEEK_9_SLOTS,
   buildOfficialWeek10Timetable,
   OFFICIAL_WEEK_10_SLOTS,
+  buildOfficialWeek11Timetable,
+  OFFICIAL_WEEK_11_SLOTS,
 };
 
 export const DAYS_OF_WEEK = [
@@ -444,7 +447,7 @@ export function normalizeTimetableSlots(slots: TimetableSlot[]): TimetableSlot[]
       tNameLower === 'vo ngoc dinh van' ||
       tCodeLower === 'văn.vnđ' ||
       tCodeLower === 'đ.văn' ||
-      (tNameLower === 'văn' && (subLower.includes('khtn') || subLower.includes('hóa') || subLower.includes('lí') || subLower.includes('sinh')))
+      (tNameLower === 'văn' && (subLower.includes('khtn') || subLower.includes('hóa') || subLower.includes('lí') || subLower.includes('sinh') || subLower.includes('gddp') || subLower.includes('địa phương')))
     ) {
       teacherId = 'tch-khtn-15';
       teacherName = 'Võ Ngọc Đình Văn';

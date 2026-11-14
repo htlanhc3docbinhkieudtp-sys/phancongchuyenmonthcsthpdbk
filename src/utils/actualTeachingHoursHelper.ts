@@ -16,6 +16,7 @@ import { OFFICIAL_WEEK_7_SLOTS } from '../data/officialWeek7Timetable';
 import { OFFICIAL_WEEK_8_SLOTS } from '../data/officialWeek8Timetable';
 import { OFFICIAL_WEEK_9_SLOTS } from '../data/officialWeek9Timetable';
 import { OFFICIAL_WEEK_10_SLOTS } from '../data/officialWeek10Timetable';
+import { OFFICIAL_WEEK_11_SLOTS } from '../data/officialWeek11Timetable';
 import {
   KHTN_8_WEEKS,
   KHTN_9_WEEKS,
@@ -151,6 +152,9 @@ export function formatActualSubjectName(
     }
   }
 
+  if (s === 'ND GDĐP' || s === 'GDĐP' || s.toUpperCase() === 'ND GDĐP' || s.toUpperCase() === 'GDĐP') {
+    return 'GD Địa phương';
+  }
   if (s === 'Toán học') return 'Toán';
   if (s.includes('GD QP') || s.includes('GDQP')) {
     return 'GD Quốc phòng & An ninh';
@@ -698,6 +702,31 @@ export function adjustTeacherAssignmentsForWeek(
   });
 }
 
+function trimProjectedGddpSlotsForWeek(
+  slots: TimetableSlot[],
+  weekNumber: number
+): TimetableSlot[] {
+  if (weekNumber >= 11 && weekNumber <= 27) return slots;
+  const isGddpSlot = (s: TimetableSlot) => {
+    const subId = (s.subjectId || '').toLowerCase();
+    const subName = (s.subjectName || '').toLowerCase();
+    return subId === 'sub-gddp' || subName.includes('địa phương') || subName.includes('gdđp');
+  };
+  if (weekNumber < 11 || weekNumber >= 29) {
+    // Trước Tuần 11 (chưa dạy GDĐP) hoặc từ Tuần 29 trở đi (đã đủ 35 tiết: W11-W27 = 34t, W28 = 1t) -> ngưng
+    return slots.filter((s) => !isGddpSlot(s));
+  }
+  // Tuần 28: giữ tối đa 1 tiết GDĐP/lớp để đạt đúng 35 tiết/năm
+  const seenClass = new Set<string>();
+  return slots.filter((s) => {
+    if (!isGddpSlot(s)) return true;
+    const cKey = s.classId || s.className || '';
+    if (seenClass.has(cKey)) return false;
+    seenClass.add(cKey);
+    return true;
+  });
+}
+
 /**
  * Get timetable slots for a specific week
  */
@@ -707,22 +736,32 @@ export function getSlotsForWeek(
   fallbackTimetable?: SchoolTimetable
 ): TimetableSlot[] {
   let baseSlots: TimetableSlot[] = [];
+  let usedFallback = false;
   if (weeklyTimetables && weeklyTimetables[weekNumber]?.slots?.length > 0) {
     baseSlots = weeklyTimetables[weekNumber].slots;
+  } else if (weekNumber === 11 && OFFICIAL_WEEK_11_SLOTS?.length > 0) {
+    baseSlots = OFFICIAL_WEEK_11_SLOTS;
   } else if (weekNumber === 10 && OFFICIAL_WEEK_10_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_10_SLOTS;
   } else if (weekNumber === 9 && OFFICIAL_WEEK_9_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_9_SLOTS;
   } else if (weekNumber === 8 && OFFICIAL_WEEK_8_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_8_SLOTS;
+  } else if (weekNumber >= 11 && OFFICIAL_WEEK_11_SLOTS?.length > 0) {
+    baseSlots = OFFICIAL_WEEK_11_SLOTS;
+    usedFallback = true;
   } else if (weekNumber >= 10 && OFFICIAL_WEEK_10_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_10_SLOTS;
+    usedFallback = true;
   } else if (weekNumber >= 9 && OFFICIAL_WEEK_9_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_9_SLOTS;
+    usedFallback = true;
   } else if (weekNumber >= 7 && weeklyTimetables && weeklyTimetables[7]?.slots?.length > 0) {
     baseSlots = weeklyTimetables[7].slots;
+    usedFallback = true;
   } else if (weekNumber >= 7 && OFFICIAL_WEEK_7_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_7_SLOTS;
+    usedFallback = true;
   } else if (weekNumber === 6 && weeklyTimetables && weeklyTimetables[6]?.slots?.length > 0) {
     baseSlots = weeklyTimetables[6].slots;
   } else if (weekNumber === 6 && OFFICIAL_WEEK_6_SLOTS?.length > 0) {
@@ -737,37 +776,56 @@ export function getSlotsForWeek(
     baseSlots = OFFICIAL_WEEK_4_SLOTS;
   } else if (weekNumber >= 3 && weeklyTimetables && weeklyTimetables[3]?.slots?.length > 0) {
     baseSlots = weeklyTimetables[3].slots;
+    usedFallback = true;
   } else if (weekNumber >= 3 && OFFICIAL_WEEK_3_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_3_SLOTS;
+    usedFallback = true;
   } else if (weekNumber === 2 && OFFICIAL_WEEK_2_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_2_SLOTS;
   } else if (weeklyTimetables && weeklyTimetables[1]?.slots?.length > 0) {
     baseSlots = weeklyTimetables[1].slots;
+    usedFallback = true;
   } else if (fallbackTimetable?.slots?.length > 0) {
     baseSlots = fallbackTimetable.slots;
+    usedFallback = true;
+  } else if (OFFICIAL_WEEK_11_SLOTS?.length > 0) {
+    baseSlots = OFFICIAL_WEEK_11_SLOTS;
+    usedFallback = true;
   } else if (OFFICIAL_WEEK_10_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_10_SLOTS;
+    usedFallback = true;
   } else if (OFFICIAL_WEEK_9_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_9_SLOTS;
+    usedFallback = true;
   } else if (OFFICIAL_WEEK_8_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_8_SLOTS;
+    usedFallback = true;
   } else if (OFFICIAL_WEEK_7_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_7_SLOTS;
+    usedFallback = true;
   } else if (OFFICIAL_WEEK_6_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_6_SLOTS;
+    usedFallback = true;
   } else if (OFFICIAL_WEEK_5_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_5_SLOTS;
+    usedFallback = true;
   } else if (OFFICIAL_WEEK_4_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_4_SLOTS;
+    usedFallback = true;
   } else if (OFFICIAL_WEEK_3_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_3_SLOTS;
+    usedFallback = true;
   } else if (OFFICIAL_WEEK_2_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_2_SLOTS;
+    usedFallback = true;
   }
 
   if (baseSlots.length === 0) return [];
 
-  const khtnAdjusted = adjustKhtnSlotsForWeek(baseSlots, weekNumber);
+  const gddpAdjusted = usedFallback
+    ? trimProjectedGddpSlotsForWeek(baseSlots, weekNumber)
+    : baseSlots;
+  const khtnAdjusted = adjustKhtnSlotsForWeek(gddpAdjusted, weekNumber);
   const cnAdjusted = adjustCongNgheSlotsForWeek(khtnAdjusted, weekNumber);
   const lsdlAdjusted = adjustLsdlSlotsForWeek(cnAdjusted, weekNumber);
   const suThptAdjusted = adjustThptHistorySlotsForWeek(lsdlAdjusted, weekNumber);
