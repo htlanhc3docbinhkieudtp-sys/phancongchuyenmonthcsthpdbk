@@ -2,9 +2,15 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { SchoolTimetable, TimetableSlot } from '../types';
 import { getSlotsForWeek } from './actualTeachingHoursHelper';
+import {
+  OfficialGddpAiOverridePayload,
+  OFFICIAL_GDDP_AI_VERSION,
+  saveOfficialGddpAiLocalOverride,
+} from '../data/officialGddpAiAssignments';
 
 export const DRAFT_COLLECTION_NAME = 'draft_assignments';
 export const DRAFT_ACTIVE_DOC_ID = 'draft_active_plan';
+export const OFFICIAL_GDDP_AI_DOC_ID = 'official_gddp_ai_plan';
 export const DRAFT_WEEK_BATCHES_SUBCOLLECTION = 'week_batches';
 export const DRAFT_CLOUD_VERSION = 13;
 export const DRAFT_LOCAL_CACHE_KEY = 'docbinhkieu_draft_sandbox_cloud_cache_v13';
@@ -455,3 +461,62 @@ export function reconstructDraftFromCloudPayload(
 
   return result;
 }
+
+/**
+ * Publish GDĐP & AI class-teacher assignments from Draft Sandbox directly into Official "Số tiết thực dạy"
+ * Stores locally for instant recalculation and syncs cleanly to Cloud Firestore (~3 KB document).
+ */
+export async function publishGddpAiToOfficialCloud(
+  gddpClassTeacherMap: Record<string, string>,
+  aiClassTeacherMap: Record<string, string>,
+  gddpScope: 'FROM_WEEK_11_2T' | 'FULL_YEAR' | 'FROM_WEEK_10' = 'FROM_WEEK_11_2T'
+): Promise<{ success: boolean; updatedAt: number; cloudSynced: boolean; error?: string }> {
+  const updatedAt = Date.now();
+  const payload: OfficialGddpAiOverridePayload = stripUndefined({
+    version: OFFICIAL_GDDP_AI_VERSION,
+    updatedAt,
+    updatedBy: 'Ban Giám Hiệu',
+    gddpClassTeacherMap: { ...gddpClassTeacherMap },
+    aiClassTeacherMap: { ...aiClassTeacherMap },
+    gddpScope,
+  });
+
+  // Always apply locally immediately so Số tiết thực dạy updates instantly
+  saveOfficialGddpAiLocalOverride(payload);
+
+  try {
+    const officialRef = doc(db, DRAFT_COLLECTION_NAME, OFFICIAL_GDDP_AI_DOC_ID);
+    await setDoc(officialRef, payload);
+    return { success: true, updatedAt, cloudSynced: true };
+  } catch (error) {
+    console.warn('Saved official GDĐP & AI locally; cloud sync notice:', error);
+    return {
+      success: true,
+      updatedAt,
+      cloudSynced: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
+/**
+ * Load published Official GDĐP & AI assignment overrides from Cloud Firestore (syncs local cache if newer)
+ */
+export async function loadOfficialGddpAiFromCloud(): Promise<OfficialGddpAiOverridePayload | null> {
+  try {
+    const officialRef = doc(db, DRAFT_COLLECTION_NAME, OFFICIAL_GDDP_AI_DOC_ID);
+    const snap = await getDoc(officialRef);
+    if (snap.exists()) {
+      const data = snap.data() as OfficialGddpAiOverridePayload;
+      if (data && data.gddpClassTeacherMap && data.aiClassTeacherMap) {
+        saveOfficialGddpAiLocalOverride(data);
+        return data;
+      }
+    }
+    return null;
+  } catch (error) {
+    console.warn('Could not load official GDĐP & AI overrides from Cloud Firestore:', error);
+    return null;
+  }
+}
+

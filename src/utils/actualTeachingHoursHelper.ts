@@ -45,6 +45,24 @@ import {
   exportExecutiveMultiWeekExcel,
   exportExecutiveWeeklyExcel,
 } from './executiveExcelExportHelper';
+import { officialStaffList } from '../data/schoolStaffData';
+import {
+  OFFICIAL_53_CLASS_META,
+  OFFICIAL_GDDP_CLASS_ASSIGNMENTS,
+  OFFICIAL_AI_CLASS_ASSIGNMENTS,
+  getDefaultOfficialGddpMap,
+  getDefaultOfficialAiMap,
+  loadOfficialGddpAiLocalOverride,
+} from '../data/officialGddpAiAssignments';
+
+const STAFF_BY_ID_MAP = new Map<string, Teacher>(
+  officialStaffList.map((t) => [t.id, t])
+);
+
+export interface GetSlotsOptions {
+  applyOfficialGddpAi?: boolean;
+  teachers?: Teacher[];
+}
 
 export interface TeacherSubjectRow {
   classes: string;
@@ -152,7 +170,13 @@ export function formatActualSubjectName(
     }
   }
 
-  if (s === 'ND GDĐP' || s === 'GDĐP' || s.toUpperCase() === 'ND GDĐP' || s.toUpperCase() === 'GDĐP') {
+  const sLower = s.toLowerCase();
+  if (
+    s === 'ND GDĐP' ||
+    s === 'GDĐP' ||
+    sLower.includes('địa phương') ||
+    sLower.includes('gdđp')
+  ) {
     return 'GD Địa phương';
   }
   if (s === 'Toán học') return 'Toán';
@@ -727,13 +751,154 @@ function trimProjectedGddpSlotsForWeek(
   });
 }
 
+function buildTeacherLookup(extraTeachers?: Teacher[]): Map<string, Teacher> {
+  if (!extraTeachers || extraTeachers.length === 0) return STAFF_BY_ID_MAP;
+  const merged = new Map<string, Teacher>(STAFF_BY_ID_MAP);
+  extraTeachers.forEach((t) => merged.set(t.id, t));
+  return merged;
+}
+
+export function adjustOfficialGddpSlotsForWeek(
+  baseSlots: TimetableSlot[],
+  weekNumber: number,
+  teacherLookup: Map<string, Teacher>,
+  gddpMap: Record<string, string>,
+  gddpScope: 'FROM_WEEK_11_2T' | 'FULL_YEAR' | 'FROM_WEEK_10' = 'FROM_WEEK_11_2T'
+): TimetableSlot[] {
+  let periodsForClass = 0;
+  if (gddpScope === 'FULL_YEAR') {
+    periodsForClass = 1;
+  } else if (gddpScope === 'FROM_WEEK_10') {
+    if (weekNumber >= 10 && weekNumber <= 26) periodsForClass = 2;
+    else if (weekNumber === 27) periodsForClass = 1;
+  } else {
+    // Mặc định FROM_WEEK_11_2T: Tuần 11-27 dạy 2t/tuần (34t) + Tuần 28 dạy 1t (= đủ 35t/năm)
+    if (weekNumber >= 11 && weekNumber <= 27) periodsForClass = 2;
+    else if (weekNumber === 28) periodsForClass = 1;
+  }
+
+  const isGddpSlot = (s: TimetableSlot) => {
+    const subId = (s.subjectId || '').toLowerCase();
+    const subName = (s.subjectName || '').toLowerCase();
+    return subId === 'sub-gddp' || subName.includes('địa phương') || subName.includes('gdđp');
+  };
+
+  const nonGddpSlots = baseSlots.filter((s) => !isGddpSlot(s));
+  if (periodsForClass === 0) {
+    return nonGddpSlots;
+  }
+
+  const existingByClass = new Map<string, TimetableSlot[]>();
+  baseSlots.forEach((s) => {
+    if (!isGddpSlot(s)) return;
+    const key = s.className || '';
+    if (!key) return;
+    const list = existingByClass.get(key) || [];
+    list.push(s);
+    existingByClass.set(key, list);
+  });
+
+  const result: TimetableSlot[] = [...nonGddpSlots];
+
+  OFFICIAL_53_CLASS_META.forEach((clsMeta, cIdx) => {
+    const targetTeacherId = gddpMap[clsMeta.className];
+    if (!targetTeacherId) return;
+
+    const teacherObj = teacherLookup.get(targetTeacherId);
+    const defaultMeta = OFFICIAL_GDDP_CLASS_ASSIGNMENTS[clsMeta.className];
+    const teacherName = teacherObj?.name || defaultMeta?.teacherName || targetTeacherId;
+    const teacherCode = teacherObj?.code || defaultMeta?.teacherCode || teacherName;
+
+    const existingList = existingByClass.get(clsMeta.className) || [];
+    const keptExisting = existingList.slice(0, periodsForClass);
+
+    keptExisting.forEach((slot) => {
+      result.push({
+        ...slot,
+        classId: slot.classId || clsMeta.classId,
+        className: clsMeta.className,
+        teacherId: targetTeacherId,
+        teacherName,
+        teacherCode,
+        subjectId: 'sub-gddp',
+        subjectName: 'GD Địa phương',
+      });
+    });
+
+    for (let pIdx = keptExisting.length; pIdx < periodsForClass; pIdx++) {
+      result.push({
+        id: `slot-official-gddp-${clsMeta.classId}-w${weekNumber}-${pIdx + 1}`,
+        classId: clsMeta.classId,
+        className: clsMeta.className,
+        teacherId: targetTeacherId,
+        teacherName,
+        teacherCode,
+        subjectId: 'sub-gddp',
+        subjectName: 'GD Địa phương',
+        dayOfWeek: ((cIdx + pIdx * 2) % 5) + 2,
+        session: clsMeta.session,
+        period: pIdx === 0 ? 4 : 5,
+      });
+    }
+  });
+
+  return result;
+}
+
+export function adjustOfficialAiSlotsForWeek(
+  baseSlots: TimetableSlot[],
+  weekNumber: number,
+  teacherLookup: Map<string, Teacher>,
+  aiMap: Record<string, string>
+): TimetableSlot[] {
+  const isAiSlot = (s: TimetableSlot) => {
+    const subId = (s.subjectId || '').toLowerCase();
+    const subName = (s.subjectName || '').toLowerCase();
+    return subId === 'sub-ai' || subName.includes('trí tuệ');
+  };
+
+  const nonAiSlots = baseSlots.filter((s) => !isAiSlot(s));
+  // Môn Trí tuệ nhân tạo (AI): 12 tiết/năm/lớp, dạy 1 tiết/tuần từ Tuần 13 đến Tuần 24
+  if (weekNumber < 13 || weekNumber > 24) {
+    return nonAiSlots;
+  }
+
+  const result: TimetableSlot[] = [...nonAiSlots];
+  OFFICIAL_53_CLASS_META.forEach((clsMeta, cIdx) => {
+    const targetTeacherId = aiMap[clsMeta.className];
+    if (!targetTeacherId) return;
+
+    const teacherObj = teacherLookup.get(targetTeacherId);
+    const defaultMeta = OFFICIAL_AI_CLASS_ASSIGNMENTS[clsMeta.className];
+    const teacherName = teacherObj?.name || defaultMeta?.teacherName || targetTeacherId;
+    const teacherCode = teacherObj?.code || defaultMeta?.teacherCode || teacherName;
+
+    result.push({
+      id: `slot-official-ai-${clsMeta.classId}-w${weekNumber}-1`,
+      classId: clsMeta.classId,
+      className: clsMeta.className,
+      teacherId: targetTeacherId,
+      teacherName,
+      teacherCode,
+      subjectId: 'sub-ai',
+      subjectName: 'Trí tuệ nhân tạo (AI)',
+      dayOfWeek: (cIdx % 5) + 2,
+      session: clsMeta.session,
+      period: 5,
+    });
+  });
+
+  return result;
+}
+
 /**
  * Get timetable slots for a specific week
  */
 export function getSlotsForWeek(
   weekNumber: number,
   weeklyTimetables?: Record<number, SchoolTimetable>,
-  fallbackTimetable?: SchoolTimetable
+  fallbackTimetable?: SchoolTimetable,
+  options?: GetSlotsOptions
 ): TimetableSlot[] {
   let baseSlots: TimetableSlot[] = [];
   let usedFallback = false;
@@ -822,10 +987,43 @@ export function getSlotsForWeek(
 
   if (baseSlots.length === 0) return [];
 
-  const gddpAdjusted = usedFallback
-    ? trimProjectedGddpSlotsForWeek(baseSlots, weekNumber)
-    : baseSlots;
-  const khtnAdjusted = adjustKhtnSlotsForWeek(gddpAdjusted, weekNumber);
+  // Preserve sandbox-only GDĐP & AI assignments inside DraftAssignmentView without overriding
+  const isDraftContext =
+    options?.applyOfficialGddpAi === false ||
+    fallbackTimetable?.id === 'draft-master-timetable' ||
+    Boolean(
+      weeklyTimetables &&
+        Object.values(weeklyTimetables).some((t) => t?.id?.startsWith('draft-'))
+    );
+
+  let gddpAndAiAdjusted: TimetableSlot[];
+  if (isDraftContext) {
+    gddpAndAiAdjusted = usedFallback
+      ? trimProjectedGddpSlotsForWeek(baseSlots, weekNumber)
+      : baseSlots;
+  } else {
+    const teacherLookup = buildTeacherLookup(options?.teachers);
+    const activeOverride = loadOfficialGddpAiLocalOverride();
+    const gddpMap = activeOverride ? activeOverride.gddpClassTeacherMap : getDefaultOfficialGddpMap();
+    const aiMap = activeOverride ? activeOverride.aiClassTeacherMap : getDefaultOfficialAiMap();
+    const gddpScope = activeOverride?.gddpScope || 'FROM_WEEK_11_2T';
+
+    const afterGddp = adjustOfficialGddpSlotsForWeek(
+      baseSlots,
+      weekNumber,
+      teacherLookup,
+      gddpMap,
+      gddpScope
+    );
+    gddpAndAiAdjusted = adjustOfficialAiSlotsForWeek(
+      afterGddp,
+      weekNumber,
+      teacherLookup,
+      aiMap
+    );
+  }
+
+  const khtnAdjusted = adjustKhtnSlotsForWeek(gddpAndAiAdjusted, weekNumber);
   const cnAdjusted = adjustCongNgheSlotsForWeek(khtnAdjusted, weekNumber);
   const lsdlAdjusted = adjustLsdlSlotsForWeek(cnAdjusted, weekNumber);
   const suThptAdjusted = adjustThptHistorySlotsForWeek(lsdlAdjusted, weekNumber);
@@ -1426,14 +1624,14 @@ export function calculateAllActualWorkloads(
   for (let w = startWeek; w <= effectiveEndWeek; w++) {
     weekSlotsCache.set(
       w,
-      getSlotsForWeek(w, weeklyTimetables, fallbackTimetable)
+      getSlotsForWeek(w, weeklyTimetables, fallbackTimetable, { teachers })
     );
   }
   // Also ensure selectedWeek is cached if outside the range
   if (!weekSlotsCache.has(selectedWeek)) {
     weekSlotsCache.set(
       selectedWeek,
-      getSlotsForWeek(selectedWeek, weeklyTimetables, fallbackTimetable)
+      getSlotsForWeek(selectedWeek, weeklyTimetables, fallbackTimetable, { teachers })
     );
   }
 

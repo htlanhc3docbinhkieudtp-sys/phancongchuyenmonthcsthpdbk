@@ -70,6 +70,7 @@ import {
   reconstructDraftFromCloudPayload,
   saveDraftLocalCache,
   loadDraftLocalCache,
+  publishGddpAiToOfficialCloud,
   DRAFT_CLOUD_VERSION,
 } from '../utils/draftCloudSyncHelper';
 
@@ -84,6 +85,7 @@ interface DraftAssignmentViewProps {
   timetable?: SchoolTimetable;
   isAdmin?: boolean;
   onShowToast?: (message: string) => void;
+  onPublishedToOfficial?: () => void;
 }
 
 const DRAFT_SANDBOX_STORAGE_KEY = 'docbinhkieu_draft_sandbox_v13_week11_plan';
@@ -351,7 +353,7 @@ export const DEFAULT_AI_CLASS_ASSIGNMENTS: Record<
 //   + Tuần 11 -> Tuần 27 (17 tuần): 2 tiết/tuần = 34 tiết
 //   + Tuần 28 (1 tuần): 1 tiết/tuần = +1 tiết (Tổng đủ 35 tiết)
 //   + Từ Tuần 29 -> Tuần 35: 0 tiết (Ngưng)
-// - Lưu ý đối soát Excel: Lớp 9A9 xuất hiện ở cả Thầy Phạm Biên Thùy và Thầy Trần Quốc Huy -> tạm gán Thầy Trần Quốc Huy (cùng điểm THCS Tân Kiều)
+// - Lớp 9A9: Theo TKB Tuần 11 & Dự thảo Cloud đang phân công Thầy Phạm Biên Thùy
 // =========================================================================
 export const DEFAULT_GDDP_CLASS_ASSIGNMENTS: Record<
   string,
@@ -376,7 +378,7 @@ export const DEFAULT_GDDP_CLASS_ASSIGNMENTS: Record<
   '12CB1': { teacherId: 'tch-v-5', teacherName: 'Lê Thị Mỹ Ny', teacherCode: 'Ny.LTM (10CB3)', campus: 'Điểm chính (THPT)', note: 'Cô Lê Thị Mỹ Ny: 1 lớp (35t)' },
   '12CB2': { teacherId: 'tch-av-6', teacherName: 'Trương Sơn Bền', teacherCode: 'Bền.TS', campus: 'Điểm chính (THPT)', note: 'Thầy Trương Sơn Bền: 3 lớp GDĐP (105t) + 3 AI (36t)' },
   '12CB3': { teacherId: 'tch-av-6', teacherName: 'Trương Sơn Bền', teacherCode: 'Bền.TS', campus: 'Điểm chính (THPT)', note: 'Thầy Trương Sơn Bền: 3 lớp GDĐP (105t) + 3 AI (36t)' },
-  '12CB4': { teacherId: 'tch-khtn-3', teacherName: 'Phạm Biên Thùy', teacherCode: 'Thùy.PB (TP)', campus: 'Điểm chính (THPT)', note: 'Thầy Phạm Biên Thùy: 12CB4 (Excel trùng 9A9 với Thầy Huy)' },
+  '12CB4': { teacherId: 'tch-khtn-3', teacherName: 'Phạm Biên Thùy', teacherCode: 'Thùy.PB (TP)', campus: 'Điểm chính (THPT)', note: 'Thầy Phạm Biên Thùy: 2 lớp 12CB4, 9A9 (70t)' },
   '12CB5': { teacherId: 'tch-av-6', teacherName: 'Trương Sơn Bền', teacherCode: 'Bền.TS', campus: 'Điểm chính (THPT)', note: 'Thầy Trương Sơn Bền: 3 lớp GDĐP (105t) + 3 AI (36t)' },
 
   // --- Điểm THCS Đốc Binh Kiều (24 lớp) ---
@@ -417,9 +419,9 @@ export const DEFAULT_GDDP_CLASS_ASSIGNMENTS: Record<
   '8A8': { teacherId: 'tch-khtn-15', teacherName: 'Võ Ngọc Đình Văn', teacherCode: 'Văn.VNĐ', campus: 'THCS Tân Kiều', note: 'Thầy Võ Ngọc Đình Văn: 2 lớp 8A7, 8A8 (70t)' },
   '8A9': { teacherId: 'tch-av-1', teacherName: 'Lê Thị Ngọc Tuyền', teacherCode: 'Tuyền.LTN (TT)', campus: 'THCS Tân Kiều', note: 'Cô Lê Thị Ngọc Tuyền (TT): 1 lớp (35t)' },
   '8A10': { teacherId: 'tch-bgh-4', teacherName: 'Nguyễn Thanh Tòng', teacherCode: 'Tòng.NT (PHT)', campus: 'THCS Tân Kiều', note: 'Thầy Nguyễn Thanh Tòng (PHT): 2 lớp 7A8, 8A10 (70t)' },
-  '9A7': { teacherId: 'tch-t-2', teacherName: 'Trần Quốc Huy', teacherCode: 'Huy.TQ (TP-9A7)', campus: 'THCS Tân Kiều', note: 'Thầy Trần Quốc Huy: 2 lớp 9A7, 9A9 (70t)' },
+  '9A7': { teacherId: 'tch-t-2', teacherName: 'Trần Quốc Huy', teacherCode: 'Huy.TQ (TP-9A7)', campus: 'THCS Tân Kiều', note: 'Thầy Trần Quốc Huy: 1 lớp 9A7 (35t)' },
   '9A8': { teacherId: 'tch-t-13', teacherName: 'Nguyễn Thành Tín', teacherCode: 'Tín.NT (9A10)', campus: 'THCS Tân Kiều', note: 'Thầy Tín: 2 GDĐP (70t) + 2 AI (24t)' },
-  '9A9': { teacherId: 'tch-t-2', teacherName: 'Trần Quốc Huy', teacherCode: 'Huy.TQ (TP-9A7)', campus: 'THCS Tân Kiều', note: '⚠️ Excel trùng 9A9 với Thầy Thùy (tạm gán Thầy Huy cùng điểm TK, đủ 0t)' },
+  '9A9': { teacherId: 'tch-khtn-3', teacherName: 'Phạm Biên Thùy', teacherCode: 'Thùy.PB (TP)', campus: 'THCS Tân Kiều', note: 'Thầy Phạm Biên Thùy: 9A9 (theo TKB Tuần 11 & Dự thảo Cloud)' },
   '9A10': { teacherId: 'tch-t-13', teacherName: 'Nguyễn Thành Tín', teacherCode: 'Tín.NT (9A10)', campus: 'THCS Tân Kiều', note: 'Thầy Tín: 2 GDĐP (70t) + 2 AI (24t)' },
 };
 
@@ -473,6 +475,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   timetable,
   isAdmin = false,
   onShowToast,
+  onPublishedToOfficial,
 }) => {
   // 1. Baseline Slots from Official Timetable (Week 11 / Week 10 / Week 9 / Week 8 / Official Timetable)
   const baselineSlots = useMemo<TimetableSlot[]>(() => {
@@ -748,6 +751,8 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   const [isCloudSyncing, setIsCloudSyncing] = useState<boolean>(false);
   const [lastCloudSavedAt, setLastCloudSavedAt] = useState<number | null>(null);
   const [cloudSyncStatus, setCloudSyncStatus] = useState<'IDLE' | 'SYNCED' | 'SAVING' | 'ERROR'>('IDLE');
+  const [isPublishingOfficial, setIsPublishingOfficial] = useState<boolean>(false);
+  const [officialPublishedRevision, setOfficialPublishedRevision] = useState<number>(0);
 
   // Master draft timetable for fallback
   const draftMasterTimetable = useMemo<SchoolTimetable>(() => {
@@ -909,6 +914,37 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     }
   };
 
+  // Publish active GDĐP & AI assignments from Draft directly to Official "Số tiết thực dạy" tab
+  const handlePublishGddpAiToOfficial = async () => {
+    setIsPublishingOfficial(true);
+    try {
+      const effectiveGddpMap = isGddpCurrentlyInDraft ? gddpCustomClassTeacherMap : {};
+      const effectiveAiMap = isAiCurrentlyInDraft ? aiCustomClassTeacherMap : {};
+      const res = await publishGddpAiToOfficialCloud(
+        effectiveGddpMap,
+        effectiveAiMap,
+        gddpScope
+      );
+      setOfficialPublishedRevision((prev) => prev + 1);
+      onPublishedToOfficial?.();
+      setActionBannerMessage({
+        type: 'success',
+        title: 'Đã áp dụng chính thức phân công GDĐP & Trí tuệ AI sang tab Số Tiết Thực Dạy!',
+        detail: `Môn Giáo dục địa phương (T11–27: 2t/tuần, T28: 1t = 35t/lớp) và môn Trí tuệ nhân tạo AI (T13–24: 1t/tuần = 12t/lớp) đã được cập nhật chính thức vào bảng Số Tiết Thực Dạy${res.cloudSynced ? ' và đồng bộ lên Đám Mây Firestore.' : '.'}`,
+      });
+      if (onShowToast) {
+        onShowToast('✓ Đã chuyển phân công GDĐP & Trí tuệ AI từ Dự thảo sang tab Số Tiết Thực Dạy!');
+      }
+    } catch (err) {
+      console.error('Publish GDĐP & AI error:', err);
+      if (onShowToast) {
+        onShowToast('Không thể áp dụng sang Số Tiết Thực Dạy, vui lòng thử lại.');
+      }
+    } finally {
+      setIsPublishingOfficial(false);
+    }
+  };
+
   // Active Workspace / Tool Selector (None, Reassign, GDDP, AI, Strategy, Diff)
   const [activeWorkspace, setActiveWorkspace] = useState<
     'NONE' | 'REASSIGN' | 'GDDP' | 'AI' | 'STRATEGY' | 'DIFF'
@@ -966,7 +1002,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     type: 'success',
     title: 'Đã Nạp Bản Dự Thảo Phân Công Chuyên Môn Từ Tuần 11 (Theo File Excel & Ghi Chú)',
     detail:
-      'Bao gồm: (1) Đổi Địa lí từ Tuần 11: Thầy Tuấn nhận 7A2-7A4 từ Cô Đỉnh, Cô Đỉnh nhận 9A2-9A4 từ Cô Lý; (2) GDĐP 2t/tuần từ Tuần 11–27 & 1t Tuần 28 = đủ 35t; (3) AI 1t/tuần từ Tuần 13–24 = đủ 12t. ⚠️ Lưu ý nhỏ: Trong file Excel có lớp 9A9 (GDĐP) ghi trùng ở cả Thầy Phạm Biên Thùy và Thầy Trần Quốc Huy — hệ thống đang tạm gán cho Thầy Huy (cùng điểm THCS Tân Kiều), Thầy có thể kiểm tra lại ở mục GD Địa Phương.',
+      'Bao gồm: (1) Đổi Địa lí từ Tuần 11: Thầy Tuấn nhận 7A2-7A4 từ Cô Đỉnh, Cô Đỉnh nhận 9A2-9A4 từ Cô Lý; (2) GDĐP 2t/tuần từ Tuần 11–27 & 1t Tuần 28 = đủ 35t; (3) AI 1t/tuần từ Tuần 13–24 = đủ 12t (riêng lớp 9A9 môn GDĐP giao Thầy Phạm Biên Thùy theo TKB Tuần 11).',
   });
   const [showAnnualBreakdownTable, setShowAnnualBreakdownTable] = useState(false);
 
@@ -1046,7 +1082,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       1,
       35
     );
-  }, [teachers, departments, classes, subjects, config, weeklyTimetables, timetable]);
+  }, [teachers, departments, classes, subjects, config, weeklyTimetables, timetable, officialPublishedRevision]);
 
   const draftActualWorkloads = useMemo(() => {
     return calculateAllActualWorkloads(
@@ -1141,7 +1177,15 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       }
     });
 
-    // Include newly added AI slots (Tuần 13 đến Tuần 24: 1 tiết/tuần = 12t/năm)
+    // Compare Draft AI slots (Tuần 13..24: 1t/tuần = 12t/năm) against Official Week 13 slots
+    const officialW13Slots = getSlotsForWeek(13, weeklyTimetables, timetable, { teachers });
+    const baseAiByClass = new Map<string, TimetableSlot>();
+    officialW13Slots.forEach((slot) => {
+      if (slot.subjectId === 'sub-ai' || slot.subjectName?.toLowerCase().includes('trí tuệ')) {
+        if (slot.className) baseAiByClass.set(slot.className, slot);
+      }
+    });
+
     const aiSampleSlots =
       draftWeeklyTimetables[13]?.slots || draftWeeklyTimetables[19]?.slots || [];
     const seenAiClass = new Set<string>();
@@ -1149,33 +1193,56 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       const isAi =
         draftSlot.subjectId === 'sub-ai' ||
         draftSlot.subjectName?.toLowerCase().includes('trí tuệ');
-      if (isAi && !seenAiClass.has(draftSlot.className || '')) {
-        seenAiClass.add(draftSlot.className || '');
+      const clsName = draftSlot.className || '';
+      if (isAi && clsName && !seenAiClass.has(clsName)) {
+        seenAiClass.add(clsName);
+        const baseAi = baseAiByClass.get(clsName);
+        if (baseAi && baseAi.teacherId === draftSlot.teacherId) return;
+
         diffs.push({
           slotId: draftSlot.id,
-          className: draftSlot.className || '',
+          className: clsName,
           dayOfWeek: draftSlot.dayOfWeek,
           period: draftSlot.period,
           session: draftSlot.session,
           subjectName: 'Trí tuệ nhân tạo (AI)',
-          oldTeacherName: '— (Từ Tuần 13)',
-          oldTeacherCode: '—',
+          oldTeacherName: baseAi?.teacherName || '— (Từ Tuần 13)',
+          oldTeacherCode: baseAi?.teacherCode || '—',
           newTeacherName: draftSlot.teacherName || '',
           newTeacherCode: draftSlot.teacherCode || '',
-          reason: 'Môn AI - 12 tiết/năm (1t/tuần từ Tuần 13 đến Tuần 24)',
+          reason: baseAi
+            ? `Điều chỉnh GV môn AI (${baseAi.teacherName} ➔ ${draftSlot.teacherName})`
+            : 'Môn AI - 12 tiết/năm (1t/tuần từ Tuần 13 đến Tuần 24)',
         });
 
-        const label = `${draftSlot.className} (AI - 12t)`;
+        const label = `${clsName} (AI - 12t)`;
         if (draftSlot.teacherName) {
           if (!gainedMap.has(draftSlot.teacherName)) gainedMap.set(draftSlot.teacherName, []);
           if (!gainedMap.get(draftSlot.teacherName)!.includes(label)) {
             gainedMap.get(draftSlot.teacherName)!.push(label);
           }
         }
+        if (baseAi?.teacherName) {
+          if (!lostMap.has(baseAi.teacherName)) lostMap.set(baseAi.teacherName, []);
+          if (!lostMap.get(baseAi.teacherName)!.includes(label)) {
+            lostMap.get(baseAi.teacherName)!.push(label);
+          }
+        }
       }
     });
 
-    // Include newly added GDĐP slots (Tuần 11 đến Tuần 27: 2t/tuần, Tuần 28: 1t = đủ 35t)
+    // Compare Draft GDĐP slots (Tuần 11..27: 2t/tuần, Tuần 28: 1t = 35t) against Official Week 11 slots
+    const baseGddpByClass = new Map<string, TimetableSlot>();
+    officialW11Slots.forEach((slot) => {
+      if (
+        slot.subjectId === 'sub-gddp' ||
+        slot.subjectName?.toLowerCase().includes('địa phương') ||
+        slot.subjectName?.toLowerCase().includes('gdđp')
+      ) {
+        if (slot.className) baseGddpByClass.set(slot.className, slot);
+      }
+    });
+
     const sampleGddpSlots =
       draftWeeklyTimetables[11]?.slots ||
       draftWeeklyTimetables[10]?.slots ||
@@ -1186,27 +1253,39 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       const isGddp =
         draftSlot.subjectId === 'sub-gddp' ||
         draftSlot.subjectName?.toLowerCase().includes('địa phương');
-      if (isGddp && !seenGddpClass.has(draftSlot.className || '')) {
-        seenGddpClass.add(draftSlot.className || '');
+      const clsName = draftSlot.className || '';
+      if (isGddp && clsName && !seenGddpClass.has(clsName)) {
+        seenGddpClass.add(clsName);
+        const baseGddp = baseGddpByClass.get(clsName);
+        if (baseGddp && baseGddp.teacherId === draftSlot.teacherId) return;
+
         diffs.push({
           slotId: draftSlot.id,
-          className: draftSlot.className || '',
+          className: clsName,
           dayOfWeek: draftSlot.dayOfWeek,
           period: draftSlot.period,
           session: draftSlot.session,
           subjectName: 'Giáo dục địa phương (GDĐP)',
-          oldTeacherName: '— (Từ Tuần 11)',
-          oldTeacherCode: '—',
+          oldTeacherName: baseGddp?.teacherName || '— (Từ Tuần 11)',
+          oldTeacherCode: baseGddp?.teacherCode || '—',
           newTeacherName: draftSlot.teacherName || '',
           newTeacherCode: draftSlot.teacherCode || '',
-          reason: 'Môn GDĐP - 35 tiết/năm (2t/tuần T11-T27, 1t T28)',
+          reason: baseGddp
+            ? `Điều chỉnh GV môn GDĐP (${baseGddp.teacherName} ➔ ${draftSlot.teacherName})`
+            : 'Môn GDĐP - 35 tiết/năm (2t/tuần T11-T27, 1t T28)',
         });
 
-        const label = `${draftSlot.className} (GDĐP - 35t)`;
+        const label = `${clsName} (GDĐP - 35t)`;
         if (draftSlot.teacherName) {
           if (!gainedMap.has(draftSlot.teacherName)) gainedMap.set(draftSlot.teacherName, []);
           if (!gainedMap.get(draftSlot.teacherName)!.includes(label)) {
             gainedMap.get(draftSlot.teacherName)!.push(label);
+          }
+        }
+        if (baseGddp?.teacherName) {
+          if (!lostMap.has(baseGddp.teacherName)) lostMap.set(baseGddp.teacherName, []);
+          if (!lostMap.get(baseGddp.teacherName)!.includes(label)) {
+            lostMap.get(baseGddp.teacherName)!.push(label);
           }
         }
       }
@@ -1405,7 +1484,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
         departmentBreakdown,
       },
     };
-  }, [baselineSlots, draftWeeklyTimetables, currentWeek, teachers, departmentMap, teacherMap, departments, baseActualWorkloads, draftActualWorkloads]);
+  }, [baselineSlots, draftWeeklyTimetables, weeklyTimetables, timetable, currentWeek, teachers, departmentMap, teacherMap, departments, baseActualWorkloads, draftActualWorkloads, officialPublishedRevision]);
 
   // Filtered deltas based on filter tabs & search term
   const filteredTeacherDeltas = useMemo(() => {
@@ -2076,7 +2155,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       type: 'success',
       title: 'Đã nạp thành công Phân công Môn GDĐP theo file Excel Tuần 11!',
       detail:
-        'Toàn bộ 53 lớp (Tuần 11–27: 2t/tuần, Tuần 28: 1t = đủ 35t). Lưu ý: Lớp 9A9 bị trùng giữa Thầy Thùy và Thầy Huy trong file Excel, hệ thống tạm gán Thầy Trần Quốc Huy.',
+        'Toàn bộ 53 lớp (Tuần 11–27: 2t/tuần, Tuần 28: 1t = đủ 35t). Lớp 9A9 giao Thầy Phạm Biên Thùy đúng theo TKB Tuần 11.',
     });
   };
 
@@ -2389,6 +2468,18 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
             >
               <Lightbulb className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
               <span>Hiến Kế Tin Học</span>
+            </button>
+
+            {/* Publish GDĐP & AI to Official Số Tiết Thực Dạy */}
+            <button
+              type="button"
+              onClick={handlePublishGddpAiToOfficial}
+              disabled={isPublishingOfficial}
+              className="px-3.5 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-60"
+              title="Áp dụng phân công mới môn Giáo dục địa phương và Trí tuệ AI từ Dự thảo sang tab Số Tiết Thực Dạy"
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              <span>{isPublishingOfficial ? 'Đang áp dụng...' : 'Áp Dụng GDĐP & AI Sang Thực Dạy'}</span>
             </button>
 
             {/* Reset to Week 11 Excel Draft */}
@@ -2833,13 +2924,24 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                 </div>
                 <p className="text-xs text-teal-200/90 mt-1 max-w-4xl leading-relaxed">
                   • <b>Thời lượng:</b> Áp dụng từ Tuần 11, dạy <b>2 tiết/tuần</b> từ Tuần 11–27 (34t) + <b>1 tiết</b> ở Tuần 28 (= đủ <b>35 tiết</b> rồi ngưng).<br />
-                  • <b>Lưu ý đối soát Excel:</b> Lớp <b>9A9</b> xuất hiện ở cả Thầy Phạm Biên Thùy và Thầy Trần Quốc Huy — hệ thống đang tạm gán cho <b>Thầy Trần Quốc Huy</b> (cùng điểm Tân Kiều). Thầy có thể đổi lại ở bảng bên dưới nếu cần.
+                  • <b>Lớp 9A9:</b> Theo TKB Tuần 11 &amp; Dự thảo Cloud đang phân công cho <b>Thầy Phạm Biên Thùy</b> (có thể thay đổi ở bảng bên dưới nếu cần).
                 </p>
               </div>
             </div>
 
             {/* Quick Actions */}
             <div className="flex items-center gap-2 self-start sm:self-center shrink-0 flex-wrap">
+              <button
+                type="button"
+                onClick={handlePublishGddpAiToOfficial}
+                disabled={isPublishingOfficial}
+                className="px-3.5 py-2 bg-emerald-400 hover:bg-emerald-300 text-slate-950 text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-60"
+                title="Đẩy phân công GDĐP & AI hiện tại sang tab Số Tiết Thực Dạy chính thức"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Chuyển Sang Số Tiết Thực Dạy</span>
+              </button>
+
               <button
                 type="button"
                 onClick={handleLoadOptimalGddpPreset}
@@ -2939,17 +3041,17 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
               <div className="flex items-center justify-between text-xs text-amber-200">
                 <span className="font-bold flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5 text-amber-300" />
-                  Đối Soát Lớp 9A9 (Excel)
+                  Đối Soát Lớp 9A9
                 </span>
-                <span className="px-2.5 py-0.5 bg-amber-500/20 text-amber-300 font-black rounded-full text-[10px]">
-                  Cần lưu ý
+                <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 font-black rounded-full text-[10px]">
+                  Đã đồng bộ
                 </span>
               </div>
               <div className="text-sm font-black text-amber-200">
-                9A9 tạm gán: Thầy Huy (TK)
+                9A9: Thầy Phạm Biên Thùy
               </div>
               <p className="text-[10px] text-amber-100 leading-tight">
-                File Excel ghi 9A9 ở cả Thầy Thùy (12CB4, 9A9) và Thầy Huy (9A7, 9A9). Có thể đổi lại ngay tại dòng 9A9 bên dưới.
+                Khớp 100% giữa TKB Tuần 11 và Dự thảo Cloud (có thể đổi lại ngay tại dòng 9A9 bên dưới nếu muốn).
               </p>
             </div>
           </div>
@@ -3162,6 +3264,15 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
 
             {/* Quick Actions */}
             <div className="flex items-center gap-2 self-start sm:self-center shrink-0 flex-wrap">
+              <button
+                onClick={handlePublishGddpAiToOfficial}
+                disabled={isPublishingOfficial}
+                className="px-3.5 py-2 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 disabled:opacity-60 text-white text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                title="Áp dụng phân công GDĐP & AI hiện tại từ Dự thảo sang tab Số Tiết Thực Dạy"
+              >
+                <ArrowRightLeft className="w-3.5 h-3.5" />
+                {isPublishingOfficial ? 'Đang chuyển...' : 'Chuyển Sang Số Tiết Thực Dạy'}
+              </button>
               {isAiCurrentlyInDraft ? (
                 <button
                   onClick={handleRemoveAiAssignment}

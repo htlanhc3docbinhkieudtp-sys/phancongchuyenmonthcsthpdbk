@@ -74,6 +74,7 @@ import {
   loadAllTimetablesFromIndexedDB,
   deleteBatchWeekTimetablesFromIndexedDB
 } from './utils/persistentStorage';
+import { loadOfficialGddpAiFromCloud } from './utils/draftCloudSyncHelper';
 
 import { Header } from './components/Header';
 import { ViewTabs, ActiveTabType } from './components/ViewTabs';
@@ -155,6 +156,19 @@ export default function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [loginModalMode, setLoginModalMode] = useState<'teacher' | 'admin'>('teacher');
   const [loginPromptReason, setLoginPromptReason] = useState<string | null>(null);
+  const [officialGddpAiRevision, setOfficialGddpAiRevision] = useState<number>(0);
+
+  useEffect(() => {
+    let isMounted = true;
+    loadOfficialGddpAiFromCloud().then((remote) => {
+      if (isMounted && remote) {
+        setOfficialGddpAiRevision((prev) => prev + 1);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Load saved state or default
   const [config, setConfig] = useState<SchoolConfig>(() => {
@@ -955,7 +969,8 @@ export default function App() {
     timetable,
     totalWeeksInSemester,
     semesterStartWeek,
-    semesterEndWeek
+    semesterEndWeek,
+    officialGddpAiRevision
   ]);
 
   // Authoritative Actual Workloads for HK1 (Weeks 1 to 18)
@@ -975,7 +990,7 @@ export default function App() {
       1,
       18
     );
-  }, [shouldLoadDisparityData, currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable]);
+  }, [shouldLoadDisparityData, currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable, officialGddpAiRevision]);
 
   // Authoritative Actual Workloads for Full Year (Weeks 1 to 35)
   const actualWorkloadsYear = useMemo(() => {
@@ -994,7 +1009,7 @@ export default function App() {
       1,
       35
     );
-  }, [shouldLoadDisparityData, currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable]);
+  }, [shouldLoadDisparityData, currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable, officialGddpAiRevision]);
 
   const workloads = useMemo(() => {
     return calculateTeacherWorkloads(
@@ -2091,6 +2106,7 @@ export default function App() {
             currentWeek={currentWeek}
             timetable={timetable}
             isAdmin={isAdmin}
+            officialGddpAiRevision={officialGddpAiRevision}
           />
         )}
 
@@ -2108,6 +2124,7 @@ export default function App() {
               timetable={timetable}
               isAdmin={isAdmin}
               onShowToast={showToast}
+              onPublishedToOfficial={() => setOfficialGddpAiRevision((prev) => prev + 1)}
             />
           ) : (
             <div className="max-w-xl mx-auto my-16 p-8 bg-white rounded-3xl border border-rose-200 shadow-md text-center">

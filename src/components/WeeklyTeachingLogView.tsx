@@ -62,6 +62,7 @@ interface WeeklyTeachingLogViewProps {
   bannerExtra?: React.ReactNode;
   defaultLevelScope?: LevelScope;
   changedTeachersMap?: Map<string, ChangedTeacherInfo>;
+  officialGddpAiRevision?: number;
 }
 
 type ViewMode = 'WEEKLY_DETAIL' | 'MULTI_WEEK';
@@ -102,6 +103,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   bannerExtra,
   defaultLevelScope,
   changedTeachersMap,
+  officialGddpAiRevision = 0,
 }) => {
   const effectiveAdjustmentKey = storageKeyPrefix
     ? `${storageKeyPrefix}_adjustments_v1`
@@ -236,6 +238,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     manualAdjustments,
     startWeek,
     endWeek,
+    officialGddpAiRevision,
   ]);
 
   const fullYearWorkloads = useMemo(() => {
@@ -267,6 +270,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     manualAdjustments,
     startWeek,
     endWeek,
+    officialGddpAiRevision,
   ]);
 
   // Filter workloads based on Level, Department, Search, and Status
