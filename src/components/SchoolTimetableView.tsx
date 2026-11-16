@@ -584,9 +584,9 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   };
 
   return (
-    <div className="space-y-4 w-full">
+    <div className={`space-y-4 w-full ${isPdfModalOpen && isAdmin ? 'print:space-y-0' : ''}`}>
       {/* 1. Header Banner */}
-      <div className="w-full px-2 sm:px-4 lg:px-6 pt-3">
+      <div className={`w-full px-2 sm:px-4 lg:px-6 pt-3 ${isPdfModalOpen && isAdmin ? 'print:hidden' : ''}`}>
         {/* Formal Vietnamese School Header for Print / PDF */}
         <div className={`${isPdfModalOpen && isAdmin ? 'hidden' : 'hidden print:block'} text-center pb-3 border-b border-slate-300 mb-3`}>
           <div className="flex justify-between items-start text-xs uppercase font-bold text-slate-800 mb-1">

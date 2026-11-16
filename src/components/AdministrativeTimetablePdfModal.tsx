@@ -1,4 +1,5 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ClassGroup,
   SchoolConfig,
@@ -47,9 +48,9 @@ interface AdministrativeTimetablePdfModalProps {
 }
 
 // A4 Portrait (210mm x 297mm) with 3.5mm top/bottom margins -> 290mm (~1096px at 96dpi) printable height.
-// Target 1072px (~283.6mm) inside 287mm print sheet container so rows expand cleanly and signature sits near bottom edge.
-const A4_PORTRAIT_TARGET_HEIGHT_PX = 1072;
-const A4_PORTRAIT_MAX_SAFE_HEIGHT_PX = 1082;
+// Target 1066px (~282mm) inside 285mm print sheet container so rows expand cleanly and signature sits near bottom edge with 5mm margin buffer.
+const A4_PORTRAIT_TARGET_HEIGHT_PX = 1066;
+const A4_PORTRAIT_MAX_SAFE_HEIGHT_PX = 1074;
 
 interface SheetMetric {
   padY: number;
@@ -249,23 +250,60 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/80 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 print:p-0 print:m-0 print:static print:block print:bg-white print:overflow-visible">
-      {/* Strict A4 Portrait print stylesheet, dynamic row expansion & single-page bottom-pinned layout */}
+  const modalContent = (
+    <div className="admin-timetable-print-root fixed inset-0 z-50 overflow-y-auto bg-slate-900/80 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 print:p-0 print:m-0 print:static print:block print:bg-white print:overflow-visible">
+      {/* Strict A4 Portrait print stylesheet, isolated print root, dynamic row expansion & single-page bottom-pinned layout */}
       <style>{`
         .admin-timetable-print-table tbody td {
           padding-top: var(--row-pad-y, 1.5px);
           padding-bottom: var(--row-pad-y, 1.5px);
         }
         @media print {
+          #root {
+            display: none !important;
+          }
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: auto !important;
+            min-height: 0 !important;
+            background: #ffffff !important;
+            overflow: visible !important;
+          }
           @page {
             size: A4 portrait;
             margin: 3.5mm 4.5mm;
           }
+          .admin-timetable-print-root,
+          .admin-timetable-print-dialog,
+          .admin-timetable-print-scroll {
+            position: static !important;
+            inset: auto !important;
+            display: block !important;
+            width: 100% !important;
+            max-width: none !important;
+            height: auto !important;
+            max-height: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            background: #ffffff !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            transform: none !important;
+            overflow: visible !important;
+          }
+          .admin-timetable-print-scroll > * {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+          }
           .admin-timetable-print-sheet {
             width: 201mm !important;
-            height: 287mm !important;
-            max-height: 287mm !important;
+            height: 285mm !important;
+            max-height: 285mm !important;
             overflow: hidden !important;
             margin: 0 auto !important;
             padding: 0 !important;
@@ -278,14 +316,14 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
           }
           .admin-timetable-a4-inner {
             width: calc(100% / var(--a4-fit-scale, 1)) !important;
-            min-height: calc(286mm / var(--a4-fit-scale, 1)) !important;
+            min-height: calc(284mm / var(--a4-fit-scale, 1)) !important;
             transform: scale(var(--a4-fit-scale, 1));
             transform-origin: top left;
           }
         }
       `}</style>
 
-      <div className="bg-white rounded-2xl shadow-2xl border border-slate-300 w-full max-w-[98vw] max-h-[96vh] flex flex-col overflow-hidden print:block print:w-full print:max-w-none print:max-h-none print:border-none print:shadow-none print:rounded-none print:overflow-visible">
+      <div className="admin-timetable-print-dialog bg-white rounded-2xl shadow-2xl border border-slate-300 w-full max-w-[98vw] max-h-[96vh] flex flex-col overflow-hidden print:block print:w-full print:max-w-none print:max-h-none print:border-none print:shadow-none print:rounded-none print:overflow-visible">
         {/* Top Header Bar - Hidden when printing */}
         <div className="bg-slate-900 text-white px-4 py-3 sm:px-6 flex flex-wrap items-center justify-between gap-3 shrink-0 border-b border-slate-800 print:hidden">
           <div className="flex items-center gap-3 min-w-0">
@@ -557,7 +595,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
         </div>
 
         {/* Dynamic Print Preview & Print Sheets Area */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-200/70 space-y-6 print:p-0 print:m-0 print:bg-white print:overflow-visible print:space-y-0">
+        <div className="admin-timetable-print-scroll flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-200/70 space-y-6 print:p-0 print:m-0 print:bg-white print:overflow-visible print:space-y-0">
           {printBlocks.length === 0 ? (
             <div className="bg-white rounded-2xl p-12 text-center text-slate-500 max-w-md mx-auto shadow-sm print:hidden">
               <Info className="w-8 h-8 text-amber-500 mx-auto mb-2" />
@@ -610,7 +648,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                     className="admin-timetable-a4-inner flex flex-col"
                     style={{
                       ['--a4-fit-scale' as string]: fitScale,
-                      minHeight: fitScale === 1 ? '286mm' : undefined,
+                      minHeight: fitScale === 1 ? '284mm' : undefined,
                       fontFamily: "'Tinos', 'Times New Roman', 'Be Vietnam Pro', serif",
                       fontSynthesis: 'none',
                       letterSpacing: 'normal'
@@ -890,4 +928,9 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 };
