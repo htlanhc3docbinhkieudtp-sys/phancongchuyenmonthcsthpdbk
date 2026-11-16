@@ -71,11 +71,16 @@
       "properties": {
         "version": { "type": "number", "description": "Schema version of draft payload" },
         "updatedAt": { "type": "number", "description": "Last modified timestamp" },
+        "updatedBy": { "type": "string", "description": "Display name of user who published" },
         "lastUpdatedBy": { "type": "string", "description": "User identifier who saved the draft" },
         "deviceName": { "type": "string", "description": "Device type that saved the draft" },
         "description": { "type": "string", "description": "Save description note" },
-        "gddpCustomClassTeacherMap": { "type": "object", "description": "Class-to-teacher map for GDĐP" },
-        "aiCustomClassTeacherMap": { "type": "object", "description": "Class-to-teacher map for AI" },
+        "gddpCustomClassTeacherMap": { "type": "object", "description": "Class-to-teacher map for GDĐP in draft" },
+        "aiCustomClassTeacherMap": { "type": "object", "description": "Class-to-teacher map for AI in draft" },
+        "gddpClassTeacherMap": { "type": "object", "description": "Published official class-to-teacher map for GDĐP" },
+        "aiClassTeacherMap": { "type": "object", "description": "Published official class-to-teacher map for AI" },
+        "diaWeek11ClassTeacherMap": { "type": "object", "description": "Published official Week 11+ class-to-teacher map for Geography" },
+        "gddpScope": { "type": "string", "description": "GDĐP weekly schedule scope" },
         "week10Slots": { "type": "array", "description": "Compacted Week 10 base timetable slots" },
         "hasWeekBatches": { "type": "boolean", "description": "Flag indicating weekly deltas are stored in week_batches subcollection" },
         "weekBatchIds": { "type": "array", "description": "List of active batch document IDs in week_batches subcollection" }

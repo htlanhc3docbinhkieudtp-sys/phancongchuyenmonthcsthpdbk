@@ -73,6 +73,7 @@ import {
   publishGddpAiToOfficialCloud,
   DRAFT_CLOUD_VERSION,
 } from '../utils/draftCloudSyncHelper';
+import { getDefaultOfficialDiaWeek11Map } from '../data/officialGddpAiAssignments';
 
 interface DraftAssignmentViewProps {
   config: SchoolConfig;
@@ -914,29 +915,57 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     }
   };
 
-  // Publish active GDĐP & AI assignments from Draft directly to Official "Số tiết thực dạy" tab
+  // Publish active GDĐP, AI & Địa lí (Tuần 11+) assignments from Draft directly to Official "Số tiết thực dạy" tab
   const handlePublishGddpAiToOfficial = async () => {
     setIsPublishingOfficial(true);
     try {
       const effectiveGddpMap = isGddpCurrentlyInDraft ? gddpCustomClassTeacherMap : {};
       const effectiveAiMap = isAiCurrentlyInDraft ? aiCustomClassTeacherMap : {};
+
+      // Extract active Week 11+ Geography (Địa lí) assignments from Draft Week 11
+      const draftW11Slots = draftWeeklyTimetables[11]?.slots || [];
+      const diaWeek11Map: Record<string, string> = {};
+      draftW11Slots.forEach((s) => {
+        const subId = (s.subjectId || '').toLowerCase();
+        const subName = (s.subjectName || '').toLowerCase().trim();
+        if (
+          subName === 'lịch sử và địa lí' ||
+          subId === 'sub-lsdl' ||
+          subId === 'sub-lsdl-cs'
+        ) {
+          return;
+        }
+        const isDia =
+          subId === 'sub-dia' ||
+          subName === 'địa lí' ||
+          subName === 'địa lý';
+        if (isDia && s.className && s.teacherId && !diaWeek11Map[s.className]) {
+          diaWeek11Map[s.className] = s.teacherId;
+        }
+      });
+      const effectiveDiaMap =
+        Object.keys(diaWeek11Map).length > 0
+          ? diaWeek11Map
+          : getDefaultOfficialDiaWeek11Map();
+
       const res = await publishGddpAiToOfficialCloud(
         effectiveGddpMap,
         effectiveAiMap,
-        gddpScope
+        gddpScope,
+        effectiveDiaMap
       );
       setOfficialPublishedRevision((prev) => prev + 1);
       onPublishedToOfficial?.();
       setActionBannerMessage({
         type: 'success',
-        title: 'Đã áp dụng chính thức phân công GDĐP & Trí tuệ AI sang tab Số Tiết Thực Dạy!',
-        detail: `Môn Giáo dục địa phương (T11–27: 2t/tuần, T28: 1t = 35t/lớp) và môn Trí tuệ nhân tạo AI (T13–24: 1t/tuần = 12t/lớp) đã được cập nhật chính thức vào bảng Số Tiết Thực Dạy${res.cloudSynced ? ' và đồng bộ lên Đám Mây Firestore.' : '.'}`,
+        title: 'Đã áp dụng chính thức phân công GDĐP, Trí tuệ AI & Địa lí sang tab Số Tiết Thực Dạy!',
+        detail: `Môn Giáo dục địa phương (T11–27: 2t/tuần, T28: 1t = 35t/lớp), môn Trí tuệ nhân tạo AI (T13–24: 1t/tuần = 12t/lớp) và chuyển đổi môn Địa lí từ Tuần 11 (Thầy Tuấn +7A2–7A4, Cô Đỉnh -7A2–7A4 +9A2–9A4, Cô Lý -9A2–9A4) đã được cập nhật chính thức vào bảng Số Tiết Thực Dạy${res.cloudSynced ? ' và đồng bộ lên Đám Mây Firestore.' : '.'}`,
       });
       if (onShowToast) {
-        onShowToast('✓ Đã chuyển phân công GDĐP & Trí tuệ AI từ Dự thảo sang tab Số Tiết Thực Dạy!');
+        onShowToast('✓ Đã chuyển phân công GDĐP, Trí tuệ AI & Địa lí từ Dự thảo sang tab Số Tiết Thực Dạy!');
       }
     } catch (err) {
-      console.error('Publish GDĐP & AI error:', err);
+      console.error('Publish official assignments error:', err);
       if (onShowToast) {
         onShowToast('Không thể áp dụng sang Số Tiết Thực Dạy, vui lòng thử lại.');
       }
@@ -1122,7 +1151,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       [];
 
     // Compare Week 11 draft against official Week 11 (or Week 10 baseline) for direct teacher swaps (e.g. LSDL Địa lí)
-    const officialW11Slots = getSlotsForWeek(11, weeklyTimetables, timetable);
+    const officialW11Slots = getSlotsForWeek(11, weeklyTimetables, timetable, { teachers });
     const baseSourceSlots = officialW11Slots.length > 0 ? officialW11Slots : baselineSlots;
 
     const baselineMap = new Map<string, TimetableSlot>();
@@ -2470,16 +2499,16 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
               <span>Hiến Kế Tin Học</span>
             </button>
 
-            {/* Publish GDĐP & AI to Official Số Tiết Thực Dạy */}
+            {/* Publish GDĐP, AI & Địa lí to Official Số Tiết Thực Dạy */}
             <button
               type="button"
               onClick={handlePublishGddpAiToOfficial}
               disabled={isPublishingOfficial}
               className="px-3.5 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-60"
-              title="Áp dụng phân công mới môn Giáo dục địa phương và Trí tuệ AI từ Dự thảo sang tab Số Tiết Thực Dạy"
+              title="Áp dụng phân công mới môn Giáo dục địa phương, Trí tuệ AI & Địa lí (Tuần 11+) từ Dự thảo sang tab Số Tiết Thực Dạy"
             >
               <CheckCircle2 className="w-4 h-4" />
-              <span>{isPublishingOfficial ? 'Đang áp dụng...' : 'Áp Dụng GDĐP & AI Sang Thực Dạy'}</span>
+              <span>{isPublishingOfficial ? 'Đang áp dụng...' : 'Áp Dụng GDĐP, AI & Địa Lí Sang Thực Dạy'}</span>
             </button>
 
             {/* Reset to Week 11 Excel Draft */}
@@ -2571,7 +2600,17 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
+            <div className="flex items-center gap-2 self-start sm:self-center shrink-0 flex-wrap">
+              <button
+                type="button"
+                onClick={handlePublishGddpAiToOfficial}
+                disabled={isPublishingOfficial}
+                className="px-3.5 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 disabled:opacity-60 text-slate-950 text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                title="Chuyển phân công Địa lí, GDĐP & AI từ Dự thảo sang tab Số Tiết Thực Dạy"
+              >
+                <ArrowRightLeft className="w-3.5 h-3.5" />
+                <span>{isPublishingOfficial ? 'Đang chuyển...' : 'Chuyển Sang Số Tiết Thực Dạy'}</span>
+              </button>
               <button
                 onClick={() => setIsReassignDrawerOpen(false)}
                 className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors cursor-pointer"

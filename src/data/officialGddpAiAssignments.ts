@@ -21,11 +21,12 @@ export interface OfficialGddpAiOverridePayload {
   updatedBy?: string;
   gddpClassTeacherMap: Record<string, string>;
   aiClassTeacherMap: Record<string, string>;
+  diaWeek11ClassTeacherMap?: Record<string, string>;
   gddpScope?: 'FROM_WEEK_11_2T' | 'FULL_YEAR' | 'FROM_WEEK_10';
 }
 
 export const OFFICIAL_GDDP_AI_STORAGE_KEY = 'docbinhkieu_official_gddp_ai_override_v1';
-export const OFFICIAL_GDDP_AI_VERSION = 1;
+export const OFFICIAL_GDDP_AI_VERSION = 2;
 
 const MORNING_THCS_CLASSES = new Set([
   '6A1', '6A2', '6A3',
@@ -229,6 +230,21 @@ export const OFFICIAL_AI_CLASS_ASSIGNMENTS: Record<string, OfficialSubjectClassA
   '9A10': { teacherId: 'tch-bgh-1', teacherName: 'Lê Thanh Cường', teacherCode: 'Cường.LT (HT)', campus: 'THCS Tân Kiều', note: 'Thầy Cường (HT): 5 lớp (60t) • T13-T24' },
 };
 
+// =========================================================================
+// CHUYỂN ĐỔI PHÂN CÔNG MÔN ĐỊA LÍ TỪ TUẦN 11 (THẦY TUẤN / CÔ ĐỈNH / CÔ LÝ)
+// - Thầy Ngô Anh Tuấn (tch-ls-7): nhận thêm 3 lớp 7A2, 7A3, 7A4 từ Cô Đỉnh
+// - Cô Nguyễn Thị Kim Đỉnh (tch-ls-11): giảm 7A2-7A4, nhận 9A2, 9A3, 9A4 từ Cô Lý
+// - Cô Nguyễn Thị Lý (tch-ls-12): giảm 9A2, 9A3, 9A4 (giữ lại 9A1)
+// =========================================================================
+export const OFFICIAL_LSDL_DIA_WEEK11_DEFAULT_OVERRIDES: Record<string, string> = {
+  '7A2': 'tch-ls-7',
+  '7A3': 'tch-ls-7',
+  '7A4': 'tch-ls-7',
+  '9A2': 'tch-ls-11',
+  '9A3': 'tch-ls-11',
+  '9A4': 'tch-ls-11',
+};
+
 export function getDefaultOfficialGddpMap(): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [clsName, info] of Object.entries(OFFICIAL_GDDP_CLASS_ASSIGNMENTS)) {
@@ -243,6 +259,10 @@ export function getDefaultOfficialAiMap(): Record<string, string> {
     out[clsName] = info.teacherId;
   }
   return out;
+}
+
+export function getDefaultOfficialDiaWeek11Map(): Record<string, string> {
+  return { ...OFFICIAL_LSDL_DIA_WEEK11_DEFAULT_OVERRIDES };
 }
 
 export function saveOfficialGddpAiLocalOverride(payload: OfficialGddpAiOverridePayload): void {

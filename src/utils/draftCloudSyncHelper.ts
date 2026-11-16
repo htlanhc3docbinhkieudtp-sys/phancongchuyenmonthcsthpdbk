@@ -5,6 +5,7 @@ import { getSlotsForWeek } from './actualTeachingHoursHelper';
 import {
   OfficialGddpAiOverridePayload,
   OFFICIAL_GDDP_AI_VERSION,
+  getDefaultOfficialDiaWeek11Map,
   saveOfficialGddpAiLocalOverride,
 } from '../data/officialGddpAiAssignments';
 
@@ -463,13 +464,14 @@ export function reconstructDraftFromCloudPayload(
 }
 
 /**
- * Publish GDĐP & AI class-teacher assignments from Draft Sandbox directly into Official "Số tiết thực dạy"
+ * Publish GDĐP, AI & Địa lí (Tuần 11+) class-teacher assignments from Draft Sandbox directly into Official "Số tiết thực dạy"
  * Stores locally for instant recalculation and syncs cleanly to Cloud Firestore (~3 KB document).
  */
 export async function publishGddpAiToOfficialCloud(
   gddpClassTeacherMap: Record<string, string>,
   aiClassTeacherMap: Record<string, string>,
-  gddpScope: 'FROM_WEEK_11_2T' | 'FULL_YEAR' | 'FROM_WEEK_10' = 'FROM_WEEK_11_2T'
+  gddpScope: 'FROM_WEEK_11_2T' | 'FULL_YEAR' | 'FROM_WEEK_10' = 'FROM_WEEK_11_2T',
+  diaWeek11ClassTeacherMap: Record<string, string> = getDefaultOfficialDiaWeek11Map()
 ): Promise<{ success: boolean; updatedAt: number; cloudSynced: boolean; error?: string }> {
   const updatedAt = Date.now();
   const payload: OfficialGddpAiOverridePayload = stripUndefined({
@@ -478,6 +480,7 @@ export async function publishGddpAiToOfficialCloud(
     updatedBy: 'Ban Giám Hiệu',
     gddpClassTeacherMap: { ...gddpClassTeacherMap },
     aiClassTeacherMap: { ...aiClassTeacherMap },
+    diaWeek11ClassTeacherMap: { ...diaWeek11ClassTeacherMap },
     gddpScope,
   });
 

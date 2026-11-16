@@ -52,6 +52,7 @@ import {
   OFFICIAL_AI_CLASS_ASSIGNMENTS,
   getDefaultOfficialGddpMap,
   getDefaultOfficialAiMap,
+  getDefaultOfficialDiaWeek11Map,
   loadOfficialGddpAiLocalOverride,
 } from '../data/officialGddpAiAssignments';
 
@@ -891,6 +892,48 @@ export function adjustOfficialAiSlotsForWeek(
   return result;
 }
 
+export function adjustOfficialDiaSlotsForWeek(
+  baseSlots: TimetableSlot[],
+  weekNumber: number,
+  teacherLookup: Map<string, Teacher>,
+  diaMap: Record<string, string>
+): TimetableSlot[] {
+  // Đổi Địa lí (Thầy Tuấn / Cô Đỉnh / Cô Lý) áp dụng từ Tuần 11 trở đi; Tuần 1..10 giữ nguyên gốc
+  if (weekNumber < 11) return baseSlots;
+  if (!diaMap || Object.keys(diaMap).length === 0) return baseSlots;
+
+  return baseSlots.map((slot) => {
+    const subId = (slot.subjectId || '').toLowerCase();
+    const subName = (slot.subjectName || '').toLowerCase().trim();
+    if (
+      subName === 'lịch sử và địa lí' ||
+      subId === 'sub-lsdl' ||
+      subId === 'sub-lsdl-cs'
+    ) {
+      return slot;
+    }
+    const isDia =
+      subId === 'sub-dia' ||
+      subName === 'địa lí' ||
+      subName === 'địa lý';
+    if (!isDia) return slot;
+
+    const clsName = slot.className || '';
+    const targetTeacherId = diaMap[clsName];
+    if (!targetTeacherId || slot.teacherId === targetTeacherId) return slot;
+
+    const teacherObj = teacherLookup.get(targetTeacherId);
+    if (!teacherObj) return slot;
+
+    return {
+      ...slot,
+      teacherId: teacherObj.id,
+      teacherName: teacherObj.name,
+      teacherCode: teacherObj.code || teacherObj.name,
+    };
+  });
+}
+
 /**
  * Get timetable slots for a specific week
  */
@@ -1007,6 +1050,10 @@ export function getSlotsForWeek(
     const gddpMap = activeOverride ? activeOverride.gddpClassTeacherMap : getDefaultOfficialGddpMap();
     const aiMap = activeOverride ? activeOverride.aiClassTeacherMap : getDefaultOfficialAiMap();
     const gddpScope = activeOverride?.gddpScope || 'FROM_WEEK_11_2T';
+    const diaWeek11Map =
+      activeOverride?.diaWeek11ClassTeacherMap !== undefined
+        ? activeOverride.diaWeek11ClassTeacherMap
+        : getDefaultOfficialDiaWeek11Map();
 
     const afterGddp = adjustOfficialGddpSlotsForWeek(
       baseSlots,
@@ -1015,11 +1062,17 @@ export function getSlotsForWeek(
       gddpMap,
       gddpScope
     );
-    gddpAndAiAdjusted = adjustOfficialAiSlotsForWeek(
+    const afterAi = adjustOfficialAiSlotsForWeek(
       afterGddp,
       weekNumber,
       teacherLookup,
       aiMap
+    );
+    gddpAndAiAdjusted = adjustOfficialDiaSlotsForWeek(
+      afterAi,
+      weekNumber,
+      teacherLookup,
+      diaWeek11Map
     );
   }
 
