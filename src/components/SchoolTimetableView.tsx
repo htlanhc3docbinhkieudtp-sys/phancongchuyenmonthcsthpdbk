@@ -569,7 +569,8 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         gradeFilter: grade,
         groupingMode: grouping,
         sessionMode: 'SMART_A4',
-        orientation: 'landscape'
+        orientation: 'portrait',
+        locationName: 'Đốc Binh Kiều'
       });
       onShowToast?.(
         `Đã xuất Excel TKB theo khối chuẩn A4 (${res.exportedSheetCount} bảng): ${res.fileName}`
@@ -2316,7 +2317,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                         <div className="flex justify-end">
                           <div className="w-72 text-center space-y-0.5">
                             <div className="text-xs italic text-slate-600 mb-1">
-                              Tháp Mười, ngày {new Date().getDate()} tháng {new Date().getMonth() + 1} năm {new Date().getFullYear()}
+                              Đốc Binh Kiều, ngày {new Date().getDate()} tháng {new Date().getMonth() + 1} năm {new Date().getFullYear()}
                             </div>
                             <div className="text-[11px] font-bold uppercase text-slate-800">
                               KT. HIỆU TRƯỞNG

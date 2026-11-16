@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   ClassGroup,
   SchoolConfig,
@@ -10,7 +10,6 @@ import { getUnifiedSubjectName, getWeekDateRange } from '../utils/timetableHelpe
 import {
   GradeCampusFilter,
   GradeGroupingMode,
-  GradePaperOrientation,
   GradeSessionExportMode,
   buildGradePrintBlocks,
   buildNormalizedSlotMap,
@@ -47,6 +46,10 @@ interface AdministrativeTimetablePdfModalProps {
   onShowToast?: (msg: string) => void;
 }
 
+// A4 Portrait (210mm x 297mm) with 4.5mm top/bottom margins -> 288mm (~1088px at 96dpi) printable height.
+// Target 1038px (~274.6mm) max scaled height inside 280mm print sheet container for zero page overflow.
+const A4_PORTRAIT_TARGET_HEIGHT_PX = 1038;
+
 export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePdfModalProps> = ({
   isOpen,
   onClose,
@@ -67,14 +70,16 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
   const [groupingMode, setGroupingMode] = useState<GradeGroupingMode>(initialGroupingMode);
   const [sessionMode, setSessionMode] = useState<GradeSessionExportMode>(initialSession);
   const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>('sm');
-  const [paperOrientation, setPaperOrientation] = useState<GradePaperOrientation>('landscape');
   const [compactOneLine, setCompactOneLine] = useState<boolean>(false);
   const [creatorName, setCreatorName] = useState<string>(config.vicePrincipalName || 'Nguyễn Minh Trí');
-  const [locationName, setLocationName] = useState<string>('Tháp Mười');
+  const [locationName, setLocationName] = useState<string>('Đốc Binh Kiều');
   const [isExportingExcel, setIsExportingExcel] = useState<boolean>(false);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [sheetScales, setSheetScales] = useState<Record<string, number>>({});
 
-  // Always sync incoming filters whenever the modal opens
+  const innerSheetRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  // Sync incoming filters whenever the modal opens
   useEffect(() => {
     if (isOpen) {
       setSelectedCampus(initialCampus);
@@ -101,6 +106,52 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
     return printBlocks.reduce((acc, b) => acc + b.classes.length, 0);
   }, [printBlocks]);
 
+  // Measure each rendered A4 Portrait sheet and compute exact fit-to-1-page scale for PDF/Print
+  useLayoutEffect(() => {
+    if (!isOpen || !isAdmin) return;
+
+    const measureAll = () => {
+      const nextScales: Record<string, number> = {};
+      printBlocks.forEach(block => {
+        const el = innerSheetRefs.current[block.id];
+        if (!el) return;
+        const measuredHeight = el.scrollHeight;
+        if (measuredHeight > A4_PORTRAIT_TARGET_HEIGHT_PX) {
+          const rawScale = A4_PORTRAIT_TARGET_HEIGHT_PX / measuredHeight;
+          nextScales[block.id] = Math.max(0.55, Number(rawScale.toFixed(3)));
+        } else {
+          nextScales[block.id] = 1;
+        }
+      });
+      setSheetScales(prev => {
+        const prevKeys = Object.keys(prev);
+        const nextKeys = Object.keys(nextScales);
+        if (
+          prevKeys.length === nextKeys.length &&
+          nextKeys.every(k => prev[k] === nextScales[k])
+        ) {
+          return prev;
+        }
+        return nextScales;
+      });
+    };
+
+    measureAll();
+    if (typeof document !== 'undefined' && document.fonts?.ready) {
+      document.fonts.ready.then(measureAll).catch(() => {});
+    }
+  }, [
+    isOpen,
+    isAdmin,
+    printBlocks,
+    sessionMode,
+    fontSize,
+    compactOneLine,
+    creatorName,
+    locationName,
+    currentWeek
+  ]);
+
   // Strict admin-only enforcement
   if (!isOpen || !isAdmin) return null;
 
@@ -126,13 +177,13 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
         gradeFilter: selectedGrade,
         groupingMode,
         sessionMode,
-        orientation: paperOrientation,
+        orientation: 'portrait',
         compactOneLine,
         creatorName,
         locationName
       });
       onShowToast?.(
-        `Đã xuất file Excel chuẩn A4 (${result.exportedSheetCount} khối): ${result.fileName}`
+        `Đã xuất file Excel chuẩn A4 đứng (${result.exportedSheetCount} khối): ${result.fileName}`
       );
     } catch (err: unknown) {
       const msg =
@@ -146,53 +197,33 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
     }
   };
 
-  const computePrintScale = (rowCount: number, classCount: number): number => {
-    if (paperOrientation === 'portrait') {
-      // A4 Portrait gives much taller vertical space (~287mm printable), narrow width
-      let scale = 1;
-      if (classCount >= 9) scale = Math.min(scale, 0.78);
-      else if (classCount >= 7) scale = Math.min(scale, 0.88);
-      if (rowCount > 52) scale = Math.min(scale, compactOneLine ? 0.92 : 0.8);
-      return scale;
-    }
-
-    // A4 Landscape (~201mm printable height, ~287mm printable width)
-    let scale = 1;
-    if (compactOneLine) {
-      if (rowCount > 52) scale = 0.74;
-      else if (rowCount > 40) scale = 0.9;
-      else scale = 1;
-    } else {
-      if (rowCount > 52) scale = 0.63;
-      else if (rowCount >= 44) scale = 0.76;
-      else if (rowCount >= 38) scale = 0.84;
-      else if (rowCount >= 33) scale = 0.9;
-      else scale = 0.95;
-    }
-
-    if (classCount >= 9) scale = Math.min(scale, 0.86);
-    if (fontSize === 'lg') scale = Math.min(scale, 0.88);
-    else if (fontSize === 'md') scale = Math.min(scale, 0.93);
-
-    return Number(scale.toFixed(2));
-  };
-
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/80 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 print:p-0 print:m-0 print:static print:block print:bg-white print:overflow-visible">
-      {/* Dynamic @page rule matching selected A4 orientation */}
-      <style media="print">{`
-        @page {
-          size: A4 ${paperOrientation};
-          margin: 4.5mm 5mm;
-        }
+      {/* Strict A4 Portrait print stylesheet & single-page scaling */}
+      <style>{`
         @media print {
+          @page {
+            size: A4 portrait;
+            margin: 4.5mm 5mm;
+          }
+          .admin-timetable-print-sheet {
+            width: 200mm !important;
+            height: 280mm !important;
+            max-height: 280mm !important;
+            overflow: hidden !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
           .admin-sheet-page-break {
             page-break-after: always !important;
             break-after: page !important;
           }
           .admin-timetable-a4-inner {
-            zoom: var(--sheet-print-zoom, 1);
-            width: 100% !important;
+            width: calc(100% / var(--a4-fit-scale, 1)) !important;
+            transform: scale(var(--a4-fit-scale, 1));
+            transform-origin: top left;
           }
         }
       `}</style>
@@ -206,8 +237,8 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
             </div>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-sm sm:text-base font-black tracking-tight uppercase">
-                  Xuất & In Thời Khóa Biểu Theo Khối (Chuẩn A4)
+                <h2 className="text-sm sm:text-base font-bold tracking-normal uppercase">
+                  Xuất & In Thời Khóa Biểu Theo Khối (Khổ A4 Đứng)
                 </h2>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-500/20 text-amber-200 border border-amber-400/30 whitespace-nowrap">
                   <Lock className="w-3 h-3" />
@@ -215,7 +246,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                 </span>
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
-                Đúng bố cục Bảng Tổng Hợp Toàn Trường • Tự căn vừa khít 1 tờ A4/khối để in dán bảng thông báo
+                Đúng bố cục Bảng Tổng Hợp Toàn Trường • Tự căn vừa đúng 1 trang A4 đứng/khối để in dán bảng thông báo
               </p>
             </div>
           </div>
@@ -226,21 +257,21 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
               onClick={handleExportExcel}
               disabled={isExportingExcel || printBlocks.length === 0}
               className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
-              title="Tải file Excel chia sẵn từng sheet theo khối, cấu hình sẵn khổ in A4 vừa 1 trang"
+              title="Tải file Excel chia từng sheet theo khối, căn sẵn khổ A4 đứng vừa 1 trang"
             >
               <FileSpreadsheet className="w-4 h-4" />
-              <span>{isExportingExcel ? 'Đang xuất...' : 'Xuất Excel Chuẩn A4'}</span>
+              <span>{isExportingExcel ? 'Đang xuất...' : 'Xuất Excel A4 Đứng'}</span>
             </button>
 
             <button
               type="button"
               onClick={handlePrint}
               disabled={printBlocks.length === 0}
-              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 active:scale-95 text-white text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
-              title="Mở hộp thoại In hoặc Lưu PDF đúng chuẩn A4 từng khối"
+              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 active:scale-95 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
+              title="Mở hộp thoại In hoặc Lưu PDF khổ A4 đứng từng khối"
             >
               <Printer className="w-4 h-4" />
-              <span>In / Lưu PDF A4 Ngay</span>
+              <span>In / Lưu PDF A4 Đứng</span>
             </button>
 
             <button
@@ -383,35 +414,6 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                 </select>
               </div>
 
-              {/* Paper orientation */}
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold text-slate-700 whitespace-nowrap">Khổ A4:</span>
-                <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
-                  <button
-                    type="button"
-                    onClick={() => setPaperOrientation('landscape')}
-                    className={`px-2 py-0.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all whitespace-nowrap ${
-                      paperOrientation === 'landscape'
-                        ? 'bg-indigo-600 text-white shadow-2xs'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    A4 Ngang
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPaperOrientation('portrait')}
-                    className={`px-2 py-0.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all whitespace-nowrap ${
-                      paperOrientation === 'portrait'
-                        ? 'bg-indigo-600 text-white shadow-2xs'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    A4 Đứng
-                  </button>
-                </div>
-              </div>
-
               {/* Cell display mode */}
               <div className="flex items-center gap-1.5">
                 <span className="font-bold text-slate-700 whitespace-nowrap">Hiển thị ô:</span>
@@ -470,7 +472,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
               <span className="font-bold text-indigo-900 flex items-center gap-1 tabular-nums whitespace-nowrap">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                 <span>
-                  {printBlocks.length} trang A4 ({totalClassesCount} lớp)
+                  {printBlocks.length} trang A4 đứng ({totalClassesCount} lớp)
                 </span>
               </span>
 
@@ -480,7 +482,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                   type="text"
                   value={locationName}
                   onChange={e => setLocationName(e.target.value)}
-                  className="bg-transparent text-xs font-semibold text-slate-900 w-20 focus:outline-hidden"
+                  className="bg-transparent text-xs font-semibold text-slate-900 w-28 focus:outline-hidden"
                 />
               </div>
 
@@ -490,7 +492,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                   type="text"
                   value={creatorName}
                   onChange={e => setCreatorName(e.target.value)}
-                  className="bg-transparent text-xs font-black text-indigo-950 w-32 focus:outline-hidden"
+                  className="bg-transparent text-xs font-bold text-indigo-950 w-32 focus:outline-hidden"
                 />
               </div>
             </div>
@@ -510,56 +512,69 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
           ) : (
             printBlocks.map((block, blockIndex) => {
               const scheduleRows = buildScheduleRowsForBlock(block, slotMap, sessionMode);
-              const printZoom = computePrintScale(scheduleRows.length, block.classes.length);
+              const fitScale = sheetScales[block.id] ?? 1;
+              const classColPercent = (85 / Math.max(1, block.classes.length)).toFixed(2);
 
               const fontSizeClass =
                 fontSize === 'sm'
-                  ? 'text-[7.2pt] leading-tight'
+                  ? 'text-[6.8pt] leading-[1.08]'
                   : fontSize === 'md'
-                  ? 'text-[8pt] leading-tight'
-                  : 'text-[8.8pt] leading-snug';
+                  ? 'text-[7.5pt] leading-[1.1]'
+                  : 'text-[8.2pt] leading-[1.12]';
 
               const hasPageBreakAfter = blockIndex < printBlocks.length - 1;
 
               return (
                 <div
                   key={block.id}
-                  className={`bg-white text-black p-4 sm:p-6 rounded-xl shadow-md border border-slate-300 mx-auto admin-timetable-print-sheet print:shadow-none print:border-none print:p-0 print:m-0 print:max-w-none print:rounded-none ${
-                    paperOrientation === 'landscape' ? 'max-w-[297mm]' : 'max-w-[210mm]'
-                  } ${hasPageBreakAfter ? 'admin-sheet-page-break' : ''}`}
+                  className={`bg-white text-black p-[5mm] rounded-xl shadow-md border border-slate-300 mx-auto w-full max-w-[210mm] admin-timetable-print-sheet print:shadow-none print:border-none print:p-0 print:m-0 print:max-w-none print:rounded-none ${
+                    hasPageBreakAfter ? 'admin-sheet-page-break' : ''
+                  }`}
+                  style={{
+                    fontFamily: "'Tinos', 'Times New Roman', 'Be Vietnam Pro', serif",
+                    fontSynthesis: 'none'
+                  }}
                 >
                   {/* Screen-only page badge */}
-                  <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 pb-2 mb-2 border-b border-slate-200 print:hidden">
+                  <div className="flex items-center justify-between text-[11px] font-sans font-semibold text-slate-500 pb-2 mb-2 border-b border-slate-200 print:hidden">
                     <span className="tabular-nums">
-                      Trang A4 {blockIndex + 1}/{printBlocks.length} • {block.gradeLabel} ({block.campusShort}) • {block.classes.length} lớp • {scheduleRows.length} dòng tiết
+                      Trang A4 đứng {blockIndex + 1}/{printBlocks.length} • {block.gradeLabel} ({block.campusShort}) • {block.classes.length} lớp • {scheduleRows.length} dòng tiết
                     </span>
-                    <span className="text-indigo-700 font-bold">
-                      {paperOrientation === 'landscape' ? 'Khổ A4 Ngang' : 'Khổ A4 Đứng'} • Tự co vừa 1 trang A4
+                    <span className="text-indigo-700 font-bold tabular-nums">
+                      Khổ A4 Đứng • {fitScale < 1 ? `Tự co ${Math.round(fitScale * 100)}% vừa khít 1 trang` : 'Vừa chuẩn 1 trang A4'}
                     </span>
                   </div>
 
                   <div
+                    ref={el => {
+                      innerSheetRefs.current[block.id] = el;
+                    }}
                     className="admin-timetable-a4-inner"
-                    style={{ ['--sheet-print-zoom' as string]: printZoom }}
+                    style={{
+                      ['--a4-fit-scale' as string]: fitScale,
+                      fontFamily: "'Tinos', 'Times New Roman', 'Be Vietnam Pro', serif",
+                      fontSynthesis: 'none',
+                      letterSpacing: 'normal'
+                    }}
                   >
                     {/* Top Administrative Header */}
-                    <div className="border-b border-black pb-1.5 mb-1.5 font-serif">
+                    <div className="border-b border-black pb-1 mb-1">
                       <div className="flex justify-between items-start text-xs uppercase">
                         <div className="text-center w-[46%]">
-                          <div className="text-[9.5pt] font-normal leading-tight text-black">
+                          <div className="text-[9pt] font-normal leading-tight text-black">
                             {config.subTitle || 'SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP'}
                           </div>
-                          <div className="text-[10pt] font-black tracking-tight text-black mt-0.5">
+                          <div className="text-[9.5pt] font-bold text-black mt-0.5">
                             {config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU'}
                           </div>
                           <div className="w-28 h-[1px] bg-black mx-auto mt-0.5" />
                         </div>
 
                         <div className="text-center w-[50%]">
-                          <div className="text-[9.5pt] font-bold leading-tight text-black">
+                          <div className="text-[9pt] font-bold leading-tight text-black">
                             CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
                           </div>
-                          <div className="text-[9.5pt] font-bold normal-case text-black mt-0.5">
+                          <div className="text-[9pt] font-bold normal-case text-black mt-0.5">
                             Độc lập - Tự do - Hạnh phúc
                           </div>
                           <div className="w-32 h-[1px] bg-black mx-auto mt-0.5" />
@@ -567,11 +582,11 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                       </div>
 
                       {/* Main Title & Subtitle */}
-                      <div className="text-center mt-1.5">
-                        <h1 className="text-[12.5pt] font-black uppercase tracking-tight text-black leading-tight">
+                      <div className="text-center mt-1">
+                        <h1 className="text-[11.5pt] font-bold uppercase text-black leading-tight tracking-normal">
                           {block.title} — {block.subtitle}
                         </h1>
-                        <div className="text-[9pt] font-bold italic text-slate-900 mt-0.5">
+                        <div className="text-[8.5pt] font-bold italic text-slate-900 mt-0.5">
                           Tuần {currentWeek} (Từ ngày {weekInfo.startDateShort} đến ngày {weekInfo.endDateShort}) • Năm học {config.academicYear || '2026 - 2027'} • Áp dụng từ Thứ Hai, {weekInfo.startDateShort}
                         </div>
                       </div>
@@ -580,23 +595,37 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                     {/* Timetable Matrix Table matching BẢNG TỔNG HỢP THỜI KHÓA BIỂU TOÀN TRƯỜNG */}
                     <div className="overflow-x-auto print:overflow-visible my-1">
                       <table
-                        className={`w-full border-collapse border border-black text-center font-serif ${fontSizeClass} admin-timetable-print-table`}
+                        className={`w-full table-fixed border-collapse border border-black text-center ${fontSizeClass} admin-timetable-print-table`}
+                        style={{
+                          fontFamily: "'Tinos', 'Times New Roman', 'Be Vietnam Pro', serif",
+                          fontSynthesis: 'none',
+                          letterSpacing: 'normal'
+                        }}
                       >
+                        <colgroup>
+                          <col style={{ width: '6.5%' }} />
+                          <col style={{ width: '5%' }} />
+                          <col style={{ width: '3.5%' }} />
+                          {block.classes.map(cls => (
+                            <col key={`col-${cls.id}`} style={{ width: `${classColPercent}%` }} />
+                          ))}
+                        </colgroup>
+
                         <thead>
                           <tr className="bg-slate-100 font-bold border-b border-black">
-                            <th rowSpan={2} className="border border-black px-1 py-0.5 w-11 text-center bg-slate-200/80">
+                            <th rowSpan={2} className="border border-black px-0.5 py-0.5 text-center bg-slate-200/80">
                               THỨ
                             </th>
-                            <th rowSpan={2} className="border border-black px-1 py-0.5 w-9 text-center bg-slate-200/80">
+                            <th rowSpan={2} className="border border-black px-0.5 py-0.5 text-center bg-slate-200/80">
                               BUỔI
                             </th>
-                            <th rowSpan={2} className="border border-black px-0.5 py-0.5 w-7 text-center bg-slate-200/80">
+                            <th rowSpan={2} className="border border-black px-0.5 py-0.5 text-center bg-slate-200/80">
                               TIẾT
                             </th>
                             {block.classes.map(cls => (
                               <th
                                 key={cls.id}
-                                className="border border-black px-1 py-0.5 font-black text-center bg-slate-100"
+                                className="border border-black px-0.5 py-0.5 font-bold text-center bg-slate-100"
                               >
                                 {cls.name}
                               </th>
@@ -610,7 +639,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                               return (
                                 <th
                                   key={`gvcn-${cls.id}`}
-                                  className="border border-black px-0.5 py-0.5 text-center font-semibold text-slate-800"
+                                  className="border border-black px-0.5 py-0.5 text-center font-bold text-slate-800"
                                 >
                                   {homeroom
                                     ? `GVCN: ${homeroom.name.replace(/^Thầy\s+|^Cô\s+/i, '')}`
@@ -632,7 +661,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                               {rowMeta.showDayCell && (
                                 <td
                                   rowSpan={rowMeta.dayRowSpan}
-                                  className="border border-black px-0.5 py-0.5 font-bold text-center align-middle bg-slate-100/90 whitespace-nowrap"
+                                  className="border border-black px-0.5 py-0.5 font-bold text-center align-middle bg-slate-100/90"
                                 >
                                   {rowMeta.dayLabel}
                                 </td>
@@ -641,7 +670,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                               {rowMeta.showSessionCell && (
                                 <td
                                   rowSpan={rowMeta.sessionRowSpan}
-                                  className="border border-black px-0.5 py-0.5 font-bold text-center align-middle bg-slate-50 whitespace-nowrap"
+                                  className="border border-black px-0.5 py-0.5 font-bold text-center align-middle bg-slate-50"
                                 >
                                   {rowMeta.sessionLabel}
                                 </td>
@@ -660,7 +689,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                                   return (
                                     <td
                                       key={cls.id}
-                                      className="border border-black px-0.5 py-0.5 text-center text-slate-400 font-light"
+                                      className="border border-black px-0.5 py-0.5 text-center text-slate-400 font-normal"
                                     >
                                       -
                                     </td>
@@ -677,12 +706,12 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                                 return (
                                   <td
                                     key={cls.id}
-                                    className={`border border-black px-0.5 py-0.5 text-center leading-tight align-middle ${
+                                    className={`border border-black px-0.5 py-0.5 text-center align-middle ${
                                       isSpecial ? 'bg-amber-100/70' : ''
                                     }`}
                                   >
                                     {compactOneLine ? (
-                                      <div className="text-black leading-tight">
+                                      <div className="text-black">
                                         <span className="font-bold">{subjectName}</span>
                                         {teacherName && (
                                           <span className="text-[85%] text-slate-800 italic">
@@ -693,12 +722,12 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                                       </div>
                                     ) : (
                                       <>
-                                        <div className="font-bold text-black leading-tight">
+                                        <div className="font-bold text-black">
                                           {subjectName}
                                         </div>
                                         {teacherName && (
                                           <div
-                                            className="text-[84%] text-slate-800 italic leading-tight mt-0.2"
+                                            className="text-[85%] text-slate-800 italic"
                                             title={teacherName}
                                           >
                                             {teacherName}
@@ -716,22 +745,22 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                     </div>
 
                     {/* Administrative Signature Block */}
-                    <div className="mt-1.5 pt-0.5 font-serif text-black print-avoid-break">
+                    <div className="mt-1 pt-0.5 text-black print-avoid-break">
                       <div className="flex justify-end">
                         <div className="w-64 text-center">
                           <div className="text-[8.5pt] italic text-black">
                             {locationName}, ngày {new Date().getDate()} tháng {new Date().getMonth() + 1} năm {new Date().getFullYear()}
                           </div>
-                          <div className="text-[9.5pt] font-bold uppercase tracking-wider text-black">
+                          <div className="text-[9pt] font-bold uppercase text-black">
                             KT. HIỆU TRƯỞNG
                           </div>
-                          <div className="text-[10pt] font-black uppercase tracking-wider text-black">
+                          <div className="text-[9.5pt] font-bold uppercase text-black">
                             PHÓ HIỆU TRƯỞNG
                           </div>
                           <div className="text-[8pt] italic text-slate-700">
                             (Ký và ghi rõ họ tên)
                           </div>
-                          <div className="h-9 flex items-end justify-center font-bold text-[10pt] text-black">
+                          <div className="h-8 flex items-end justify-center font-bold text-[9.5pt] text-black">
                             {creatorName || 'Nguyễn Minh Trí'}
                           </div>
                         </div>
@@ -747,9 +776,8 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
         {/* Bottom Bar - Hidden when printing */}
         <div className="bg-white border-t border-slate-200 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 shrink-0 print:hidden">
           <div className="font-medium text-slate-700">
-            Mẹo in chuẩn A4: Chọn <strong>Khổ giấy: A4</strong>,{' '}
-            <strong>Hướng: {paperOrientation === 'landscape' ? 'Ngang (Landscape)' : 'Đứng (Portrait)'}</strong>, lề{' '}
-            <strong>Tối thiểu / Mặc định</strong> và bật <strong>Đồ họa nền (Background graphics)</strong>.
+            Mẹo in chuẩn A4 Đứng: Chọn <strong>Khổ giấy: A4</strong>, <strong>Hướng: Dọc (Portrait)</strong>, tỷ lệ{' '}
+            <strong>Mặc định (100%)</strong> và bật <strong>Đồ họa nền (Background graphics)</strong>.
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
@@ -767,7 +795,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
               className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white font-bold rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs whitespace-nowrap"
             >
               <FileSpreadsheet className="w-3.5 h-3.5" />
-              <span>Xuất Excel A4</span>
+              <span>Xuất Excel A4 Đứng</span>
             </button>
             <button
               type="button"
@@ -776,7 +804,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
               className="px-4 py-1.5 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs whitespace-nowrap"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>In / Lưu PDF A4</span>
+              <span>In / Lưu PDF A4 Đứng</span>
             </button>
           </div>
         </div>

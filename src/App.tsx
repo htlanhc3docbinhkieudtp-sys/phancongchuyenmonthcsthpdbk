@@ -1986,7 +1986,7 @@ export default function App() {
 
   // Webapp is in free view mode
   return (
-    <div className="min-h-screen overflow-x-clip bg-slate-100 flex flex-col text-slate-900 font-['Be_Vietnam_Pro',sans-serif] print:bg-white print:p-0 print:m-0">
+    <div className="min-h-screen overflow-x-clip bg-slate-100 flex flex-col text-slate-900 font-['Be_Vietnam_Pro',sans-serif] print:block print:min-h-0 print:overflow-visible print:bg-white print:p-0 print:m-0">
       {/* Header with App Title, Stats & Actions */}
       <Header
         config={config}

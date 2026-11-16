@@ -228,15 +228,23 @@
   .comprehensive-print-table *,
   .concurrent-print-table *,
   .weekly-teaching-print-table *,
-  .quality-audit-print-table *,
-  .admin-timetable-print-table * {
+  .quality-audit-print-table * {
     overflow: visible !important;
     text-overflow: clip !important;
     white-space: normal !important;
     word-break: break-word !important;
   }
 
-  /* Administrative School Timetable Printing (A4) */
+  .admin-timetable-print-table * {
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    letter-spacing: normal !important;
+  }
+
+  /* Administrative School Timetable Printing (A4 Portrait - Strict 1 Page Per Grade) */
   .admin-timetable-print-sheet {
     width: 100% !important;
     max-width: 100% !important;
@@ -246,6 +254,8 @@
     border: none !important;
     box-shadow: none !important;
     color: #000000 !important;
+    font-family: 'Tinos', 'Times New Roman', 'Be Vietnam Pro', serif !important;
+    font-synthesis: none !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
@@ -257,17 +267,20 @@
     table-layout: fixed !important;
     border-collapse: collapse !important;
     border: 0.5pt solid #000000 !important;
-    font-family: 'Times New Roman', Times, serif !important;
-    line-height: 1.08 !important;
+    font-family: 'Tinos', 'Times New Roman', 'Be Vietnam Pro', serif !important;
+    font-synthesis: none !important;
+    line-height: 1.06 !important;
   }
 
   .admin-timetable-print-table th,
   .admin-timetable-print-table td {
-    padding: 1.5px 2px !important;
+    padding: 1px 1.5px !important;
     border: 0.5pt solid #000000 !important;
     color: #000000 !important;
     vertical-align: middle !important;
-    word-break: break-word !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    letter-spacing: normal !important;
     overflow: visible !important;
   }
 

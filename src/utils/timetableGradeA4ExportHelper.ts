@@ -358,10 +358,10 @@ export async function exportTimetableGradeA4Excel(
     gradeFilter = 'ALL',
     groupingMode = 'BY_CAMPUS_GRADE',
     sessionMode = 'SMART_A4',
-    orientation = 'landscape',
+    orientation = 'portrait',
     compactOneLine = false,
     creatorName,
-    locationName = 'Tháp Mười'
+    locationName = 'Đốc Binh Kiều'
   } = options;
 
   const blocks = buildGradePrintBlocks(classes, campusFilter, gradeFilter, groupingMode);
@@ -435,7 +435,7 @@ export async function exportTimetableGradeA4Excel(
     const leftAgencyEndLetter = getExcelColLetter(leftAgencyEnd);
     const rightMottoStartLetter = getExcelColLetter(leftAgencyEnd + 1);
 
-    // Column widths balanced cleanly for A4
+    // Column widths balanced cleanly for A4 Portrait
     const classCount = block.classes.length;
     const classColWidth =
       orientation === 'landscape'
@@ -447,14 +447,16 @@ export async function exportTimetableGradeA4Excel(
           ? 16.5
           : 14.5
         : classCount <= 4
-        ? 18
+        ? 21
         : classCount <= 6
-        ? 14
-        : 11.5;
+        ? 16
+        : classCount <= 8
+        ? 13
+        : 11;
 
-    ws.getColumn(1).width = 9.5; // THỨ
-    ws.getColumn(2).width = 7.5; // BUỔI
-    ws.getColumn(3).width = 5.5; // TIẾT
+    ws.getColumn(1).width = 9;   // THỨ
+    ws.getColumn(2).width = 6.8; // BUỔI
+    ws.getColumn(3).width = 5;   // TIẾT
     for (let i = 4; i <= totalCols; i++) {
       ws.getColumn(i).width = classColWidth;
     }
