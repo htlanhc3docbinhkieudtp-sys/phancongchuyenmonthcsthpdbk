@@ -2261,7 +2261,7 @@ export default function App() {
 
       {/* Global In-App Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 max-w-md bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-2">
+        <div className="fixed bottom-5 right-5 z-50 max-w-md bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-2 print:hidden">
           <div className="w-2 h-2 rounded-full bg-emerald-400 shrink-0 animate-pulse" />
           <p className="text-xs font-medium leading-relaxed">{toastMessage}</p>
           <button
