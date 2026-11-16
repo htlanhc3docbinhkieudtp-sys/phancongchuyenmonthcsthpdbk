@@ -46,9 +46,15 @@ interface AdministrativeTimetablePdfModalProps {
   onShowToast?: (msg: string) => void;
 }
 
-// A4 Portrait (210mm x 297mm) with 4.5mm top/bottom margins -> 288mm (~1088px at 96dpi) printable height.
-// Target 1038px (~274.6mm) max scaled height inside 280mm print sheet container for zero page overflow.
-const A4_PORTRAIT_TARGET_HEIGHT_PX = 1038;
+// A4 Portrait (210mm x 297mm) with 3.5mm top/bottom margins -> 290mm (~1096px at 96dpi) printable height.
+// Target 1072px (~283.6mm) inside 287mm print sheet container so rows expand cleanly and signature sits near bottom edge.
+const A4_PORTRAIT_TARGET_HEIGHT_PX = 1072;
+const A4_PORTRAIT_MAX_SAFE_HEIGHT_PX = 1082;
+
+interface SheetMetric {
+  padY: number;
+  scale: number;
+}
 
 export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePdfModalProps> = ({
   isOpen,
@@ -75,9 +81,12 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
   const [locationName, setLocationName] = useState<string>('Đốc Binh Kiều');
   const [isExportingExcel, setIsExportingExcel] = useState<boolean>(false);
   const [exportError, setExportError] = useState<string | null>(null);
-  const [sheetScales, setSheetScales] = useState<Record<string, number>>({});
+  const [sheetMetrics, setSheetMetrics] = useState<Record<string, SheetMetric>>({});
 
-  const innerSheetRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const headerRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const theadRefs = useRef<Record<string, HTMLTableSectionElement | null>>({});
+  const tbodyRefs = useRef<Record<string, HTMLTableSectionElement | null>>({});
+  const sigRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // Sync incoming filters whenever the modal opens
   useEffect(() => {
@@ -106,33 +115,75 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
     return printBlocks.reduce((acc, b) => acc + b.classes.length, 0);
   }, [printBlocks]);
 
-  // Measure each rendered A4 Portrait sheet and compute exact fit-to-1-page scale for PDF/Print
+  // Measure each rendered A4 Portrait sheet, expand row padding to fill full A4 height, and guarantee 1-page fit
   useLayoutEffect(() => {
     if (!isOpen || !isAdmin) return;
 
     const measureAll = () => {
-      const nextScales: Record<string, number> = {};
+      const nextMetrics: Record<string, SheetMetric> = {};
       printBlocks.forEach(block => {
-        const el = innerSheetRefs.current[block.id];
-        if (!el) return;
-        const measuredHeight = el.scrollHeight;
-        if (measuredHeight > A4_PORTRAIT_TARGET_HEIGHT_PX) {
-          const rawScale = A4_PORTRAIT_TARGET_HEIGHT_PX / measuredHeight;
-          nextScales[block.id] = Math.max(0.55, Number(rawScale.toFixed(3)));
+        const headerEl = headerRefs.current[block.id];
+        const theadEl = theadRefs.current[block.id];
+        const tbodyEl = tbodyRefs.current[block.id];
+        const sigEl = sigRefs.current[block.id];
+        if (!headerEl || !theadEl || !tbodyEl || !sigEl) return;
+
+        const rowCount = Math.max(1, tbodyEl.querySelectorAll('tr').length);
+        const appliedPadY = Number(tbodyEl.dataset.appliedPadY || '1.5');
+        const extraPadAlreadyApplied = Math.max(0, (appliedPadY - 1.5) * 2 * rowCount);
+
+        const headerH = headerEl.offsetHeight;
+        const theadH = theadEl.offsetHeight;
+        const tbodyH = tbodyEl.offsetHeight;
+        const sigH = sigEl.offsetHeight;
+
+        const chromeOverhead = 10;
+        const baseTbodyH = Math.max(40, tbodyH - extraPadAlreadyApplied);
+        const baseTotalH = headerH + theadH + baseTbodyH + sigH + chromeOverhead;
+
+        let nextPadY = 1.5;
+        let nextScale = 1;
+
+        if (baseTotalH < A4_PORTRAIT_TARGET_HEIGHT_PX) {
+          const freePx = A4_PORTRAIT_TARGET_HEIGHT_PX - baseTotalH;
+          const rawPadY = 1.5 + Math.max(0, freePx - 8) / (2 * rowCount);
+          nextPadY = Math.min(18, Math.max(1.5, Math.floor(rawPadY * 10) / 10));
+
+          if (Math.abs(appliedPadY - nextPadY) <= 0.2 && appliedPadY >= 1.5) {
+            nextPadY = appliedPadY;
+          }
+
+          const actualTotalH = headerH + theadH + tbodyH + sigH + chromeOverhead;
+          if (Math.abs(appliedPadY - nextPadY) < 0.05 && actualTotalH > A4_PORTRAIT_MAX_SAFE_HEIGHT_PX) {
+            nextScale = Math.max(
+              0.55,
+              Number((A4_PORTRAIT_MAX_SAFE_HEIGHT_PX / actualTotalH).toFixed(3))
+            );
+          }
         } else {
-          nextScales[block.id] = 1;
+          nextPadY = 1.5;
+          const rawScale = A4_PORTRAIT_MAX_SAFE_HEIGHT_PX / baseTotalH;
+          nextScale = Math.max(0.55, Number(rawScale.toFixed(3)));
         }
+
+        nextMetrics[block.id] = { padY: nextPadY, scale: nextScale };
       });
-      setSheetScales(prev => {
+
+      setSheetMetrics(prev => {
         const prevKeys = Object.keys(prev);
-        const nextKeys = Object.keys(nextScales);
+        const nextKeys = Object.keys(nextMetrics);
         if (
           prevKeys.length === nextKeys.length &&
-          nextKeys.every(k => prev[k] === nextScales[k])
+          nextKeys.every(
+            k =>
+              prev[k] &&
+              Math.abs(prev[k].padY - nextMetrics[k].padY) < 0.05 &&
+              Math.abs(prev[k].scale - nextMetrics[k].scale) < 0.002
+          )
         ) {
           return prev;
         }
-        return nextScales;
+        return nextMetrics;
       });
     };
 
@@ -149,7 +200,8 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
     compactOneLine,
     creatorName,
     locationName,
-    currentWeek
+    currentWeek,
+    sheetMetrics
   ]);
 
   // Strict admin-only enforcement
@@ -199,17 +251,21 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/80 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 print:p-0 print:m-0 print:static print:block print:bg-white print:overflow-visible">
-      {/* Strict A4 Portrait print stylesheet & single-page scaling */}
+      {/* Strict A4 Portrait print stylesheet, dynamic row expansion & single-page bottom-pinned layout */}
       <style>{`
+        .admin-timetable-print-table tbody td {
+          padding-top: var(--row-pad-y, 1.5px);
+          padding-bottom: var(--row-pad-y, 1.5px);
+        }
         @media print {
           @page {
             size: A4 portrait;
-            margin: 4.5mm 5mm;
+            margin: 3.5mm 4.5mm;
           }
           .admin-timetable-print-sheet {
-            width: 200mm !important;
-            height: 280mm !important;
-            max-height: 280mm !important;
+            width: 201mm !important;
+            height: 287mm !important;
+            max-height: 287mm !important;
             overflow: hidden !important;
             margin: 0 auto !important;
             padding: 0 !important;
@@ -222,6 +278,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
           }
           .admin-timetable-a4-inner {
             width: calc(100% / var(--a4-fit-scale, 1)) !important;
+            min-height: calc(286mm / var(--a4-fit-scale, 1)) !important;
             transform: scale(var(--a4-fit-scale, 1));
             transform-origin: top left;
           }
@@ -512,22 +569,26 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
           ) : (
             printBlocks.map((block, blockIndex) => {
               const scheduleRows = buildScheduleRowsForBlock(block, slotMap, sessionMode);
-              const fitScale = sheetScales[block.id] ?? 1;
+              const metric = sheetMetrics[block.id] ?? { padY: 1.5, scale: 1 };
+              const fitScale = metric.scale;
+              const rowPadY = metric.padY;
               const classColPercent = (85 / Math.max(1, block.classes.length)).toFixed(2);
 
               const fontSizeClass =
                 fontSize === 'sm'
-                  ? 'text-[6.8pt] leading-[1.08]'
+                  ? scheduleRows.length <= 36 && block.classes.length <= 6
+                    ? 'text-[7.4pt] leading-[1.1]'
+                    : 'text-[6.9pt] leading-[1.08]'
                   : fontSize === 'md'
-                  ? 'text-[7.5pt] leading-[1.1]'
-                  : 'text-[8.2pt] leading-[1.12]';
+                  ? 'text-[7.7pt] leading-[1.1]'
+                  : 'text-[8.4pt] leading-[1.12]';
 
               const hasPageBreakAfter = blockIndex < printBlocks.length - 1;
 
               return (
                 <div
                   key={block.id}
-                  className={`bg-white text-black p-[5mm] rounded-xl shadow-md border border-slate-300 mx-auto w-full max-w-[210mm] admin-timetable-print-sheet print:shadow-none print:border-none print:p-0 print:m-0 print:max-w-none print:rounded-none ${
+                  className={`bg-white text-black p-[4.5mm] rounded-xl shadow-md border border-slate-300 mx-auto w-full max-w-[210mm] admin-timetable-print-sheet print:shadow-none print:border-none print:p-0 print:m-0 print:max-w-none print:rounded-none ${
                     hasPageBreakAfter ? 'admin-sheet-page-break' : ''
                   }`}
                   style={{
@@ -541,24 +602,27 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                       Trang A4 đứng {blockIndex + 1}/{printBlocks.length} • {block.gradeLabel} ({block.campusShort}) • {block.classes.length} lớp • {scheduleRows.length} dòng tiết
                     </span>
                     <span className="text-indigo-700 font-bold tabular-nums">
-                      Khổ A4 Đứng • {fitScale < 1 ? `Tự co ${Math.round(fitScale * 100)}% vừa khít 1 trang` : 'Vừa chuẩn 1 trang A4'}
+                      Khổ A4 Đứng • {fitScale < 1 ? `Tự co ${Math.round(fitScale * 100)}% vừa khít 1 trang` : `Phủ kín trang A4 (đệm dòng ${rowPadY.toFixed(1)}px)`}
                     </span>
                   </div>
 
                   <div
-                    ref={el => {
-                      innerSheetRefs.current[block.id] = el;
-                    }}
-                    className="admin-timetable-a4-inner"
+                    className="admin-timetable-a4-inner flex flex-col"
                     style={{
                       ['--a4-fit-scale' as string]: fitScale,
+                      minHeight: fitScale === 1 ? '286mm' : undefined,
                       fontFamily: "'Tinos', 'Times New Roman', 'Be Vietnam Pro', serif",
                       fontSynthesis: 'none',
                       letterSpacing: 'normal'
                     }}
                   >
                     {/* Top Administrative Header */}
-                    <div className="border-b border-black pb-1 mb-1">
+                    <div
+                      ref={el => {
+                        headerRefs.current[block.id] = el;
+                      }}
+                      className="border-b border-black pb-1 mb-1"
+                    >
                       <div className="flex justify-between items-start text-xs uppercase">
                         <div className="text-center w-[46%]">
                           <div className="text-[9pt] font-normal leading-tight text-black">
@@ -597,6 +661,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                       <table
                         className={`w-full table-fixed border-collapse border border-black text-center ${fontSizeClass} admin-timetable-print-table`}
                         style={{
+                          ['--row-pad-y' as string]: `${rowPadY}px`,
                           fontFamily: "'Tinos', 'Times New Roman', 'Be Vietnam Pro', serif",
                           fontSynthesis: 'none',
                           letterSpacing: 'normal'
@@ -611,7 +676,11 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                           ))}
                         </colgroup>
 
-                        <thead>
+                        <thead
+                          ref={el => {
+                            theadRefs.current[block.id] = el;
+                          }}
+                        >
                           <tr className="bg-slate-100 font-bold border-b border-black">
                             <th rowSpan={2} className="border border-black px-0.5 py-0.5 text-center bg-slate-200/80">
                               THỨ
@@ -650,7 +719,12 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                           </tr>
                         </thead>
 
-                        <tbody>
+                        <tbody
+                          ref={el => {
+                            tbodyRefs.current[block.id] = el;
+                          }}
+                          data-applied-pad-y={rowPadY}
+                        >
                           {scheduleRows.map(rowMeta => (
                             <tr
                               key={`${rowMeta.dayValue}_${rowMeta.session}_${rowMeta.period}`}
@@ -661,7 +735,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                               {rowMeta.showDayCell && (
                                 <td
                                   rowSpan={rowMeta.dayRowSpan}
-                                  className="border border-black px-0.5 py-0.5 font-bold text-center align-middle bg-slate-100/90"
+                                  className="border border-black px-0.5 font-bold text-center align-middle bg-slate-100/90"
                                 >
                                   {rowMeta.dayLabel}
                                 </td>
@@ -670,13 +744,13 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                               {rowMeta.showSessionCell && (
                                 <td
                                   rowSpan={rowMeta.sessionRowSpan}
-                                  className="border border-black px-0.5 py-0.5 font-bold text-center align-middle bg-slate-50"
+                                  className="border border-black px-0.5 font-bold text-center align-middle bg-slate-50"
                                 >
                                   {rowMeta.sessionLabel}
                                 </td>
                               )}
 
-                              <td className="border border-black px-0.5 py-0.5 font-bold text-center align-middle tabular-nums">
+                              <td className="border border-black px-0.5 font-bold text-center align-middle tabular-nums">
                                 {rowMeta.period}
                               </td>
 
@@ -689,7 +763,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                                   return (
                                     <td
                                       key={cls.id}
-                                      className="border border-black px-0.5 py-0.5 text-center text-slate-400 font-normal"
+                                      className="border border-black px-0.5 text-center text-slate-400 font-normal"
                                     >
                                       -
                                     </td>
@@ -706,7 +780,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                                 return (
                                   <td
                                     key={cls.id}
-                                    className={`border border-black px-0.5 py-0.5 text-center align-middle ${
+                                    className={`border border-black px-0.5 text-center align-middle ${
                                       isSpecial ? 'bg-amber-100/70' : ''
                                     }`}
                                   >
@@ -744,8 +818,13 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                       </table>
                     </div>
 
-                    {/* Administrative Signature Block */}
-                    <div className="mt-1 pt-0.5 text-black print-avoid-break">
+                    {/* Administrative Signature Block - Pinned near bottom edge of A4 Portrait sheet */}
+                    <div
+                      ref={el => {
+                        sigRefs.current[block.id] = el;
+                      }}
+                      className="mt-auto pt-1 text-black print-avoid-break"
+                    >
                       <div className="flex justify-end">
                         <div className="w-64 text-center">
                           <div className="text-[8.5pt] italic text-black">
@@ -760,7 +839,7 @@ export const AdministrativeTimetablePdfModal: React.FC<AdministrativeTimetablePd
                           <div className="text-[8pt] italic text-slate-700">
                             (Ký và ghi rõ họ tên)
                           </div>
-                          <div className="h-8 flex items-end justify-center font-bold text-[9.5pt] text-black">
+                          <div className="h-7 flex items-end justify-center font-bold text-[9.5pt] text-black">
                             {creatorName || 'Nguyễn Minh Trí'}
                           </div>
                         </div>

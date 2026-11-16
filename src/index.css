@@ -272,9 +272,19 @@
     line-height: 1.06 !important;
   }
 
-  .admin-timetable-print-table th,
-  .admin-timetable-print-table td {
-    padding: 1px 1.5px !important;
+  .admin-timetable-print-table th {
+    padding: 2px 2px !important;
+    border: 0.5pt solid #000000 !important;
+    color: #000000 !important;
+    vertical-align: middle !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    letter-spacing: normal !important;
+    overflow: visible !important;
+  }
+
+  .admin-timetable-print-table tbody td {
+    padding: var(--row-pad-y, 1.5px) 2px !important;
     border: 0.5pt solid #000000 !important;
     color: #000000 !important;
     vertical-align: middle !important;

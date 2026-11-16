@@ -418,12 +418,12 @@ export async function exportTimetableGradeA4Excel(
         horizontalCentered: true,
         verticalCentered: false,
         margins: {
-          left: 0.24,
-          right: 0.24,
-          top: 0.26,
-          bottom: 0.26,
-          header: 0.12,
-          footer: 0.12
+          left: 0.18,
+          right: 0.18,
+          top: 0.2,
+          bottom: 0.2,
+          header: 0.1,
+          footer: 0.1
         }
       },
       views: [{ showGridLines: true }]
@@ -566,18 +566,16 @@ export async function exportTimetableGradeA4Excel(
       };
     }
 
-    // Data Rows
+    // Data Rows - calculate row heights to fill full A4 Portrait page height down to bottom signature
     const scheduleRows = buildScheduleRowsForBlock(block, slotMap, sessionMode);
-    const totalDataRows = scheduleRows.length;
-    const baseDataRowHeight = compactOneLine
-      ? totalDataRows <= 34
-        ? 17
-        : 15
-      : totalDataRows <= 34
-      ? 25
-      : totalDataRows <= 45
-      ? 22
-      : 19;
+    const totalDataRows = Math.max(1, scheduleRows.length);
+    const totalColUnits = 9 + 6.8 + 5 + classCount * classColWidth;
+    const estScaleX = orientation === 'portrait' ? Math.min(1, 105 / totalColUnits) : 1;
+    const targetPortraitPt = orientation === 'portrait' ? 810 / estScaleX : 540;
+    const targetDataPt = Math.max(400, targetPortraitPt - 205);
+    const dynamicRowHeight = Math.round((targetDataPt / totalDataRows) * 10) / 10;
+    const minRowHeight = compactOneLine ? 16 : 20;
+    const baseDataRowHeight = Math.max(minRowHeight, dynamicRowHeight);
 
     const subjectFontSize = classCount >= 8 ? 8 : totalDataRows > 45 ? 8.5 : 9;
     const teacherFontSize = classCount >= 8 ? 7 : totalDataRows > 45 ? 7.5 : 8;
