@@ -188,7 +188,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
   const [subjectFilter, setSubjectFilter] = useState<string>('ALL');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'ASSIGNED' | 'UNASSIGNED'>('ALL');
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [activeModule, setActiveModule] = useState<'INVIGILATION' | 'PROPOSAL' | 'PERIOD_AUDIT'>('INVIGILATION');
+  const [activeModule, setActiveModule] = useState<'PROPOSAL' | 'PERIOD_AUDIT'>('PROPOSAL');
 
   // Fast teacher map
   const teacherMap = useMemo(() => new Map(teachers.map(t => [t.id, t])), [teachers]);
@@ -470,27 +470,13 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
               </span>
             </div>
             <p className="text-xs text-slate-300 font-medium mt-0.5">
-              Phân công coi kiểm tra (17 GV Sáng / 11 GV Chiều) • Ra đề thi 55 môn khối • Kê tiết coi thi & bù định mức
+              Phân công ra đề 55 môn-khối • Kê tiết coi kiểm tra 4 đợt & cộng bù định mức
             </p>
           </div>
         </div>
 
-        {/* 3 Nút Chuyển Phân Hệ */}
+        {/* 2 Nút Chuyển Phân Hệ */}
         <div className="flex flex-wrap items-center gap-1.5 bg-slate-800/90 p-1.5 rounded-xl border border-slate-700">
-          <button
-            type="button"
-            onClick={() => setActiveModule('INVIGILATION')}
-            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
-              activeModule === 'INVIGILATION'
-                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black shadow-xs ring-1 ring-amber-300'
-                : 'text-slate-300 hover:text-white hover:bg-slate-700/60'
-            }`}
-          >
-            <ShieldCheck className="w-4 h-4 text-slate-950" />
-            <span>1. Phân Công Coi Thi</span>
-            <span className="px-1.5 py-0.2 rounded text-[10px] bg-red-600 text-white font-black">17 Sáng / 11 Chiều</span>
-          </button>
-
           <button
             type="button"
             onClick={() => setActiveModule('PROPOSAL')}
@@ -501,7 +487,7 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
             }`}
           >
             <FileQuestion className="w-4 h-4 text-indigo-200" />
-            <span>2. Phân Công Ra Đề (55 Môn)</span>
+            <span>1. Phân Công Ra Đề (55 Môn)</span>
           </button>
 
           <button
@@ -514,26 +500,10 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
             }`}
           >
             <ArrowUpDown className="w-4 h-4 text-emerald-200" />
-            <span>3. Kê Tiết Coi Kiểm Tra</span>
+            <span>2. Kê Tiết Coi Kiểm Tra</span>
           </button>
         </div>
       </div>
-
-      {activeModule === 'INVIGILATION' && (
-        <ExamInvigilationView
-          teachers={teachers}
-          departments={departments}
-          classes={classes}
-          subjects={subjects}
-          config={config}
-          slots={activeSlots}
-          activePeriod="GK1"
-          initialSubTab="TEMPLATE_VIEW"
-          onShowToast={onShowToast}
-          proctoringPeriods={effectiveProctoring}
-          onUpdateProctoringPeriods={handleUpdateProctoring}
-        />
-      )}
 
       {activeModule === 'PERIOD_AUDIT' && (
         <ExamInvigilationView
@@ -542,9 +512,6 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
           classes={classes}
           subjects={subjects}
           config={config}
-          slots={activeSlots}
-          activePeriod="GK1"
-          initialSubTab="PERIOD_AUDIT"
           onShowToast={onShowToast}
           proctoringPeriods={effectiveProctoring}
           onUpdateProctoringPeriods={handleUpdateProctoring}

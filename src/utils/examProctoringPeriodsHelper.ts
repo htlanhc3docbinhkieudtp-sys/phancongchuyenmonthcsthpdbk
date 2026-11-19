@@ -18,13 +18,14 @@ export type ExamProctoringPeriodsMap = Record<string, ExamProctoringPeriodsRecor
 export const EXAM_ROUND_META: Array<{
   key: ExamRoundKey;
   shortLabel: string;
+  compactTag: string;
   fullLabel: string;
   semester: 'HK1' | 'HK2';
 }> = [
-  { key: 'gk1', shortLabel: 'Coi KT GK1', fullLabel: 'Coi kiểm tra giữa kỳ 1', semester: 'HK1' },
-  { key: 'ck1', shortLabel: 'Coi KT CK1', fullLabel: 'Coi kiểm tra cuối kỳ 1', semester: 'HK1' },
-  { key: 'gk2', shortLabel: 'Coi KT GK2', fullLabel: 'Coi kiểm tra giữa kỳ 2', semester: 'HK2' },
-  { key: 'ck2', shortLabel: 'Coi KT CK2', fullLabel: 'Coi kiểm tra cuối kỳ 2', semester: 'HK2' },
+  { key: 'gk1', shortLabel: 'Coi KTGK1', compactTag: 'KTGK1', fullLabel: 'Coi kiểm tra giữa kỳ 1', semester: 'HK1' },
+  { key: 'ck1', shortLabel: 'Coi KTCK1', compactTag: 'KTCK1', fullLabel: 'Coi kiểm tra cuối kỳ 1', semester: 'HK1' },
+  { key: 'gk2', shortLabel: 'Coi KTGK2', compactTag: 'KTGK2', fullLabel: 'Coi kiểm tra giữa kỳ 2', semester: 'HK2' },
+  { key: 'ck2', shortLabel: 'Coi KTCK2', compactTag: 'KTCK2', fullLabel: 'Coi kiểm tra cuối kỳ 2', semester: 'HK2' },
 ];
 
 export function roundPeriods(value: number): number {
@@ -421,10 +422,10 @@ export async function exportProctoring4RoundsExcel(
     'Họ và Tên Giáo Viên',
     'Điểm Trường',
     'Tổ Chuyên Môn',
-    'Coi KT GK1',
-    'Coi KT CK1',
-    'Coi KT GK2',
-    'Coi KT CK2',
+    'Coi KTGK1',
+    'Coi KTCK1',
+    'Coi KTGK2',
+    'Coi KTCK2',
     'Tổng Coi KT',
     'Thừa/Thiếu Cả Năm',
   ];

@@ -259,10 +259,10 @@ export async function exportExecutiveMultiWeekExcel(
     ws.getCell(`${firstExamColLetter}7`).value = 'COI KIỂM TRA (TIẾT QUY ĐỔI)';
 
     const roundLabelMap: Record<ExamRoundKey, string> = {
-      gk1: 'Coi KT\nGK1',
-      ck1: 'Coi KT\nCK1',
-      gk2: 'Coi KT\nGK2',
-      ck2: 'Coi KT\nCK2',
+      gk1: 'Coi\nKTGK1',
+      ck1: 'Coi\nKTCK1',
+      gk2: 'Coi\nKTGK2',
+      ck2: 'Coi\nKTCK2',
     };
     visibleExamRounds.forEach((rk, rIdx) => {
       const colLetter = getColumnLetter(7 + weekCount + rIdx);
@@ -678,7 +678,7 @@ export async function exportExecutiveMultiWeekExcel(
     { width: 26 },  // 5: Kiêm nhiệm
     { width: 12 },  // 6: Định mức / tuần
     ...Array(weekCount).fill({ width: 5.5 }), // T1..T35
-    ...Array(examColCount).fill({ width: 9.5 }), // Coi KT GK1..CK2
+    ...Array(examColCount).fill({ width: 7.5 }), // Coi KTGK1..KTCK2
     { width: 12 },  // Tổng Dạy
     { width: 12 },  // Tổng KN
     { width: 13 },  // Tổng Quy Đổi

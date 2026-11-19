@@ -108,7 +108,7 @@ const MatrixProctoringCellInput: React.FC<MatrixProctoringCellInputProps> = ({
           (e.currentTarget as HTMLInputElement).blur();
         }
       }}
-      className={`w-14 px-1 py-0.5 text-center text-[11px] rounded border focus:outline-hidden focus:ring-2 focus:ring-indigo-500 ${
+      className={`w-11 px-0.5 py-0.5 text-center text-[11px] rounded border focus:outline-hidden focus:ring-2 focus:ring-indigo-500 ${
         value > 0
           ? 'font-black text-indigo-900 bg-white border-indigo-300'
           : 'font-medium text-slate-400 bg-white/70 border-slate-200 hover:border-indigo-300'
@@ -273,8 +273,8 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     return isNaN(num) || num < 1 || num > 35 ? 1 : num;
   }, [isMultiWeekPeriod, selectedPeriod, currentWeek, startWeek, endWeek]);
 
-  // Level scope - defaults to 'THPT' or defaultLevelScope
-  const [levelScope, setLevelScope] = useState<LevelScope>(defaultLevelScope || 'THPT');
+  // Level scope - defaults to 'ALL' (Toàn trường) or defaultLevelScope so all GK1 proctoring periods appear immediately
+  const [levelScope, setLevelScope] = useState<LevelScope>(defaultLevelScope || 'ALL');
   const [showCurriculumNotes, setShowCurriculumNotes] = useState(false);
 
   // View mode: Weekly Detail (Excel Template) vs Multi-week Overview
@@ -822,6 +822,11 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
               >
                 {levelScope === 'ALL' && <Check className="w-3.5 h-3.5" />}
                 Toàn trường
+                {levelScope === 'ALL' && (
+                  <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-white/20">
+                    Đang xem
+                  </span>
+                )}
               </button>
             </div>
           </div>
@@ -1969,11 +1974,35 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
             </div>
           </div>
 
+          {levelScope === 'THPT' && stats.totalExamProctoringPeriods === 0 && (
+            <div className="px-4 py-2 bg-indigo-50/70 border-b border-indigo-100 flex flex-wrap items-center justify-between gap-2 text-xs text-indigo-950">
+              <span>
+                Lưu ý: 43 giáo viên có dữ liệu <strong>Coi KTGK1 (432.65 tiết)</strong> hiện thuộc khối <strong>THCS</strong>.
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setLevelScope('THCS')}
+                  className="px-2.5 py-1 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-bold cursor-pointer transition-colors"
+                >
+                  Xem Cấp THCS
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLevelScope('ALL')}
+                  className="px-2.5 py-1 rounded-md bg-white hover:bg-indigo-100 text-indigo-800 border border-indigo-200 font-bold cursor-pointer transition-colors"
+                >
+                  Xem Toàn trường
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="overflow-x-auto">
             <table
               id="multi-week-teaching-hours-table"
               className="w-full border-collapse text-xs text-slate-800"
-              style={{ minWidth: isFullYearView ? '2240px' : '1340px' }}
+              style={{ minWidth: isFullYearView ? '2080px' : '1220px' }}
             >
               <thead>
                 <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-300">
@@ -2008,21 +2037,21 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                     </th>
                   ))}
 
-                  {/* 4 Exam Proctoring Columns after Week 35 */}
+                  {/* 4 Compact Exam Proctoring Columns after Week 35 */}
                   {visibleExamRounds.map((roundKey, rIdx) => {
                     const meta = EXAM_ROUND_META.find((m) => m.key === roundKey)!;
                     return (
                       <th
                         key={roundKey}
-                        className={`border border-slate-300 px-1.5 py-2 text-center w-20 text-[11px] font-extrabold bg-indigo-700 text-white ${
+                        className={`border border-slate-300 px-0.5 py-1.5 text-center w-12 text-[10px] leading-tight font-extrabold bg-indigo-700 text-white ${
                           rIdx === 0 ? 'border-l-2 border-l-indigo-950' : ''
                         }`}
                         title={`${meta.fullLabel}${isAdmin ? ' (Quản trị viên có thể nhập/chỉnh sửa trực tiếp)' : ''}`}
                       >
                         <div className="leading-tight">
-                          Coi KT
+                          Coi
                           <br />
-                          {roundKey.toUpperCase()}
+                          {meta.compactTag}
                         </div>
                       </th>
                     );
@@ -2206,7 +2235,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                         return (
                           <td
                             key={roundKey}
-                            className={`border border-slate-300 px-1 py-1 text-center text-[11px] ${
+                            className={`border border-slate-300 px-0.5 py-1 text-center text-[11px] ${
                               rIdx === 0 ? 'border-l-2 border-l-indigo-300' : ''
                             } ${examVal > 0 ? 'bg-indigo-50/70' : 'bg-indigo-50/15'}`}
                             title={`${meta.fullLabel} - ${w.teacherName}: ${formatPeriodNumber(examVal)} tiết`}
@@ -2358,7 +2387,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                     return (
                       <td
                         key={roundKey}
-                        className={`border border-slate-300 px-1.5 py-2 text-center font-black text-indigo-900 bg-indigo-100/70 ${
+                        className={`border border-slate-300 px-0.5 py-1.5 text-center text-[11px] font-black text-indigo-900 bg-indigo-100/70 ${
                           rIdx === 0 ? 'border-l-2 border-l-indigo-300' : ''
                         }`}
                       >
