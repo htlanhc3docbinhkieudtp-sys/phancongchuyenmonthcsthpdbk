@@ -62,8 +62,11 @@ import {
 import { MidTermPlanModal } from './MidTermPlanModal';
 import { TeacherEmailNotificationModal } from './TeacherEmailNotificationModal';
 import { ExamInvigilationView } from './ExamInvigilationView';
-
-
+import {
+  ExamProctoringPeriodsMap,
+  loadExamProctoringPeriods,
+  saveExamProctoringPeriodsToCloud,
+} from '../utils/examProctoringPeriodsHelper';
 
 interface ExamProposerViewProps {
   config: SchoolConfig;
@@ -77,6 +80,8 @@ interface ExamProposerViewProps {
   currentWeek?: number;
   onUpdateTeacherEmail?: (teacherId: string, email: string) => void;
   onShowToast?: (msg: string) => void;
+  proctoringPeriods?: ExamProctoringPeriodsMap;
+  onUpdateProctoringPeriods?: (next: ExamProctoringPeriodsMap, toastMsg?: string) => void;
 }
 
 export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
@@ -91,8 +96,23 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
   currentWeek = 7,
   onUpdateTeacherEmail,
   onShowToast,
+  proctoringPeriods,
+  onUpdateProctoringPeriods,
 }) => {
   const academicYear = config.academicYear || '2026 - 2027';
+  const [localProctoring, setLocalProctoring] = useState<ExamProctoringPeriodsMap>(() =>
+    loadExamProctoringPeriods(academicYear)
+  );
+  const effectiveProctoring = proctoringPeriods ?? localProctoring;
+  const handleUpdateProctoring = (nextMap: ExamProctoringPeriodsMap, toastMsg?: string) => {
+    if (onUpdateProctoringPeriods) {
+      onUpdateProctoringPeriods(nextMap, toastMsg);
+    } else {
+      setLocalProctoring(nextMap);
+      saveExamProctoringPeriodsToCloud(academicYear, nextMap, 'Ban Giám hiệu');
+      if (toastMsg) onShowToast?.(toastMsg);
+    }
+  };
 
   // Load latest slots from current week or timetable
   const activeSlots = useMemo(() => {
@@ -510,6 +530,8 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
           activePeriod="GK1"
           initialSubTab="TEMPLATE_VIEW"
           onShowToast={onShowToast}
+          proctoringPeriods={effectiveProctoring}
+          onUpdateProctoringPeriods={handleUpdateProctoring}
         />
       )}
 
@@ -524,6 +546,8 @@ export const ExamProposerView: React.FC<ExamProposerViewProps> = ({
           activePeriod="GK1"
           initialSubTab="PERIOD_AUDIT"
           onShowToast={onShowToast}
+          proctoringPeriods={effectiveProctoring}
+          onUpdateProctoringPeriods={handleUpdateProctoring}
         />
       )}
 

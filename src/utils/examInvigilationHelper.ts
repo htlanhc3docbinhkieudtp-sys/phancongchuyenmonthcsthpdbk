@@ -270,7 +270,7 @@ export function getEligibleInvigilatorsRankedByDeficit(
   standardPeriods: number;
   reductionPeriods: number;
 }> {
-  const workloads = calculateAllActualWorkloads(7, teachers, departments, classes, subjects, config);
+  const workloads = calculateAllActualWorkloads(7, teachers, departments, classes, subjects, config, undefined, undefined, 18, {}, 1, 18, {});
   const workloadMap = new Map<string, TeacherActualWorkload>(workloads.map(w => [w.teacherId, w]));
 
   const list: Array<{

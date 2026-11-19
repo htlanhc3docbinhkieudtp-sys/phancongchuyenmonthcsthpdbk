@@ -1,3 +1,4 @@
+import ExcelJS from 'exceljs';
 import {
   Teacher,
   Assignment,
@@ -18,7 +19,33 @@ export function cleanTeacherDisplay(text?: string): string {
   return text.replace(/\s*\([^)]*\)/g, '').trim();
 }
 
-export async function exportComprehensiveExcel(
+function colIndexToLetter(colIndex: number): string {
+  let n = colIndex;
+  let letter = '';
+  while (n > 0) {
+    const rem = (n - 1) % 26;
+    letter = String.fromCharCode(65 + rem) + letter;
+    n = Math.floor((n - 1) / 26);
+  }
+  return letter;
+}
+
+function estimateWrappedHeight(textsAndWidths: Array<{ text: string; width: number }>, minHeight = 22): number {
+  let maxLines = 1;
+  textsAndWidths.forEach(({ text, width }) => {
+    if (!text) return;
+    const effectiveCharsPerLine = Math.max(8, Math.floor(width * 0.92));
+    const segments = String(text).split(/\r?\n/);
+    let totalLines = 0;
+    segments.forEach((seg) => {
+      totalLines += Math.max(1, Math.ceil(seg.length / effectiveCharsPerLine));
+    });
+    if (totalLines > maxLines) maxLines = totalLines;
+  });
+  return Math.max(minHeight, maxLines * 14.5 + 6);
+}
+
+export async function buildComprehensiveWorkbookBuffer(
   config: SchoolConfig,
   departments: Department[],
   subjects: Subject[],
@@ -26,12 +53,16 @@ export async function exportComprehensiveExcel(
   teachers: Teacher[],
   assignments: Assignment[],
   workloads: WorkloadStats[]
-) {
-  const XLSX = await import('xlsx');
-  const wb = XLSX.utils.book_new();
+): Promise<ArrayBuffer> {
+  const wb = new ExcelJS.Workbook();
+  wb.creator = config.vicePrincipalName || 'Nguyễn Minh Trí';
+  wb.lastModifiedBy = 'Hệ thống Quản lý Phân công Chuyên môn';
+  wb.created = new Date();
+  wb.modified = new Date();
 
   const teacherMap = new Map(teachers.map(t => [t.id, t]));
-  const deptMap = new Map(departments.map(d => [d.id, d.name]));
+  const _deptMap = new Map(departments.map(d => [d.id, d.name]));
+  void _deptMap;
 
   const displayAcademicYear = (!config.academicYear || config.academicYear.includes('2024'))
     ? '2026 - 2027'
@@ -39,8 +70,11 @@ export async function exportComprehensiveExcel(
 
   const displaySemester = config.semester === 'HK1' ? 'HỌC KỲ I' : 'HỌC KỲ II';
   const displayVicePrincipal = (config.vicePrincipalName && config.vicePrincipalName.includes('-'))
-    ? 'Nguyễn Minh Trí'
+    ? config.vicePrincipalName.split('-')[0].trim()
     : (config.vicePrincipalName || 'Nguyễn Minh Trí');
+  const displayPrincipal = config.principalName || 'Lê Thanh Cường';
+  const displaySubTitle = (config.subTitle || 'SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP').toUpperCase();
+  const displaySchoolName = (config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU').toUpperCase();
 
   const getSubjectsForLevel = (level: 'THPT' | 'THCS') => subjects.filter(sub => {
     if (sub.id === 'sub-nv') return false;
@@ -63,43 +97,87 @@ export async function exportComprehensiveExcel(
     return assignments.find(a => a.classId === classId && a.subjectId === 'sub-lsdl-cs');
   };
 
+  const applyDecree30Header = (
+    ws: ExcelJS.Worksheet,
+    totalCols: number,
+    leftEndCol: number,
+    rightStartCol: number
+  ) => {
+    const leftEndLetter = colIndexToLetter(leftEndCol);
+    const rightStartLetter = colIndexToLetter(rightStartCol);
+    const lastColLetter = colIndexToLetter(totalCols);
+
+    ws.mergeCells(`A1:${leftEndLetter}1`);
+    const cLeft1 = ws.getCell('A1');
+    cLeft1.value = displaySubTitle;
+    cLeft1.font = { name: 'Times New Roman', size: 10, bold: false, color: { argb: 'FF1E293B' } };
+    cLeft1.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    ws.mergeCells(`A2:${leftEndLetter}2`);
+    const cLeft2 = ws.getCell('A2');
+    cLeft2.value = displaySchoolName;
+    cLeft2.font = { name: 'Times New Roman', size: 10.5, bold: true, underline: true, color: { argb: 'FF0F172A' } };
+    cLeft2.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    ws.mergeCells(`${rightStartLetter}1:${lastColLetter}1`);
+    const cRight1 = ws.getCell(`${rightStartLetter}1`);
+    cRight1.value = 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM';
+    cRight1.font = { name: 'Times New Roman', size: 10.5, bold: true, color: { argb: 'FF0F172A' } };
+    cRight1.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    ws.mergeCells(`${rightStartLetter}2:${lastColLetter}2`);
+    const cRight2 = ws.getCell(`${rightStartLetter}2`);
+    cRight2.value = 'Độc lập - Tự do - Hạnh phúc';
+    cRight2.font = { name: 'Times New Roman', size: 10.5, bold: true, underline: true, color: { argb: 'FF0F172A' } };
+    cRight2.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    ws.getRow(1).height = 18;
+    ws.getRow(2).height = 19;
+    ws.getRow(3).height = 8;
+  };
+
+  const getGradeFillArgb = (grade: string): string => {
+    switch (grade) {
+      case '10':
+      case '6':
+        return 'FFEFF6FF'; // Soft Blue
+      case '11':
+      case '7':
+        return 'FFECFDF5'; // Soft Emerald
+      case '12':
+      case '8':
+        return 'FFFEF3C7'; // Soft Amber
+      case '9':
+        return 'FFF3E8FF'; // Soft Purple
+      default:
+        return 'FFF1F5F9';
+    }
+  };
+
+  const getGradeTextArgb = (grade: string): string => {
+    switch (grade) {
+      case '10':
+      case '6':
+        return 'FF1D4ED8';
+      case '11':
+      case '7':
+        return 'FF047857';
+      case '12':
+      case '8':
+        return 'FFB45309';
+      case '9':
+        return 'FF7E22CE';
+      default:
+        return 'FF0F172A';
+    }
+  };
+
   // Helper function to build a formatted matrix worksheet for a level
-  const buildLevelSheet = (level: 'THPT' | 'THCS') => {
+  const buildLevelSheet = (level: 'THPT' | 'THCS', sheetName: string) => {
     const isThpt = level === 'THPT';
     const levelClasses = classes.filter(c => c.level === level);
     const levelSubjects = getSubjectsForLevel(level);
 
-    const rows: any[][] = [];
-
-    // 1. National Administrative Header (Nghị định 30/2020/NĐ-CP)
-    rows.push([
-      config.subTitle.toUpperCase(),
-      '',
-      '',
-      '',
-      '',
-      'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM'
-    ]);
-    rows.push([
-      config.schoolName.toUpperCase(),
-      '',
-      '',
-      '',
-      '',
-      'Độc lập - Tự do - Hạnh phúc'
-    ]);
-    rows.push([]);
-
-    // 2. Document Title
-    rows.push([
-      `BẢNG TỔNG HỢP PHÂN CÔNG CHUYÊN MÔN GIẢNG DẠY - CẤP ${isThpt ? 'THPT (KHỐI 10 - 12)' : 'THCS (KHỐI 6 - 9)'}`
-    ]);
-    rows.push([
-      `${displaySemester} - NĂM HỌC ${displayAcademicYear} (Chương trình GDPT 2018)`
-    ]);
-    rows.push([]);
-
-    // 3. Column Headers
     const colHeaders: string[] = [
       'STT',
       'Lớp',
@@ -107,43 +185,132 @@ export async function exportComprehensiveExcel(
       'Sĩ số',
       'Giáo viên Chủ nhiệm (GVCN)'
     ];
+    const colWidths: number[] = [5.5, 9, 9.5, 7.5, 22];
 
     levelSubjects.forEach(sub => {
       const p = sub.defaultPeriods[isThpt ? '10' : '6'] || 0;
-      colHeaders.push(`${sub.name} (${p}t)`);
+      colHeaders.push(`${sub.name}\n(${p}t)`);
+      colWidths.push(18);
     });
 
     if (isThpt) {
-      colHeaders.push('Chuyên đề 1 (CĐ1)');
-      colHeaders.push('Chuyên đề 2 (CĐ2)');
-      colHeaders.push('Chuyên đề 3 (CĐ3)');
+      colHeaders.push('Chuyên đề 1\n(CĐ1)');
+      colHeaders.push('Chuyên đề 2\n(CĐ2)');
+      colHeaders.push('Chuyên đề 3\n(CĐ3)');
+      colWidths.push(23, 23, 23);
     }
 
     colHeaders.push('Ghi chú');
-    rows.push(colHeaders);
+    colWidths.push(15);
+
+    const totalCols = colHeaders.length;
+    const lastColLetter = colIndexToLetter(totalCols);
+
+    const ws = wb.addWorksheet(sheetName, {
+      views: [{ state: 'frozen', xSplit: 2, ySplit: 6, showGridLines: false }],
+      pageSetup: {
+        paperSize: 9, // A4
+        orientation: 'landscape',
+        fitToPage: true,
+        fitToWidth: 1,
+        fitToHeight: 0,
+        margins: { left: 0.25, right: 0.25, top: 0.3, bottom: 0.35, header: 0.15, footer: 0.15 },
+        printTitlesRow: '6:6',
+      },
+    });
+
+    // 1. Decree 30 Administrative Header (Rows 1-2)
+    const leftEndCol = Math.min(6, Math.floor(totalCols / 2));
+    const rightStartCol = Math.max(leftEndCol + 1, totalCols - 6);
+    applyDecree30Header(ws, totalCols, leftEndCol, rightStartCol);
+
+    // 2. Title & Subtitle Banner (Rows 4-5)
+    ws.mergeCells(`A4:${lastColLetter}4`);
+    const titleCell = ws.getCell('A4');
+    titleCell.value = `BẢNG TỔNG HỢP PHÂN CÔNG CHUYÊN MÔN GIẢNG DẠY - CẤP ${isThpt ? 'THPT (KHỐI 10 - 12)' : 'THCS (KHỐI 6 - 9)'}`;
+    titleCell.font = { name: 'Times New Roman', size: 13.5, bold: true, color: { argb: 'FF1E3A8A' } };
+    titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEEF2FF' } };
+    titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+    titleCell.border = {
+      top: { style: 'medium', color: { argb: 'FF1E3A8A' } },
+      bottom: { style: 'thin', color: { argb: 'FFC7D2FE' } },
+      left: { style: 'medium', color: { argb: 'FF1E3A8A' } },
+      right: { style: 'medium', color: { argb: 'FF1E3A8A' } },
+    };
+    ws.getRow(4).height = 28;
+
+    ws.mergeCells(`A5:${lastColLetter}5`);
+    const subCell = ws.getCell('A5');
+    subCell.value = `${displaySemester} - NĂM HỌC ${displayAcademicYear} (Chương trình GDPT 2018) • Tổng quy mô: ${levelClasses.length} lớp học`;
+    subCell.font = { name: 'Times New Roman', size: 10.5, italic: true, bold: true, color: { argb: 'FF334155' } };
+    subCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+    subCell.alignment = { horizontal: 'center', vertical: 'middle' };
+    subCell.border = {
+      bottom: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+      left: { style: 'medium', color: { argb: 'FF1E3A8A' } },
+      right: { style: 'medium', color: { argb: 'FF1E3A8A' } },
+    };
+    ws.getRow(5).height = 20;
+
+    // 3. Column Headers (Row 6)
+    const headerRow = ws.getRow(6);
+    headerRow.height = 34;
+    const topicStartCol = isThpt ? 6 + levelSubjects.length : totalCols + 1;
+    const topicEndCol = isThpt ? topicStartCol + 2 : totalCols;
+
+    colHeaders.forEach((headerText, idx) => {
+      const colNumber = idx + 1;
+      const cell = headerRow.getCell(colNumber);
+      cell.value = headerText;
+      cell.font = { name: 'Times New Roman', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+
+      let headerBg = 'FF1E3A8A'; // Deep Navy for fixed info cols (1-5)
+      if (colNumber > 5 && colNumber < topicStartCol && colNumber < totalCols) {
+        headerBg = 'FF334155'; // Slate for subject cols
+      } else if (colNumber >= topicStartCol && colNumber <= topicEndCol) {
+        headerBg = 'FF0F766E'; // Deep Teal for CĐ1-3
+      } else if (colNumber === totalCols) {
+        headerBg = 'FF475569'; // Ghi chú
+      }
+
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: headerBg } };
+      cell.border = {
+        top: { style: 'medium', color: { argb: 'FF0F172A' } },
+        bottom: { style: 'medium', color: { argb: 'FF0F172A' } },
+        left: { style: colNumber === 1 ? 'medium' : 'thin', color: { argb: colNumber === 1 ? 'FF0F172A' : 'FF94A3B8' } },
+        right: { style: colNumber === totalCols ? 'medium' : 'thin', color: { argb: colNumber === totalCols ? 'FF0F172A' : 'FF94A3B8' } },
+      };
+    });
 
     // 4. Data Rows
+    let currentRowIdx = 7;
     let totalStudents = 0;
+
     levelClasses.forEach((cls, idx) => {
       totalStudents += cls.studentCount || 0;
       const hrTeacher = cls.homeroomTeacherId ? teacherMap.get(cls.homeroomTeacherId) : undefined;
       const hrName = hrTeacher ? cleanTeacherDisplay(hrTeacher.name) : '—';
 
-      const row: any[] = [
+      const prevCls = idx > 0 ? levelClasses[idx - 1] : null;
+      const isNewGrade = prevCls !== null && prevCls.grade !== cls.grade;
+      const isEven = idx % 2 === 0;
+      const rowBg = isEven ? 'FFFFFFFF' : 'FFF8FAFC';
+
+      const rowValues: (string | number)[] = [
         idx + 1,
         cls.name,
         `Khối ${cls.grade}`,
         cls.studentCount || 0,
-        hrName
+        hrName,
       ];
 
       levelSubjects.forEach(sub => {
         const periods = sub.defaultPeriods[cls.grade] || 0;
         if (periods === 0) {
-          row.push('—');
+          rowValues.push('—');
           return;
         }
-
         const assignment = getAssignmentForSubject(cls.id, sub.id);
         const assignedTeacher = assignment ? teacherMap.get(assignment.teacherId) : null;
         const displayedTeacher = assignedTeacher || (
@@ -151,12 +318,7 @@ export async function exportComprehensiveExcel(
             ? teacherMap.get(cls.homeroomTeacherId)
             : null
         );
-
-        if (displayedTeacher) {
-          row.push(cleanTeacherDisplay(displayedTeacher.name));
-        } else {
-          row.push('—');
-        }
+        rowValues.push(displayedTeacher ? cleanTeacherDisplay(displayedTeacher.name) : '—');
       });
 
       if (isThpt) {
@@ -164,179 +326,475 @@ export async function exportComprehensiveExcel(
           const topic = cls.specialTopics?.[key];
           if (topic) {
             const t = teacherMap.get(topic.teacherId);
-            row.push(`${topic.title} - ${t ? cleanTeacherDisplay(t.name) : ''}`);
+            rowValues.push(`${topic.title} - ${t ? cleanTeacherDisplay(t.name) : ''}`);
           } else {
-            row.push('—');
+            rowValues.push('—');
           }
         });
       }
 
-      row.push(''); // Ghi chú
-      rows.push(row);
+      rowValues.push(''); // Ghi chú
+
+      const row = ws.getRow(currentRowIdx++);
+      const wrapPairs = rowValues.map((val, cIdx) => ({
+        text: typeof val === 'string' ? val : '',
+        width: colWidths[cIdx] || 15,
+      }));
+      row.height = estimateWrappedHeight(wrapPairs, 22);
+
+      rowValues.forEach((val, cIdx) => {
+        const colNumber = cIdx + 1;
+        const cell = row.getCell(colNumber);
+        cell.value = val;
+
+        const isDash = val === '—' || val === '';
+        const isCenter = colNumber <= 4 || isDash;
+
+        cell.alignment = {
+          horizontal: isCenter ? 'center' : 'left',
+          vertical: 'middle',
+          wrapText: true,
+        };
+
+        let cellFill = rowBg;
+        let fontColor = isDash ? 'FF94A3B8' : 'FF0F172A';
+        let isBold = colNumber === 2 || colNumber === 3 || colNumber === 5;
+
+        if (colNumber === 3) {
+          cellFill = getGradeFillArgb(String(cls.grade));
+          fontColor = getGradeTextArgb(String(cls.grade));
+        } else if (colNumber === 2) {
+          fontColor = 'FF1E3A8A';
+        } else if (colNumber === 5 && !isDash) {
+          isBold = true;
+        }
+
+        cell.font = {
+          name: 'Times New Roman',
+          size: 10,
+          bold: isBold,
+          color: { argb: fontColor },
+        };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: cellFill } };
+        cell.border = {
+          top: {
+            style: isNewGrade ? 'medium' : 'thin',
+            color: { argb: isNewGrade ? 'FF1E3A8A' : 'FFCBD5E1' },
+          },
+          bottom: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+          left: {
+            style: colNumber === 1 || colNumber === 6 ? 'medium' : 'thin',
+            color: { argb: colNumber === 1 ? 'FF0F172A' : colNumber === 6 ? 'FF94A3B8' : 'FFCBD5E1' },
+          },
+          right: {
+            style: colNumber === totalCols ? 'medium' : 'thin',
+            color: { argb: colNumber === totalCols ? 'FF0F172A' : 'FFCBD5E1' },
+          },
+        };
+      });
     });
 
     // 5. Total Row
-    const totalRow = new Array(colHeaders.length).fill('');
-    totalRow[1] = 'TỔNG CỘNG';
-    totalRow[2] = `${levelClasses.length} lớp`;
-    totalRow[3] = totalStudents;
-    rows.push(totalRow);
+    const totalRowIdx = currentRowIdx++;
+    const totalRow = ws.getRow(totalRowIdx);
+    totalRow.height = 25;
 
-    // 6. Signature Blocks
-    rows.push([]);
-    rows.push([]);
-    const dateRow = new Array(colHeaders.length).fill('');
-    dateRow[colHeaders.length - 3] = 'Đồng Tháp, ngày ..... tháng ..... năm 2026';
-    rows.push(dateRow);
+    ws.mergeCells(`A${totalRowIdx}:B${totalRowIdx}`);
+    totalRow.getCell(1).value = 'TỔNG CỘNG';
+    totalRow.getCell(3).value = `${levelClasses.length} lớp`;
+    totalRow.getCell(4).value = totalStudents;
+    totalRow.getCell(4).numFmt = '#,##0';
+    totalRow.getCell(5).value = `Toàn cấp ${level} • ${levelSubjects.length} môn học`;
 
-    const signRow1 = new Array(colHeaders.length).fill('');
-    signRow1[3] = 'NGƯỜI LẬP BẢNG';
-    signRow1[colHeaders.length - 3] = 'HIỆU TRƯỞNG';
-    rows.push(signRow1);
-
-    const signRow2 = new Array(colHeaders.length).fill('');
-    signRow2[3] = '(Ký và ghi rõ họ tên)';
-    signRow2[colHeaders.length - 3] = '(Ký tên, đóng dấu)';
-    rows.push(signRow2);
-
-    rows.push([]);
-    rows.push([]);
-    rows.push([]);
-
-    const signRow3 = new Array(colHeaders.length).fill('');
-    signRow3[3] = displayVicePrincipal;
-    signRow3[colHeaders.length - 3] = config.principalName || 'Lê Thanh Cường';
-    rows.push(signRow3);
-
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-
-    // Beautiful Column Widths
-    const cols = [
-      { wch: 6 },  // STT
-      { wch: 10 }, // Lớp
-      { wch: 10 }, // Khối
-      { wch: 9 },  // Sĩ số
-      { wch: 25 }, // GVCN
-    ];
-
-    levelSubjects.forEach(() => {
-      cols.push({ wch: 18 }); // Each subject
-    });
-
-    if (isThpt) {
-      cols.push({ wch: 24 }); // CĐ1
-      cols.push({ wch: 24 }); // CĐ2
-      cols.push({ wch: 24 }); // CĐ3
+    for (let c = 1; c <= totalCols; c++) {
+      const cell = totalRow.getCell(c);
+      cell.font = { name: 'Times New Roman', size: 10.5, bold: true, color: { argb: 'FF0F172A' } };
+      cell.alignment = {
+        horizontal: c === 5 ? 'left' : 'center',
+        vertical: 'middle',
+      };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF3C7' } };
+      cell.border = {
+        top: { style: 'medium', color: { argb: 'FF0F172A' } },
+        bottom: { style: 'double', color: { argb: 'FF0F172A' } },
+        left: { style: c === 1 ? 'medium' : 'thin', color: { argb: c === 1 ? 'FF0F172A' : 'FF94A3B8' } },
+        right: { style: c === totalCols ? 'medium' : 'thin', color: { argb: c === totalCols ? 'FF0F172A' : 'FF94A3B8' } },
+      };
     }
-    cols.push({ wch: 16 }); // Ghi chú
-    ws['!cols'] = cols;
 
-    // Page setup for printing
-    ws['!pageSetup'] = {
-      orientation: 'landscape',
-      paperSize: 9, // A4
-      fitToWidth: 1,
-      fitToHeight: 0
-    };
+    // 6. Signature Block
+    currentRowIdx += 1; // blank row after total
+    const dateRowIdx = currentRowIdx++;
+    const signLeftStart = 2;
+    const signLeftEnd = Math.min(5, totalCols);
+    const signRightStart = Math.max(signLeftEnd + 2, totalCols - 4);
+    const signLeftS = colIndexToLetter(signLeftStart);
+    const signLeftE = colIndexToLetter(signLeftEnd);
+    const signRightS = colIndexToLetter(signRightStart);
+
+    const now = new Date();
+    ws.mergeCells(`${signRightS}${dateRowIdx}:${lastColLetter}${dateRowIdx}`);
+    const dateCell = ws.getCell(`${signRightS}${dateRowIdx}`);
+    dateCell.value = `Đốc Binh Kiều, ngày ${String(now.getDate()).padStart(2, '0')} tháng ${String(now.getMonth() + 1).padStart(2, '0')} năm ${now.getFullYear()}`;
+    dateCell.font = { name: 'Times New Roman', size: 10, italic: true, color: { argb: 'FF334155' } };
+    dateCell.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    const signTitleIdx = currentRowIdx++;
+    ws.getRow(signTitleIdx).height = 20;
+    ws.mergeCells(`${signLeftS}${signTitleIdx}:${signLeftE}${signTitleIdx}`);
+    const sLeftTitle = ws.getCell(`${signLeftS}${signTitleIdx}`);
+    sLeftTitle.value = 'NGƯỜI LẬP BẢNG';
+    sLeftTitle.font = { name: 'Times New Roman', size: 10.5, bold: true };
+    sLeftTitle.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    ws.mergeCells(`${signRightS}${signTitleIdx}:${lastColLetter}${signTitleIdx}`);
+    const sRightTitle = ws.getCell(`${signRightS}${signTitleIdx}`);
+    sRightTitle.value = 'HIỆU TRƯỞNG';
+    sRightTitle.font = { name: 'Times New Roman', size: 10.5, bold: true };
+    sRightTitle.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    const signSubIdx = currentRowIdx++;
+    ws.getRow(signSubIdx).height = 17;
+    ws.mergeCells(`${signLeftS}${signSubIdx}:${signLeftE}${signSubIdx}`);
+    const sLeftSub = ws.getCell(`${signLeftS}${signSubIdx}`);
+    sLeftSub.value = '(Ký và ghi rõ họ tên)';
+    sLeftSub.font = { name: 'Times New Roman', size: 9.5, italic: true };
+    sLeftSub.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    ws.mergeCells(`${signRightS}${signSubIdx}:${lastColLetter}${signSubIdx}`);
+    const sRightSub = ws.getCell(`${signRightS}${signSubIdx}`);
+    sRightSub.value = '(Ký tên, đóng dấu)';
+    sRightSub.font = { name: 'Times New Roman', size: 9.5, italic: true };
+    sRightSub.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    currentRowIdx += 3; // signature whitespace
+    const signNameIdx = currentRowIdx;
+    ws.getRow(signNameIdx).height = 22;
+    ws.mergeCells(`${signLeftS}${signNameIdx}:${signLeftE}${signNameIdx}`);
+    const sLeftName = ws.getCell(`${signLeftS}${signNameIdx}`);
+    sLeftName.value = displayVicePrincipal;
+    sLeftName.font = { name: 'Times New Roman', size: 10.5, bold: true, color: { argb: 'FF1E3A8A' } };
+    sLeftName.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    ws.mergeCells(`${signRightS}${signNameIdx}:${lastColLetter}${signNameIdx}`);
+    const sRightName = ws.getCell(`${signRightS}${signNameIdx}`);
+    sRightName.value = displayPrincipal;
+    sRightName.font = { name: 'Times New Roman', size: 10.5, bold: true, color: { argb: 'FF1E3A8A' } };
+    sRightName.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    // Apply column widths and print area
+    ws.columns = colWidths.map((w) => ({ width: w }));
+    ws.pageSetup.printArea = `A1:${lastColLetter}${signNameIdx}`;
 
     return ws;
   };
 
   // ==========================================
-  // SHEET 1: CẤP THPT (Khối 10 - 12)
+  // SHEET 1 & SHEET 2: THPT & THCS
   // ==========================================
-  const wsThpt = buildLevelSheet('THPT');
-  XLSX.utils.book_append_sheet(wb, wsThpt, 'THPT (Khối 10-12)');
-
-  // ==========================================
-  // SHEET 2: CẤP THCS (Khối 6 - 9)
-  // ==========================================
-  const wsThcs = buildLevelSheet('THCS');
-  XLSX.utils.book_append_sheet(wb, wsThcs, 'THCS (Khối 6-9)');
+  buildLevelSheet('THPT', 'THPT (Khối 10-12)');
+  buildLevelSheet('THCS', 'THCS (Khối 6-9)');
 
   // ==========================================
   // SHEET 3: THỐNG KÊ ĐỊNH MỨC GIÁO VIÊN
   // ==========================================
-  const statsData: any[][] = [];
-  statsData.push([config.subTitle.toUpperCase(), '', '', '', 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM']);
-  statsData.push([config.schoolName.toUpperCase(), '', '', '', 'Độc lập - Tự do - Hạnh phúc']);
-  statsData.push([]);
-  statsData.push([`THỐNG KÊ ĐỊNH MỨC & PHÂN CÔNG GIẢNG DẠY - NĂM HỌC ${displayAcademicYear}`]);
-  statsData.push([]);
-  statsData.push([
-    'STT',
-    'Mã GV',
-    'Họ và tên giáo viên',
-    'Tổ chuyên môn',
-    'Điểm trường',
-    'Chức vụ / Kiêm nhiệm',
-    'Chủ nhiệm lớp',
-    'ĐM chuẩn',
-    'Tổng giảm',
-    'ĐM sau giảm',
-    'Số tiết dạy',
-    'Chênh lệch (+/-)',
-    'Danh sách lớp & môn phụ trách'
-  ]);
+  const statsCols = [
+    { header: 'STT', width: 5.5 },
+    { header: 'Mã GV', width: 13 },
+    { header: 'Họ và tên giáo viên', width: 23 },
+    { header: 'Tổ chuyên môn', width: 22 },
+    { header: 'Điểm trường', width: 14 },
+    { header: 'Chức vụ / Kiêm nhiệm', width: 28 },
+    { header: 'Chủ nhiệm\nlớp', width: 11 },
+    { header: 'ĐM chuẩn', width: 10 },
+    { header: 'Tổng giảm', width: 10 },
+    { header: 'ĐM sau\ngiảm', width: 11 },
+    { header: 'Số tiết\ndạy', width: 10 },
+    { header: 'Chênh lệch\n(+/-)', width: 13 },
+    { header: 'Danh sách lớp & môn phụ trách', width: 46 },
+  ];
+  const statsTotalCols = statsCols.length;
+  const statsLastLetter = colIndexToLetter(statsTotalCols);
+
+  const wsStats = wb.addWorksheet('Thống Kê Định Mức GV', {
+    views: [{ state: 'frozen', xSplit: 3, ySplit: 6, showGridLines: false }],
+    pageSetup: {
+      paperSize: 9,
+      orientation: 'landscape',
+      fitToPage: true,
+      fitToWidth: 1,
+      fitToHeight: 0,
+      margins: { left: 0.25, right: 0.25, top: 0.3, bottom: 0.35, header: 0.15, footer: 0.15 },
+      printTitlesRow: '6:6',
+    },
+  });
+
+  applyDecree30Header(wsStats, statsTotalCols, 5, 8);
+
+  wsStats.mergeCells(`A4:${statsLastLetter}4`);
+  const sTitle = wsStats.getCell('A4');
+  sTitle.value = `THỐNG KÊ ĐỊNH MỨC & PHÂN CÔNG GIẢNG DẠY - NĂM HỌC ${displayAcademicYear}`;
+  sTitle.font = { name: 'Times New Roman', size: 13.5, bold: true, color: { argb: 'FF1E3A8A' } };
+  sTitle.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEEF2FF' } };
+  sTitle.alignment = { horizontal: 'center', vertical: 'middle' };
+  sTitle.border = {
+    top: { style: 'medium', color: { argb: 'FF1E3A8A' } },
+    bottom: { style: 'thin', color: { argb: 'FFC7D2FE' } },
+    left: { style: 'medium', color: { argb: 'FF1E3A8A' } },
+    right: { style: 'medium', color: { argb: 'FF1E3A8A' } },
+  };
+  wsStats.getRow(4).height = 28;
+
+  const surplusTeachers = workloads.filter(w => w.balance > 0).length;
+  const deficitTeachers = workloads.filter(w => w.balance < 0).length;
+  const exactTeachers = workloads.length - surplusTeachers - deficitTeachers;
+
+  wsStats.mergeCells(`A5:${statsLastLetter}5`);
+  const sSub = wsStats.getCell('A5');
+  sSub.value = `${displaySemester} • Tổng số: ${workloads.length} giáo viên (${surplusTeachers} thừa tiết, ${exactTeachers} đủ định mức, ${deficitTeachers} thiếu tiết)`;
+  sSub.font = { name: 'Times New Roman', size: 10.5, italic: true, bold: true, color: { argb: 'FF334155' } };
+  sSub.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+  sSub.alignment = { horizontal: 'center', vertical: 'middle' };
+  sSub.border = {
+    bottom: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+    left: { style: 'medium', color: { argb: 'FF1E3A8A' } },
+    right: { style: 'medium', color: { argb: 'FF1E3A8A' } },
+  };
+  wsStats.getRow(5).height = 20;
+
+  const sHeaderRow = wsStats.getRow(6);
+  sHeaderRow.height = 32;
+  statsCols.forEach((colDef, idx) => {
+    const colNumber = idx + 1;
+    const cell = sHeaderRow.getCell(colNumber);
+    cell.value = colDef.header;
+    cell.font = { name: 'Times New Roman', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+    cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: colNumber === 12 ? 'FF0F766E' : colNumber <= 7 ? 'FF1E3A8A' : 'FF334155' },
+    };
+    cell.border = {
+      top: { style: 'medium', color: { argb: 'FF0F172A' } },
+      bottom: { style: 'medium', color: { argb: 'FF0F172A' } },
+      left: { style: colNumber === 1 ? 'medium' : 'thin', color: { argb: colNumber === 1 ? 'FF0F172A' : 'FF94A3B8' } },
+      right: { style: colNumber === statsTotalCols ? 'medium' : 'thin', color: { argb: colNumber === statsTotalCols ? 'FF0F172A' : 'FF94A3B8' } },
+    };
+  });
+
+  let sRowIdx = 7;
+  let sumBase = 0;
+  let sumReduction = 0;
+  let sumTarget = 0;
+  let sumAssigned = 0;
+  let sumBalance = 0;
 
   workloads.forEach((w, idx) => {
     const teacher = teacherMap.get(w.teacherId);
-    const dutiesStr = teacher 
+    const dutiesStr = teacher
       ? getTeacherDutiesList(teacher).map(d => `${d.name} (${d.reduction > 0 ? `-${d.reduction}t` : 'ĐM 2t'})`).join('; ') || 'GV bộ môn'
-      : '';
+      : 'GV bộ môn';
     const classListStr = w.assignedClasses
       .map(c => `${c.className} (${c.subjectName}: ${c.periods}t)`)
-      .join(', ');
+      .join(', ') || '—';
+    const baseStd = teacher?.baseStandardPeriods || (teacher?.campus === 'THPTDBK' ? 17 : 19);
 
-    statsData.push([
+    sumBase += baseStd;
+    sumReduction += w.reductionPeriods;
+    sumTarget += w.targetPeriods;
+    sumAssigned += w.assignedPeriods;
+    sumBalance += w.balance;
+
+    const rowValues: (string | number)[] = [
       idx + 1,
       cleanTeacherDisplay(teacher?.code),
       cleanTeacherDisplay(w.teacherName),
       w.departmentName,
       teacher?.campus === 'THPTDBK' ? 'THPT ĐBK' : teacher?.campus === 'THCSDBK' ? 'THCS ĐBK' : 'THCS Tân Kiều',
       dutiesStr,
-      w.homeroomClass || '',
-      teacher?.baseStandardPeriods || (teacher?.campus === 'THPTDBK' ? 17 : 19),
+      w.homeroomClass || '—',
+      baseStd,
       w.reductionPeriods,
       w.targetPeriods,
       w.assignedPeriods,
-      w.balance >= 0 ? `+${w.balance}` : `${w.balance}`,
+      w.balance > 0 ? `+${w.balance}` : w.balance,
       classListStr,
-    ]);
+    ];
+
+    const row = wsStats.getRow(sRowIdx++);
+    row.height = estimateWrappedHeight(
+      [
+        { text: dutiesStr, width: statsCols[5].width },
+        { text: classListStr, width: statsCols[12].width },
+        { text: w.departmentName, width: statsCols[3].width },
+      ],
+      22
+    );
+
+    const rowBg = idx % 2 === 0 ? 'FFFFFFFF' : 'FFF8FAFC';
+
+    rowValues.forEach((val, cIdx) => {
+      const colNumber = cIdx + 1;
+      const cell = row.getCell(colNumber);
+      cell.value = val;
+
+      const isLeft = colNumber === 3 || colNumber === 4 || colNumber === 6 || colNumber === 13;
+      cell.alignment = {
+        horizontal: isLeft ? 'left' : 'center',
+        vertical: 'middle',
+        wrapText: true,
+      };
+
+      let fillArgb = rowBg;
+      let fontArgb = 'FF0F172A';
+      let isBold = colNumber === 3 || colNumber === 11 || colNumber === 12;
+
+      if (colNumber === 12) {
+        if (w.balance < 0) {
+          fillArgb = 'FFFEE2E2';
+          fontArgb = 'FF991B1B';
+        } else if (w.balance > 0) {
+          fillArgb = 'FFDCFCE7';
+          fontArgb = 'FF15803D';
+        } else {
+          fillArgb = 'FFF1F5F9';
+          fontArgb = 'FF334155';
+        }
+      } else if (colNumber === 7 && val === '—') {
+        fontArgb = 'FF94A3B8';
+      }
+
+      cell.font = {
+        name: 'Times New Roman',
+        size: 10,
+        bold: isBold,
+        color: { argb: fontArgb },
+      };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: fillArgb } };
+      cell.border = {
+        top: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+        bottom: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+        left: { style: colNumber === 1 ? 'medium' : 'thin', color: { argb: colNumber === 1 ? 'FF0F172A' : 'FFCBD5E1' } },
+        right: { style: colNumber === statsTotalCols ? 'medium' : 'thin', color: { argb: colNumber === statsTotalCols ? 'FF0F172A' : 'FFCBD5E1' } },
+      };
+    });
   });
 
-  // Signatures on stats sheet
-  statsData.push([]);
-  statsData.push([]);
-  statsData.push(['', '', '', '', 'NGƯỜI LẬP BẢNG', '', '', '', '', '', 'HIỆU TRƯỞNG']);
-  statsData.push(['', '', '', '', '(Ký và ghi rõ họ tên)', '', '', '', '', '', '(Ký tên, đóng dấu)']);
-  statsData.push([]);
-  statsData.push([]);
-  statsData.push([]);
-  statsData.push(['', '', '', '', displayVicePrincipal, '', '', '', '', '', config.principalName || 'Lê Thanh Cường']);
+  // Total row on Sheet 3
+  const sTotalRowIdx = sRowIdx++;
+  const sTotalRow = wsStats.getRow(sTotalRowIdx);
+  sTotalRow.height = 25;
+  wsStats.mergeCells(`A${sTotalRowIdx}:G${sTotalRowIdx}`);
+  sTotalRow.getCell(1).value = `TỔNG CỘNG (${workloads.length} GIÁO VIÊN)`;
+  sTotalRow.getCell(8).value = sumBase;
+  sTotalRow.getCell(9).value = sumReduction;
+  sTotalRow.getCell(10).value = sumTarget;
+  sTotalRow.getCell(11).value = sumAssigned;
+  sTotalRow.getCell(12).value = sumBalance > 0 ? `+${sumBalance}` : sumBalance;
+  sTotalRow.getCell(13).value = `${surplusTeachers} thừa / ${exactTeachers} đủ / ${deficitTeachers} thiếu`;
 
-  const wsStats = XLSX.utils.aoa_to_sheet(statsData);
-  wsStats['!cols'] = [
-    { wch: 6 },
-    { wch: 14 },
-    { wch: 24 },
-    { wch: 22 },
-    { wch: 14 },
-    { wch: 28 },
-    { wch: 14 },
-    { wch: 12 },
-    { wch: 12 },
-    { wch: 14 },
-    { wch: 12 },
-    { wch: 14 },
-    { wch: 45 }
-  ];
-  wsStats['!pageSetup'] = { orientation: 'landscape', paperSize: 9, fitToWidth: 1, fitToHeight: 0 };
-  XLSX.utils.book_append_sheet(wb, wsStats, 'Thống Kê Định Mức GV');
+  for (let c = 1; c <= statsTotalCols; c++) {
+    const cell = sTotalRow.getCell(c);
+    cell.font = {
+      name: 'Times New Roman',
+      size: 10.5,
+      bold: true,
+      color: { argb: c === 12 ? (sumBalance < 0 ? 'FF991B1B' : sumBalance > 0 ? 'FF15803D' : 'FF0F172A') : 'FF0F172A' },
+    };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF3C7' } };
+    cell.border = {
+      top: { style: 'medium', color: { argb: 'FF0F172A' } },
+      bottom: { style: 'double', color: { argb: 'FF0F172A' } },
+      left: { style: c === 1 ? 'medium' : 'thin', color: { argb: c === 1 ? 'FF0F172A' : 'FF94A3B8' } },
+      right: { style: c === statsTotalCols ? 'medium' : 'thin', color: { argb: c === statsTotalCols ? 'FF0F172A' : 'FF94A3B8' } },
+    };
+  }
 
-  // Trigger download
-  const fileName = `Bang_Tong_Hop_Phan_Cong_Chuyen_Mon_${displayAcademicYear.replace(/\s+/g, '_')}.xlsx`;
-  XLSX.writeFile(wb, fileName);
+  // Signature block on Sheet 3
+  sRowIdx += 1;
+  const sDateIdx = sRowIdx++;
+  const now3 = new Date();
+  wsStats.mergeCells(`I${sDateIdx}:M${sDateIdx}`);
+  wsStats.getCell(`I${sDateIdx}`).value = `Đốc Binh Kiều, ngày ${String(now3.getDate()).padStart(2, '0')} tháng ${String(now3.getMonth() + 1).padStart(2, '0')} năm ${now3.getFullYear()}`;
+  wsStats.getCell(`I${sDateIdx}`).font = { name: 'Times New Roman', size: 10, italic: true, color: { argb: 'FF334155' } };
+  wsStats.getCell(`I${sDateIdx}`).alignment = { horizontal: 'center', vertical: 'middle' };
+
+  const sSignTitleIdx = sRowIdx++;
+  wsStats.getRow(sSignTitleIdx).height = 20;
+  wsStats.mergeCells(`B${sSignTitleIdx}:F${sSignTitleIdx}`);
+  wsStats.getCell(`B${sSignTitleIdx}`).value = 'NGƯỜI LẬP BẢNG';
+  wsStats.getCell(`B${sSignTitleIdx}`).font = { name: 'Times New Roman', size: 10.5, bold: true };
+  wsStats.getCell(`B${sSignTitleIdx}`).alignment = { horizontal: 'center', vertical: 'middle' };
+
+  wsStats.mergeCells(`I${sSignTitleIdx}:M${sSignTitleIdx}`);
+  wsStats.getCell(`I${sSignTitleIdx}`).value = 'HIỆU TRƯỞNG';
+  wsStats.getCell(`I${sSignTitleIdx}`).font = { name: 'Times New Roman', size: 10.5, bold: true };
+  wsStats.getCell(`I${sSignTitleIdx}`).alignment = { horizontal: 'center', vertical: 'middle' };
+
+  const sSignSubIdx = sRowIdx++;
+  wsStats.mergeCells(`B${sSignSubIdx}:F${sSignSubIdx}`);
+  wsStats.getCell(`B${sSignSubIdx}`).value = '(Ký và ghi rõ họ tên)';
+  wsStats.getCell(`B${sSignSubIdx}`).font = { name: 'Times New Roman', size: 9.5, italic: true };
+  wsStats.getCell(`B${sSignSubIdx}`).alignment = { horizontal: 'center', vertical: 'middle' };
+
+  wsStats.mergeCells(`I${sSignSubIdx}:M${sSignSubIdx}`);
+  wsStats.getCell(`I${sSignSubIdx}`).value = '(Ký tên, đóng dấu)';
+  wsStats.getCell(`I${sSignSubIdx}`).font = { name: 'Times New Roman', size: 9.5, italic: true };
+  wsStats.getCell(`I${sSignSubIdx}`).alignment = { horizontal: 'center', vertical: 'middle' };
+
+  sRowIdx += 3;
+  wsStats.mergeCells(`B${sRowIdx}:F${sRowIdx}`);
+  wsStats.getCell(`B${sRowIdx}`).value = displayVicePrincipal;
+  wsStats.getCell(`B${sRowIdx}`).font = { name: 'Times New Roman', size: 10.5, bold: true, color: { argb: 'FF1E3A8A' } };
+  wsStats.getCell(`B${sRowIdx}`).alignment = { horizontal: 'center', vertical: 'middle' };
+
+  wsStats.mergeCells(`I${sRowIdx}:M${sRowIdx}`);
+  wsStats.getCell(`I${sRowIdx}`).value = displayPrincipal;
+  wsStats.getCell(`I${sRowIdx}`).font = { name: 'Times New Roman', size: 10.5, bold: true, color: { argb: 'FF1E3A8A' } };
+  wsStats.getCell(`I${sRowIdx}`).alignment = { horizontal: 'center', vertical: 'middle' };
+
+  wsStats.columns = statsCols.map(c => ({ width: c.width }));
+  wsStats.pageSetup.printArea = `A1:${statsLastLetter}${sRowIdx}`;
+
+  return (await wb.xlsx.writeBuffer()) as ArrayBuffer;
+}
+
+export async function exportComprehensiveExcel(
+  config: SchoolConfig,
+  departments: Department[],
+  subjects: Subject[],
+  classes: ClassGroup[],
+  teachers: Teacher[],
+  assignments: Assignment[],
+  workloads: WorkloadStats[]
+) {
+  const displayAcademicYear = (!config.academicYear || config.academicYear.includes('2024'))
+    ? '2026 - 2027'
+    : config.academicYear;
+
+  const buffer = await buildComprehensiveWorkbookBuffer(
+    config,
+    departments,
+    subjects,
+    classes,
+    teachers,
+    assignments,
+    workloads
+  );
+
+  const blob = new Blob([buffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Bang_Tong_Hop_Phan_Cong_Chuyen_Mon_${displayAcademicYear.replace(/\s+/g, '_')}.xlsx`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
 }
 
 export async function generateExcelTemplate() {

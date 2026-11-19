@@ -14,6 +14,15 @@ import {
   TeacherActualWorkload,
 } from '../utils/actualTeachingHoursHelper';
 import {
+  ExamRoundKey,
+  ExamProctoringPeriodsMap,
+  EXAM_ROUND_META,
+  roundPeriods,
+  formatPeriodNumber,
+  loadExamProctoringPeriods,
+  saveExamProctoringPeriodsToCloud,
+} from '../utils/examProctoringPeriodsHelper';
+import {
   Search,
   Printer,
   FileSpreadsheet,
@@ -36,6 +45,77 @@ import {
   Sparkles,
   Zap,
 } from 'lucide-react';
+
+interface MatrixProctoringCellInputProps {
+  value: number;
+  onCommit: (nextValue: number) => void;
+  title?: string;
+}
+
+const MatrixProctoringCellInput: React.FC<MatrixProctoringCellInputProps> = ({
+  value,
+  onCommit,
+  title,
+}) => {
+  const [focused, setFocused] = useState(false);
+  const [draft, setDraft] = useState<string>(value ? formatPeriodNumber(value) : '');
+
+  useEffect(() => {
+    if (!focused) {
+      setDraft(value ? formatPeriodNumber(value) : '');
+    }
+  }, [value, focused]);
+
+  const handleCommit = () => {
+    setFocused(false);
+    const trimmed = draft.trim().replace(',', '.');
+    if (trimmed === '') {
+      if (value !== 0) onCommit(0);
+      setDraft('');
+      return;
+    }
+    const parsed = Number(trimmed);
+    if (!Number.isFinite(parsed) || parsed < 0) {
+      setDraft(value ? formatPeriodNumber(value) : '');
+      return;
+    }
+    const rounded = roundPeriods(parsed);
+    if (rounded !== roundPeriods(value)) {
+      onCommit(rounded);
+    }
+    setDraft(rounded ? formatPeriodNumber(rounded) : '');
+  };
+
+  return (
+    <input
+      type="text"
+      inputMode="decimal"
+      value={draft}
+      placeholder="0"
+      title={title}
+      onFocus={(e) => {
+        setFocused(true);
+        e.target.select();
+      }}
+      onChange={(e) => setDraft(e.target.value)}
+      onBlur={handleCommit}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          (e.currentTarget as HTMLInputElement).blur();
+        } else if (e.key === 'Escape') {
+          setDraft(value ? formatPeriodNumber(value) : '');
+          setFocused(false);
+          (e.currentTarget as HTMLInputElement).blur();
+        }
+      }}
+      className={`w-14 px-1 py-0.5 text-center text-[11px] rounded border focus:outline-hidden focus:ring-2 focus:ring-indigo-500 ${
+        value > 0
+          ? 'font-black text-indigo-900 bg-white border-indigo-300'
+          : 'font-medium text-slate-400 bg-white/70 border-slate-200 hover:border-indigo-300'
+      }`}
+    />
+  );
+};
 
 export interface ChangedTeacherInfo {
   deltaYear: number;
@@ -63,6 +143,8 @@ interface WeeklyTeachingLogViewProps {
   defaultLevelScope?: LevelScope;
   changedTeachersMap?: Map<string, ChangedTeacherInfo>;
   officialGddpAiRevision?: number;
+  proctoringPeriods?: ExamProctoringPeriodsMap;
+  onUpdateProctoringPeriods?: (next: ExamProctoringPeriodsMap, toastMsg?: string) => void;
 }
 
 type ViewMode = 'WEEKLY_DETAIL' | 'MULTI_WEEK';
@@ -104,7 +186,40 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
   defaultLevelScope,
   changedTeachersMap,
   officialGddpAiRevision = 0,
+  proctoringPeriods,
+  onUpdateProctoringPeriods,
 }) => {
+  const [localProctoringPeriods, setLocalProctoringPeriods] = useState<ExamProctoringPeriodsMap>(() =>
+    loadExamProctoringPeriods(config.academicYear)
+  );
+  const activeProctoringPeriods = proctoringPeriods ?? localProctoringPeriods;
+
+  const handleUpdateExamProctoring = (
+    teacherId: string,
+    round: ExamRoundKey,
+    nextValue: number
+  ) => {
+    if (!isAdmin) return;
+    const prevRec = activeProctoringPeriods[teacherId] || {};
+    const nextMap: ExamProctoringPeriodsMap = {
+      ...activeProctoringPeriods,
+      [teacherId]: {
+        ...prevRec,
+        [round]: nextValue === 0 ? undefined : roundPeriods(nextValue),
+        updatedAt: Date.now(),
+      },
+    };
+    if (onUpdateProctoringPeriods) {
+      onUpdateProctoringPeriods(nextMap);
+    } else {
+      setLocalProctoringPeriods(nextMap);
+      saveExamProctoringPeriodsToCloud(
+        config.academicYear || '2026 - 2027',
+        nextMap,
+        config.vicePrincipalName || 'Ban Giám hiệu'
+      );
+    }
+  };
   const effectiveAdjustmentKey = storageKeyPrefix
     ? `${storageKeyPrefix}_adjustments_v1`
     : ADJUSTMENT_STORAGE_KEY;
@@ -209,6 +324,13 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     setAdjustModalTeacher(null);
   };
 
+  // Visible exam proctoring columns based on period range
+  const visibleExamRounds: ExamRoundKey[] = useMemo(() => {
+    if (isFullYearView) return ['gk1', 'ck1', 'gk2', 'ck2'];
+    if (activeSemester === 'HK1') return ['gk1', 'ck1'];
+    return ['gk2', 'ck2'];
+  }, [isFullYearView, activeSemester]);
+
   // Calculate actual workloads from timetable slots
   const allWorkloads = useMemo(() => {
     return calculateAllActualWorkloads(
@@ -223,7 +345,8 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
       totalWeeks,
       manualAdjustments,
       startWeek,
-      endWeek
+      endWeek,
+      activeProctoringPeriods
     );
   }, [
     selectedWeekNum,
@@ -239,6 +362,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     startWeek,
     endWeek,
     officialGddpAiRevision,
+    activeProctoringPeriods,
   ]);
 
   const fullYearWorkloads = useMemo(() => {
@@ -255,7 +379,8 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
       35,
       manualAdjustments,
       1,
-      35
+      35,
+      activeProctoringPeriods
     );
   }, [
     allWorkloads,
@@ -271,6 +396,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     startWeek,
     endWeek,
     officialGddpAiRevision,
+    activeProctoringPeriods,
   ]);
 
   // Filter workloads based on Level, Department, Search, and Status
@@ -373,17 +499,29 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
     const totalTeachers = list.length;
     const isSem = isMultiWeekPeriod || viewMode === 'MULTI_WEEK';
 
-    const totalTeachingPeriods = list.reduce(
-      (sum, w) => sum + (isSem ? w.semesterTotalTeaching : w.teachingPeriods),
-      0
+    const totalTeachingPeriods = roundPeriods(
+      list.reduce(
+        (sum, w) => sum + (isSem ? w.semesterTotalTeaching : w.teachingPeriods),
+        0
+      )
     );
-    const totalReductionPeriods = list.reduce(
-      (sum, w) => sum + (isSem ? w.reductionPeriods * totalWeeks : w.reductionPeriods),
-      0
+    const totalReductionPeriods = roundPeriods(
+      list.reduce(
+        (sum, w) => sum + (isSem ? w.reductionPeriods * totalWeeks : w.reductionPeriods),
+        0
+      )
     );
-    const totalConvertedPeriods = list.reduce(
-      (sum, w) => sum + (isSem ? w.semesterTotalPeriods : w.totalPeriods),
-      0
+    const totalExamProctoringPeriods = roundPeriods(
+      list.reduce(
+        (sum, w) => sum + (isSem ? w.examProctoring?.inRange || 0 : 0),
+        0
+      )
+    );
+    const totalConvertedPeriods = roundPeriods(
+      list.reduce(
+        (sum, w) => sum + (isSem ? w.semesterTotalPeriods : w.totalPeriods),
+        0
+      )
     );
     const surplusCount = list.filter((w) =>
       isSem ? w.semesterBalance > 0 : w.cumulativeBalance > 0
@@ -395,9 +533,13 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
       isSem ? w.semesterBalance < 0 : w.cumulativeBalance < 0
     ).length;
     const hk1Balances = yearList.map((workload) =>
-      Array.from({ length: 18 }, (_, index) => workload.weeklyBalances[index + 1] ?? 0)
-        .reduce((sum, balance) => sum + balance, 0) +
-      (manualAdjustments[workload.teacherId] || 0)
+      roundPeriods(
+        Array.from({ length: 18 }, (_, index) => workload.weeklyBalances[index + 1] ?? 0)
+          .reduce((sum, balance) => sum + balance, 0) +
+          (manualAdjustments[workload.teacherId] || 0) +
+          (workload.examProctoring?.gk1 || 0) +
+          (workload.examProctoring?.ck1 || 0)
+      )
     );
     const yearBalances = yearList.map((workload) => workload.semesterBalance);
 
@@ -405,14 +547,23 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
       totalTeachers,
       totalTeachingPeriods,
       totalReductionPeriods,
+      totalExamProctoringPeriods,
       totalConvertedPeriods,
       surplusCount,
       exactCount,
       deficitCount,
-      hk1SurplusPeriods: hk1Balances.reduce((sum, balance) => sum + Math.max(balance, 0), 0),
-      hk1DeficitPeriods: hk1Balances.reduce((sum, balance) => sum + Math.max(-balance, 0), 0),
-      yearSurplusPeriods: yearBalances.reduce((sum, balance) => sum + Math.max(balance, 0), 0),
-      yearDeficitPeriods: yearBalances.reduce((sum, balance) => sum + Math.max(-balance, 0), 0),
+      hk1SurplusPeriods: roundPeriods(
+        hk1Balances.reduce((sum, balance) => sum + Math.max(balance, 0), 0)
+      ),
+      hk1DeficitPeriods: roundPeriods(
+        hk1Balances.reduce((sum, balance) => sum + Math.max(-balance, 0), 0)
+      ),
+      yearSurplusPeriods: roundPeriods(
+        yearBalances.reduce((sum, balance) => sum + Math.max(balance, 0), 0)
+      ),
+      yearDeficitPeriods: roundPeriods(
+        yearBalances.reduce((sum, balance) => sum + Math.max(-balance, 0), 0)
+      ),
     };
   }, [filteredWorkloads, fullYearWorkloads, manualAdjustments, isMultiWeekPeriod, viewMode, totalWeeks]);
 
@@ -997,7 +1148,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
             Tiết thực dạy ({isMultiWeekPeriod || viewMode === 'MULTI_WEEK' ? (isFullYearView ? 'Cả năm (35 tuần)' : `Cả ${semesterName}`) : `Tuần ${selectedWeekNum}`})
           </span>
           <div className="text-lg font-bold text-blue-700 mt-0.5">
-            {stats.totalTeachingPeriods} <span className="text-xs font-normal text-slate-400">tiết</span>
+            {formatPeriodNumber(stats.totalTeachingPeriods)} <span className="text-xs font-normal text-slate-400">tiết</span>
           </div>
         </div>
 
@@ -1006,8 +1157,13 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
             Quy đổi kiêm nhiệm ({isMultiWeekPeriod || viewMode === 'MULTI_WEEK' ? (isFullYearView ? 'Cả năm (35 tuần)' : `Cả ${semesterName}`) : `Tuần ${selectedWeekNum}`})
           </span>
           <div className="text-lg font-bold text-indigo-700 mt-0.5">
-            {stats.totalReductionPeriods} <span className="text-xs font-normal text-slate-400">tiết</span>
+            {formatPeriodNumber(stats.totalReductionPeriods)} <span className="text-xs font-normal text-slate-400">tiết</span>
           </div>
+          {stats.totalExamProctoringPeriods > 0 && (
+            <div className="text-[10px] font-bold text-indigo-600 mt-0.5">
+              +{formatPeriodNumber(stats.totalExamProctoringPeriods)} tiết coi KT
+            </div>
+          )}
         </div>
 
         <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
@@ -1040,28 +1196,28 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
         <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] text-slate-500 font-medium">Tổng tiết thừa Học kỳ 1</span>
           <div className="text-lg font-bold text-emerald-600 mt-0.5">
-            {stats.hk1SurplusPeriods} <span className="text-xs font-normal text-slate-400">tiết</span>
+            {formatPeriodNumber(stats.hk1SurplusPeriods)} <span className="text-xs font-normal text-slate-400">tiết</span>
           </div>
         </div>
 
         <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] text-slate-500 font-medium">Tổng tiết thừa cả năm</span>
           <div className="text-lg font-bold text-emerald-600 mt-0.5">
-            {stats.yearSurplusPeriods} <span className="text-xs font-normal text-slate-400">tiết</span>
+            {formatPeriodNumber(stats.yearSurplusPeriods)} <span className="text-xs font-normal text-slate-400">tiết</span>
           </div>
         </div>
 
         <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] text-slate-500 font-medium">Tổng tiết thiếu Học kỳ 1</span>
           <div className="text-lg font-bold text-rose-600 mt-0.5">
-            {stats.hk1DeficitPeriods} <span className="text-xs font-normal text-slate-400">tiết</span>
+            {formatPeriodNumber(stats.hk1DeficitPeriods)} <span className="text-xs font-normal text-slate-400">tiết</span>
           </div>
         </div>
 
         <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] text-slate-500 font-medium">Tổng tiết thiếu cuối năm</span>
           <div className="text-lg font-bold text-rose-600 mt-0.5">
-            {stats.yearDeficitPeriods} <span className="text-xs font-normal text-slate-400">tiết</span>
+            {formatPeriodNumber(stats.yearDeficitPeriods)} <span className="text-xs font-normal text-slate-400">tiết</span>
           </div>
         </div>
       </div>
@@ -1817,7 +1973,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
             <table
               id="multi-week-teaching-hours-table"
               className="w-full border-collapse text-xs text-slate-800"
-              style={{ minWidth: isFullYearView ? '1920px' : '1180px' }}
+              style={{ minWidth: isFullYearView ? '2240px' : '1340px' }}
             >
               <thead>
                 <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-300">
@@ -1852,13 +2008,33 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                     </th>
                   ))}
 
+                  {/* 4 Exam Proctoring Columns after Week 35 */}
+                  {visibleExamRounds.map((roundKey, rIdx) => {
+                    const meta = EXAM_ROUND_META.find((m) => m.key === roundKey)!;
+                    return (
+                      <th
+                        key={roundKey}
+                        className={`border border-slate-300 px-1.5 py-2 text-center w-20 text-[11px] font-extrabold bg-indigo-700 text-white ${
+                          rIdx === 0 ? 'border-l-2 border-l-indigo-950' : ''
+                        }`}
+                        title={`${meta.fullLabel}${isAdmin ? ' (Quản trị viên có thể nhập/chỉnh sửa trực tiếp)' : ''}`}
+                      >
+                        <div className="leading-tight">
+                          Coi KT
+                          <br />
+                          {roundKey.toUpperCase()}
+                        </div>
+                      </th>
+                    );
+                  })}
+
                   <th className="border border-slate-300 px-2 py-2 text-center w-16 bg-blue-50 font-bold text-blue-900" title={`Tổng tiết dạy thực tế ${isFullYearView ? 'cả năm học' : 'cả học kỳ'}`}>
                     Tổng Dạy
                   </th>
                   <th className="border border-slate-300 px-2 py-2 text-center w-16 bg-indigo-50 font-bold text-indigo-900" title={`Tổng tiết giảm trừ kiêm nhiệm ${isFullYearView ? 'cả năm học' : 'cả học kỳ'}`}>
                     Tổng KN
                   </th>
-                  <th className="border border-slate-300 px-2 py-2 text-center w-16 bg-emerald-50 font-bold text-emerald-900" title={`Tổng tiết quy đổi ${isFullYearView ? 'cả năm học' : 'cả học kỳ'} (Dạy + KN)`}>
+                  <th className="border border-slate-300 px-2 py-2 text-center w-20 bg-emerald-50 font-bold text-emerald-900" title={`Tổng tiết quy đổi ${isFullYearView ? 'cả năm học' : 'cả học kỳ'} (Dạy + KN + Coi KT)`}>
                     Tổng QĐ
                   </th>
                   <th className="border border-slate-300 px-2 py-2 text-center w-16 bg-slate-50" title={`Định mức tiết ${isFullYearView ? 'cả năm học' : 'cả học kỳ'}`}>
@@ -1874,7 +2050,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
               </thead>
               <tbody>
                 {filteredWorkloads.map((w, idx) => {
-                  const cumBal = w.cumulativeBalance;
+                  const cumBal = roundPeriods(w.cumulativeBalance);
                   const cumColor =
                     cumBal > 0
                       ? 'text-emerald-700 font-bold'
@@ -1882,7 +2058,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                       ? 'text-rose-700 font-bold'
                       : 'text-slate-600';
 
-                  const semBal = w.semesterBalance;
+                  const semBal = roundPeriods(w.semesterBalance);
                   const semColor =
                     semBal > 0
                       ? 'text-emerald-700'
@@ -1890,6 +2066,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                       ? 'text-rose-700'
                       : 'text-slate-600';
 
+                  const examInRange = roundPeriods(w.examProctoring?.inRange || 0);
                   const changeInfo = changedTeachersMap?.get(w.teacherId);
                   const isChanged = !!changeInfo;
 
@@ -2022,17 +2199,57 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                         );
                       })}
 
+                      {/* 4 Exam Proctoring Cells after Week 35 */}
+                      {visibleExamRounds.map((roundKey, rIdx) => {
+                        const examVal = roundPeriods(w.examProctoring?.[roundKey] ?? 0);
+                        const meta = EXAM_ROUND_META.find((m) => m.key === roundKey)!;
+                        return (
+                          <td
+                            key={roundKey}
+                            className={`border border-slate-300 px-1 py-1 text-center text-[11px] ${
+                              rIdx === 0 ? 'border-l-2 border-l-indigo-300' : ''
+                            } ${examVal > 0 ? 'bg-indigo-50/70' : 'bg-indigo-50/15'}`}
+                            title={`${meta.fullLabel} - ${w.teacherName}: ${formatPeriodNumber(examVal)} tiết`}
+                          >
+                            {isAdmin ? (
+                              <MatrixProctoringCellInput
+                                value={examVal}
+                                onCommit={(val) =>
+                                  handleUpdateExamProctoring(w.teacherId, roundKey, val)
+                                }
+                                title={`${meta.fullLabel} (${w.teacherName})`}
+                              />
+                            ) : (
+                              <span
+                                className={
+                                  examVal > 0
+                                    ? 'font-bold text-indigo-800'
+                                    : 'text-slate-400'
+                                }
+                              >
+                                {examVal > 0 ? formatPeriodNumber(examVal) : '—'}
+                              </span>
+                            )}
+                          </td>
+                        );
+                      })}
+
                       <td className="border border-slate-300 px-2 py-1.5 text-center font-bold text-blue-900 bg-blue-50/40">
-                        {w.semesterTotalTeaching}
+                        {formatPeriodNumber(w.semesterTotalTeaching)}
                       </td>
                       <td className="border border-slate-300 px-2 py-1.5 text-center font-medium text-indigo-900 bg-indigo-50/40">
-                        {w.reductionPeriods * totalWeeks}
+                        {formatPeriodNumber(w.reductionPeriods * totalWeeks)}
                       </td>
                       <td className="border border-slate-300 px-2 py-1.5 text-center font-bold text-emerald-900 bg-emerald-50/40">
-                        {w.semesterTotalPeriods}
+                        <div>{formatPeriodNumber(w.semesterTotalPeriods)}</div>
+                        {examInRange > 0 && (
+                          <div className="text-[9px] font-bold text-indigo-700">
+                            (+{formatPeriodNumber(examInRange)}t coi KT)
+                          </div>
+                        )}
                       </td>
                       <td className="border border-slate-300 px-2 py-1.5 text-center text-slate-600 bg-slate-50/40">
-                        <span className="font-semibold">{w.semesterRequiredPeriods}</span>
+                        <span className="font-semibold">{formatPeriodNumber(w.semesterRequiredPeriods)}</span>
                         <div className="text-[10px] text-slate-400">
                           ({w.standardPeriods}t × {totalWeeks}T)
                         </div>
@@ -2040,7 +2257,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                       <td
                         className={`border border-slate-300 px-2 py-1.5 text-center ${cumColor}`}
                       >
-                        {cumBal > 0 ? `+${cumBal}` : cumBal}
+                        {cumBal > 0 ? `+${formatPeriodNumber(cumBal)}` : formatPeriodNumber(cumBal)}
                       </td>
                       <td className={`border border-slate-300 px-2 py-1.5 text-center ${
                         isChanged
@@ -2050,7 +2267,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                           : 'bg-slate-50/60'
                       }`}>
                         <div className={`text-sm font-extrabold ${semColor}`}>
-                          {semBal > 0 ? `+${semBal}` : semBal}
+                          {semBal > 0 ? `+${formatPeriodNumber(semBal)}` : formatPeriodNumber(semBal)}
                         </div>
                         {isChanged ? (
                           <div className="text-[10px] font-bold mt-0.5">
@@ -2130,28 +2347,55 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
                     );
                   })}
 
+                  {/* Exam Proctoring column sums */}
+                  {visibleExamRounds.map((roundKey, rIdx) => {
+                    const totalExamRound = roundPeriods(
+                      filteredWorkloads.reduce(
+                        (sum, w) => sum + (w.examProctoring?.[roundKey] ?? 0),
+                        0
+                      )
+                    );
+                    return (
+                      <td
+                        key={roundKey}
+                        className={`border border-slate-300 px-1.5 py-2 text-center font-black text-indigo-900 bg-indigo-100/70 ${
+                          rIdx === 0 ? 'border-l-2 border-l-indigo-300' : ''
+                        }`}
+                      >
+                        {formatPeriodNumber(totalExamRound)}
+                      </td>
+                    );
+                  })}
+
                   <td className="border border-slate-300 px-2 py-2 text-center font-bold text-blue-900 bg-blue-100/50">
-                    {filteredWorkloads.reduce((sum, w) => sum + w.semesterTotalTeaching, 0)}
+                    {formatPeriodNumber(
+                      filteredWorkloads.reduce((sum, w) => sum + w.semesterTotalTeaching, 0)
+                    )}
                   </td>
                   <td className="border border-slate-300 px-2 py-2 text-center font-bold text-indigo-900 bg-indigo-100/50">
-                    {filteredWorkloads.reduce((sum, w) => sum + w.reductionPeriods * totalWeeks, 0)}
+                    {formatPeriodNumber(
+                      filteredWorkloads.reduce((sum, w) => sum + w.reductionPeriods * totalWeeks, 0)
+                    )}
                   </td>
                   <td className="border border-slate-300 px-2 py-2 text-center font-bold text-emerald-900 bg-emerald-100/50">
-                    {filteredWorkloads.reduce((sum, w) => sum + w.semesterTotalPeriods, 0)}
+                    {formatPeriodNumber(
+                      filteredWorkloads.reduce((sum, w) => sum + w.semesterTotalPeriods, 0)
+                    )}
                   </td>
                   <td className="border border-slate-300 px-2 py-2 text-center font-bold text-slate-700 bg-slate-100">
-                    {filteredWorkloads.reduce((sum, w) => sum + w.semesterRequiredPeriods, 0)}
+                    {formatPeriodNumber(
+                      filteredWorkloads.reduce((sum, w) => sum + w.semesterRequiredPeriods, 0)
+                    )}
                   </td>
                   <td className="border border-slate-300 px-2 py-2 text-center font-bold text-slate-800">
                     {stats.surplusCount} thừa / {stats.deficitCount} thiếu
                   </td>
                   <td className="border border-slate-300 px-2 py-2 text-center font-extrabold bg-amber-100/60 text-slate-900">
                     {(() => {
-                      const netSem = filteredWorkloads.reduce(
-                        (sum, w) => sum + w.semesterBalance,
-                        0
+                      const netSem = roundPeriods(
+                        filteredWorkloads.reduce((sum, w) => sum + w.semesterBalance, 0)
                       );
-                      return netSem > 0 ? `+${netSem}` : netSem;
+                      return netSem > 0 ? `+${formatPeriodNumber(netSem)}` : formatPeriodNumber(netSem);
                     })()}
                   </td>
                 </tr>

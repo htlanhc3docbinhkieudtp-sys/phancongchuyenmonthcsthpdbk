@@ -75,6 +75,13 @@ import {
   deleteBatchWeekTimetablesFromIndexedDB
 } from './utils/persistentStorage';
 import { loadOfficialGddpAiFromCloud } from './utils/draftCloudSyncHelper';
+import {
+  ExamProctoringPeriodsMap,
+  loadExamProctoringPeriods,
+  saveExamProctoringPeriods,
+  subscribeExamProctoringPeriods,
+  saveExamProctoringPeriodsToCloud,
+} from './utils/examProctoringPeriodsHelper';
 
 import { Header } from './components/Header';
 import { ViewTabs, ActiveTabType } from './components/ViewTabs';
@@ -193,6 +200,32 @@ export default function App() {
   useEffect(() => {
     setBrowserFavicon('/logo.png');
   }, []);
+
+  const [proctoringPeriods, setProctoringPeriods] = useState<ExamProctoringPeriodsMap>(() =>
+    loadExamProctoringPeriods(config.academicYear)
+  );
+
+  useEffect(() => {
+    const year = config.academicYear || '2026 - 2027';
+    const unsubscribe = subscribeExamProctoringPeriods(
+      year,
+      (cloudMap) => {
+        setProctoringPeriods(cloudMap);
+        saveExamProctoringPeriods(year, cloudMap);
+      },
+      () => {
+        // Fallback keeps local cached + GK1 defaults
+      }
+    );
+    return () => unsubscribe();
+  }, [config.academicYear]);
+
+  const handleUpdateProctoringPeriods = (nextMap: ExamProctoringPeriodsMap, toastMsg?: string) => {
+    const year = config.academicYear || '2026 - 2027';
+    setProctoringPeriods(nextMap);
+    saveExamProctoringPeriodsToCloud(year, nextMap, isAdmin ? 'Ban Giám hiệu' : 'Quản trị viên');
+    if (toastMsg) showToast(toastMsg);
+  };
 
   const [departments, setDepartments] = useState<Department[]>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_departments`);
@@ -956,7 +989,8 @@ export default function App() {
       totalWeeksInSemester,
       {},
       semesterStartWeek,
-      semesterEndWeek
+      semesterEndWeek,
+      proctoringPeriods
     );
   }, [
     currentWeek,
@@ -970,7 +1004,8 @@ export default function App() {
     totalWeeksInSemester,
     semesterStartWeek,
     semesterEndWeek,
-    officialGddpAiRevision
+    officialGddpAiRevision,
+    proctoringPeriods
   ]);
 
   // Authoritative Actual Workloads for HK1 (Weeks 1 to 18)
@@ -988,9 +1023,10 @@ export default function App() {
       18,
       {},
       1,
-      18
+      18,
+      proctoringPeriods
     );
-  }, [shouldLoadDisparityData, currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable, officialGddpAiRevision]);
+  }, [shouldLoadDisparityData, currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable, officialGddpAiRevision, proctoringPeriods]);
 
   // Authoritative Actual Workloads for Full Year (Weeks 1 to 35)
   const actualWorkloadsYear = useMemo(() => {
@@ -1007,9 +1043,10 @@ export default function App() {
       35,
       {},
       1,
-      35
+      35,
+      proctoringPeriods
     );
-  }, [shouldLoadDisparityData, currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable, officialGddpAiRevision]);
+  }, [shouldLoadDisparityData, currentWeek, teachers, departments, classes, subjects, config, weeklyTimetables, timetable, officialGddpAiRevision, proctoringPeriods]);
 
   const workloads = useMemo(() => {
     return calculateTeacherWorkloads(
@@ -2107,6 +2144,8 @@ export default function App() {
             timetable={timetable}
             isAdmin={isAdmin}
             officialGddpAiRevision={officialGddpAiRevision}
+            proctoringPeriods={proctoringPeriods}
+            onUpdateProctoringPeriods={handleUpdateProctoringPeriods}
           />
         )}
 
@@ -2195,6 +2234,8 @@ export default function App() {
               currentWeek={currentWeek}
               onUpdateTeacherEmail={handleUpdateTeacherEmail}
               onShowToast={showToast}
+              proctoringPeriods={proctoringPeriods}
+              onUpdateProctoringPeriods={handleUpdateProctoringPeriods}
             />
           ) : (
             <div className="max-w-xl mx-auto my-16 p-8 bg-white rounded-3xl border border-rose-200 shadow-md text-center">

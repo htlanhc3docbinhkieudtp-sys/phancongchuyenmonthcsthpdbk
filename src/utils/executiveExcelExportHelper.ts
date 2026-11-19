@@ -1,6 +1,7 @@
 import ExcelJS from 'exceljs';
 import { SchoolConfig } from '../types';
 import { TeacherActualWorkload } from './actualTeachingHoursHelper';
+import { ExamRoundKey, roundPeriods } from './examProctoringPeriodsHelper';
 
 // Standard borders for executive administrative documents
 const thinBorder: Partial<ExcelJS.Borders> = {
@@ -83,6 +84,17 @@ export async function exportExecutiveMultiWeekExcel(
   const effectiveEndWeek = endWeek || (startWeek === 19 ? 35 : startWeek + totalWeeks - 1);
   const weekCount = effectiveEndWeek - startWeek + 1;
   const isFullYear = startWeek === 1 && effectiveEndWeek >= 35;
+  const isHk1 = startWeek === 1 && effectiveEndWeek === 18;
+  const isHk2 = startWeek === 19 && effectiveEndWeek >= 35;
+
+  const visibleExamRounds: ExamRoundKey[] = isFullYear
+    ? ['gk1', 'ck1', 'gk2', 'ck2']
+    : isHk1
+    ? ['gk1', 'ck1']
+    : isHk2
+    ? ['gk2', 'ck2']
+    : [];
+  const examColCount = visibleExamRounds.length;
 
   const wb = new ExcelJS.Workbook();
   wb.creator = 'Trường THCS và THPT Đốc Binh Kiều';
@@ -92,7 +104,7 @@ export async function exportExecutiveMultiWeekExcel(
 
   const sheetName = isFullYear ? 'Tong_Hop_Ca_Nam' : `Tong_Hop_${semesterName.replace(/\s+/g, '_')}`;
   const ws = wb.addWorksheet(sheetName, {
-    views: [{ state: 'frozen', xSplit: 2, ySplit: 8 }],
+    views: [{ state: 'frozen', xSplit: 2, ySplit: 8, showGridLines: false }],
     pageSetup: {
       orientation: 'landscape',
       paperSize: 9, // A4 standard (ExcelJS.PaperSize.A4)
@@ -101,12 +113,13 @@ export async function exportExecutiveMultiWeekExcel(
       fitToHeight: 0,
       margins: { left: 0.3, right: 0.3, top: 0.4, bottom: 0.4, header: 0.2, footer: 0.2 },
       printTitlesRow: '7:8',
-      showGridLines: true,
+      showGridLines: false,
     },
   });
 
-  // Calculate total columns: 6 base + weekCount + 6 summary = 12 + weekCount
-  const totalColumns = 6 + weekCount + 6;
+  // Calculate total columns: 6 base + weekCount + examColCount + 6 summary = 12 + weekCount + examColCount
+  const summaryStartCol = 7 + weekCount + examColCount;
+  const totalColumns = 6 + weekCount + examColCount + 6;
   const lastColLetter = getColumnLetter(totalColumns);
 
   // ==========================================
@@ -168,11 +181,12 @@ export async function exportExecutiveMultiWeekExcel(
 
   // Row 6: KPI Executive Strip
   const totalTeachers = workloads.length;
-  const totalActualTeaching = workloads.reduce((sum, w) => sum + w.semesterTotalTeaching, 0);
-  const totalReductionAll = workloads.reduce((sum, w) => sum + w.reductionPeriods * weekCount, 0);
-  const totalConverted = workloads.reduce((sum, w) => sum + w.semesterTotalPeriods, 0);
-  const totalRequired = workloads.reduce((sum, w) => sum + w.semesterRequiredPeriods, 0);
-  const totalBalance = workloads.reduce((sum, w) => sum + w.semesterBalance, 0);
+  const totalActualTeaching = roundPeriods(workloads.reduce((sum, w) => sum + w.semesterTotalTeaching, 0));
+  const totalReductionAll = roundPeriods(workloads.reduce((sum, w) => sum + w.reductionPeriods * weekCount, 0));
+  const totalExamAll = roundPeriods(workloads.reduce((sum, w) => sum + (w.examProctoring?.inRange || 0), 0));
+  const totalConverted = roundPeriods(workloads.reduce((sum, w) => sum + w.semesterTotalPeriods, 0));
+  const totalRequired = roundPeriods(workloads.reduce((sum, w) => sum + w.semesterRequiredPeriods, 0));
+  const totalBalance = roundPeriods(workloads.reduce((sum, w) => sum + w.semesterBalance, 0));
   const surplusCount = workloads.filter((w) => w.semesterBalance > 0).length;
   const exactCount = workloads.filter((w) => w.semesterBalance === 0).length;
   const deficitCount = workloads.filter((w) => w.semesterBalance < 0).length;
@@ -180,7 +194,7 @@ export async function exportExecutiveMultiWeekExcel(
   const kpiRowIndex = 6;
   ws.mergeCells(`A${kpiRowIndex}:${lastColLetter}${kpiRowIndex}`);
   const kpiCell = ws.getCell(`A${kpiRowIndex}`);
-  kpiCell.value = `THỐNG KÊ TOÀN TRƯỜNG: ${totalTeachers} Giáo viên • Tổng tiết dạy: ${totalActualTeaching.toLocaleString()}t • Kiêm nhiệm quy đổi: ${totalReductionAll.toLocaleString()}t • Tổng quy đổi: ${totalConverted.toLocaleString()}t • Định mức cả năm: ${totalRequired.toLocaleString()}t • Cân đối toàn trường: ${totalBalance > 0 ? `+${totalBalance}` : totalBalance}t (${surplusCount} GV thừa tiết, ${exactCount} GV đủ định mức, ${deficitCount} GV thiếu tiết)`;
+  kpiCell.value = `THỐNG KÊ TOÀN TRƯỜNG: ${totalTeachers} GV • Dạy: ${totalActualTeaching.toLocaleString()}t • KN: ${totalReductionAll.toLocaleString()}t • Coi KT: ${totalExamAll.toLocaleString()}t • Tổng QĐ: ${totalConverted.toLocaleString()}t • Định mức: ${totalRequired.toLocaleString()}t • Cân đối: ${totalBalance > 0 ? `+${totalBalance}` : totalBalance}t (${surplusCount} thừa, ${exactCount} đủ, ${deficitCount} thiếu)`;
   kpiCell.font = { name: 'Times New Roman', size: 10, bold: true, color: { argb: 'FF1E3A8A' } };
   kpiCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEFF6FF' } };
   kpiCell.alignment = { horizontal: 'center', vertical: 'middle' };
@@ -235,28 +249,49 @@ export async function exportExecutiveMultiWeekExcel(
     cell.value = `T${wk}`;
   }
 
+  // Exam Proctoring Rounds right after Week 35 (or last week)
+  if (examColCount > 0) {
+    const firstExamColLetter = getColumnLetter(7 + weekCount);
+    const lastExamColLetter = getColumnLetter(6 + weekCount + examColCount);
+    if (examColCount > 1) {
+      ws.mergeCells(`${firstExamColLetter}7:${lastExamColLetter}7`);
+    }
+    ws.getCell(`${firstExamColLetter}7`).value = 'COI KIỂM TRA (TIẾT QUY ĐỔI)';
+
+    const roundLabelMap: Record<ExamRoundKey, string> = {
+      gk1: 'Coi KT\nGK1',
+      ck1: 'Coi KT\nCK1',
+      gk2: 'Coi KT\nGK2',
+      ck2: 'Coi KT\nCK2',
+    };
+    visibleExamRounds.forEach((rk, rIdx) => {
+      const colLetter = getColumnLetter(7 + weekCount + rIdx);
+      ws.getCell(`${colLetter}8`).value = roundLabelMap[rk];
+    });
+  }
+
   // Summary Block
-  const cTeaching = getColumnLetter(7 + weekCount);
+  const cTeaching = getColumnLetter(summaryStartCol);
   ws.mergeCells(`${cTeaching}7:${cTeaching}8`);
   ws.getCell(`${cTeaching}7`).value = isFullYear ? 'Tổng Dạy\n(35 Tuần)' : 'Tổng Dạy\n(Kỳ)';
 
-  const cReduction = getColumnLetter(8 + weekCount);
+  const cReduction = getColumnLetter(summaryStartCol + 1);
   ws.mergeCells(`${cReduction}7:${cReduction}8`);
   ws.getCell(`${cReduction}7`).value = 'Tổng KN\nQuy Đổi';
 
-  const cTotal = getColumnLetter(9 + weekCount);
+  const cTotal = getColumnLetter(summaryStartCol + 2);
   ws.mergeCells(`${cTotal}7:${cTotal}8`);
   ws.getCell(`${cTotal}7`).value = 'Tổng Tiết\nQuy Đổi';
 
-  const cRequired = getColumnLetter(10 + weekCount);
+  const cRequired = getColumnLetter(summaryStartCol + 3);
   ws.mergeCells(`${cRequired}7:${cRequired}8`);
   ws.getCell(`${cRequired}7`).value = isFullYear ? 'Định Mức\nCả Năm' : 'Định Mức\nHọc Kỳ';
 
-  const cBalance = getColumnLetter(11 + weekCount);
+  const cBalance = getColumnLetter(summaryStartCol + 4);
   ws.mergeCells(`${cBalance}7:${cBalance}8`);
   ws.getCell(`${cBalance}7`).value = isFullYear ? 'CÂN ĐỐI CẢ NĂM\n(THỪA / THIẾU)' : 'CÂN ĐỐI KỲ\n(THỪA / THIẾU)';
 
-  const cEval = getColumnLetter(12 + weekCount);
+  const cEval = getColumnLetter(summaryStartCol + 5);
   ws.mergeCells(`${cEval}7:${cEval}8`);
   ws.getCell(`${cEval}7`).value = 'Đánh Giá\nPhân Loại';
 
@@ -274,22 +309,22 @@ export async function exportExecutiveMultiWeekExcel(
 
     // Color code header columns
     if (c <= 6) {
-      // General info columns: Deep Navy
       cell7.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A8A' } };
       cell8.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A8A' } };
     } else if (c <= 6 + weekCount) {
-      // Weekly columns
       const weekNum = startWeek + (c - 7);
       const isPastOrCurrent = weekNum <= 10;
       const fg = isPastOrCurrent ? 'FF0284C7' : 'FF0369A1';
       cell7.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0369A1' } };
       cell8.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: fg } };
-    } else if (c === 11 + weekCount) {
-      // Balance column: Distinctive Gold / Dark Amber
+    } else if (c < summaryStartCol) {
+      // Exam Proctoring Columns
+      cell7.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4338CA' } };
+      cell8.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } };
+    } else if (c === summaryStartCol + 4) {
       cell7.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFB45309' } };
       cell8.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFB45309' } };
     } else {
-      // Summary columns: Slate Blue
       cell7.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF334155' } };
       cell8.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF334155' } };
     }
@@ -371,9 +406,26 @@ export async function exportExecutiveMultiWeekExcel(
       }
     }
 
+    // Exam Proctoring Cells
+    visibleExamRounds.forEach((rk, rIdx) => {
+      const colIdx = 7 + weekCount + rIdx;
+      const cell = row.getCell(colIdx);
+      const examVal = roundPeriods(w.examProctoring?.[rk] || 0);
+      cell.value = examVal > 0 ? examVal : '—';
+      cell.alignment = { horizontal: 'center', vertical: 'middle' };
+      cell.border = thinBorder;
+      if (examVal > 0) {
+        cell.font = { name: 'Times New Roman', size: 10, bold: true, color: { argb: 'FF4338CA' } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEDE9FE' } };
+      } else {
+        cell.font = { name: 'Times New Roman', size: 10, color: { argb: 'FF94A3B8' } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
+      }
+    });
+
     // Summary Columns
     // Tổng Dạy
-    const c1 = row.getCell(7 + weekCount);
+    const c1 = row.getCell(summaryStartCol);
     c1.value = w.semesterTotalTeaching;
     c1.alignment = { horizontal: 'right', vertical: 'middle' };
     c1.font = { name: 'Times New Roman', size: 10, bold: true };
@@ -381,7 +433,7 @@ export async function exportExecutiveMultiWeekExcel(
     c1.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
 
     // Tổng KN Quy Đổi
-    const c2 = row.getCell(8 + weekCount);
+    const c2 = row.getCell(summaryStartCol + 1);
     c2.value = w.reductionPeriods * weekCount;
     c2.alignment = { horizontal: 'right', vertical: 'middle' };
     c2.font = { name: 'Times New Roman', size: 10 };
@@ -389,15 +441,15 @@ export async function exportExecutiveMultiWeekExcel(
     c2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
 
     // Tổng Quy Đổi
-    const c3 = row.getCell(9 + weekCount);
-    c3.value = w.semesterTotalPeriods;
+    const c3 = row.getCell(summaryStartCol + 2);
+    c3.value = roundPeriods(w.semesterTotalPeriods);
     c3.alignment = { horizontal: 'right', vertical: 'middle' };
     c3.font = { name: 'Times New Roman', size: 10, bold: true };
     c3.border = thinBorder;
     c3.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
 
     // Định Mức Cả Năm
-    const c4 = row.getCell(10 + weekCount);
+    const c4 = row.getCell(summaryStartCol + 3);
     c4.value = w.semesterRequiredPeriods;
     c4.alignment = { horizontal: 'right', vertical: 'middle' };
     c4.font = { name: 'Times New Roman', size: 10 };
@@ -405,8 +457,8 @@ export async function exportExecutiveMultiWeekExcel(
     c4.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
 
     // CÂN ĐỐI CẢ NĂM (THỪA / THIẾU)
-    const cBal = row.getCell(11 + weekCount);
-    const balance = w.semesterBalance;
+    const cBal = row.getCell(summaryStartCol + 4);
+    const balance = roundPeriods(w.semesterBalance);
     cBal.value = balance;
     cBal.alignment = { horizontal: 'center', vertical: 'middle' };
     cBal.border = thinBorder;
@@ -423,7 +475,7 @@ export async function exportExecutiveMultiWeekExcel(
     }
 
     // Đánh Giá / Phân Loại
-    const cEvalCell = row.getCell(12 + weekCount);
+    const cEvalCell = row.getCell(summaryStartCol + 5);
     let evalText = 'Đủ định mức';
     if (balance < -35) evalText = `Thiếu nhiều (${balance}t)`;
     else if (balance < 0) evalText = `Thiếu nhẹ (${balance}t)`;
@@ -481,24 +533,39 @@ export async function exportExecutiveMultiWeekExcel(
     };
   }
 
+  // Summary per exam round
+  visibleExamRounds.forEach((rk, rIdx) => {
+    const colIdx = 7 + weekCount + rIdx;
+    const sumExam = roundPeriods(workloads.reduce((sum, w) => sum + (w.examProctoring?.[rk] || 0), 0));
+    const cell = sumRow.getCell(colIdx);
+    cell.value = sumExam;
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.font = {
+      name: 'Times New Roman',
+      size: 10,
+      bold: true,
+      color: { argb: 'FF4338CA' },
+    };
+  });
+
   // Summary totals
-  const sumTeachCell = sumRow.getCell(7 + weekCount);
+  const sumTeachCell = sumRow.getCell(summaryStartCol);
   sumTeachCell.value = totalActualTeaching;
   sumTeachCell.alignment = { horizontal: 'right', vertical: 'middle' };
 
-  const sumReductCell = sumRow.getCell(8 + weekCount);
+  const sumReductCell = sumRow.getCell(summaryStartCol + 1);
   sumReductCell.value = totalReductionAll;
   sumReductCell.alignment = { horizontal: 'right', vertical: 'middle' };
 
-  const sumTotalCell = sumRow.getCell(9 + weekCount);
+  const sumTotalCell = sumRow.getCell(summaryStartCol + 2);
   sumTotalCell.value = totalConverted;
   sumTotalCell.alignment = { horizontal: 'right', vertical: 'middle' };
 
-  const sumReqCell = sumRow.getCell(10 + weekCount);
+  const sumReqCell = sumRow.getCell(summaryStartCol + 3);
   sumReqCell.value = totalRequired;
   sumReqCell.alignment = { horizontal: 'right', vertical: 'middle' };
 
-  const sumBalCell = sumRow.getCell(11 + weekCount);
+  const sumBalCell = sumRow.getCell(summaryStartCol + 4);
   sumBalCell.value = totalBalance;
   sumBalCell.alignment = { horizontal: 'center', vertical: 'middle' };
   sumBalCell.font = {
@@ -508,7 +575,7 @@ export async function exportExecutiveMultiWeekExcel(
     color: { argb: totalBalance < 0 ? 'FF991B1B' : totalBalance > 0 ? 'FF92400E' : 'FF065F46' },
   };
 
-  const sumEvalCell = sumRow.getCell(12 + weekCount);
+  const sumEvalCell = sumRow.getCell(summaryStartCol + 5);
   sumEvalCell.value = `${surplusCount} thừa / ${deficitCount} thiếu`;
   sumEvalCell.alignment = { horizontal: 'center', vertical: 'middle' };
   sumEvalCell.font = { name: 'Times New Roman', size: 9.5, bold: true };
@@ -518,7 +585,7 @@ export async function exportExecutiveMultiWeekExcel(
   // ==========================================
   // 6. EXECUTIVE ADMINISTRATIVE SIGNATURE BLOCK
   // ==========================================
-  const dateStr = `Đồng Tháp, ngày ${new Date().getDate()} tháng ${new Date().getMonth() + 1} năm ${new Date().getFullYear()}`;
+  const dateStr = `Đốc Binh Kiều, ngày ${new Date().getDate()} tháng ${new Date().getMonth() + 1} năm ${new Date().getFullYear()}`;
 
   // Date row (aligned right)
   const signDateColStart = Math.max(7 + weekCount, totalColumns - 6);
@@ -611,6 +678,7 @@ export async function exportExecutiveMultiWeekExcel(
     { width: 26 },  // 5: Kiêm nhiệm
     { width: 12 },  // 6: Định mức / tuần
     ...Array(weekCount).fill({ width: 5.5 }), // T1..T35
+    ...Array(examColCount).fill({ width: 9.5 }), // Coi KT GK1..CK2
     { width: 12 },  // Tổng Dạy
     { width: 12 },  // Tổng KN
     { width: 13 },  // Tổng Quy Đổi

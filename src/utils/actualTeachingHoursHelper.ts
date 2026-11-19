@@ -55,6 +55,11 @@ import {
   getDefaultOfficialDiaWeek11Map,
   loadOfficialGddpAiLocalOverride,
 } from '../data/officialGddpAiAssignments';
+import {
+  ExamProctoringPeriodsMap,
+  loadExamProctoringPeriods,
+  roundPeriods,
+} from './examProctoringPeriodsHelper';
 
 const STAFF_BY_ID_MAP = new Map<string, Teacher>(
   officialStaffList.map((t) => [t.id, t])
@@ -108,6 +113,16 @@ export interface TeacherActualWorkload {
   semesterTotalPeriods: number;
   semesterRequiredPeriods: number;
   semesterBalance: number;
+
+  // Exam proctoring periods breakdown (GK1, CK1, GK2, CK2)
+  examProctoring: {
+    gk1: number;
+    ck1: number;
+    gk2: number;
+    ck2: number;
+    total: number;
+    inRange: number;
+  };
 }
 
 const WHOLE_SCHOOL_ASSEMBLY_PERIODS: Record<string, number> = {
@@ -1699,10 +1714,12 @@ export function calculateAllActualWorkloads(
   totalWeeksInSemester: number = 18,
   manualAdjustments: Record<string, number> = {},
   startWeek: number = 1,
-  endWeek?: number
+  endWeek?: number,
+  examProctoringMap?: ExamProctoringPeriodsMap
 ): TeacherActualWorkload[] {
   const effectiveEndWeek = endWeek || (startWeek === 19 ? 35 : startWeek + totalWeeksInSemester - 1);
   const totalWeeksInThisSemester = effectiveEndWeek - startWeek + 1;
+  const activeProctoringMap = examProctoringMap ?? loadExamProctoringPeriods(config.academicYear);
 
   const classMap = new Map(classes.map((c) => [c.id, c]));
   const homeroomMap = new Map<string, ClassGroup>();
@@ -1821,12 +1838,34 @@ export function calculateAllActualWorkloads(
 
     // Apply manual adjustment (if any e.g. compensatory teaching, substitution)
     const extraAdjustment = manualAdjustments[teacher.id] || 0;
-    cumulativeBalanceToSelectedWeek += extraAdjustment;
+    cumulativeBalanceToSelectedWeek = roundPeriods(cumulativeBalanceToSelectedWeek + extraAdjustment);
 
-    const semesterRequiredPeriods =
-      weekData.standardPeriods * totalWeeksInThisSemester;
-    const semesterBalance =
-      semesterTotalPeriods - semesterRequiredPeriods + extraAdjustment;
+    // Apply exam proctoring periods (GK1, CK1, GK2, CK2)
+    const procRec = activeProctoringMap[teacher.id] || {};
+    const procGk1 = roundPeriods(Number(procRec.gk1) || 0);
+    const procCk1 = roundPeriods(Number(procRec.ck1) || 0);
+    const procGk2 = roundPeriods(Number(procRec.gk2) || 0);
+    const procCk2 = roundPeriods(Number(procRec.ck2) || 0);
+    const procTotal = roundPeriods(procGk1 + procCk1 + procGk2 + procCk2);
+
+    let examInRange = 0;
+    if (startWeek === 1 && effectiveEndWeek >= 35) {
+      examInRange = procTotal;
+    } else if (startWeek === 1 && effectiveEndWeek === 18) {
+      examInRange = roundPeriods(procGk1 + procCk1);
+    } else if (startWeek === 19 && effectiveEndWeek >= 35) {
+      examInRange = roundPeriods(procGk2 + procCk2);
+    }
+
+    semesterTotalTeaching = roundPeriods(semesterTotalTeaching);
+    semesterTotalPeriods = roundPeriods(semesterTotalPeriods + examInRange);
+
+    const semesterRequiredPeriods = roundPeriods(
+      weekData.standardPeriods * totalWeeksInThisSemester
+    );
+    const semesterBalance = roundPeriods(
+      semesterTotalPeriods - semesterRequiredPeriods + extraAdjustment
+    );
 
     results.push({
       teacherId: teacher.id,
@@ -1854,6 +1893,14 @@ export function calculateAllActualWorkloads(
       semesterTotalPeriods,
       semesterRequiredPeriods,
       semesterBalance,
+      examProctoring: {
+        gk1: procGk1,
+        ck1: procCk1,
+        gk2: procGk2,
+        ck2: procCk2,
+        total: procTotal,
+        inRange: examInRange,
+      },
     });
   }
 
