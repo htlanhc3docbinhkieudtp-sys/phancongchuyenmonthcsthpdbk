@@ -1,12 +1,33 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
+import { getFirestore, initializeFirestore, doc, getDocFromServer, type Firestore } from 'firebase/firestore';
 import firebaseConfig from '../firebase-applet-config.json';
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-/* CRITICAL: Must specify firestoreDatabaseId according to Firebase skill */
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+/* CRITICAL: Must specify firestoreDatabaseId according to Firebase skill.
+ * Use experimentalForceLongPolling in browser environments so proxies, firewalls,
+ * or iframe sandboxes do not buffer WebChannel streams and trigger 10s backend timeouts.
+ */
+function createFirestoreInstance(): Firestore {
+  const databaseId = firebaseConfig.firestoreDatabaseId;
+  if (typeof window === 'undefined') {
+    return getFirestore(app, databaseId);
+  }
+  try {
+    return initializeFirestore(
+      app,
+      {
+        experimentalForceLongPolling: true,
+      },
+      databaseId
+    );
+  } catch {
+    return getFirestore(app, databaseId);
+  }
+}
+
+export const db = createFirestoreInstance();
 export const auth = getAuth(app);
 
 export enum OperationType {
@@ -58,10 +79,17 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
 
 // Skill requirement: Validate connection to Firestore on initialization
 async function testConnection() {
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    return;
+  }
   try {
     await getDocFromServer(doc(db, 'test', 'connection'));
   } catch (error) {
-    if (error instanceof Error && error.message.includes('the client is offline')) {
+    if (
+      error instanceof Error &&
+      (error.message.includes('the client is offline') ||
+        error.message.includes('Could not reach Cloud Firestore backend'))
+    ) {
       console.warn('Firestore offline notice: Please check your network or Firebase configuration.');
     }
   }

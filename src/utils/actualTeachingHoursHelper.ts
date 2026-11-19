@@ -898,8 +898,50 @@ export function adjustOfficialDiaSlotsForWeek(
   teacherLookup: Map<string, Teacher>,
   diaMap: Record<string, string>
 ): TimetableSlot[] {
-  // Đổi Địa lí (Thầy Tuấn / Cô Đỉnh / Cô Lý) áp dụng từ Tuần 11 trở đi; Tuần 1..10 giữ nguyên gốc
+  // Tuần 1..10 giữ nguyên gốc; Tuần 11..12 TKB thực tế chưa đổi nên vẫn giữ phân công gốc (7A2-7A4: Cô Đỉnh, 9A2-9A4: Cô Lý).
   if (weekNumber < 11) return baseSlots;
+
+  if (weekNumber < 13) {
+    const dinh = teacherLookup.get('tch-ls-11');
+    const ly = teacherLookup.get('tch-ls-12');
+    return baseSlots.map((slot) => {
+      const subId = (slot.subjectId || '').toLowerCase();
+      const subName = (slot.subjectName || '').toLowerCase().trim();
+      if (
+        subName === 'lịch sử và địa lí' ||
+        subId === 'sub-lsdl' ||
+        subId === 'sub-lsdl-cs'
+      ) {
+        return slot;
+      }
+      const isDia =
+        subId === 'sub-dia' ||
+        subName === 'địa lí' ||
+        subName === 'địa lý';
+      if (!isDia) return slot;
+
+      const clsName = slot.className || '';
+      if (['7A2', '7A3', '7A4'].includes(clsName) && dinh && slot.teacherId !== dinh.id) {
+        return {
+          ...slot,
+          teacherId: dinh.id,
+          teacherName: dinh.name,
+          teacherCode: dinh.code || dinh.name,
+        };
+      }
+      if (['9A2', '9A3', '9A4'].includes(clsName) && ly && slot.teacherId !== ly.id) {
+        return {
+          ...slot,
+          teacherId: ly.id,
+          teacherName: ly.name,
+          teacherCode: ly.code || ly.name,
+        };
+      }
+      return slot;
+    });
+  }
+
+  // Đổi Địa lí (Thầy Tuấn / Cô Đỉnh / Cô Lý) chính thức áp dụng từ Tuần 13 trở đi (Tuần 13..35)
   if (!diaMap || Object.keys(diaMap).length === 0) return baseSlots;
 
   return baseSlots.map((slot) => {

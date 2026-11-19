@@ -627,7 +627,8 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       }
 
       // Từ Tuần 11 đến Tuần 35:
-      // 1. Điều chuyển Địa lí (Tuấn nhận 7A2-7A4 từ Đỉnh; Đỉnh nhận 9A2-9A4 từ Lý; Lý giảm 9A2-9A4)
+      // 1. Điều chuyển Địa lí (Tuấn nhận 7A2-7A4 từ Đỉnh; Đỉnh nhận 9A2-9A4 từ Lý; Lý giảm 9A2-9A4) áp dụng TỪ TUẦN 13
+      //    (Tuần 11 và Tuần 12 giữ nguyên phân công Địa lí gốc do TKB thực tế chưa đổi)
       const lsdlUpdated = sourceSlots
         .filter(
           (s) =>
@@ -641,7 +642,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
             s.subjectId === 'sub-dia' ||
             s.subjectName?.toLowerCase().includes('địa lí') ||
             s.subjectName?.toLowerCase().includes('địa lý');
-          if (!isDia) return s;
+          if (!isDia || w < 13) return s;
 
           if (['7A2', '7A3', '7A4'].includes(s.className || '') && tuan) {
             return {
@@ -703,6 +704,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   >(() => {
     try {
       [
+        'docbinhkieu_draft_sandbox_cloud_cache_v13',
         'docbinhkieu_draft_sandbox_v12_cloud_reconciled',
         'docbinhkieu_draft_sandbox_cloud_cache_v12',
         'docbinhkieu_draft_sandbox_clean_v10',
@@ -922,10 +924,10 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       const effectiveGddpMap = isGddpCurrentlyInDraft ? gddpCustomClassTeacherMap : {};
       const effectiveAiMap = isAiCurrentlyInDraft ? aiCustomClassTeacherMap : {};
 
-      // Extract active Week 11+ Geography (Địa lí) assignments from Draft Week 11
-      const draftW11Slots = draftWeeklyTimetables[11]?.slots || [];
+      // Extract active Week 13+ Geography (Địa lí) assignments from Draft Week 13
+      const draftW13DiaSlots = draftWeeklyTimetables[13]?.slots || draftWeeklyTimetables[11]?.slots || [];
       const diaWeek11Map: Record<string, string> = {};
-      draftW11Slots.forEach((s) => {
+      draftW13DiaSlots.forEach((s) => {
         const subId = (s.subjectId || '').toLowerCase();
         const subName = (s.subjectName || '').toLowerCase().trim();
         if (
@@ -959,7 +961,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
       setActionBannerMessage({
         type: 'success',
         title: 'Đã áp dụng chính thức phân công GDĐP, Trí tuệ AI & Địa lí sang tab Số Tiết Thực Dạy!',
-        detail: `Môn Giáo dục địa phương (T11–27: 2t/tuần, T28: 1t = 35t/lớp), môn Trí tuệ nhân tạo AI (T13–24: 1t/tuần = 12t/lớp) và chuyển đổi môn Địa lí từ Tuần 11 (Thầy Tuấn +7A2–7A4, Cô Đỉnh -7A2–7A4 +9A2–9A4, Cô Lý -9A2–9A4) đã được cập nhật chính thức vào bảng Số Tiết Thực Dạy${res.cloudSynced ? ' và đồng bộ lên Đám Mây Firestore.' : '.'}`,
+        detail: `Môn Giáo dục địa phương (T11–27: 2t/tuần, T28: 1t = 35t/lớp), môn Trí tuệ nhân tạo AI (T13–24: 1t/tuần = 12t/lớp) và chuyển đổi môn Địa lí từ Tuần 13 (Thầy Tuấn +7A2–7A4, Cô Đỉnh -7A2–7A4 +9A2–9A4, Cô Lý -9A2–9A4) đã được cập nhật chính thức vào bảng Số Tiết Thực Dạy${res.cloudSynced ? ' và đồng bộ lên Đám Mây Firestore.' : '.'}`,
       });
       if (onShowToast) {
         onShowToast('✓ Đã chuyển phân công GDĐP, Trí tuệ AI & Địa lí từ Dự thảo sang tab Số Tiết Thực Dạy!');
@@ -1029,9 +1031,9 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     detail: string;
   } | null>({
     type: 'success',
-    title: 'Đã Nạp Bản Dự Thảo Phân Công Chuyên Môn Từ Tuần 11 (Theo File Excel & Ghi Chú)',
+    title: 'Đã Nạp Bản Dự Thảo Phân Công Chuyên Môn (GDĐP T11+, AI & Đổi Địa Lí T13+)',
     detail:
-      'Bao gồm: (1) Đổi Địa lí từ Tuần 11: Thầy Tuấn nhận 7A2-7A4 từ Cô Đỉnh, Cô Đỉnh nhận 9A2-9A4 từ Cô Lý; (2) GDĐP 2t/tuần từ Tuần 11–27 & 1t Tuần 28 = đủ 35t; (3) AI 1t/tuần từ Tuần 13–24 = đủ 12t (riêng lớp 9A9 môn GDĐP giao Thầy Phạm Biên Thùy theo TKB Tuần 11).',
+      'Bao gồm: (1) Đổi Địa lí từ Tuần 13 (Tuần 11–12 giữ nguyên): Thầy Tuấn nhận 7A2-7A4 từ Cô Đỉnh, Cô Đỉnh nhận 9A2-9A4 từ Cô Lý; (2) GDĐP 2t/tuần từ Tuần 11–27 & 1t Tuần 28 = đủ 35t; (3) AI 1t/tuần từ Tuần 13–24 = đủ 12t (riêng lớp 9A9 môn GDĐP giao Thầy Phạm Biên Thùy theo TKB Tuần 11).',
   });
   const [showAnnualBreakdownTable, setShowAnnualBreakdownTable] = useState(false);
 
@@ -1144,15 +1146,17 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
   // CORE ENGINE: CALCULATE PRECISE DIFFERENCES (SLOT DIFFS & TEACHER DELTAS)
   // =========================================================================
   const { slotDifferences, teacherDeltas, totalSlotChangesCount, annualImpact } = useMemo(() => {
-    const currentDraftW11Slots =
+    const currentDraftW13Slots =
+      draftWeeklyTimetables[13]?.slots ||
       draftWeeklyTimetables[11]?.slots ||
       draftWeeklyTimetables[10]?.slots ||
       draftWeeklyTimetables[currentWeek]?.slots ||
       [];
 
-    // Compare Week 11 draft against official Week 11 (or Week 10 baseline) for direct teacher swaps (e.g. LSDL Địa lí)
+    // Compare Week 13 draft against official Week 13 (or Week 10 baseline) for direct teacher swaps (e.g. LSDL Địa lí từ Tuần 13)
     const officialW11Slots = getSlotsForWeek(11, weeklyTimetables, timetable, { teachers });
-    const baseSourceSlots = officialW11Slots.length > 0 ? officialW11Slots : baselineSlots;
+    const officialW13Slots = getSlotsForWeek(13, weeklyTimetables, timetable, { teachers });
+    const baseSourceSlots = officialW13Slots.length > 0 ? officialW13Slots : baselineSlots;
 
     const baselineMap = new Map<string, TimetableSlot>();
     baseSourceSlots.forEach((slot) => {
@@ -1164,7 +1168,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     const gainedMap = new Map<string, string[]>();
     const lostMap = new Map<string, string[]>();
 
-    currentDraftW11Slots.forEach((draftSlot) => {
+    currentDraftW13Slots.forEach((draftSlot) => {
       if (draftSlot.subjectId === 'sub-gddp' || draftSlot.subjectId === 'sub-ai') return;
       const key = `${draftSlot.classId || draftSlot.className}_${draftSlot.dayOfWeek}_${draftSlot.session}_${draftSlot.period}_${draftSlot.subjectId || draftSlot.subjectName}`;
       const base = baselineMap.get(key);
@@ -1174,7 +1178,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
           draftSlot.subjectId === 'sub-dia' ||
           draftSlot.subjectName?.toLowerCase().includes('địa');
         const cReason = isDiaSwap
-          ? `Điều chuyển Địa lí từ Tuần 11 (${base.teacherName} ➔ ${draftSlot.teacherName})`
+          ? `Điều chuyển Địa lí từ Tuần 13 (${base.teacherName} ➔ ${draftSlot.teacherName})`
           : CONSOLIDATION_19_CLASSES_MAP[draftSlot.className || '']?.roleReason;
         diffs.push({
           slotId: draftSlot.id,
@@ -1207,7 +1211,6 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
     });
 
     // Compare Draft AI slots (Tuần 13..24: 1t/tuần = 12t/năm) against Official Week 13 slots
-    const officialW13Slots = getSlotsForWeek(13, weeklyTimetables, timetable, { teachers });
     const baseAiByClass = new Map<string, TimetableSlot>();
     officialW13Slots.forEach((slot) => {
       if (slot.subjectId === 'sub-ai' || slot.subjectName?.toLowerCase().includes('trí tuệ')) {
@@ -1680,13 +1683,13 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
 
     setActionBannerMessage({
       type: 'success',
-      title: 'Đã nạp lại toàn bộ Dự thảo Tuần 11 (Theo file Excel + Ghi chú LSDL / GDĐP / AI)!',
+      title: 'Đã nạp lại toàn bộ Dự thảo (GDĐP T11+, AI & Đổi Địa lí T13+)!',
       detail:
-        'Tuần 11+: Địa lí 7A2-7A4 sang Thầy Tuấn, 9A2-9A4 sang Cô Đỉnh (Cô Lý giảm 9A2-9A4); GDĐP 2t/tuần T11-T27 & 1t T28 (= 35t); AI 1t/tuần T13-T24 (= 12t).',
+        'Tuần 1–12 giữ nguyên Địa lí gốc; từ Tuần 13+: Địa lí 7A2-7A4 sang Thầy Tuấn, 9A2-9A4 sang Cô Đỉnh (Cô Lý giảm 9A2-9A4); GDĐP 2t/tuần T11-T27 & 1t T28 (= 35t); AI 1t/tuần T13-T24 (= 12t).',
     });
 
     if (onShowToast) {
-      onShowToast('✓ Đã khôi phục Dự thảo Tuần 11 theo đúng bảng Excel và lưu Đám Mây!');
+      onShowToast('✓ Đã khôi phục Dự thảo theo đúng bảng Excel (Địa lí áp dụng từ Tuần 13) và lưu Đám Mây!');
     }
   };
 
@@ -2380,7 +2383,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
               Dự Thảo Phân Công Mới • Áp Dụng Từ Tuần 11 (Theo File Excel)
             </h2>
             <p className="text-xs text-purple-200/90 max-w-3xl leading-relaxed">
-              Bao gồm đổi Địa lí từ Tuần 11 (Thầy Tuấn +7A2-7A4, Cô Đỉnh -7A2-7A4 +9A2-9A4, Cô Lý -9A2-9A4), môn <b>GDĐP</b> (2t/tuần T11–T27, 1t T28 = 35t) và môn <b>AI</b> (1t/tuần T13–T24 = 12t). Đồng bộ Đám Mây Firestore ổn định trên mọi thiết bị.
+              Bao gồm đổi Địa lí từ <b>Tuần 13</b> (Tuần 11–12 giữ nguyên; Thầy Tuấn +7A2-7A4, Cô Đỉnh -7A2-7A4 +9A2-9A4, Cô Lý -9A2-9A4), môn <b>GDĐP</b> (2t/tuần T11–T27, 1t T28 = 35t) và môn <b>AI</b> (1t/tuần T13–T24 = 12t). Đồng bộ Đám Mây Firestore ổn định trên mọi thiết bị.
             </p>
           </div>
 
@@ -2505,7 +2508,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
               onClick={handlePublishGddpAiToOfficial}
               disabled={isPublishingOfficial}
               className="px-3.5 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-60"
-              title="Áp dụng phân công mới môn Giáo dục địa phương, Trí tuệ AI & Địa lí (Tuần 11+) từ Dự thảo sang tab Số Tiết Thực Dạy"
+              title="Áp dụng phân công mới môn Giáo dục địa phương (T11+), Trí tuệ AI (T13+) & Địa lí (T13+) từ Dự thảo sang tab Số Tiết Thực Dạy"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>{isPublishingOfficial ? 'Đang áp dụng...' : 'Áp Dụng GDĐP, AI & Địa Lí Sang Thực Dạy'}</span>
@@ -4249,7 +4252,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                           Tổng Thừa Thiếu Cả Năm Học Sau Khi Điều Chỉnh Dự Thảo (Tuần 11 ➔ Tuần 35)
                         </h4>
                         <p className="text-[11px] text-purple-200">
-                          Tuần 1–10 giữ nguyên 100% theo TKB chính thức. Từ Tuần 11 áp dụng đổi Địa lí + GDĐP (35t/lớp) và từ Tuần 13 áp dụng AI (12t/lớp).
+                          Tuần 1–10 giữ nguyên 100% theo TKB chính thức. Từ Tuần 11 áp dụng GDĐP (35t/lớp), và từ Tuần 13 áp dụng AI (12t/lớp) + đổi Địa lí (Thầy Tuấn / Cô Đỉnh / Cô Lý).
                         </p>
                       </div>
                     </div>
@@ -4277,7 +4280,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                         +{annualImpact.gainedTotalYear} tiết/năm
                       </div>
                       <p className="text-[11px] text-slate-300 leading-tight">
-                        Bao gồm phần bù tiết từ GDĐP (1.855t), AI (636t) và phần nhận thêm môn Địa lí (Thầy Tuấn, Cô Đỉnh).
+                        Bao gồm phần bù tiết từ GDĐP (1.855t), AI (636t) và phần nhận thêm môn Địa lí từ Tuần 13 (Thầy Tuấn, Cô Đỉnh).
                       </p>
                     </div>
 
@@ -4293,7 +4296,7 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
                         -{annualImpact.lostTotalYear} tiết/năm
                       </div>
                       <p className="text-[11px] text-slate-300 leading-tight">
-                        Cô Lý giảm 9A2-9A4 (-114t), Cô Đỉnh giảm 7A2-7A4 nhưng nhận lại 9A2-9A4 (chênh ròng -6t).
+                        Từ Tuần 13: Cô Lý giảm 9A2-9A4 (-108t), Cô Đỉnh giảm 7A2-7A4 và nhận lại 9A2-9A4 (chênh ròng -6t).
                       </p>
                     </div>
 
@@ -4785,12 +4788,12 @@ export const DraftAssignmentView: React.FC<DraftAssignmentViewProps> = ({
         classes={classes}
         subjects={subjects}
         weeklyTimetables={draftWeeklyTimetables}
-        currentWeek={11}
+        currentWeek={13}
         timetable={draftMasterTimetable}
         isAdmin={isAdmin}
         storageKeyPrefix={DRAFT_SANDBOX_ADJUSTMENT_PREFIX}
-        customTitle="Dự Thảo Phân Công Mới (Số Tiết Thực Dạy Từ Tuần 11)"
-        customDescription="Bảng tính thừa thiếu tiết cả năm (35 tuần) và từng tuần theo phân công mới áp dụng từ Tuần 11 (Đổi Địa lí Tuấn-Đỉnh-Lý, GDĐP 2t/w T11-27 & 1t T28 = 35t, AI 1t/w T13-24 = 12t). Tuần 1 đến 10 giữ nguyên số tiết thực dạy."
+        customTitle="Dự Thảo Phân Công Mới (GDĐP T11+, AI & Đổi Địa Lí T13+)"
+        customDescription="Bảng tính thừa thiếu tiết cả năm (35 tuần) và từng tuần theo phân công mới: GDĐP (2t/w T11-27 & 1t T28 = 35t), AI (1t/w T13-24 = 12t), và Đổi Địa lí Tuấn-Đỉnh-Lý áp dụng từ Tuần 13 (Tuần 1 đến 12 giữ nguyên Địa lí gốc)."
         defaultLevelScope="ALL"
         changedTeachersMap={changedTeachersMap}
       />

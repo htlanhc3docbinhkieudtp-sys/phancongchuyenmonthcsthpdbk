@@ -13,8 +13,8 @@ export const DRAFT_COLLECTION_NAME = 'draft_assignments';
 export const DRAFT_ACTIVE_DOC_ID = 'draft_active_plan';
 export const OFFICIAL_GDDP_AI_DOC_ID = 'official_gddp_ai_plan';
 export const DRAFT_WEEK_BATCHES_SUBCOLLECTION = 'week_batches';
-export const DRAFT_CLOUD_VERSION = 13;
-export const DRAFT_LOCAL_CACHE_KEY = 'docbinhkieu_draft_sandbox_cloud_cache_v13';
+export const DRAFT_CLOUD_VERSION = 14;
+export const DRAFT_LOCAL_CACHE_KEY = 'docbinhkieu_draft_sandbox_cloud_cache_v14';
 
 export interface KeptIndexRange {
   s: number;
@@ -464,7 +464,7 @@ export function reconstructDraftFromCloudPayload(
 }
 
 /**
- * Publish GDĐP, AI & Địa lí (Tuần 11+) class-teacher assignments from Draft Sandbox directly into Official "Số tiết thực dạy"
+ * Publish GDĐP (T11+), AI (T13+) & Địa lí (Tuần 13+) class-teacher assignments from Draft Sandbox directly into Official "Số tiết thực dạy"
  * Stores locally for instant recalculation and syncs cleanly to Cloud Firestore (~3 KB document).
  */
 export async function publishGddpAiToOfficialCloud(

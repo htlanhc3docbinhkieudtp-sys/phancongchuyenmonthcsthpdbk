@@ -231,10 +231,12 @@ export const OFFICIAL_AI_CLASS_ASSIGNMENTS: Record<string, OfficialSubjectClassA
 };
 
 // =========================================================================
-// CHUYỂN ĐỔI PHÂN CÔNG MÔN ĐỊA LÍ TỪ TUẦN 11 (THẦY TUẤN / CÔ ĐỈNH / CÔ LÝ)
-// - Thầy Ngô Anh Tuấn (tch-ls-7): nhận thêm 3 lớp 7A2, 7A3, 7A4 từ Cô Đỉnh
-// - Cô Nguyễn Thị Kim Đỉnh (tch-ls-11): giảm 7A2-7A4, nhận 9A2, 9A3, 9A4 từ Cô Lý
-// - Cô Nguyễn Thị Lý (tch-ls-12): giảm 9A2, 9A3, 9A4 (giữ lại 9A1)
+// CHUYỂN ĐỔI PHÂN CÔNG MÔN ĐỊA LÍ TỪ TUẦN 13 (THẦY TUẤN / CÔ ĐỈNH / CÔ LÝ)
+// - Tuần 1..12 giữ nguyên phân công gốc (TKB thực tế chưa đổi)
+// - Từ Tuần 13..35:
+//   + Thầy Ngô Anh Tuấn (tch-ls-7): nhận thêm 3 lớp 7A2, 7A3, 7A4 từ Cô Đỉnh
+//   + Cô Nguyễn Thị Kim Đỉnh (tch-ls-11): giảm 7A2-7A4, nhận 9A2, 9A3, 9A4 từ Cô Lý
+//   + Cô Nguyễn Thị Lý (tch-ls-12): giảm 9A2, 9A3, 9A4 (giữ lại 9A1)
 // =========================================================================
 export const OFFICIAL_LSDL_DIA_WEEK11_DEFAULT_OVERRIDES: Record<string, string> = {
   '7A2': 'tch-ls-7',

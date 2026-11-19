@@ -381,19 +381,36 @@ export async function exportTimetableGradeA4Excel(
 
   const usedSheetNames = new Set<string>();
 
-  const thinBorder: Partial<ExcelJS.Borders> = {
-    top: { style: 'thin', color: { argb: 'FF334155' } },
-    left: { style: 'thin', color: { argb: 'FF334155' } },
-    bottom: { style: 'thin', color: { argb: 'FF334155' } },
-    right: { style: 'thin', color: { argb: 'FF334155' } }
-  };
+  const mediumBoxColor = 'FF0F172A';
+  const thinGridColor = 'FF475569';
+  const dayDividerColor = 'FF1E3A8A';
 
-  const dayBottomBorder: Partial<ExcelJS.Borders> = {
-    top: { style: 'thin', color: { argb: 'FF334155' } },
-    left: { style: 'thin', color: { argb: 'FF334155' } },
-    bottom: { style: 'medium', color: { argb: 'FF0F172A' } },
-    right: { style: 'thin', color: { argb: 'FF334155' } }
-  };
+  const getDataCellBorder = (
+    col: number,
+    totalCols: number,
+    isLastRowOfDay: boolean,
+    isVeryLastRow: boolean
+  ): Partial<ExcelJS.Borders> => ({
+    top: { style: 'thin', color: { argb: thinGridColor } },
+    left: {
+      style: col === 1 ? 'medium' : 'thin',
+      color: { argb: col === 1 ? mediumBoxColor : thinGridColor }
+    },
+    right: {
+      style: col === totalCols ? 'medium' : 'thin',
+      color: { argb: col === totalCols ? mediumBoxColor : thinGridColor }
+    },
+    bottom: {
+      style: isLastRowOfDay ? 'medium' : 'thin',
+      color: {
+        argb: isVeryLastRow
+          ? mediumBoxColor
+          : isLastRowOfDay
+          ? dayDividerColor
+          : thinGridColor
+      }
+    }
+  });
 
   blocks.forEach(block => {
     let baseName =
@@ -418,15 +435,15 @@ export async function exportTimetableGradeA4Excel(
         horizontalCentered: true,
         verticalCentered: false,
         margins: {
-          left: 0.18,
-          right: 0.18,
-          top: 0.2,
-          bottom: 0.2,
-          header: 0.1,
-          footer: 0.1
+          left: 0.16,
+          right: 0.16,
+          top: 0.18,
+          bottom: 0.18,
+          header: 0.08,
+          footer: 0.08
         }
       },
-      views: [{ showGridLines: true }]
+      views: [{ showGridLines: false }]
     });
 
     const totalCols = 3 + block.classes.length;
@@ -447,25 +464,25 @@ export async function exportTimetableGradeA4Excel(
           ? 16.5
           : 14.5
         : classCount <= 4
-        ? 21
+        ? 21.5
         : classCount <= 6
-        ? 16
+        ? 16.5
         : classCount <= 8
-        ? 13
-        : 11;
+        ? 13.2
+        : 11.2;
 
-    ws.getColumn(1).width = 9;   // THỨ
-    ws.getColumn(2).width = 6.8; // BUỔI
-    ws.getColumn(3).width = 5;   // TIẾT
+    ws.getColumn(1).width = 9.2; // THỨ
+    ws.getColumn(2).width = 7.2; // BUỔI
+    ws.getColumn(3).width = 5.2; // TIẾT
     for (let i = 4; i <= totalCols; i++) {
       ws.getColumn(i).width = classColWidth;
     }
 
-    // Row 1: Agency & National Motto
+    // Row 1: Agency & National Motto (Decree 30/2020/NĐ-CP)
     ws.mergeCells(`A1:${leftAgencyEndLetter}1`);
     const cA1 = ws.getCell('A1');
     cA1.value = (config.subTitle || 'SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐỒNG THÁP').toUpperCase();
-    cA1.font = { name: 'Times New Roman', size: 10, bold: false, color: { argb: 'FF1E293B' } };
+    cA1.font = { name: 'Times New Roman', size: 10, bold: false, color: { argb: 'FF334155' } };
     cA1.alignment = { horizontal: 'center', vertical: 'middle' };
 
     ws.mergeCells(`${rightMottoStartLetter}1:${lastColLetter}1`);
@@ -479,7 +496,7 @@ export async function exportTimetableGradeA4Excel(
     ws.mergeCells(`A2:${leftAgencyEndLetter}2`);
     const cA2 = ws.getCell('A2');
     cA2.value = (config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU').toUpperCase();
-    cA2.font = { name: 'Times New Roman', size: 10.5, bold: true, color: { argb: 'FF1E3A8A' } };
+    cA2.font = { name: 'Times New Roman', size: 10.5, bold: true, underline: true, color: { argb: 'FF1E3A8A' } };
     cA2.alignment = { horizontal: 'center', vertical: 'middle' };
 
     ws.mergeCells(`${rightMottoStartLetter}2:${lastColLetter}2`);
@@ -487,29 +504,49 @@ export async function exportTimetableGradeA4Excel(
     cR2.value = 'Độc lập - Tự do - Hạnh phúc';
     cR2.font = { name: 'Times New Roman', size: 10.5, bold: true, underline: true, color: { argb: 'FF0F172A' } };
     cR2.alignment = { horizontal: 'center', vertical: 'middle' };
-    ws.getRow(2).height = 17;
+    ws.getRow(2).height = 18;
 
-    // Row 3: Title
+    // Row 3: Decorative Title Banner
     ws.mergeCells(`A3:${lastColLetter}3`);
     const cTitle = ws.getCell('A3');
     cTitle.value = `${block.title.toUpperCase()} — ${block.subtitle.toUpperCase()}`;
-    cTitle.font = { name: 'Times New Roman', size: 13, bold: true, color: { argb: 'FF0F172A' } };
+    cTitle.font = { name: 'Times New Roman', size: 13, bold: true, color: { argb: 'FF1E3A8A' } };
     cTitle.alignment = { horizontal: 'center', vertical: 'middle' };
-    ws.getRow(3).height = 22;
+    cTitle.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEEF2FF' } };
+    for (let col = 1; col <= totalCols; col++) {
+      ws.getRow(3).getCell(col).border = {
+        top: { style: 'medium', color: { argb: 'FF1E3A8A' } },
+        bottom: { style: 'thin', color: { argb: 'FFC7D2FE' } },
+        left: col === 1 ? { style: 'medium', color: { argb: 'FF1E3A8A' } } : undefined,
+        right: col === totalCols ? { style: 'medium', color: { argb: 'FF1E3A8A' } } : undefined
+      };
+    }
+    ws.getRow(3).height = 24;
 
-    // Row 4: Week & Date Range
+    // Row 4: Week & Academic Year Sub-banner
     ws.mergeCells(`A4:${lastColLetter}4`);
     const cSub = ws.getCell('A4');
     cSub.value = `Tuần ${currentWeek} (Từ ngày ${weekInfo.startDateShort} đến ngày ${weekInfo.endDateShort}) • Năm học ${config.academicYear || '2026 - 2027'} • Áp dụng từ Thứ Hai, ${weekInfo.startDateShort}`;
-    cSub.font = { name: 'Times New Roman', size: 9.5, italic: true, bold: true, color: { argb: 'FF334155' } };
+    cSub.font = { name: 'Times New Roman', size: 9.5, italic: true, bold: true, color: { argb: 'FF1E293B' } };
     cSub.alignment = { horizontal: 'center', vertical: 'middle' };
-    ws.getRow(4).height = 16;
+    cSub.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+    for (let col = 1; col <= totalCols; col++) {
+      ws.getRow(4).getCell(col).border = {
+        bottom: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+        left: col === 1 ? { style: 'medium', color: { argb: 'FF1E3A8A' } } : undefined,
+        right: col === totalCols ? { style: 'medium', color: { argb: 'FF1E3A8A' } } : undefined
+      };
+    }
+    ws.getRow(4).height = 17;
 
-    // Row 5 & 6: Table Headers (THỨ | BUỔI | TIẾT | Classes + GVCN)
+    // Row 5: Clean slim breathing spacer before table
+    ws.getRow(5).height = 5;
+
+    // Row 6 & 7: Table Headers (THỨ | BUỔI | TIẾT | Classes + GVCN)
     const headerRow1Values = ['THỨ', 'BUỔI', 'TIẾT', ...block.classes.map(c => c.name)];
-    const rHeader1 = ws.getRow(5);
+    const rHeader1 = ws.getRow(6);
     rHeader1.values = headerRow1Values;
-    rHeader1.height = 20;
+    rHeader1.height = 21;
 
     const headerRow2Values = [
       '',
@@ -522,71 +559,93 @@ export async function exportTimetableGradeA4Excel(
           : '-';
       })
     ];
-    const rHeader2 = ws.getRow(6);
+    const rHeader2 = ws.getRow(7);
     rHeader2.values = headerRow2Values;
-    rHeader2.height = 17;
+    rHeader2.height = 18;
 
-    ws.mergeCells('A5:A6');
-    ws.mergeCells('B5:B6');
-    ws.mergeCells('C5:C6');
+    ws.mergeCells('A6:A7');
+    ws.mergeCells('B6:B7');
+    ws.mergeCells('C6:C7');
 
     for (let col = 1; col <= totalCols; col++) {
       const cell1 = rHeader1.getCell(col);
       cell1.font = {
         name: 'Times New Roman',
-        size: col <= 3 ? 9.5 : 10.5,
+        size: col <= 3 ? 9.5 : 11,
         bold: true,
-        color: { argb: col <= 3 ? 'FF0F172A' : 'FF1E1B4B' }
+        color: { argb: 'FFFFFFFF' }
       };
       cell1.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
       cell1.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: col <= 3 ? 'FFE2E8F0' : 'FFF1F5F9' }
+        fgColor: { argb: col <= 3 ? 'FF1E293B' : 'FF1E3A8A' }
       };
-      cell1.border = thinBorder;
+      cell1.border = {
+        top: { style: 'medium', color: { argb: mediumBoxColor } },
+        left: {
+          style: col === 1 ? 'medium' : 'thin',
+          color: { argb: col === 1 ? mediumBoxColor : 'FF94A3B8' }
+        },
+        right: {
+          style: col === totalCols ? 'medium' : 'thin',
+          color: { argb: col === totalCols ? mediumBoxColor : 'FF94A3B8' }
+        },
+        bottom: { style: 'thin', color: { argb: 'FF94A3B8' } }
+      };
 
       const cell2 = rHeader2.getCell(col);
-      cell2.font = {
-        name: 'Times New Roman',
-        size: 8.5,
-        italic: true,
-        bold: col <= 3,
-        color: { argb: 'FF334155' }
-      };
-      cell2.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
-      cell2.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: col <= 3 ? 'FFE2E8F0' : 'FFF8FAFC' }
-      };
+      if (col > 3) {
+        cell2.font = {
+          name: 'Times New Roman',
+          size: 8.5,
+          italic: true,
+          bold: true,
+          color: { argb: 'FF1E3A8A' }
+        };
+        cell2.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+        cell2.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFDBEAFE' }
+        };
+      }
       cell2.border = {
-        ...thinBorder,
-        bottom: { style: 'medium', color: { argb: 'FF0F172A' } }
+        top: col <= 3 ? undefined : { style: 'thin', color: { argb: 'FF93C5FD' } },
+        left: {
+          style: col === 1 ? 'medium' : 'thin',
+          color: { argb: col === 1 ? mediumBoxColor : thinGridColor }
+        },
+        right: {
+          style: col === totalCols ? 'medium' : 'thin',
+          color: { argb: col === totalCols ? mediumBoxColor : thinGridColor }
+        },
+        bottom: { style: 'medium', color: { argb: mediumBoxColor } }
       };
     }
 
     // Data Rows - calculate row heights to fill full A4 Portrait page height down to bottom signature
     const scheduleRows = buildScheduleRowsForBlock(block, slotMap, sessionMode);
     const totalDataRows = Math.max(1, scheduleRows.length);
-    const totalColUnits = 9 + 6.8 + 5 + classCount * classColWidth;
+    const totalColUnits = 9.2 + 7.2 + 5.2 + classCount * classColWidth;
     const estScaleX = orientation === 'portrait' ? Math.min(1, 105 / totalColUnits) : 1;
-    const targetPortraitPt = orientation === 'portrait' ? 810 / estScaleX : 540;
-    const targetDataPt = Math.max(400, targetPortraitPt - 205);
+    const targetPortraitPt = orientation === 'portrait' ? 812 / estScaleX : 540;
+    const targetDataPt = Math.max(400, targetPortraitPt - 210);
     const dynamicRowHeight = Math.round((targetDataPt / totalDataRows) * 10) / 10;
-    const minRowHeight = compactOneLine ? 16 : 20;
+    const minRowHeight = compactOneLine ? 16.5 : 21;
     const baseDataRowHeight = Math.max(minRowHeight, dynamicRowHeight);
 
-    const subjectFontSize = classCount >= 8 ? 8 : totalDataRows > 45 ? 8.5 : 9;
+    const subjectFontSize = classCount >= 8 ? 8 : totalDataRows > 45 ? 8.5 : 9.2;
     const teacherFontSize = classCount >= 8 ? 7 : totalDataRows > 45 ? 7.5 : 8;
 
-    let currentRowIdx = 7;
+    let currentRowIdx = 8;
 
     scheduleRows.forEach((rowMeta, idx) => {
       const row = ws.getRow(currentRowIdx);
       row.height = baseDataRowHeight;
-
-      const rowFillColor = rowMeta.dayValue % 2 === 1 ? 'FFF8FAFC' : 'FFFFFFFF';
+      const isVeryLastRow = idx === scheduleRows.length - 1;
+      const isOddDay = rowMeta.dayValue % 2 === 1;
+      const rowFillColor = isOddDay ? 'FFF8FAFC' : 'FFFFFFFF';
 
       // Day cell (merged when showDayCell)
       const cDay = row.getCell(1);
@@ -595,8 +654,12 @@ export async function exportTimetableGradeA4Excel(
       }
       cDay.font = { name: 'Times New Roman', size: 9.5, bold: true, color: { argb: 'FF0F172A' } };
       cDay.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
-      cDay.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF1F5F9' } };
-      cDay.border = rowMeta.isLastRowOfDay ? dayBottomBorder : thinBorder;
+      cDay.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: isOddDay ? 'FFF1F5F9' : 'FFE2E8F0' }
+      };
+      cDay.border = getDataCellBorder(1, totalCols, rowMeta.isLastRowOfDay, isVeryLastRow);
 
       // Session cell (merged when showSessionCell)
       const cSess = row.getCell(2);
@@ -607,52 +670,72 @@ export async function exportTimetableGradeA4Excel(
         name: 'Times New Roman',
         size: 8.5,
         bold: true,
-        color: { argb: rowMeta.session === 'SANG' ? 'FF312E81' : 'FF92400E' }
+        color: { argb: rowMeta.session === 'SANG' ? 'FF1E3A8A' : 'FF92400E' }
       };
       cSess.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
       cSess.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: rowMeta.session === 'SANG' ? 'FFEEF2FF' : 'FFFFFBEB' }
+        fgColor: { argb: rowMeta.session === 'SANG' ? 'FFE0E7FF' : 'FFFEF3C7' }
       };
-      cSess.border = rowMeta.isLastRowOfDay ? dayBottomBorder : thinBorder;
+      cSess.border = getDataCellBorder(2, totalCols, rowMeta.isLastRowOfDay, isVeryLastRow);
 
       // Period cell
       const cPeriod = row.getCell(3);
       cPeriod.value = rowMeta.period;
-      cPeriod.font = { name: 'Times New Roman', size: 9, bold: true, color: { argb: 'FF334155' } };
+      cPeriod.font = { name: 'Times New Roman', size: 9, bold: true, color: { argb: 'FF1E293B' } };
       cPeriod.alignment = { horizontal: 'center', vertical: 'middle' };
       cPeriod.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowFillColor } };
-      cPeriod.border = rowMeta.isLastRowOfDay ? dayBottomBorder : thinBorder;
+      cPeriod.border = getDataCellBorder(3, totalCols, rowMeta.isLastRowOfDay, isVeryLastRow);
 
       // Class cells
       block.classes.forEach((cls, clsIdx) => {
-        const cell = row.getCell(4 + clsIdx);
+        const colIdx = 4 + clsIdx;
+        const cell = row.getCell(colIdx);
         const slot =
           slotMap.get(`${cls.id}_${rowMeta.dayValue}_${rowMeta.session}_${rowMeta.period}`) ||
           slotMap.get(`${cls.name}_${rowMeta.dayValue}_${rowMeta.session}_${rowMeta.period}`);
 
-        cell.border = rowMeta.isLastRowOfDay ? dayBottomBorder : thinBorder;
+        cell.border = getDataCellBorder(colIdx, totalCols, rowMeta.isLastRowOfDay, isVeryLastRow);
         cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
 
         if (!slot || !slot.subjectName) {
           cell.value = '-';
-          cell.font = { name: 'Times New Roman', size: 8, color: { argb: 'FF94A3B8' } };
+          cell.font = { name: 'Times New Roman', size: 8, color: { argb: 'FFCBD5E1' } };
           cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowFillColor } };
           return;
         }
 
         const subName = getUnifiedSubjectName(slot);
         const teacherName = resolveCleanTeacherName(slot, teacherMap, teachers);
+        const subLower = subName.toLowerCase();
         const isSpecial =
           slot.isSpecialActivity ||
-          subName.includes('Chào cờ') ||
-          subName.includes('Sinh hoạt');
+          subLower.includes('chào cờ') ||
+          subLower.includes('sinh hoạt');
+        const isGddp = subLower.includes('địa phương') || subLower.includes('gdđp');
+        const isAi = subLower.includes('trí tuệ');
+
+        const cellBg = isSpecial
+          ? 'FFFEF08A'
+          : isGddp
+          ? 'FFECFEFF'
+          : isAi
+          ? 'FFF5F3FF'
+          : rowFillColor;
+
+        const subColor = isSpecial
+          ? 'FF78350F'
+          : isGddp
+          ? 'FF0F766E'
+          : isAi
+          ? 'FF5B21B6'
+          : 'FF0F172A';
 
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
-          fgColor: { argb: isSpecial ? 'FFFEF3C7' : rowFillColor }
+          fgColor: { argb: cellBg }
         };
 
         if (compactOneLine) {
@@ -661,7 +744,7 @@ export async function exportTimetableGradeA4Excel(
             name: 'Times New Roman',
             size: subjectFontSize,
             bold: isSpecial,
-            color: { argb: 'FF0F172A' }
+            color: { argb: subColor }
           };
         } else if (teacherName) {
           cell.value = {
@@ -672,7 +755,7 @@ export async function exportTimetableGradeA4Excel(
                   name: 'Times New Roman',
                   size: subjectFontSize,
                   bold: true,
-                  color: { argb: 'FF0F172A' }
+                  color: { argb: subColor }
                 }
               },
               {
@@ -681,7 +764,7 @@ export async function exportTimetableGradeA4Excel(
                   name: 'Times New Roman',
                   size: teacherFontSize,
                   italic: true,
-                  color: { argb: 'FF334155' }
+                  color: { argb: isSpecial ? 'FF92400E' : 'FF334155' }
                 }
               }
             ]
@@ -692,7 +775,7 @@ export async function exportTimetableGradeA4Excel(
             name: 'Times New Roman',
             size: subjectFontSize,
             bold: true,
-            color: { argb: 'FF0F172A' }
+            color: { argb: subColor }
           };
         }
       });
@@ -709,17 +792,25 @@ export async function exportTimetableGradeA4Excel(
     });
 
     // Blank spacer row
-    ws.getRow(currentRowIdx).height = 6;
+    ws.getRow(currentRowIdx).height = 7;
     currentRowIdx++;
 
-    // Signature block at bottom right
+    // Signature block at bottom right (plus subtle footer note at bottom left)
     const sigSpanCols = totalCols >= 6 ? 3 : 2;
     const sigStartCol = Math.max(1, totalCols - sigSpanCols + 1);
     const sigStartLetter = getExcelColLetter(sigStartCol);
+    const noteEndLetter = getExcelColLetter(Math.max(1, sigStartCol - 1));
 
     const now = new Date();
     const rDate = ws.getRow(currentRowIdx++);
-    rDate.height = 15;
+    rDate.height = 16;
+    if (sigStartCol > 1) {
+      ws.mergeCells(`A${rDate.number}:${noteEndLetter}${rDate.number}`);
+      const cNote = ws.getCell(`A${rDate.number}`);
+      cNote.value = `Ghi chú: Chữ ký hành chính niêm yết bảng thông báo ${block.campusName}.`;
+      cNote.font = { name: 'Times New Roman', size: 8.5, italic: true, color: { argb: 'FF64748B' } };
+      cNote.alignment = { horizontal: 'left', vertical: 'middle' };
+    }
     ws.mergeCells(`${sigStartLetter}${rDate.number}:${lastColLetter}${rDate.number}`);
     const cDate = ws.getCell(`${sigStartLetter}${rDate.number}`);
     cDate.value = `${locationName}, ngày ${now.getDate()} tháng ${now.getMonth() + 1} năm ${now.getFullYear()}`;
@@ -727,7 +818,6 @@ export async function exportTimetableGradeA4Excel(
     cDate.alignment = { horizontal: 'center', vertical: 'middle' };
 
     const rRole = ws.getRow(currentRowIdx++);
-    rRole.height = 16;
     ws.mergeCells(`${sigStartLetter}${rRole.number}:${lastColLetter}${rRole.number}`);
     const cRole = ws.getCell(`${sigStartLetter}${rRole.number}`);
     cRole.value = 'KT. HIỆU TRƯỞNG\nPHÓ HIỆU TRƯỞNG';
@@ -736,14 +826,14 @@ export async function exportTimetableGradeA4Excel(
     rRole.height = 28;
 
     const rSignGap = ws.getRow(currentRowIdx++);
-    rSignGap.height = 28;
+    rSignGap.height = 30;
 
     const rSigner = ws.getRow(currentRowIdx++);
-    rSigner.height = 17;
+    rSigner.height = 18;
     ws.mergeCells(`${sigStartLetter}${rSigner.number}:${lastColLetter}${rSigner.number}`);
     const cSigner = ws.getCell(`${sigStartLetter}${rSigner.number}`);
     cSigner.value = creatorName || config.vicePrincipalName || 'Nguyễn Minh Trí';
-    cSigner.font = { name: 'Times New Roman', size: 10.5, bold: true, color: { argb: 'FF0F172A' } };
+    cSigner.font = { name: 'Times New Roman', size: 10.5, bold: true, color: { argb: 'FF1E3A8A' } };
     cSigner.alignment = { horizontal: 'center', vertical: 'middle' };
 
     // Explicitly define print area up to the signature block

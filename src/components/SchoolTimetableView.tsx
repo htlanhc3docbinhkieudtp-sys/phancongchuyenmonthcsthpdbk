@@ -21,6 +21,7 @@ import {
   GradeCampusFilter,
   GradeGroupingMode
 } from '../utils/timetableGradeA4ExportHelper';
+import { exportTimetableClassesA4Excel } from '../utils/timetableClassA4ExportHelper';
 import {
   Search,
   Filter,
@@ -63,6 +64,7 @@ import { TeacherCollisionModal, TeacherCollisionDetail } from './TeacherCollisio
 import { TimetableBackupModal } from './TimetableBackupModal';
 import { TimetableQualityAuditModal } from './TimetableQualityAuditModal';
 import { AdministrativeTimetablePdfModal } from './AdministrativeTimetablePdfModal';
+import { AdministrativeClassTimetableModal } from './AdministrativeClassTimetableModal';
 
 type CampusFilter = 'ALL' | 'THPT' | 'DBK' | 'TK';
 type ViewMode = 'MASTER_GRID' | 'BY_CLASS' | 'BY_TEACHER';
@@ -138,6 +140,11 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   const [pdfModalGrade, setPdfModalGrade] = useState<string>('ALL');
   const [pdfModalGrouping, setPdfModalGrouping] = useState<GradeGroupingMode>('BY_CAMPUS_GRADE');
   const [isExportingGradeExcel, setIsExportingGradeExcel] = useState(false);
+  const [isClassPdfModalOpen, setIsClassPdfModalOpen] = useState(false);
+  const [classPdfModalCampus, setClassPdfModalCampus] = useState<GradeCampusFilter>('ALL');
+  const [classPdfModalGrade, setClassPdfModalGrade] = useState<string>('ALL');
+  const [classPdfModalClassId, setClassPdfModalClassId] = useState<string>('ALL');
+  const [isExportingClassExcel, setIsExportingClassExcel] = useState(false);
 
 
   // Selected single class for focused view in BY_CLASS
@@ -583,12 +590,65 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
     }
   };
 
+  const handleOpenClassA4PrintModal = (
+    campus: GradeCampusFilter = 'ALL',
+    grade: string = 'ALL',
+    classId: string = 'ALL'
+  ) => {
+    if (!isAdmin) {
+      onPromptAdminLogin?.();
+      return;
+    }
+    setClassPdfModalCampus(campus);
+    setClassPdfModalGrade(grade);
+    setClassPdfModalClassId(classId);
+    setIsClassPdfModalOpen(true);
+  };
+
+  const handleDirectExportClassA4Excel = async (
+    campus: GradeCampusFilter = 'ALL',
+    grade: string = 'ALL',
+    classId: string = 'ALL'
+  ) => {
+    if (!isAdmin) {
+      onPromptAdminLogin?.();
+      return;
+    }
+    try {
+      setIsExportingClassExcel(true);
+      const res = await exportTimetableClassesA4Excel({
+        isAdmin,
+        config,
+        classes,
+        teachers,
+        timetable,
+        currentWeek,
+        campusFilter: campus,
+        gradeFilter: grade,
+        classIdFilter: classId,
+        sessionMode: 'SMART_A4',
+        showTeacherName: true,
+        locationName: 'Đốc Binh Kiều'
+      });
+      onShowToast?.(
+        `Đã xuất Excel TKB cho ${res.exportedSheetCount} lớp (${res.exportedSheetCount} sheet chuẩn A4): ${res.fileName}`
+      );
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Không thể xuất file Excel 53 lớp.';
+      onShowToast?.(msg);
+    } finally {
+      setIsExportingClassExcel(false);
+    }
+  };
+
+  const isAnyAdminPrintModalOpen = isAdmin && (isPdfModalOpen || isClassPdfModalOpen);
+
   return (
-    <div className={`space-y-4 w-full ${isPdfModalOpen && isAdmin ? 'print:space-y-0' : ''}`}>
+    <div className={`space-y-4 w-full ${isAnyAdminPrintModalOpen ? 'print:space-y-0' : ''}`}>
       {/* 1. Header Banner */}
-      <div className={`w-full px-2 sm:px-4 lg:px-6 pt-3 ${isPdfModalOpen && isAdmin ? 'print:hidden' : ''}`}>
+      <div className={`w-full px-2 sm:px-4 lg:px-6 pt-3 ${isAnyAdminPrintModalOpen ? 'print:hidden' : ''}`}>
         {/* Formal Vietnamese School Header for Print / PDF */}
-        <div className={`${isPdfModalOpen && isAdmin ? 'hidden' : 'hidden print:block'} text-center pb-3 border-b border-slate-300 mb-3`}>
+        <div className={`${isAnyAdminPrintModalOpen ? 'hidden' : 'hidden print:block'} text-center pb-3 border-b border-slate-300 mb-3`}>
           <div className="flex justify-between items-start text-xs uppercase font-bold text-slate-800 mb-1">
             <div className="text-left">
               <div className="text-[11px] text-slate-600">{config.subTitle || 'SỞ GD&ĐT TỈNH ĐỒNG THÁP'}</div>
@@ -652,6 +712,27 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
               >
                 <FileSpreadsheet className="w-3.5 h-3.5" />
                 <span>{isExportingGradeExcel ? 'Đang xuất A4...' : 'Xuất Excel Theo Khối (A4)'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleOpenClassA4PrintModal(selectedCampus, selectedGrade, selectedClassId)}
+                className="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
+                title="Chỉ Quản trị viên: In hoặc xuất PDF Thời khóa biểu riêng từng lớp (53 lớp - mỗi lớp 1 trang A4 đứng)"
+              >
+                <Printer className="w-4 h-4 text-amber-100" />
+                <span>In / PDF Cho Lớp (53 Lớp)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleDirectExportClassA4Excel(selectedCampus, selectedGrade, selectedClassId)}
+                disabled={isExportingClassExcel}
+                className="px-3.5 py-2 bg-teal-700 hover:bg-teal-800 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
+                title="Chỉ Quản trị viên: Xuất file Excel gồm 53 sheet (mỗi lớp 1 sheet chuẩn A4 đứng)"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5" />
+                <span>{isExportingClassExcel ? 'Đang xuất 53 lớp...' : 'Xuất Excel 53 Lớp (A4)'}</span>
               </button>
 
               <button
@@ -1312,7 +1393,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
       </div>
 
       {/* 3. Main Views */}
-      <div className={`w-full px-2 sm:px-4 lg:px-6 space-y-6 ${isPdfModalOpen && isAdmin ? 'print:hidden' : ''}`}>
+      <div className={`w-full px-2 sm:px-4 lg:px-6 space-y-6 ${isAnyAdminPrintModalOpen ? 'print:hidden' : ''}`}>
         {/* Empty Week Information Banner (Tuần để trống theo yêu cầu) */}
         {currentWeek > 1 && (!timetable.slots || timetable.slots.length === 0) && (
           <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 sm:p-5 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -1366,6 +1447,42 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         {/* VIEW 1: BY_CLASS (Thời Khóa Biểu Từng Lớp Học) */}
         {viewMode === 'BY_CLASS' && (
           <div className="space-y-6">
+            {isAdmin && filteredClasses.length > 0 && (
+              <div className="bg-gradient-to-r from-amber-50 via-white to-teal-50 border border-amber-200 rounded-2xl p-3.5 sm:p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 print:hidden">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 bg-amber-600 text-white rounded-xl shadow-xs shrink-0">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs sm:text-sm font-black text-slate-900">
+                      Xuất Thời Khóa Biểu Riêng Từng Lớp (Chuẩn A4 Đứng — Chỉ Quản trị viên)
+                    </div>
+                    <div className="text-[11px] text-slate-600">
+                      Mỗi lớp 1 trang A4 / 1 sheet riêng biệt để phát GVCN hoặc dán cửa lớp ({filteredClasses.length} lớp đang hiển thị)
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenClassA4PrintModal(selectedCampus, selectedGrade, selectedClassId)}
+                    className="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white text-xs font-black rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                  >
+                    <Printer className="w-4 h-4" />
+                    <span>In / PDF Các Lớp Đang Lọc ({filteredClasses.length} trang A4)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDirectExportClassA4Excel(selectedCampus, selectedGrade, selectedClassId)}
+                    disabled={isExportingClassExcel}
+                    className="px-3.5 py-2 bg-teal-700 hover:bg-teal-800 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                  >
+                    <FileSpreadsheet className="w-4 h-4" />
+                    <span>{isExportingClassExcel ? 'Đang xuất Excel...' : `Xuất Excel Các Lớp Đang Lọc (${filteredClasses.length} lớp)`}</span>
+                  </button>
+                </div>
+              </div>
+            )}
             {filteredClasses.length === 0 ? (
               <div className="bg-white rounded-2xl p-12 text-center border border-slate-200 text-slate-500">
                 <GraduationCap className="w-12 h-12 mx-auto text-slate-300 mb-2" />
@@ -1412,6 +1529,29 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                           Tuần {currentWeek} ({weekInfo.startDateShort} - {weekInfo.endDateShort})
                         </span>
                         <span>Năm học {config.academicYear || '2026 - 2027'}</span>
+                        {isAdmin && (
+                          <div className="flex items-center gap-1.5 ml-0 sm:ml-2 print:hidden">
+                            <button
+                              type="button"
+                              onClick={() => handleOpenClassA4PrintModal('ALL', 'ALL', cls.id)}
+                              className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-black rounded-lg shadow-xs transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap"
+                              title={`In / xuất PDF A4 riêng lớp ${cls.name}`}
+                            >
+                              <Printer className="w-3 h-3" />
+                              <span>In A4</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDirectExportClassA4Excel('ALL', 'ALL', cls.id)}
+                              disabled={isExportingClassExcel}
+                              className="px-2.5 py-1 bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white text-[11px] font-bold rounded-lg shadow-xs transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap"
+                              title={`Xuất file Excel A4 riêng lớp ${cls.name}`}
+                            >
+                              <FileSpreadsheet className="w-3 h-3" />
+                              <span>Excel</span>
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -2671,6 +2811,23 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         initialCampus={pdfModalCampus}
         initialGrade={pdfModalGrade}
         initialGroupingMode={pdfModalGrouping}
+        initialSession="SMART_A4"
+        isAdmin={isAdmin}
+        onShowToast={onShowToast}
+      />
+
+      {/* Administrative 53-Class Timetable PDF Export & Print Modal (Admin Only) */}
+      <AdministrativeClassTimetableModal
+        isOpen={isClassPdfModalOpen && isAdmin}
+        onClose={() => setIsClassPdfModalOpen(false)}
+        config={config}
+        classes={classes}
+        teachers={teachers}
+        timetable={timetable}
+        currentWeek={currentWeek}
+        initialCampus={classPdfModalCampus}
+        initialGrade={classPdfModalGrade}
+        initialClassId={classPdfModalClassId}
         initialSession="SMART_A4"
         isAdmin={isAdmin}
         onShowToast={onShowToast}
