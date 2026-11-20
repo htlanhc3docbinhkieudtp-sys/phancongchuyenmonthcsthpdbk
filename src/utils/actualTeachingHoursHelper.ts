@@ -17,6 +17,7 @@ import { OFFICIAL_WEEK_8_SLOTS } from '../data/officialWeek8Timetable';
 import { OFFICIAL_WEEK_9_SLOTS } from '../data/officialWeek9Timetable';
 import { OFFICIAL_WEEK_10_SLOTS } from '../data/officialWeek10Timetable';
 import { OFFICIAL_WEEK_11_SLOTS } from '../data/officialWeek11Timetable';
+import { OFFICIAL_WEEK_12_SLOTS } from '../data/officialWeek12Timetable';
 import {
   KHTN_8_WEEKS,
   KHTN_9_WEEKS,
@@ -1004,6 +1005,8 @@ export function getSlotsForWeek(
   let usedFallback = false;
   if (weeklyTimetables && weeklyTimetables[weekNumber]?.slots?.length > 0) {
     baseSlots = weeklyTimetables[weekNumber].slots;
+  } else if (weekNumber === 12 && OFFICIAL_WEEK_12_SLOTS?.length > 0) {
+    baseSlots = OFFICIAL_WEEK_12_SLOTS;
   } else if (weekNumber === 11 && OFFICIAL_WEEK_11_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_11_SLOTS;
   } else if (weekNumber === 10 && OFFICIAL_WEEK_10_SLOTS?.length > 0) {
@@ -1012,6 +1015,9 @@ export function getSlotsForWeek(
     baseSlots = OFFICIAL_WEEK_9_SLOTS;
   } else if (weekNumber === 8 && OFFICIAL_WEEK_8_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_8_SLOTS;
+  } else if (weekNumber >= 12 && OFFICIAL_WEEK_12_SLOTS?.length > 0) {
+    baseSlots = OFFICIAL_WEEK_12_SLOTS;
+    usedFallback = true;
   } else if (weekNumber >= 11 && OFFICIAL_WEEK_11_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_11_SLOTS;
     usedFallback = true;
@@ -1052,6 +1058,9 @@ export function getSlotsForWeek(
     usedFallback = true;
   } else if (fallbackTimetable?.slots?.length > 0) {
     baseSlots = fallbackTimetable.slots;
+    usedFallback = true;
+  } else if (OFFICIAL_WEEK_12_SLOTS?.length > 0) {
+    baseSlots = OFFICIAL_WEEK_12_SLOTS;
     usedFallback = true;
   } else if (OFFICIAL_WEEK_11_SLOTS?.length > 0) {
     baseSlots = OFFICIAL_WEEK_11_SLOTS;
