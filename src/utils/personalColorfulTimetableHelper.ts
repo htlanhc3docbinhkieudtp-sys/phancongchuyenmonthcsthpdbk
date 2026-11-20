@@ -17,7 +17,64 @@ import {
 } from './timetableGradeA4ExportHelper';
 
 export type PersonalPdfTargetType = 'TEACHER' | 'CLASS';
-export type PersonalColorIntensity = 'RAINBOW' | 'PASTEL';
+export type PersonalColorIntensity = 'SOFT' | 'ACCENT' | 'MINIMAL';
+export type HeaderColorPresetId = 'BLUE' | 'TEAL' | 'INDIGO';
+
+export interface HeaderColorPreset {
+  id: HeaderColorPresetId;
+  label: string;
+  bannerBg: string;
+  bannerBorder: string;
+  badgeBg: string;
+  badgeText: string;
+  tableHeaderBg: string;
+  tableHeaderText: string;
+  infoBarBg: string;
+  infoBarBorder: string;
+  footerAccent: string;
+}
+
+export const HEADER_COLOR_PRESETS: Record<HeaderColorPresetId, HeaderColorPreset> = {
+  BLUE: {
+    id: 'BLUE',
+    label: 'Xanh Dương',
+    bannerBg: '#1E40AF',
+    bannerBorder: '#1D4ED8',
+    badgeBg: '#DBEAFE',
+    badgeText: '#1E3A8A',
+    tableHeaderBg: '#2563EB',
+    tableHeaderText: '#FFFFFF',
+    infoBarBg: '#F8FAFC',
+    infoBarBorder: '#CBD5E1',
+    footerAccent: '#1D4ED8'
+  },
+  TEAL: {
+    id: 'TEAL',
+    label: 'Xanh Ngọc',
+    bannerBg: '#0F766E',
+    bannerBorder: '#0D9488',
+    badgeBg: '#CCFBF1',
+    badgeText: '#134E4A',
+    tableHeaderBg: '#0D9488',
+    tableHeaderText: '#FFFFFF',
+    infoBarBg: '#F8FAFC',
+    infoBarBorder: '#CBD5E1',
+    footerAccent: '#0F766E'
+  },
+  INDIGO: {
+    id: 'INDIGO',
+    label: 'Chàm Thanh Lịch',
+    bannerBg: '#3730A3',
+    bannerBorder: '#4338CA',
+    badgeBg: '#E0E7FF',
+    badgeText: '#312E81',
+    tableHeaderBg: '#4338CA',
+    tableHeaderText: '#FFFFFF',
+    infoBarBg: '#F8FAFC',
+    infoBarBorder: '#CBD5E1',
+    footerAccent: '#4338CA'
+  }
+};
 
 export interface SubjectColorTheme {
   id: string;
@@ -31,325 +88,144 @@ export interface SubjectColorTheme {
   pillText: string;
 }
 
-export interface DayRainbowTheme {
-  dayValue: number;
-  headerBg: string;
-  headerGradient: string;
-  headerText: string;
-  accentHex: string;
-  colTint: string;
-}
-
-export const DAY_RAINBOW_THEMES: Record<number, DayRainbowTheme> = {
-  2: {
-    dayValue: 2,
-    headerBg: '#2563EB',
-    headerGradient: 'linear-gradient(135deg, #2563EB 0%, #38BDF8 100%)',
-    headerText: '#FFFFFF',
-    accentHex: '#2563EB',
-    colTint: '#F8FBFF'
-  },
-  3: {
-    dayValue: 3,
-    headerBg: '#059669',
-    headerGradient: 'linear-gradient(135deg, #059669 0%, #34D399 100%)',
-    headerText: '#FFFFFF',
-    accentHex: '#059669',
-    colTint: '#F6FEF9'
-  },
-  4: {
-    dayValue: 4,
-    headerBg: '#7C3AED',
-    headerGradient: 'linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)',
-    headerText: '#FFFFFF',
-    accentHex: '#7C3AED',
-    colTint: '#FAF7FF'
-  },
-  5: {
-    dayValue: 5,
-    headerBg: '#EA580C',
-    headerGradient: 'linear-gradient(135deg, #EA580C 0%, #FB923C 100%)',
-    headerText: '#FFFFFF',
-    accentHex: '#EA580C',
-    colTint: '#FFF9F4'
-  },
-  6: {
-    dayValue: 6,
-    headerBg: '#E11D48',
-    headerGradient: 'linear-gradient(135deg, #E11D48 0%, #FB7185 100%)',
-    headerText: '#FFFFFF',
-    accentHex: '#E11D48',
-    colTint: '#FFF7F9'
-  },
-  7: {
-    dayValue: 7,
-    headerBg: '#0D9488',
-    headerGradient: 'linear-gradient(135deg, #0D9488 0%, #2DD4BF 100%)',
-    headerText: '#FFFFFF',
-    accentHex: '#0D9488',
-    colTint: '#F4FEFC'
-  }
-};
-
+// Calm, airy, tasteful pastel palette (low saturation, high readability, clean print)
 export const VIVID_MULTI_PALETTE: SubjectColorTheme[] = [
   {
     id: 'sky',
-    bg: '#DFF2FE',
-    bgSoft: '#F0F9FF',
-    border: '#38BDF8',
-    accent: '#0284C7',
-    titleColor: '#0369A1',
-    subColor: '#0C4A6E',
-    pillBg: '#BAE6FD',
-    pillText: '#075985'
+    bg: '#EFF6FF',
+    bgSoft: '#F8FAFC',
+    border: '#BFDBFE',
+    accent: '#3B82F6',
+    titleColor: '#1E40AF',
+    subColor: '#475569',
+    pillBg: '#DBEAFE',
+    pillText: '#1E40AF'
   },
   {
     id: 'rose',
-    bg: '#FFE4EA',
-    bgSoft: '#FFF1F3',
-    border: '#FB7185',
-    accent: '#E11D48',
-    titleColor: '#BE123C',
-    subColor: '#881337',
-    pillBg: '#FECDD3',
+    bg: '#FFF1F2',
+    bgSoft: '#FFF5F6',
+    border: '#FECDD3',
+    accent: '#F43F5E',
+    titleColor: '#9F1239',
+    subColor: '#475569',
+    pillBg: '#FFE4E6',
     pillText: '#9F1239'
   },
   {
     id: 'violet',
-    bg: '#EFE7FF',
-    bgSoft: '#F7F3FF',
-    border: '#A78BFA',
-    accent: '#7C3AED',
-    titleColor: '#6D28D9',
-    subColor: '#4C1D95',
-    pillBg: '#DDD6FE',
+    bg: '#F5F3FF',
+    bgSoft: '#FAF8FF',
+    border: '#DDD6FE',
+    accent: '#8B5CF6',
+    titleColor: '#5B21B6',
+    subColor: '#475569',
+    pillBg: '#EDE9FE',
     pillText: '#5B21B6'
   },
   {
     id: 'emerald',
-    bg: '#D7FCE4',
-    bgSoft: '#ECFDF5',
-    border: '#34D399',
-    accent: '#059669',
-    titleColor: '#047857',
-    subColor: '#064E3B',
-    pillBg: '#A7F3D0',
+    bg: '#ECFDF5',
+    bgSoft: '#F3FEF9',
+    border: '#A7F3D0',
+    accent: '#10B981',
+    titleColor: '#065F46',
+    subColor: '#475569',
+    pillBg: '#D1FAE5',
     pillText: '#065F46'
   },
   {
     id: 'amber',
-    bg: '#FEF0C7',
-    bgSoft: '#FFFBEB',
-    border: '#FBBF24',
-    accent: '#D97706',
-    titleColor: '#B45309',
-    subColor: '#78350F',
-    pillBg: '#FDE68A',
+    bg: '#FFFBEB',
+    bgSoft: '#FEFCE8',
+    border: '#FDE68A',
+    accent: '#F59E0B',
+    titleColor: '#92400E',
+    subColor: '#475569',
+    pillBg: '#FEF3C7',
     pillText: '#92400E'
   },
   {
     id: 'orange',
-    bg: '#FFE8D6',
-    bgSoft: '#FFF7ED',
-    border: '#FB923C',
-    accent: '#EA580C',
-    titleColor: '#C2410C',
-    subColor: '#7C2D12',
-    pillBg: '#FED7AA',
+    bg: '#FFF7ED',
+    bgSoft: '#FFFAF5',
+    border: '#FED7AA',
+    accent: '#F97316',
+    titleColor: '#9A3412',
+    subColor: '#475569',
+    pillBg: '#FFEDD5',
     pillText: '#9A3412'
   },
   {
     id: 'teal',
-    bg: '#CEFBF4',
-    bgSoft: '#F0FDFA',
-    border: '#2DD4BF',
-    accent: '#0D9488',
-    titleColor: '#0F766E',
-    subColor: '#134E4A',
-    pillBg: '#99F6E4',
+    bg: '#F0FDFA',
+    bgSoft: '#F6FEFD',
+    border: '#99F6E4',
+    accent: '#14B8A6',
+    titleColor: '#115E59',
+    subColor: '#475569',
+    pillBg: '#CCFBF1',
     pillText: '#115E59'
   },
   {
-    id: 'fuchsia',
-    bg: '#FCE4FF',
-    bgSoft: '#FDF4FF',
-    border: '#E879F9',
-    accent: '#C026D3',
-    titleColor: '#A21CAF',
-    subColor: '#701A75',
-    pillBg: '#F5D0FE',
-    pillText: '#86198F'
-  },
-  {
     id: 'indigo',
-    bg: '#E0E7FF',
-    bgSoft: '#EEF2FF',
-    border: '#818CF8',
-    accent: '#4F46E5',
-    titleColor: '#4338CA',
-    subColor: '#312E81',
-    pillBg: '#C7D2FE',
+    bg: '#EEF2FF',
+    bgSoft: '#F5F7FF',
+    border: '#C7D2FE',
+    accent: '#6366F1',
+    titleColor: '#3730A3',
+    subColor: '#475569',
+    pillBg: '#E0E7FF',
     pillText: '#3730A3'
   },
   {
-    id: 'lime',
-    bg: '#E9FCCB',
-    bgSoft: '#F7FEE7',
-    border: '#A3E635',
-    accent: '#65A30D',
-    titleColor: '#4D7C0F',
-    subColor: '#365314',
-    pillBg: '#D9F99D',
-    pillText: '#3F6212'
-  },
-  {
     id: 'cyan',
-    bg: '#CFFAFE',
-    bgSoft: '#ECFEFF',
-    border: '#22D3EE',
-    accent: '#0891B2',
-    titleColor: '#0E7490',
-    subColor: '#164E63',
-    pillBg: '#A5F3FC',
+    bg: '#ECFEFF',
+    bgSoft: '#F4FEFF',
+    border: '#A5F3FC',
+    accent: '#06B6D4',
+    titleColor: '#155E75',
+    subColor: '#475569',
+    pillBg: '#CFFAFE',
     pillText: '#155E75'
   },
   {
-    id: 'pink',
-    bg: '#FCE7F3',
-    bgSoft: '#FDF2F8',
-    border: '#F472B6',
-    accent: '#DB2777',
-    titleColor: '#BE185D',
-    subColor: '#831843',
-    pillBg: '#FBCFE8',
-    pillText: '#9D174D'
+    id: 'slate-blue',
+    bg: '#F1F5F9',
+    bgSoft: '#F8FAFC',
+    border: '#CBD5E1',
+    accent: '#64748B',
+    titleColor: '#1E293B',
+    subColor: '#475569',
+    pillBg: '#E2E8F0',
+    pillText: '#1E293B'
   }
 ];
 
 const SUBJECT_COLOR_BY_ID: Record<string, SubjectColorTheme> = {
-  'sub-toan': VIVID_MULTI_PALETTE[0],       // Sky
-  'sub-van': VIVID_MULTI_PALETTE[1],        // Rose
-  'sub-anh': VIVID_MULTI_PALETTE[2],        // Violet
-  'sub-li': VIVID_MULTI_PALETTE[8],         // Indigo
-  'sub-hoa': VIVID_MULTI_PALETTE[6],        // Teal
-  'sub-sinh': VIVID_MULTI_PALETTE[3],       // Emerald
-  'sub-khtn-cs': VIVID_MULTI_PALETTE[10],   // Cyan
-  'sub-su': VIVID_MULTI_PALETTE[4],         // Amber
-  'sub-dia': VIVID_MULTI_PALETTE[5],        // Orange
-  'sub-lsdl-cs': {
-    id: 'gold',
-    bg: '#FEF9C3',
-    bgSoft: '#FEFCE8',
-    border: '#FACC15',
-    accent: '#CA8A04',
-    titleColor: '#A16207',
-    subColor: '#713F12',
-    pillBg: '#FEF08A',
-    pillText: '#854D0E'
-  },
-  'sub-gdcd': VIVID_MULTI_PALETTE[7],       // Fuchsia
-  'sub-gdktpl': VIVID_MULTI_PALETTE[7],     // Fuchsia
-  'sub-tin': {
-    id: 'cobalt',
-    bg: '#DBEAFE',
-    bgSoft: '#EFF6FF',
-    border: '#60A5FA',
-    accent: '#2563EB',
-    titleColor: '#1D4ED8',
-    subColor: '#1E3A8A',
-    pillBg: '#BFDBFE',
-    pillText: '#1E40AF'
-  },
-  'sub-cn': VIVID_MULTI_PALETTE[9],         // Lime
-  'sub-gdtc': {
-    id: 'coral-red',
-    bg: '#FEE2E2',
-    bgSoft: '#FEF2F2',
-    border: '#F87171',
-    accent: '#DC2626',
-    titleColor: '#B91C1C',
-    subColor: '#7F1D1D',
-    pillBg: '#FECACA',
-    pillText: '#991B1B'
-  },
-  'sub-qpan': {
-    id: 'forest',
-    bg: '#D1FAE5',
-    bgSoft: '#ECFDF5',
-    border: '#10B981',
-    accent: '#047857',
-    titleColor: '#065F46',
-    subColor: '#064E3B',
-    pillBg: '#A7F3D0',
-    pillText: '#065F46'
-  },
-  'sub-am-nhac': VIVID_MULTI_PALETTE[11],   // Pink
-  'sub-my-thuat': {
-    id: 'watermelon',
-    bg: '#FFE4E6',
-    bgSoft: '#FFF1F2',
-    border: '#FB7185',
-    accent: '#F43F5E',
-    titleColor: '#E11D48',
-    subColor: '#881337',
-    pillBg: '#FECDD3',
-    pillText: '#9F1239'
-  },
-  'sub-gddp': {
-    id: 'turquoise',
-    bg: '#D5F7FF',
-    bgSoft: '#ECFEFF',
-    border: '#06B6D4',
-    accent: '#0891B2',
-    titleColor: '#0E7490',
-    subColor: '#164E63',
-    pillBg: '#A5F3FC',
-    pillText: '#155E75'
-  },
-  'sub-hdtn-cd': {
-    id: 'lavender',
-    bg: '#EDE9FE',
-    bgSoft: '#F5F3FF',
-    border: '#A78BFA',
-    accent: '#7C3AED',
-    titleColor: '#5B21B6',
-    subColor: '#4C1D95',
-    pillBg: '#DDD6FE',
-    pillText: '#5B21B6'
-  },
-  'sub-chao-co': {
-    id: 'festival-gold',
-    bg: '#FEF08A',
-    bgSoft: '#FEF9C3',
-    border: '#EF4444',
-    accent: '#DC2626',
-    titleColor: '#B91C1C',
-    subColor: '#991B1B',
-    pillBg: '#FDE047',
-    pillText: '#991B1B'
-  },
-  'sub-shl': {
-    id: 'mint-jade',
-    bg: '#CCFBF1',
-    bgSoft: '#F0FDFA',
-    border: '#14B8A6',
-    accent: '#0D9488',
-    titleColor: '#0F766E',
-    subColor: '#115E59',
-    pillBg: '#99F6E4',
-    pillText: '#115E59'
-  },
-  'sub-ai': {
-    id: 'electric-ai',
-    bg: '#E0E7FF',
-    bgSoft: '#EEF2FF',
-    border: '#0EA5E9',
-    accent: '#0284C7',
-    titleColor: '#0369A1',
-    subColor: '#1E3A8A',
-    pillBg: '#BAE6FD',
-    pillText: '#075985'
-  }
+  'sub-toan': VIVID_MULTI_PALETTE[0],     // Soft Sky
+  'sub-van': VIVID_MULTI_PALETTE[1],      // Soft Rose
+  'sub-anh': VIVID_MULTI_PALETTE[2],      // Soft Violet
+  'sub-li': VIVID_MULTI_PALETTE[7],       // Soft Indigo
+  'sub-hoa': VIVID_MULTI_PALETTE[6],      // Soft Teal
+  'sub-sinh': VIVID_MULTI_PALETTE[3],     // Soft Emerald
+  'sub-khtn-cs': VIVID_MULTI_PALETTE[8],  // Soft Cyan
+  'sub-su': VIVID_MULTI_PALETTE[4],       // Soft Amber
+  'sub-dia': VIVID_MULTI_PALETTE[5],      // Soft Orange
+  'sub-lsdl-cs': VIVID_MULTI_PALETTE[4],  // Soft Amber
+  'sub-gdcd': VIVID_MULTI_PALETTE[2],     // Soft Violet
+  'sub-gdktpl': VIVID_MULTI_PALETTE[2],   // Soft Violet
+  'sub-tin': VIVID_MULTI_PALETTE[0],      // Soft Sky
+  'sub-cn': VIVID_MULTI_PALETTE[3],       // Soft Emerald
+  'sub-gdtc': VIVID_MULTI_PALETTE[5],     // Soft Orange
+  'sub-qpan': VIVID_MULTI_PALETTE[6],     // Soft Teal
+  'sub-am-nhac': VIVID_MULTI_PALETTE[1],  // Soft Rose
+  'sub-my-thuat': VIVID_MULTI_PALETTE[1], // Soft Rose
+  'sub-gddp': VIVID_MULTI_PALETTE[8],     // Soft Cyan
+  'sub-hdtn-cd': VIVID_MULTI_PALETTE[7],  // Soft Indigo
+  'sub-chao-co': VIVID_MULTI_PALETTE[4],  // Soft Amber
+  'sub-shl': VIVID_MULTI_PALETTE[6],      // Soft Teal
+  'sub-ai': VIVID_MULTI_PALETTE[0]        // Soft Sky
 };
 
 function hashString(input: string): number {
@@ -504,7 +380,6 @@ function getTeacherCampusTuple(
     };
   }
 
-  // Fallback by taught slots
   for (const s of teacherSlots) {
     const cls = classMap.get(s.classId);
     if (cls?.campus === 'THCSTK') {
@@ -715,7 +590,6 @@ export function buildTeacherScheduleRows(
     sessions.push({ session: 'SANG', periods: [...PERIODS] });
     sessions.push({ session: 'CHIEU', periods: [...PERIODS] });
   } else {
-    // SMART_A4: full 5 periods of primary session + active periods in secondary session (or full if both rich)
     const sangActive = PERIODS.filter(p => hasSlotAt('SANG', p));
     const chieuActive = PERIODS.filter(p => hasSlotAt('CHIEU', p));
 
