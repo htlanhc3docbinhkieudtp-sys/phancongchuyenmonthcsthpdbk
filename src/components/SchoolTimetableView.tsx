@@ -5,9 +5,11 @@ import {
   ClassGroup,
   Subject,
   Teacher,
+  Department,
   SchoolConfig,
   Assignment
 } from '../types';
+import { initialDepartments } from '../data/initialData';
 import {
   DAYS_OF_WEEK,
   PERIODS,
@@ -56,7 +58,8 @@ import {
   ArrowRightLeft,
   Trash2,
   Scale,
-  Info
+  Info,
+  Palette
 } from 'lucide-react';
 import { TimetableImportModal } from './TimetableImportModal';
 import { CopyTimetableModal } from './CopyTimetableModal';
@@ -65,6 +68,8 @@ import { TimetableBackupModal } from './TimetableBackupModal';
 import { TimetableQualityAuditModal } from './TimetableQualityAuditModal';
 import { AdministrativeTimetablePdfModal } from './AdministrativeTimetablePdfModal';
 import { AdministrativeClassTimetableModal } from './AdministrativeClassTimetableModal';
+import { PersonalColorfulTimetableModal } from './PersonalColorfulTimetableModal';
+import { PersonalPdfTargetType } from '../utils/personalColorfulTimetableHelper';
 
 type CampusFilter = 'ALL' | 'THPT' | 'DBK' | 'TK';
 type ViewMode = 'MASTER_GRID' | 'BY_CLASS' | 'BY_TEACHER';
@@ -75,6 +80,7 @@ interface SchoolTimetableViewProps {
   classes: ClassGroup[];
   subjects: Subject[];
   teachers: Teacher[];
+  departments?: Department[];
   assignments: Assignment[];
   timetable: SchoolTimetable;
   currentWeek?: number;
@@ -104,6 +110,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   classes,
   subjects,
   teachers,
+  departments = initialDepartments,
   assignments,
   timetable,
   currentWeek = 1,
@@ -145,6 +152,12 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
   const [classPdfModalGrade, setClassPdfModalGrade] = useState<string>('ALL');
   const [classPdfModalClassId, setClassPdfModalClassId] = useState<string>('ALL');
   const [isExportingClassExcel, setIsExportingClassExcel] = useState(false);
+  const [isPersonalPdfModalOpen, setIsPersonalPdfModalOpen] = useState(false);
+  const [personalPdfTargetType, setPersonalPdfTargetType] = useState<PersonalPdfTargetType>('TEACHER');
+  const [personalPdfCampus, setPersonalPdfCampus] = useState<GradeCampusFilter>('ALL');
+  const [personalPdfGrade, setPersonalPdfGrade] = useState<string>('ALL');
+  const [personalPdfClassId, setPersonalPdfClassId] = useState<string>('ALL');
+  const [personalPdfTeacherId, setPersonalPdfTeacherId] = useState<string>('ALL');
 
 
   // Selected single class for focused view in BY_CLASS
@@ -605,6 +618,25 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
     setIsClassPdfModalOpen(true);
   };
 
+  const handleOpenPersonalColorfulPdfModal = (
+    targetType: PersonalPdfTargetType = 'TEACHER',
+    campus: GradeCampusFilter = 'ALL',
+    grade: string = 'ALL',
+    classId: string = 'ALL',
+    teacherId: string = 'ALL'
+  ) => {
+    if (!isAdmin) {
+      onPromptAdminLogin?.();
+      return;
+    }
+    setPersonalPdfTargetType(targetType);
+    setPersonalPdfCampus(campus);
+    setPersonalPdfGrade(grade);
+    setPersonalPdfClassId(classId);
+    setPersonalPdfTeacherId(teacherId);
+    setIsPersonalPdfModalOpen(true);
+  };
+
   const handleDirectExportClassA4Excel = async (
     campus: GradeCampusFilter = 'ALL',
     grade: string = 'ALL',
@@ -641,7 +673,7 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
     }
   };
 
-  const isAnyAdminPrintModalOpen = isAdmin && (isPdfModalOpen || isClassPdfModalOpen);
+  const isAnyAdminPrintModalOpen = isAdmin && (isPdfModalOpen || isClassPdfModalOpen || isPersonalPdfModalOpen);
 
   return (
     <div className={`space-y-4 w-full ${isAnyAdminPrintModalOpen ? 'print:space-y-0' : ''}`}>
@@ -733,6 +765,24 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
               >
                 <FileSpreadsheet className="w-3.5 h-3.5" />
                 <span>{isExportingClassExcel ? 'Đang xuất 53 lớp...' : 'Xuất Excel 53 Lớp (A4)'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  handleOpenPersonalColorfulPdfModal(
+                    viewMode === 'BY_CLASS' ? 'CLASS' : 'TEACHER',
+                    selectedCampus,
+                    selectedGrade,
+                    viewMode === 'BY_CLASS' ? selectedClassId : 'ALL',
+                    viewMode === 'BY_TEACHER' ? selectedTeacherId : 'ALL'
+                  )
+                }
+                className="px-3.5 py-2 bg-gradient-to-r from-fuchsia-600 via-pink-600 to-amber-500 hover:from-fuchsia-700 hover:to-amber-600 active:scale-95 text-white text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
+                title="Chỉ Quản trị viên: Xuất PDF TKB nhiều màu tươi sáng gửi cá nhân cho từng Lớp hoặc từng Giáo viên"
+              >
+                <Palette className="w-4 h-4 text-amber-100" />
+                <span>PDF Màu Đẹp (Lớp & GV)</span>
               </button>
 
               <button
@@ -1465,11 +1515,28 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                 <div className="flex flex-wrap items-center gap-2 shrink-0">
                   <button
                     type="button"
+                    onClick={() =>
+                      handleOpenPersonalColorfulPdfModal(
+                        'CLASS',
+                        selectedCampus,
+                        selectedGrade,
+                        selectedClassId,
+                        'ALL'
+                      )
+                    }
+                    className="px-3.5 py-2 bg-gradient-to-r from-fuchsia-600 to-amber-500 hover:from-fuchsia-700 hover:to-amber-600 active:scale-95 text-white text-xs font-black rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                    title="Xuất PDF TKB bản phối màu cầu vồng tươi sáng để gửi riêng cho lớp"
+                  >
+                    <Palette className="w-4 h-4" />
+                    <span>PDF Màu Tươi Sáng ({filteredClasses.length} Lớp)</span>
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => handleOpenClassA4PrintModal(selectedCampus, selectedGrade, selectedClassId)}
                     className="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white text-xs font-black rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
                   >
                     <Printer className="w-4 h-4" />
-                    <span>In / PDF Các Lớp Đang Lọc ({filteredClasses.length} trang A4)</span>
+                    <span>In / PDF Hành Chính ({filteredClasses.length} trang A4)</span>
                   </button>
                   <button
                     type="button"
@@ -1531,6 +1598,15 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                         <span>Năm học {config.academicYear || '2026 - 2027'}</span>
                         {isAdmin && (
                           <div className="flex items-center gap-1.5 ml-0 sm:ml-2 print:hidden">
+                            <button
+                              type="button"
+                              onClick={() => handleOpenPersonalColorfulPdfModal('CLASS', 'ALL', 'ALL', cls.id, 'ALL')}
+                              className="px-2.5 py-1 bg-gradient-to-r from-fuchsia-600 to-amber-500 hover:from-fuchsia-700 hover:to-amber-600 text-white text-[11px] font-black rounded-lg shadow-xs transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap"
+                              title={`Xuất PDF bản màu tươi sáng gửi riêng lớp ${cls.name}`}
+                            >
+                              <Palette className="w-3 h-3" />
+                              <span>PDF Màu</span>
+                            </button>
                             <button
                               type="button"
                               onClick={() => handleOpenClassA4PrintModal('ALL', 'ALL', cls.id)}
@@ -1751,6 +1827,41 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         {/* VIEW 2: BY_TEACHER (Thời Khóa Biểu Từng Giáo Viên) */}
         {viewMode === 'BY_TEACHER' && (
           <div className="space-y-6">
+            {isAdmin && filteredTeachers.length > 0 && (
+              <div className="bg-gradient-to-r from-violet-50 via-pink-50 to-amber-50 border border-violet-200 rounded-2xl p-3.5 sm:p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 print:hidden">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 bg-gradient-to-br from-violet-600 to-rose-500 text-white rounded-xl shadow-xs shrink-0">
+                    <Palette className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs sm:text-sm font-black text-slate-900">
+                      Xuất PDF Thời Khóa Biểu Từng Giáo Viên (Bản Màu Tươi Sáng — Chỉ Quản trị viên)
+                    </div>
+                    <div className="text-[11px] text-slate-600">
+                      Mỗi thầy/cô 1 trang A4 đứng phối màu cầu vồng theo môn & lớp giảng dạy để gửi Zalo/Email ({filteredTeachers.length} GV đang hiển thị)
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleOpenPersonalColorfulPdfModal(
+                        'TEACHER',
+                        selectedCampus,
+                        'ALL',
+                        'ALL',
+                        selectedTeacherId
+                      )
+                    }
+                    className="px-3.5 py-2 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-amber-500 hover:from-violet-700 hover:to-amber-600 active:scale-95 text-white text-xs font-black rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                  >
+                    <Palette className="w-4 h-4" />
+                    <span>Xuất PDF Màu Các GV ({filteredTeachers.length} GV)</span>
+                  </button>
+                </div>
+              </div>
+            )}
             {filterOnlyConflicts && (
               <div className="p-3.5 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-amber-950 shadow-2xs animate-in fade-in">
                 <div className="flex items-center gap-2.5">
@@ -1849,15 +1960,28 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
                           Định mức: {teacher.baseStandardPeriods}t
                         </span>
                         {isAdmin && (
-                          <button
-                            type="button"
-                            onClick={() => setIsQualityModalOpen(true)}
-                            className="px-2.5 py-1 bg-amber-500/30 hover:bg-amber-500/50 border border-amber-400/40 text-amber-200 text-xs font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer print:hidden ml-1 shadow-2xs"
-                            title="Chỉ Quản trị viên: Xem đánh giá TKB Đẹp/Xấu (Tiết TB/buổi & 3 tiêu chí ngày nghỉ, buổi nghỉ, tiết lủng) của giáo viên này"
-                          >
-                            <Scale className="w-3.5 h-3.5 text-yellow-300" />
-                            <span>Đánh giá TKB Đẹp/Xấu</span>
-                          </button>
+                          <div className="flex items-center gap-1.5 print:hidden ml-1">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleOpenPersonalColorfulPdfModal('TEACHER', 'ALL', 'ALL', 'ALL', teacher.id)
+                              }
+                              className="px-2.5 py-1 bg-gradient-to-r from-fuchsia-500 to-amber-500 hover:from-fuchsia-600 hover:to-amber-600 text-white text-xs font-black rounded-lg transition-all flex items-center gap-1 cursor-pointer shadow-2xs whitespace-nowrap"
+                              title={`Xuất PDF bản màu tươi sáng gửi riêng ${teacher.name}`}
+                            >
+                              <Palette className="w-3.5 h-3.5" />
+                              <span>PDF Màu</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setIsQualityModalOpen(true)}
+                              className="px-2.5 py-1 bg-amber-500/30 hover:bg-amber-500/50 border border-amber-400/40 text-amber-200 text-xs font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer shadow-2xs whitespace-nowrap"
+                              title="Chỉ Quản trị viên: Xem đánh giá TKB Đẹp/Xấu (Tiết TB/buổi & 3 tiêu chí ngày nghỉ, buổi nghỉ, tiết lủng) của giáo viên này"
+                            >
+                              <Scale className="w-3.5 h-3.5 text-yellow-300" />
+                              <span>Đánh giá TKB Đẹp/Xấu</span>
+                            </button>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -2831,6 +2955,24 @@ export const SchoolTimetableView: React.FC<SchoolTimetableViewProps> = ({
         initialSession="SMART_A4"
         isAdmin={isAdmin}
         onShowToast={onShowToast}
+      />
+
+      {/* Personal Colorful Timetable PDF Export Modal (Teachers & Classes - Admin Only) */}
+      <PersonalColorfulTimetableModal
+        isOpen={isPersonalPdfModalOpen && isAdmin}
+        onClose={() => setIsPersonalPdfModalOpen(false)}
+        config={config}
+        classes={classes}
+        teachers={teachers}
+        departments={departments}
+        timetable={timetable}
+        currentWeek={currentWeek}
+        initialTargetType={personalPdfTargetType}
+        initialCampus={personalPdfCampus}
+        initialGrade={personalPdfGrade}
+        initialClassId={personalPdfClassId}
+        initialTeacherId={personalPdfTeacherId}
+        isAdmin={isAdmin}
       />
     </div>
   );

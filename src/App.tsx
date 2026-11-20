@@ -2094,6 +2094,7 @@ export default function App() {
             classes={classes}
             subjects={subjects}
             teachers={teachers}
+            departments={departments}
             assignments={assignments}
             timetable={timetable}
             currentWeek={currentWeek}
