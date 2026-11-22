@@ -104,6 +104,7 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
   const [showSecondaryDetail, setShowSecondaryDetail] = useState<boolean>(true);
   const [showSummaryLegend, setShowSummaryLegend] = useState<boolean>(true);
   const [locationName, setLocationName] = useState<string>('Đốc Binh Kiều');
+  const [creatorName, setCreatorName] = useState<string>('Nguyễn Minh Trí');
   const [previewIndex, setPreviewIndex] = useState<number>(0);
   const [isExportingPdf, setIsExportingPdf] = useState<boolean>(false);
   const [lastExportInfo, setLastExportInfo] = useState<string | null>(null);
@@ -219,9 +220,10 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
         fontSize,
         showSecondaryDetail,
         showSummaryLegend,
-        locationName
+        locationName,
+        creatorName
       });
-      const msg = `Đã tải file ${res.fileName} (${res.pageCount} trang A4 · ~${res.approxKb} KB)`;
+      const msg = `Đã tải file ${res.fileName} (${res.pageCount} trang A4 ngang · ~${res.approxKb} KB)`;
       setLastExportInfo(msg);
       onShowToast?.(msg);
     } catch (err: unknown) {
@@ -264,7 +266,7 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
             print-color-adjust: exact !important;
           }
           @page {
-            size: A4 portrait;
+            size: A4 landscape;
             margin: 6mm;
           }
           .personal-colorful-print-root,
@@ -284,8 +286,8 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
             overflow: visible !important;
           }
           .personal-colorful-print-sheet {
-            width: 198mm !important;
-            height: 284mm !important;
+            width: 285mm !important;
+            height: auto !important;
             margin: 0 auto !important;
             padding: 0 !important;
             border: none !important;
@@ -312,7 +314,7 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
                 </span>
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
-                Phối màu nhẹ nhàng, thanh lịch · Tạo file PDF vector siêu nhẹ dưới 1 giây để gửi Zalo / Email
+                Khổ A4 ngang rộng rãi, phối màu nhẹ nhàng · Tạo file PDF vector siêu nhẹ dưới 1 giây để gửi Zalo / Email
               </p>
             </div>
           </div>
@@ -673,6 +675,15 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
                   className="bg-transparent text-xs font-semibold text-slate-900 w-24 focus:outline-hidden"
                 />
               </div>
+              <div className="flex items-center gap-1 bg-white border border-slate-300 rounded px-2 py-0.5">
+                <span className="text-[11px] font-bold text-slate-600">Người ký:</span>
+                <input
+                  type="text"
+                  value={creatorName}
+                  onChange={e => setCreatorName(e.target.value)}
+                  className="bg-transparent text-xs font-semibold text-slate-900 w-28 focus:outline-hidden"
+                />
+              </div>
               {totalSheets > 1 && (
                 <div className="inline-flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-0.5">
                   <button
@@ -741,20 +752,20 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
 
               const cellPadStyle =
                 rows.length <= 5
-                  ? '14px 4px'
+                  ? '12px 6px'
                   : rows.length <= 7
-                  ? '10px 4px'
-                  : '6px 4px';
+                  ? '9px 6px'
+                  : '5px 6px';
 
               return (
                 <div
-                  className="bg-white text-slate-900 p-[6mm] rounded-xl shadow-md border border-slate-300 mx-auto w-full max-w-[210mm] personal-colorful-print-sheet print:shadow-none print:border-none print:p-0 print:m-0"
+                  className="bg-white text-slate-900 p-[6mm] rounded-xl shadow-md border border-slate-300 mx-auto w-full max-w-[297mm] personal-colorful-print-sheet print:shadow-none print:border-none print:p-0 print:m-0"
                   style={{
                     fontFamily: "'Be Vietnam Pro', 'Plus Jakarta Sans', sans-serif",
                     fontSynthesis: 'none'
                   }}
                 >
-                  <div className="flex flex-col min-h-[275mm]">
+                  <div className="flex flex-col">
                     {/* Clean Solid Banner */}
                     <div
                       className="rounded-xl px-4 py-3 text-white flex items-center justify-between gap-3"
@@ -847,10 +858,10 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
                     <div className="mt-2.5">
                       <table className={`w-full table-fixed border-collapse border border-slate-300 text-center ${fontSizeClass}`}>
                         <colgroup>
-                          <col style={{ width: '7.5%' }} />
-                          <col style={{ width: '7%' }} />
+                          <col style={{ width: '5.5%' }} />
+                          <col style={{ width: '5.5%' }} />
                           {DAYS_OF_WEEK.map(d => (
-                            <col key={`tcol-${d.value}`} style={{ width: '14.25%' }} />
+                            <col key={`tcol-${d.value}`} style={{ width: '14.83%' }} />
                           ))}
                         </colgroup>
                         <thead>
@@ -995,8 +1006,8 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
                       </table>
                     </div>
 
-                    {/* Compact Summary & Footer */}
-                    <div className="mt-auto pt-3 space-y-2">
+                    {/* Compact Summary & Natural Signature Block */}
+                    <div className="pt-2.5 space-y-2.5">
                       {showSummaryLegend && summaryText && (
                         <div className="rounded-lg px-3 py-1.5 bg-slate-50 border border-slate-200 text-[7.8pt] text-slate-700 leading-snug">
                           <span className="font-bold text-slate-900">Phân bố dạy: </span>
@@ -1004,14 +1015,23 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
                         </div>
                       )}
 
-                      <div className="flex items-center justify-between gap-3 pt-2 border-t border-slate-300 text-[8pt]">
-                        <div className="text-slate-700 italic">
+                      <div className="flex items-start justify-between gap-4 pt-1 text-[8pt]">
+                        <div className="text-slate-600 italic pt-1">
                           Kính chúc Quý Thầy/Cô một tuần giảng dạy nhiều sức khỏe, niềm vui và hiệu quả!
                         </div>
-                        <div className="text-right shrink-0 font-bold text-slate-800">
-                          <div>{dateString}</div>
-                          <div style={{ color: activePreset.footerAccent }} className="uppercase">
-                            BGH {config.schoolName || 'THCS & THPT ĐỐC BINH KIỀU'}
+                        <div className="w-64 text-center shrink-0 text-slate-900">
+                          <div className="text-[8.2pt] italic">{dateString}</div>
+                          <div className="text-[8.5pt] font-bold uppercase mt-0.5">
+                            KT. HIỆU TRƯỞNG
+                          </div>
+                          <div className="text-[8.8pt] font-bold uppercase">
+                            PHÓ HIỆU TRƯỞNG
+                          </div>
+                          <div className="text-[7.5pt] italic text-slate-600">
+                            (Ký và ghi rõ họ tên)
+                          </div>
+                          <div className="h-7 flex items-end justify-center font-bold text-[9pt]">
+                            {creatorName || 'Nguyễn Minh Trí'}
                           </div>
                         </div>
                       </div>
@@ -1043,20 +1063,20 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
 
               const cellPadStyle =
                 classRows.length <= 5
-                  ? '14px 4px'
+                  ? '12px 6px'
                   : classRows.length <= 7
-                  ? '10px 4px'
-                  : '6px 4px';
+                  ? '9px 6px'
+                  : '5px 6px';
 
               return (
                 <div
-                  className="bg-white text-slate-900 p-[6mm] rounded-xl shadow-md border border-slate-300 mx-auto w-full max-w-[210mm] personal-colorful-print-sheet print:shadow-none print:border-none print:p-0 print:m-0"
+                  className="bg-white text-slate-900 p-[6mm] rounded-xl shadow-md border border-slate-300 mx-auto w-full max-w-[297mm] personal-colorful-print-sheet print:shadow-none print:border-none print:p-0 print:m-0"
                   style={{
                     fontFamily: "'Be Vietnam Pro', 'Plus Jakarta Sans', sans-serif",
                     fontSynthesis: 'none'
                   }}
                 >
-                  <div className="flex flex-col min-h-[275mm]">
+                  <div className="flex flex-col">
                     {/* Clean Solid Banner */}
                     <div
                       className="rounded-xl px-4 py-3 text-white flex items-center justify-between gap-3"
@@ -1148,10 +1168,10 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
                     <div className="mt-2.5">
                       <table className={`w-full table-fixed border-collapse border border-slate-300 text-center ${fontSizeClass}`}>
                         <colgroup>
-                          <col style={{ width: '7.5%' }} />
-                          <col style={{ width: '7%' }} />
+                          <col style={{ width: '5.5%' }} />
+                          <col style={{ width: '5.5%' }} />
                           {DAYS_OF_WEEK.map(d => (
-                            <col key={`ccol-${d.value}`} style={{ width: '14.25%' }} />
+                            <col key={`ccol-${d.value}`} style={{ width: '14.83%' }} />
                           ))}
                         </colgroup>
                         <thead>
@@ -1276,8 +1296,8 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
                       </table>
                     </div>
 
-                    {/* Compact Summary & Footer */}
-                    <div className="mt-auto pt-3 space-y-2">
+                    {/* Compact Summary & Natural Signature Block */}
+                    <div className="pt-2.5 space-y-2.5">
                       {showSummaryLegend && summaryText && (
                         <div className="rounded-lg px-3 py-1.5 bg-slate-50 border border-slate-200 text-[7.8pt] text-slate-700 leading-snug">
                           <span className="font-bold text-slate-900">
@@ -1287,14 +1307,23 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
                         </div>
                       )}
 
-                      <div className="flex items-center justify-between gap-3 pt-2 border-t border-slate-300 text-[8pt]">
-                        <div className="text-slate-700 italic">
+                      <div className="flex items-start justify-between gap-4 pt-1 text-[8pt]">
+                        <div className="text-slate-600 italic pt-1">
                           Chúc các em học sinh lớp {cls.name} một tuần học tập vui vẻ, chăm ngoan và tiến bộ!
                         </div>
-                        <div className="text-right shrink-0 font-bold text-slate-800">
-                          <div>{dateString}</div>
-                          <div style={{ color: activePreset.footerAccent }} className="uppercase">
-                            BGH {config.schoolName || 'THCS & THPT ĐỐC BINH KIỀU'}
+                        <div className="w-64 text-center shrink-0 text-slate-900">
+                          <div className="text-[8.2pt] italic">{dateString}</div>
+                          <div className="text-[8.5pt] font-bold uppercase mt-0.5">
+                            KT. HIỆU TRƯỞNG
+                          </div>
+                          <div className="text-[8.8pt] font-bold uppercase">
+                            PHÓ HIỆU TRƯỞNG
+                          </div>
+                          <div className="text-[7.5pt] italic text-slate-600">
+                            (Ký và ghi rõ họ tên)
+                          </div>
+                          <div className="h-7 flex items-end justify-center font-bold text-[9pt]">
+                            {creatorName || 'Nguyễn Minh Trí'}
                           </div>
                         </div>
                       </div>
@@ -1309,7 +1338,7 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
         {/* Bottom Export Bar */}
         <div className="bg-white border-t border-slate-200 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 shrink-0 print:hidden">
           <div className="font-medium text-slate-700">
-            Xuất trực tiếp bằng bộ tạo PDF vector nhẹ (tự căn vừa khít khổ A4 đứng, không cần chờ hộp thoại in).
+            Xuất trực tiếp bằng bộ tạo PDF vector nhẹ (khổ A4 ngang rộng rãi, tự căn vừa khít 1 trang).
           </div>
 
           <div className="flex items-center gap-2 shrink-0">

@@ -154,6 +154,7 @@ export interface ExportPersonalVectorPdfOptions {
   showSecondaryDetail: boolean;
   showSummaryLegend: boolean;
   locationName: string;
+  creatorName?: string;
 }
 
 export interface ExportPersonalVectorPdfResult {
@@ -197,68 +198,68 @@ function drawBannerHeader(
   setFillHex(doc, preset.bannerBg);
   setDrawHex(doc, preset.bannerBorder);
   doc.setLineWidth(0.3);
-  doc.roundedRect(x, y, w, h, 2.2, 2.2, 'FD');
+  doc.roundedRect(x, y, w, h, 2, 2, 'FD');
 
   // School Emblem (single cached image alias across entire multi-page PDF)
-  const circleCx = x + 9.5;
+  const circleCx = x + 9;
   const circleCy = y + h / 2;
   doc.setFillColor(255, 255, 255);
-  doc.circle(circleCx, circleCy, 6.2, 'F');
+  doc.circle(circleCx, circleCy, 5.6, 'F');
   if (logoDataUrl) {
     doc.addImage(
       logoDataUrl,
       'PNG',
-      circleCx - 5.2,
-      circleCy - 5.2,
-      10.4,
-      10.4,
+      circleCx - 4.7,
+      circleCy - 4.7,
+      9.4,
+      9.4,
       'school-logo',
       'FAST'
     );
   }
 
   // Week Badge on right
-  const badgeW = 36;
-  const badgeH = h - 4.4;
+  const badgeW = 44;
+  const badgeH = h - 3.6;
   const badgeX = x + w - badgeW - 3;
-  const badgeY = y + 2.2;
+  const badgeY = y + 1.8;
   setFillHex(doc, preset.badgeBg);
-  doc.roundedRect(badgeX, badgeY, badgeW, badgeH, 1.8, 1.8, 'F');
+  doc.roundedRect(badgeX, badgeY, badgeW, badgeH, 1.6, 1.6, 'F');
 
   const badgeCx = badgeX + badgeW / 2;
   setTextHex(doc, preset.badgeText);
   doc.setFont('NotoSans', 'bold');
   doc.setFontSize(9.5);
-  doc.text(`TUẦN ${weekNumber}`, badgeCx, badgeY + 5.2, { align: 'center' });
-  doc.setFontSize(7.6);
-  doc.text(dateRangeText, badgeCx, badgeY + 9.6, { align: 'center' });
+  doc.text(`TUẦN ${weekNumber}`, badgeCx, badgeY + 4.8, { align: 'center' });
+  doc.setFontSize(7.8);
+  doc.text(dateRangeText, badgeCx, badgeY + 8.8, { align: 'center' });
   doc.setFont('NotoSans', 'normal');
-  doc.setFontSize(6.6);
-  doc.text(`NH ${academicYear}`, badgeCx, badgeY + 13.4, { align: 'center' });
+  doc.setFontSize(6.8);
+  doc.text(`Năm học ${academicYear}`, badgeCx, badgeY + 12.2, { align: 'center' });
 
   // Center-Left Text
-  const textX = x + 18.5;
-  const maxTextW = badgeX - textX - 3;
+  const textX = x + 17.5;
+  const maxTextW = badgeX - textX - 4;
 
   doc.setTextColor(219, 234, 254);
   doc.setFont('NotoSans', 'bold');
-  doc.setFontSize(7.2);
-  doc.text(schoolName.toUpperCase(), textX, y + 5.3, { maxWidth: maxTextW });
+  doc.setFontSize(7.3);
+  doc.text(schoolName.toUpperCase(), textX, y + 4.7, { maxWidth: maxTextW });
 
   doc.setTextColor(255, 255, 255);
   doc.setFont('NotoSans', 'bold');
-  let titleSize = 12.2;
+  let titleSize = 13;
   doc.setFontSize(titleSize);
-  while (doc.getTextWidth(title) > maxTextW && titleSize > 9.2) {
+  while (doc.getTextWidth(title) > maxTextW && titleSize > 9.5) {
     titleSize -= 0.4;
     doc.setFontSize(titleSize);
   }
-  doc.text(title, textX, y + 11.4, { maxWidth: maxTextW });
+  doc.text(title, textX, y + 10.4, { maxWidth: maxTextW });
 
   doc.setTextColor(224, 231, 255);
   doc.setFont('NotoSans', 'normal');
-  doc.setFontSize(7.9);
-  doc.text(subtitle, textX, y + 16.5, { maxWidth: maxTextW });
+  doc.setFontSize(8.1);
+  doc.text(subtitle, textX, y + 14.9, { maxWidth: maxTextW });
 }
 
 function drawInfoStrip(
@@ -273,7 +274,7 @@ function drawInfoStrip(
   setFillHex(doc, preset.infoBarBg);
   setDrawHex(doc, preset.infoBarBorder);
   doc.setLineWidth(0.25);
-  doc.roundedRect(x, y, w, h, 1.6, 1.6, 'FD');
+  doc.roundedRect(x, y, w, h, 1.5, 1.5, 'FD');
 
   const colW = w / cells.length;
   cells.forEach((cell, idx) => {
@@ -281,57 +282,25 @@ function drawInfoStrip(
     if (idx > 0) {
       setDrawHex(doc, '#E2E8F0');
       doc.setLineWidth(0.2);
-      doc.line(cx, y + 1.8, cx, y + h - 1.8);
+      doc.line(cx, y + 1.5, cx, y + h - 1.5);
     }
 
     setTextHex(doc, '#64748B');
     doc.setFont('NotoSans', 'bold');
     doc.setFontSize(6.6);
-    doc.text(cell.label.toUpperCase(), cx + 2.6, y + 3.8, {
-      maxWidth: colW - 4.5
+    doc.text(cell.label.toUpperCase(), cx + 3, y + 3.5, {
+      maxWidth: colW - 5
     });
 
     setTextHex(doc, '#0F172A');
     doc.setFont('NotoSans', 'bold');
-    let valSize = 8.4;
+    let valSize = 8.6;
     doc.setFontSize(valSize);
-    while (doc.getTextWidth(cell.value) > colW - 4.8 && valSize > 6.8) {
+    while (doc.getTextWidth(cell.value) > colW - 5.5 && valSize > 6.8) {
       valSize -= 0.3;
       doc.setFontSize(valSize);
     }
-    doc.text(cell.value, cx + 2.6, y + 8.3, { maxWidth: colW - 4.5 });
-  });
-}
-
-function drawFooterBar(
-  doc: jsPDF,
-  x: number,
-  y: number,
-  w: number,
-  wishText: string,
-  dateString: string,
-  schoolShortName: string,
-  accentHex: string
-): void {
-  setDrawHex(doc, '#CBD5E1');
-  doc.setLineWidth(0.25);
-  doc.line(x, y, x + w, y);
-
-  setTextHex(doc, '#334155');
-  doc.setFont('NotoSans', 'normal');
-  doc.setFontSize(7.6);
-  doc.text(wishText, x, y + 4.8, { maxWidth: w - 68 });
-
-  setTextHex(doc, '#334155');
-  doc.setFont('NotoSans', 'bold');
-  doc.setFontSize(7.5);
-  doc.text(dateString, x + w, y + 4.3, { align: 'right' });
-
-  setTextHex(doc, accentHex);
-  doc.setFont('NotoSans', 'bold');
-  doc.setFontSize(7.3);
-  doc.text(`BGH ${schoolShortName.toUpperCase()}`, x + w, y + 8.3, {
-    align: 'right'
+    doc.text(cell.value, cx + 3, y + 7.7, { maxWidth: colW - 5 });
   });
 }
 
@@ -344,11 +313,11 @@ function drawCompactSummaryBox(
   bodyText: string
 ): number {
   doc.setFont('NotoSans', 'normal');
-  doc.setFontSize(7.4);
+  doc.setFontSize(7.6);
   const fullText = `${label} ${bodyText}`;
   const lines = doc.splitTextToSize(fullText, w - 5) as string[];
-  const shownLines = lines.slice(0, 3);
-  const boxH = Math.max(7.5, shownLines.length * 3.4 + 3.2);
+  const shownLines = lines.slice(0, 2);
+  const boxH = Math.max(6.8, shownLines.length * 3.5 + 2.8);
 
   setFillHex(doc, '#F8FAFC');
   setDrawHex(doc, '#CBD5E1');
@@ -357,12 +326,57 @@ function drawCompactSummaryBox(
 
   setTextHex(doc, '#334155');
   doc.setFont('NotoSans', 'normal');
-  doc.setFontSize(7.4);
+  doc.setFontSize(7.6);
   shownLines.forEach((line, i) => {
-    doc.text(line, x + 2.5, y + 4.1 + i * 3.4);
+    doc.text(line, x + 2.5, y + 3.9 + i * 3.5);
   });
 
   return boxH;
+}
+
+function drawSignatureFooter(
+  doc: jsPDF,
+  x: number,
+  y: number,
+  w: number,
+  wishText: string,
+  dateString: string,
+  creatorName: string,
+  compact: boolean
+): void {
+  const sigW = 68;
+  const sigCenterX = x + w - sigW / 2;
+
+  // Left subtle encouragement note aligned neatly with top of signature block
+  setTextHex(doc, '#475569');
+  doc.setFont('NotoSans', 'normal');
+  doc.setFontSize(7.8);
+  doc.text(wishText, x, y + 4.2, { maxWidth: w - sigW - 8 });
+
+  // Formal Administrative Signature Block on right (matching Grade Timetable PDF)
+  setTextHex(doc, '#0F172A');
+  doc.setFont('NotoSans', 'normal');
+  doc.setFontSize(compact ? 7.6 : 8.1);
+  doc.text(dateString, sigCenterX, y + 3.5, { align: 'center' });
+
+  doc.setFont('NotoSans', 'bold');
+  doc.setFontSize(compact ? 7.8 : 8.2);
+  doc.text('KT. HIỆU TRƯỞNG', sigCenterX, y + (compact ? 7.1 : 7.4), { align: 'center' });
+
+  doc.setFontSize(compact ? 8.1 : 8.6);
+  doc.text('PHÓ HIỆU TRƯỞNG', sigCenterX, y + (compact ? 10.6 : 11.2), { align: 'center' });
+
+  setTextHex(doc, '#475569');
+  doc.setFont('NotoSans', 'normal');
+  doc.setFontSize(compact ? 6.8 : 7.2);
+  doc.text('(Ký và ghi rõ họ tên)', sigCenterX, y + (compact ? 13.7 : 14.6), { align: 'center' });
+
+  setTextHex(doc, '#0F172A');
+  doc.setFont('NotoSans', 'bold');
+  doc.setFontSize(compact ? 8.3 : 8.8);
+  doc.text(creatorName || 'Nguyễn Minh Trí', sigCenterX, y + (compact ? 20.5 : 23.5), {
+    align: 'center'
+  });
 }
 
 export async function exportPersonalVectorPdf(
@@ -373,7 +387,6 @@ export async function exportPersonalVectorPdf(
     config,
     classes,
     teachers,
-    timetable,
     currentWeek,
     teacherItems,
     classItems,
@@ -384,7 +397,8 @@ export async function exportPersonalVectorPdf(
     fontSize,
     showSecondaryDetail,
     showSummaryLegend,
-    locationName
+    locationName,
+    creatorName = 'Nguyễn Minh Trí'
   } = options;
 
   const itemsCount = targetType === 'TEACHER' ? teacherItems.length : classItems.length;
@@ -394,7 +408,7 @@ export async function exportPersonalVectorPdf(
 
   const assets = await loadPdfAssets();
   const doc = new jsPDF({
-    orientation: 'portrait',
+    orientation: 'landscape',
     unit: 'mm',
     format: 'a4',
     compress: true,
@@ -413,35 +427,36 @@ export async function exportPersonalVectorPdf(
   const today = new Date();
   const dateString = `${locationName}, ngày ${today.getDate()} tháng ${today.getMonth() + 1} năm ${today.getFullYear()}`;
   const schoolName = config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU';
-  const schoolShort = 'TRƯỜNG THCS & THPT ĐỐC BINH KIỀU';
 
   const teacherMap = new Map(teachers.map(t => [t.id, t]));
   const classMap = new Map(classes.map(c => [c.id, c]));
 
-  const marginX = 7;
-  const pageW = 210;
-  const usableW = pageW - marginX * 2; // 196mm
-  const colSessionW = 12;
-  const colPeriodW = 11.5;
-  const colDayW = (usableW - colSessionW - colPeriodW) / 6; // 28.75mm
+  // A4 Landscape: 297 x 210 mm
+  const marginX = 8;
+  const pageW = 297;
+  const pageMaxY = 203.5;
+  const usableW = pageW - marginX * 2; // 281mm
+  const colSessionW = 13.5;
+  const colPeriodW = 12.5;
+  const colDayW = (usableW - colSessionW - colPeriodW) / 6; // 42.5mm per Day!
 
-  const baseScaleFont = fontSize === 'sm' ? -0.7 : fontSize === 'lg' ? 0.6 : 0;
+  const baseScaleFont = fontSize === 'sm' ? -0.6 : fontSize === 'lg' ? 0.6 : 0;
 
   if (targetType === 'TEACHER') {
     teacherItems.forEach((item, pageIdx) => {
       if (pageIdx > 0) {
-        doc.addPage('a4', 'portrait');
+        doc.addPage('a4', 'landscape');
       }
 
       const t = item.teacher;
       const rows = buildTeacherScheduleRows(item, sessionMode);
 
-      let cursorY = 7;
+      let cursorY = 6.5;
       drawBannerHeader(doc, {
         x: marginX,
         y: cursorY,
         w: usableW,
-        h: 19.5,
+        h: 17,
         preset,
         logoDataUrl: assets.logoDataUrl,
         schoolName,
@@ -451,9 +466,9 @@ export async function exportPersonalVectorPdf(
         dateRangeText,
         academicYear: config.academicYear || '2026 - 2027'
       });
-      cursorY += 21.8;
+      cursorY += 19;
 
-      drawInfoStrip(doc, marginX, cursorY, usableW, 10.5, preset, [
+      drawInfoStrip(doc, marginX, cursorY, usableW, 9.5, preset, [
         { label: 'Mã GV & Định mức', value: `${t.code} · ${t.baseStandardPeriods}t/tuần` },
         { label: 'Tiết giảng dạy TKB', value: `${item.totalPeriods} tiết (${item.sessionCount} buổi)` },
         { label: 'TB tiết / buổi', value: `${item.avgPerSession} tiết/buổi` },
@@ -464,10 +479,8 @@ export async function exportPersonalVectorPdf(
           }`
         }
       ]);
-      cursorY += 12.8;
+      cursorY += 11.5;
 
-      // Reserve bottom space for footer + optional summary
-      const footerY = 280.5;
       let summaryText = '';
       let estimatedSummaryH = 0;
       if (showSummaryLegend && item.classBreakdown.length > 0) {
@@ -475,16 +488,29 @@ export async function exportPersonalVectorPdf(
           .map(b => `${b.className} (${b.subjectName}: ${b.count}t)`)
           .join(' · ');
         doc.setFont('NotoSans', 'normal');
-        doc.setFontSize(7.4);
+        doc.setFontSize(7.6);
         const lines = doc.splitTextToSize(`Phân bố dạy: ${summaryText}`, usableW - 5) as string[];
-        estimatedSummaryH = Math.max(7.5, Math.min(3, lines.length) * 3.4 + 3.2) + 2.5;
+        estimatedSummaryH = Math.max(6.8, Math.min(2, lines.length) * 3.5 + 2.8) + 2.5;
       }
 
       const gridTopY = cursorY;
-      const theadH = 8.2;
-      const maxAvailableTbodyH = footerY - estimatedSummaryH - 2.5 - gridTopY - theadH;
-      const maxRowH = rows.length <= 5 ? 36 : rows.length <= 7 ? 29 : 22.5;
-      const rowH = Math.max(13, Math.min(maxRowH, maxAvailableTbodyH / Math.max(1, rows.length)));
+      const theadH = 7.6;
+      const tbodyTopY = gridTopY + theadH;
+      const fullSigH = 25;
+      const compactSigH = 22;
+
+      const comfortableRowH = rows.length <= 5 ? 19.5 : rows.length <= 7 ? 15.8 : 13.5;
+      const maxRowHForFullSig =
+        (pageMaxY - fullSigH - estimatedSummaryH - 4 - tbodyTopY) / Math.max(1, rows.length);
+      const maxRowHForCompactSig =
+        (pageMaxY - compactSigH - estimatedSummaryH - 3 - tbodyTopY) / Math.max(1, rows.length);
+
+      let rowH = Math.min(comfortableRowH, maxRowHForFullSig);
+      let useCompactSig = false;
+      if (rowH < 11.4) {
+        rowH = Math.max(10.8, Math.min(comfortableRowH, maxRowHForCompactSig));
+        useCompactSig = true;
+      }
 
       // Draw Table Header
       setFillHex(doc, preset.tableHeaderBg);
@@ -495,7 +521,7 @@ export async function exportPersonalVectorPdf(
 
       doc.setTextColor(255, 255, 255);
       doc.setFont('NotoSans', 'bold');
-      doc.setFontSize(7.6);
+      doc.setFontSize(7.8);
       const headerCenterY = gridTopY + theadH / 2 + 1.1;
       doc.text('BUỔI', marginX + colSessionW / 2, headerCenterY, { align: 'center' });
       doc.text('TIẾT', marginX + colSessionW + colPeriodW / 2, headerCenterY, { align: 'center' });
@@ -521,11 +547,9 @@ export async function exportPersonalVectorPdf(
       });
 
       // Draw Rows
-      const tbodyTopY = gridTopY + theadH;
       rows.forEach((rowMeta, rIdx) => {
         const ry = tbodyTopY + rIdx * rowH;
 
-        // Merged Session Cell
         if (rowMeta.showSessionCell) {
           const spanH = rowMeta.sessionRowSpan * rowH;
           const sessBg =
@@ -554,7 +578,6 @@ export async function exportPersonalVectorPdf(
           });
         }
 
-        // Period Cell
         const px = marginX + colSessionW;
         setFillHex(doc, '#F8FAFC');
         setDrawHex(doc, '#CBD5E1');
@@ -562,12 +585,11 @@ export async function exportPersonalVectorPdf(
         doc.rect(px, ry, colPeriodW, rowH, 'FD');
         setTextHex(doc, '#334155');
         doc.setFont('NotoSans', 'bold');
-        doc.setFontSize(7.8);
-        doc.text(`T${rowMeta.period}`, px + colPeriodW / 2, ry + rowH / 2 + 1.1, {
+        doc.setFontSize(8);
+        doc.text(`Tiết ${rowMeta.period}`, px + colPeriodW / 2, ry + rowH / 2 + 1.1, {
           align: 'center'
         });
 
-        // 6 Day Cells
         DAYS_OF_WEEK.forEach((day, dIdx) => {
           const dx = marginX + colSessionW + colPeriodW + dIdx * colDayW;
           const daySlots =
@@ -602,7 +624,7 @@ export async function exportPersonalVectorPdf(
 
           if (colorIntensity === 'ACCENT' && !isCollision) {
             setFillHex(doc, classTheme.accent);
-            doc.rect(dx + 0.25, ry + 0.25, 1.1, rowH - 0.5, 'F');
+            doc.rect(dx + 0.25, ry + 0.25, 1.2, rowH - 0.5, 'F');
           }
 
           if (isCollision) {
@@ -611,31 +633,27 @@ export async function exportPersonalVectorPdf(
               .join(' / ');
             setTextHex(doc, '#BE123C');
             doc.setFont('NotoSans', 'bold');
-            doc.setFontSize(8);
+            doc.setFontSize(8.2);
             doc.text(label, dx + colDayW / 2, ry + rowH / 2, {
               align: 'center',
               maxWidth: colDayW - 3
             });
-            doc.setFontSize(6.5);
-            doc.text(`Trùng ${daySlots.length} lớp`, dx + colDayW / 2, ry + rowH / 2 + 4, {
+            doc.setFontSize(6.6);
+            doc.text(`Trùng ${daySlots.length} lớp`, dx + colDayW / 2, ry + rowH / 2 + 3.8, {
               align: 'center'
             });
           } else {
             const titleColor =
               colorIntensity === 'SOFT' ? classTheme.titleColor : '#0F172A';
-            const titleFs = (rows.length <= 7 ? 9.5 : 8.5) + baseScaleFont;
-            const subFs = (rows.length <= 7 ? 7.4 : 6.7) + baseScaleFont;
-
-            setTextHex(doc, titleColor);
-            doc.setFont('NotoSans', 'bold');
-            doc.setFontSize(titleFs);
+            const titleFs = (rows.length <= 7 ? 9.6 : 8.5) + baseScaleFont;
+            const subFs = (rows.length <= 7 ? 7.7 : 6.9) + baseScaleFont;
 
             if (showSecondaryDetail) {
               doc.setFont('NotoSans', 'normal');
               doc.setFontSize(subFs);
-              const subLines = (doc.splitTextToSize(subName, colDayW - 3.6) as string[]).slice(0, 2);
-              const blockH = 4 + subLines.length * (subFs * 0.38);
-              const startTextY = ry + (rowH - blockH) / 2 + 2.8;
+              const subLines = (doc.splitTextToSize(subName, colDayW - 4) as string[]).slice(0, 2);
+              const blockH = 3.8 + subLines.length * (subFs * 0.39);
+              const startTextY = ry + (rowH - blockH) / 2 + 2.6;
 
               doc.setFont('NotoSans', 'bold');
               doc.setFontSize(titleFs);
@@ -649,11 +667,14 @@ export async function exportPersonalVectorPdf(
               doc.setFontSize(subFs);
               setTextHex(doc, '#475569');
               subLines.forEach((line, lIdx) => {
-                doc.text(line, dx + colDayW / 2, startTextY + 3.8 + lIdx * (subFs * 0.39), {
+                doc.text(line, dx + colDayW / 2, startTextY + 3.7 + lIdx * (subFs * 0.39), {
                   align: 'center'
                 });
               });
             } else {
+              doc.setFont('NotoSans', 'bold');
+              doc.setFontSize(titleFs);
+              setTextHex(doc, titleColor);
               doc.text(clsName, dx + colDayW / 2, ry + rowH / 2 + 1.2, {
                 align: 'center',
                 maxWidth: colDayW - 3
@@ -662,7 +683,6 @@ export async function exportPersonalVectorPdf(
           }
         });
 
-        // Stronger session separator line
         if (rowMeta.isLastRowOfSession) {
           const bottomY = ry + rowH;
           setDrawHex(doc, '#94A3B8');
@@ -671,23 +691,32 @@ export async function exportPersonalVectorPdf(
         }
       });
 
-      const gridBottomY = tbodyTopY + rows.length * rowH;
-
-      // Summary bar neatly placed right below grid or above footer
+      // Natural flow right below grid/summary when there is spare room; pushed cleanly down if tight
+      let afterGridY = tbodyTopY + rows.length * rowH;
       if (showSummaryLegend && summaryText) {
-        const sumY = Math.min(gridBottomY + 3, footerY - estimatedSummaryH);
-        drawCompactSummaryBox(doc, marginX, sumY, usableW, 'Phân bố dạy:', summaryText);
+        const boxH = drawCompactSummaryBox(
+          doc,
+          marginX,
+          afterGridY + 2.5,
+          usableW,
+          'Phân bố dạy:',
+          summaryText
+        );
+        afterGridY = afterGridY + 2.5 + boxH;
       }
 
-      drawFooterBar(
+      const sigNeededH = useCompactSig ? compactSigH : fullSigH;
+      const sigY = Math.min(afterGridY + 3.5, pageMaxY - sigNeededH);
+
+      drawSignatureFooter(
         doc,
         marginX,
-        footerY,
+        sigY,
         usableW,
         'Kính chúc Quý Thầy/Cô một tuần giảng dạy nhiều sức khỏe, niềm vui và hiệu quả!',
         dateString,
-        schoolShort,
-        preset.footerAccent
+        creatorName,
+        useCompactSig
       );
     });
 
@@ -695,7 +724,7 @@ export async function exportPersonalVectorPdf(
       teacherItems.length === 1
         ? `_${sanitizeFilenameSegment(teacherItems[0].cleanName)}`
         : `_${teacherItems.length}_GV`;
-    const fileName = `TKB_Tuan_${currentWeek}_GiaoVien${singleName}.pdf`;
+    const fileName = `TKB_Tuan_${currentWeek}_GiaoVien${singleName}_A4Ngang.pdf`;
     const outBuffer = doc.output('arraybuffer');
     doc.save(fileName);
     return {
@@ -705,22 +734,22 @@ export async function exportPersonalVectorPdf(
     };
   }
 
-  /* ===================== CLASS VECTOR PDF ===================== */
+  /* ===================== CLASS VECTOR PDF (A4 LANDSCAPE) ===================== */
   classItems.forEach((item, pageIdx) => {
     if (pageIdx > 0) {
-      doc.addPage('a4', 'portrait');
+      doc.addPage('a4', 'landscape');
     }
 
     const cls = item.classGroup;
     const rows = buildClassScheduleRows(item, slotMap, sessionMode);
     const summary = buildClassSubjectSummary(cls, slotMap);
 
-    let cursorY = 7;
+    let cursorY = 6.5;
     drawBannerHeader(doc, {
       x: marginX,
       y: cursorY,
       w: usableW,
-      h: 19.5,
+      h: 17,
       preset,
       logoDataUrl: assets.logoDataUrl,
       schoolName,
@@ -730,9 +759,9 @@ export async function exportPersonalVectorPdf(
       dateRangeText,
       academicYear: config.academicYear || '2026 - 2027'
     });
-    cursorY += 21.8;
+    cursorY += 19;
 
-    drawInfoStrip(doc, marginX, cursorY, usableW, 10.5, preset, [
+    drawInfoStrip(doc, marginX, cursorY, usableW, 9.5, preset, [
       { label: 'Giáo viên chủ nhiệm', value: item.homeroomName },
       {
         label: 'Ca học chính',
@@ -741,27 +770,39 @@ export async function exportPersonalVectorPdf(
       { label: 'Tổng số tiết tuần', value: `${summary.totalPeriods} tiết / tuần` },
       { label: 'Ngày bắt đầu áp dụng', value: `Thứ Hai, ${weekInfo.startDateShort}` }
     ]);
-    cursorY += 12.8;
+    cursorY += 11.5;
 
-    const footerY = 280.5;
     let summaryText = '';
     let estimatedSummaryH = 0;
     if (showSummaryLegend && summary.chips.length > 0) {
       summaryText = summary.chips.map(c => `${c.subjectName} (${c.count}t)`).join(' · ');
       doc.setFont('NotoSans', 'normal');
-      doc.setFontSize(7.4);
+      doc.setFontSize(7.6);
       const lines = doc.splitTextToSize(
         `Phân bố môn (${summary.totalPeriods}t): ${summaryText}`,
         usableW - 5
       ) as string[];
-      estimatedSummaryH = Math.max(7.5, Math.min(3, lines.length) * 3.4 + 3.2) + 2.5;
+      estimatedSummaryH = Math.max(6.8, Math.min(2, lines.length) * 3.5 + 2.8) + 2.5;
     }
 
     const gridTopY = cursorY;
-    const theadH = 8.2;
-    const maxAvailableTbodyH = footerY - estimatedSummaryH - 2.5 - gridTopY - theadH;
-    const maxRowH = rows.length <= 5 ? 36 : rows.length <= 7 ? 29 : 22.5;
-    const rowH = Math.max(13, Math.min(maxRowH, maxAvailableTbodyH / Math.max(1, rows.length)));
+    const theadH = 7.6;
+    const tbodyTopY = gridTopY + theadH;
+    const fullSigH = 25;
+    const compactSigH = 22;
+
+    const comfortableRowH = rows.length <= 5 ? 19.5 : rows.length <= 7 ? 15.8 : 13.5;
+    const maxRowHForFullSig =
+      (pageMaxY - fullSigH - estimatedSummaryH - 4 - tbodyTopY) / Math.max(1, rows.length);
+    const maxRowHForCompactSig =
+      (pageMaxY - compactSigH - estimatedSummaryH - 3 - tbodyTopY) / Math.max(1, rows.length);
+
+    let rowH = Math.min(comfortableRowH, maxRowHForFullSig);
+    let useCompactSig = false;
+    if (rowH < 11.4) {
+      rowH = Math.max(10.8, Math.min(comfortableRowH, maxRowHForCompactSig));
+      useCompactSig = true;
+    }
 
     // Header
     setFillHex(doc, preset.tableHeaderBg);
@@ -772,7 +813,7 @@ export async function exportPersonalVectorPdf(
 
     doc.setTextColor(255, 255, 255);
     doc.setFont('NotoSans', 'bold');
-    doc.setFontSize(7.6);
+    doc.setFontSize(7.8);
     const headerCenterY = gridTopY + theadH / 2 + 1.1;
     doc.text('BUỔI', marginX + colSessionW / 2, headerCenterY, { align: 'center' });
     doc.text('TIẾT', marginX + colSessionW + colPeriodW / 2, headerCenterY, { align: 'center' });
@@ -798,7 +839,6 @@ export async function exportPersonalVectorPdf(
     });
 
     // Rows
-    const tbodyTopY = gridTopY + theadH;
     rows.forEach((rowMeta, rIdx) => {
       const ry = tbodyTopY + rIdx * rowH;
 
@@ -837,8 +877,8 @@ export async function exportPersonalVectorPdf(
       doc.rect(px, ry, colPeriodW, rowH, 'FD');
       setTextHex(doc, '#334155');
       doc.setFont('NotoSans', 'bold');
-      doc.setFontSize(7.8);
-      doc.text(`T${rowMeta.period}`, px + colPeriodW / 2, ry + rowH / 2 + 1.1, {
+      doc.setFontSize(8);
+      doc.text(`Tiết ${rowMeta.period}`, px + colPeriodW / 2, ry + rowH / 2 + 1.1, {
         align: 'center'
       });
 
@@ -870,21 +910,21 @@ export async function exportPersonalVectorPdf(
 
         if (colorIntensity === 'ACCENT') {
           setFillHex(doc, theme.accent);
-          doc.rect(dx + 0.25, ry + 0.25, 1.1, rowH - 0.5, 'F');
+          doc.rect(dx + 0.25, ry + 0.25, 1.2, rowH - 0.5, 'F');
         }
 
         const titleColor = colorIntensity === 'SOFT' ? theme.titleColor : '#0F172A';
-        const subFs = (rows.length <= 7 ? 8.3 : 7.6) + baseScaleFont;
-        const tchFs = (rows.length <= 7 ? 7.2 : 6.6) + baseScaleFont;
+        const subFs = (rows.length <= 7 ? 8.8 : 7.8) + baseScaleFont;
+        const tchFs = (rows.length <= 7 ? 7.6 : 6.8) + baseScaleFont;
 
         doc.setFont('NotoSans', 'bold');
         doc.setFontSize(subFs);
-        const subLines = (doc.splitTextToSize(subjectName, colDayW - 3.6) as string[]).slice(0, 2);
+        const subLines = (doc.splitTextToSize(subjectName, colDayW - 4) as string[]).slice(0, 2);
 
         if (teacherName) {
           doc.setFont('NotoSans', 'normal');
           doc.setFontSize(tchFs);
-          const tchLines = (doc.splitTextToSize(teacherName, colDayW - 3.6) as string[]).slice(0, 2);
+          const tchLines = (doc.splitTextToSize(teacherName, colDayW - 4) as string[]).slice(0, 2);
           const totalBlockH =
             subLines.length * (subFs * 0.42) + 1.4 + tchLines.length * (tchFs * 0.4);
           const startTextY = ry + (rowH - totalBlockH) / 2 + subFs * 0.34;
@@ -898,7 +938,7 @@ export async function exportPersonalVectorPdf(
             });
           });
 
-          const tchStartY = startTextY + subLines.length * (subFs * 0.42) + 0.6;
+          const tchStartY = startTextY + subLines.length * (subFs * 0.42) + 0.7;
           doc.setFont('NotoSans', 'normal');
           doc.setFontSize(tchFs);
           setTextHex(doc, '#475569');
@@ -927,28 +967,31 @@ export async function exportPersonalVectorPdf(
       }
     });
 
-    const gridBottomY = tbodyTopY + rows.length * rowH;
+    let afterGridY = tbodyTopY + rows.length * rowH;
     if (showSummaryLegend && summaryText) {
-      const sumY = Math.min(gridBottomY + 3, footerY - estimatedSummaryH);
-      drawCompactSummaryBox(
+      const boxH = drawCompactSummaryBox(
         doc,
         marginX,
-        sumY,
+        afterGridY + 2.5,
         usableW,
         `Phân bố môn (${summary.totalPeriods}t):`,
         summaryText
       );
+      afterGridY = afterGridY + 2.5 + boxH;
     }
 
-    drawFooterBar(
+    const sigNeededH = useCompactSig ? compactSigH : fullSigH;
+    const sigY = Math.min(afterGridY + 3.5, pageMaxY - sigNeededH);
+
+    drawSignatureFooter(
       doc,
       marginX,
-      footerY,
+      sigY,
       usableW,
       `Chúc các em học sinh lớp ${cls.name} một tuần học tập vui vẻ, chăm ngoan và tiến bộ!`,
       dateString,
-      schoolShort,
-      preset.footerAccent
+      creatorName,
+      useCompactSig
     );
   });
 
@@ -956,7 +999,7 @@ export async function exportPersonalVectorPdf(
     classItems.length === 1
       ? `_Lop_${sanitizeFilenameSegment(classItems[0].classGroup.name)}`
       : `_${classItems.length}_Lop`;
-  const fileName = `TKB_Tuan_${currentWeek}${singleName}.pdf`;
+  const fileName = `TKB_Tuan_${currentWeek}${singleName}_A4Ngang.pdf`;
   const outBuffer = doc.output('arraybuffer');
   doc.save(fileName);
   return {
