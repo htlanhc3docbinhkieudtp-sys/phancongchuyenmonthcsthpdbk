@@ -469,7 +469,7 @@ export async function exportPersonalVectorPdf(
       cursorY += 19;
 
       drawInfoStrip(doc, marginX, cursorY, usableW, 9.5, preset, [
-        { label: 'Mã GV & Định mức', value: `${t.code} · ${t.baseStandardPeriods}t/tuần` },
+        { label: 'Họ tên giáo viên & Định mức', value: `${item.cleanName} · ${t.baseStandardPeriods}t/tuần` },
         { label: 'Tiết giảng dạy TKB', value: `${item.totalPeriods} tiết (${item.sessionCount} buổi)` },
         { label: 'TB tiết / buổi', value: `${item.avgPerSession} tiết/buổi` },
         {

@@ -821,10 +821,10 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
                     >
                       <div className="px-2.5 py-1.5">
                         <div className="text-[7pt] font-bold uppercase text-slate-500">
-                          Mã GV & Định mức
+                          Họ tên giáo viên & Định mức
                         </div>
                         <div className="text-[8.8pt] font-extrabold text-slate-900 tabular-nums">
-                          {t.code} · {t.baseStandardPeriods}t/tuần
+                          {item.cleanName} · {t.baseStandardPeriods}t/tuần
                         </div>
                       </div>
                       <div className="px-2.5 py-1.5">
