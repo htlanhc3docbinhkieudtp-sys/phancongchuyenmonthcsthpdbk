@@ -783,8 +783,16 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
                           <div className="text-[7.5pt] font-bold uppercase tracking-wider text-blue-100">
                             {config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU'}
                           </div>
-                          <h1 className="text-[13.5pt] font-extrabold leading-tight text-white mt-0.5">
-                            THỜI KHÓA BIỂU GIÁO VIÊN: {item.cleanName.toUpperCase()}
+                          <h1 className="flex flex-wrap items-center gap-2 leading-tight mt-1">
+                            <span className="text-[11pt] font-bold text-blue-100">
+                              THỜI KHÓA BIỂU GIÁO VIÊN:
+                            </span>
+                            <span
+                              className="inline-block bg-white px-2.5 py-0.5 rounded-md text-[13pt] font-black tracking-wide shadow-2xs"
+                              style={{ color: activePreset.bannerBg }}
+                            >
+                              {item.cleanName.toUpperCase()}
+                            </span>
                           </h1>
                           <div className="text-[8.3pt] font-medium text-blue-100 mt-0.5">
                             {item.departmentName} · {item.campusName}
@@ -821,10 +829,10 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
                     >
                       <div className="px-2.5 py-1.5">
                         <div className="text-[7pt] font-bold uppercase text-slate-500">
-                          Họ tên giáo viên & Định mức
+                          Mã GV & Định mức
                         </div>
                         <div className="text-[8.8pt] font-extrabold text-slate-900 tabular-nums">
-                          {item.cleanName} · {t.baseStandardPeriods}t/tuần
+                          {t.code} · {t.baseStandardPeriods}t/tuần
                         </div>
                       </div>
                       <div className="px-2.5 py-1.5">
@@ -1094,8 +1102,16 @@ export const PersonalColorfulTimetableModal: React.FC<PersonalColorfulTimetableM
                           <div className="text-[7.5pt] font-bold uppercase tracking-wider text-blue-100">
                             {config.schoolName || 'TRƯỜNG THCS VÀ THPT ĐỐC BINH KIỀU'}
                           </div>
-                          <h1 className="text-[13.5pt] font-extrabold leading-tight text-white mt-0.5">
-                            THỜI KHÓA BIỂU LỚP {cls.name} (KHỐI {cls.grade})
+                          <h1 className="flex flex-wrap items-center gap-2 leading-tight mt-1">
+                            <span className="text-[11pt] font-bold text-blue-100">
+                              THỜI KHÓA BIỂU LỚP:
+                            </span>
+                            <span
+                              className="inline-block bg-white px-2.5 py-0.5 rounded-md text-[13pt] font-black tracking-wide shadow-2xs"
+                              style={{ color: activePreset.bannerBg }}
+                            >
+                              {cls.name} (KHỐI {cls.grade})
+                            </span>
                           </h1>
                           <div className="text-[8.3pt] font-medium text-blue-100 mt-0.5">
                             {item.campusName}

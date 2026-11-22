@@ -173,7 +173,8 @@ function drawBannerHeader(
     preset: HeaderColorPreset;
     logoDataUrl: string | null;
     schoolName: string;
-    title: string;
+    titlePrefix: string;
+    highlightName: string;
     subtitle: string;
     weekNumber: number;
     dateRangeText: string;
@@ -188,7 +189,8 @@ function drawBannerHeader(
     preset,
     logoDataUrl,
     schoolName,
-    title,
+    titlePrefix,
+    highlightName,
     subtitle,
     weekNumber,
     dateRangeText,
@@ -244,22 +246,46 @@ function drawBannerHeader(
   doc.setTextColor(219, 234, 254);
   doc.setFont('NotoSans', 'bold');
   doc.setFontSize(7.3);
-  doc.text(schoolName.toUpperCase(), textX, y + 4.7, { maxWidth: maxTextW });
+  doc.text(schoolName.toUpperCase(), textX, y + 4.5, { maxWidth: maxTextW });
 
-  doc.setTextColor(255, 255, 255);
+  // Prefix + High-contrast White Name Badge so the Teacher/Class name pops immediately
+  let prefixFs = 10.5;
+  let nameFs = 12.8;
   doc.setFont('NotoSans', 'bold');
-  let titleSize = 13;
-  doc.setFontSize(titleSize);
-  while (doc.getTextWidth(title) > maxTextW && titleSize > 9.5) {
-    titleSize -= 0.4;
-    doc.setFontSize(titleSize);
+  doc.setFontSize(prefixFs);
+  let prefixW = doc.getTextWidth(titlePrefix);
+  doc.setFontSize(nameFs);
+  let nameW = doc.getTextWidth(highlightName);
+  while (prefixW + 3 + nameW + 7 > maxTextW && nameFs > 9.5) {
+    prefixFs -= 0.4;
+    nameFs -= 0.5;
+    doc.setFontSize(prefixFs);
+    prefixW = doc.getTextWidth(titlePrefix);
+    doc.setFontSize(nameFs);
+    nameW = doc.getTextWidth(highlightName);
   }
-  doc.text(title, textX, y + 10.4, { maxWidth: maxTextW });
+
+  doc.setTextColor(224, 231, 255);
+  doc.setFont('NotoSans', 'bold');
+  doc.setFontSize(prefixFs);
+  doc.text(titlePrefix, textX, y + 10.6);
+
+  const pillX = textX + prefixW + 2.8;
+  const pillH = 6.2;
+  const pillY = y + 6.1;
+  const pillW = Math.min(nameW + 6.5, maxTextW - prefixW - 2.8);
+  doc.setFillColor(255, 255, 255);
+  doc.roundedRect(pillX, pillY, pillW, pillH, 1.4, 1.4, 'F');
+
+  setTextHex(doc, preset.bannerBg);
+  doc.setFont('NotoSans', 'bold');
+  doc.setFontSize(nameFs);
+  doc.text(highlightName, pillX + 3.25, y + 10.7, { maxWidth: pillW - 4 });
 
   doc.setTextColor(224, 231, 255);
   doc.setFont('NotoSans', 'normal');
   doc.setFontSize(8.1);
-  doc.text(subtitle, textX, y + 14.9, { maxWidth: maxTextW });
+  doc.text(subtitle, textX, y + 15.2, { maxWidth: maxTextW });
 }
 
 function drawInfoStrip(
@@ -460,7 +486,8 @@ export async function exportPersonalVectorPdf(
         preset,
         logoDataUrl: assets.logoDataUrl,
         schoolName,
-        title: `THỜI KHÓA BIỂU GIÁO VIÊN: ${item.cleanName.toUpperCase()}`,
+        titlePrefix: 'THỜI KHÓA BIỂU GIÁO VIÊN:',
+        highlightName: item.cleanName.toUpperCase(),
         subtitle: `${item.departmentName} · ${item.campusName}`,
         weekNumber: currentWeek,
         dateRangeText,
@@ -469,7 +496,7 @@ export async function exportPersonalVectorPdf(
       cursorY += 19;
 
       drawInfoStrip(doc, marginX, cursorY, usableW, 9.5, preset, [
-        { label: 'Họ tên giáo viên & Định mức', value: `${item.cleanName} · ${t.baseStandardPeriods}t/tuần` },
+        { label: 'Mã GV & Định mức', value: `${t.code} · ${t.baseStandardPeriods}t/tuần` },
         { label: 'Tiết giảng dạy TKB', value: `${item.totalPeriods} tiết (${item.sessionCount} buổi)` },
         { label: 'TB tiết / buổi', value: `${item.avgPerSession} tiết/buổi` },
         {
@@ -753,7 +780,8 @@ export async function exportPersonalVectorPdf(
       preset,
       logoDataUrl: assets.logoDataUrl,
       schoolName,
-      title: `THỜI KHÓA BIỂU LỚP ${cls.name} (KHỐI ${cls.grade})`,
+      titlePrefix: 'THỜI KHÓA BIỂU LỚP:',
+      highlightName: `${cls.name} (KHỐI ${cls.grade})`,
       subtitle: `${item.campusName}`,
       weekNumber: currentWeek,
       dateRangeText,
