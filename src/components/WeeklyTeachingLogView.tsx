@@ -1977,7 +1977,7 @@ export const WeeklyTeachingLogView: React.FC<WeeklyTeachingLogViewProps> = ({
           {levelScope === 'THPT' && stats.totalExamProctoringPeriods === 0 && (
             <div className="px-4 py-2 bg-indigo-50/70 border-b border-indigo-100 flex flex-wrap items-center justify-between gap-2 text-xs text-indigo-950">
               <span>
-                Lưu ý: 43 giáo viên có dữ liệu <strong>Coi KTGK1 (432.65 tiết)</strong> hiện thuộc khối <strong>THCS</strong>.
+                Lưu ý: Hiện có <strong>Coi KTGK1 (719.95 tiết)</strong> gồm 43 GV THCS (432.65t) và 28 GV THPT điểm chính (287.3t).
               </span>
               <div className="flex items-center gap-2">
                 <button

@@ -157,7 +157,7 @@ export const ExamInvigilationView: React.FC<ExamInvigilationViewProps> = ({
   };
 
   const handleResetOfficialGk1 = () => {
-    if (!window.confirm('Khôi phục cột Coi KTGK1 về đúng số liệu chính thức 43 giáo viên (tổng 432.65 tiết)? Các cột KTCK1, KTGK2, KTCK2 sẽ được giữ nguyên.')) {
+    if (!window.confirm('Khôi phục cột Coi KTGK1 về đúng số liệu chính thức 71 giáo viên (432.65t THCS + 287.3t THPT = 719.95 tiết)? Các cột KTCK1, KTGK2, KTCK2 sẽ được giữ nguyên.')) {
       return;
     }
     const nextMap: ExamProctoringPeriodsMap = { ...effectiveProctoring };
@@ -172,7 +172,7 @@ export const ExamInvigilationView: React.FC<ExamInvigilationViewProps> = ({
       existing.updatedAt = Date.now();
       nextMap[t.id] = existing;
     });
-    commitProctoringUpdate(nextMap, 'Đã khôi phục số liệu Coi KTGK1 chuẩn (43 GV • 432.65 tiết)!');
+    commitProctoringUpdate(nextMap, 'Đã khôi phục số liệu Coi KTGK1 chuẩn (71 GV • 719.95 tiết)!');
   };
 
   const handleImportProctoringFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -342,7 +342,7 @@ export const ExamInvigilationView: React.FC<ExamInvigilationViewProps> = ({
                 Bảng Kê Tiết Coi Kiểm Tra 4 Đợt (KTGK1 • KTCK1 • KTGK2 • KTCK2)
               </h4>
               <p className="text-xs text-slate-600 mt-0.5">
-                Đã nhập chính thức <b>43 giáo viên</b> từ file <b>KÊ TIẾT COI KIỂM TRA GK1</b> (Tổng <b>432.65 tiết</b>) • Có thể nhập trực tiếp số thập phân (vd: 8.66, 9.33) để tự động tính lại tổng tiết thừa/thiếu sang tab <b>Số tiết thực dạy</b>.
+                Đã nhập chính thức <b>71 giáo viên</b> toàn trường (<b>43 GV THCS: 432.65t</b> + <b>28 GV THPT điểm chính: 287.3t</b> = <b>719.95 tiết</b>) • Có thể nhập trực tiếp số thập phân (vd: 8.66, 9.33) để tự động tính lại tổng tiết thừa/thiếu sang tab <b>Số tiết thực dạy</b>.
               </p>
             </div>
 
@@ -397,7 +397,7 @@ export const ExamInvigilationView: React.FC<ExamInvigilationViewProps> = ({
                 type="button"
                 onClick={handleResetOfficialGk1}
                 className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold rounded-xl flex items-center gap-1.5 cursor-pointer transition-colors"
-                title="Khôi phục đúng 432.65 tiết GK1 chuẩn từ file thầy gửi"
+                title="Khôi phục đúng 719.95 tiết GK1 chuẩn (THCS + THPT) từ các file đã gửi"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 Nạp Lại GK1 Chuẩn

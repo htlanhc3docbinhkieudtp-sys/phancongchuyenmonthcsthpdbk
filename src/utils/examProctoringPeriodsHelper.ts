@@ -40,9 +40,12 @@ export function formatPeriodNumber(value: number): string {
 }
 
 /**
- * Dữ liệu chính thức nhập từ file: "KÊ TIẾT COI KIỂM TRA GK1.xlsx" (43 giáo viên, tổng 432.65 tiết)
+ * Dữ liệu chính thức Coi kiểm tra giữa kỳ 1 (71 giáo viên, tổng 719.95 tiết):
+ * - Điểm THCS & BGH: 43 giáo viên từ "KÊ TIẾT COI KIỂM TRA GK1.xlsx" (432.65 tiết)
+ * - Điểm chính (THPT): 28 giáo viên từ "THỐNG KÊ TIẾT COI KIỂM TRA GIỮA HỌC KÌ I ĐIỂM CHÍNH" (287.3 tiết)
  */
 export const OFFICIAL_GK1_PROCTORING_PERIODS: Record<string, number> = {
+  // --- Điểm THCS & BGH (43 GV = 432.65 tiết) ---
   'tch-bgh-4': 1,     // Nguyễn Thanh Tòng (Ban Giám Hiệu)
   'tch-t-2': 9,       // Trần Quốc Huy (Tổ Toán)
   'tch-t-9': 9,       // Nguyễn Thái Hùng (Tổ Toán)
@@ -86,6 +89,36 @@ export const OFFICIAL_GK1_PROCTORING_PERIODS: Record<string, number> = {
   'tch-td-10': 24,    // Trần Thị Mỹ Quốc (Tổ GDTC - QPAN - Nghệ thuật)
   'tch-td-11': 16,    // Lê Văn Chính (Tổ GDTC - QPAN - Nghệ thuật)
   'tch-td-12': 24,    // Nguyễn Anh Văn (Tổ GDTC - QPAN - Nghệ thuật)
+
+  // --- Điểm chính cấp THPT (28 GV = 288.3 tiết) ---
+  'tch-av-5': 17.2,   // Ngô Bảo Quốc (Thầy Quốc)
+  'tch-av-6': 19,     // Trương Sơn Bền (Thầy Bền)
+  'tch-khtn-3': 13.8, // Phạm Biên Thùy (Thầy Thuỳ)
+  'tch-ls-5': 13.6,   // Trần Văn Rỡ (Thầy Rỡ)
+  'tch-t-1': 11.4,    // Nguyễn Văn Tới (Thầy Tới)
+  'tch-v-5': 9.6,     // Lê Thị Mỹ Ny (Cô Ny)
+  'tch-khtn-5': 10.7, // Cao Văn Tùng (Thầy Tùng)
+  'tch-khtn-8': 10.9, // Phạm Long Phi (Thầy Phi)
+  'tch-av-4': 12.9,   // Võ Thị Hiền Thi (Cô Thi)
+  'tch-t-7': 7.3,     // Võ Thị Ngọc Hương (Cô Hương)
+  'tch-av-8': 7.3,    // Đào Thị Ngọc Liên (Cô Liên)
+  'tch-av-9': 5.3,    // Lê Thị Thu Diễm (Cô Diễm)
+  'tch-ls-4': 8.6,    // Nguyễn Thị Bé Trang (Cô Trang)
+  'tch-ls-2': 12,     // Trịnh Văn Sơn (Thầy Sơn)
+  'tch-t-4': 8.3,     // Trần Văn Giang (Thầy Giang)
+  'tch-t-5': 12.9,    // Lê Cao Toàn (Thầy C Toàn)
+  'tch-v-1': 9.1,     // Tô Thị Lắm (Cô Lắm)
+  'tch-td-2': 4,      // Nguyễn Kim Rạng (Cô Rạng)
+  'tch-khtn-6': 8,    // Trần Thị Ngọc Hiền (Cô Hiền)
+  'tch-khtn-1': 12.4, // Bùi Kim Huỳnh (Cô Huỳnh)
+  'tch-ls-8': 12.4,   // Phạm Nguyễn Văn Trường (Thầy Trường)
+  'tch-v-6': 10.3,    // Trương Thị Mỹ Duyên (Cô Duyên)
+  'tch-v-4': 12.3,    // Hồ Văn Nhịnh (Thầy Nhịnh)
+  'tch-av-7': 12.6,   // Nguyễn Thị Vân Anh (Cô Vân Anh)
+  'tch-t-6': 7.3,     // Lê Văn Toàn (Thầy V Toàn)
+  'tch-ls-7': 9.8,    // Ngô Anh Tuấn (Thầy Tuấn)
+  'tch-khtn-7': 4.2,  // Phan Thị Ngọc Thơ (Cô Thơ)
+  'tch-av-2': 4.1,    // Nguyễn Trung Hiếu (Thầy Hiếu)
 };
 
 export function getDefaultExamProctoringPeriods(): ExamProctoringPeriodsMap {
